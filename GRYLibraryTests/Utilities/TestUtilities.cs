@@ -2,7 +2,6 @@
 using GRYLibrary.Core.CryptoSystems.ConcreteHashAlgorithms;
 using GRYLibrary.Core.OperatingSystem;
 using GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
 

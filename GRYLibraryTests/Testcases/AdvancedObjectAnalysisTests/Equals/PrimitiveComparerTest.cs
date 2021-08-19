@@ -1,5 +1,4 @@
 ﻿using GRYLibrary.Core.AdvancedObjectAnalysis;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GRYLibrary.Tests.Testcases.AdvancedObjectAnalysisTests.Equals
 {

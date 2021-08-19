@@ -2,8 +2,6 @@
 using GRYLibrary.Core.LogObject;
 using GRYLibrary.Core.LogObject.ConcreteLogTargets;
 using GRYLibrary.Core.XMLSerializer;
-using Microsoft.Extensions.Logging;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
 using System.Text;

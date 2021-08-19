@@ -1,6 +1,5 @@
 ﻿using GRYLibrary.Core.Graph;
 using GRYLibrary.Core.Graph.Exceptions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
 namespace GRYLibrary.Tests.Testcases.GraphTests
