@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GRYLibrary.Tests.Testcases.GraphTests
 {
@@ -59,7 +60,6 @@ namespace GRYLibrary.Tests.Testcases.GraphTests
 
             cycleItems.Add(edge3);
             Assert.IsTrue(Cycle.RepresentsCycle(cycleItems));
-            new Cycle(cycleItems);
 
             cycleItems.Add(edge4);
             Assert.IsFalse(Cycle.RepresentsCycle(cycleItems));
@@ -70,7 +70,7 @@ namespace GRYLibrary.Tests.Testcases.GraphTests
         }
         public void TestErrorsOfCycleConstructorsDueToEmptyEdgesList()
         {
-            Assert.ThrowsException<Exception>(() => new List<DirectedEdge>(new DirectedEdge[] { }));
+            Assert.ThrowsException<Exception>(() => new List<DirectedEdge>(Array.Empty<DirectedEdge>()));
         }
         public void TestErrorsOfCycleConstructorsDueToUncyclicEdges()
         {

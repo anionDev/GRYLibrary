@@ -6,6 +6,8 @@ using System;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.Extensions.Logging;
 
 namespace GRYLibrary.Tests.Testcases
 {

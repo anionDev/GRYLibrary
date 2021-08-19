@@ -340,7 +340,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public static bool TypeIsAssignableFrom(Type typeForCheck, Type parentType)
         {
             ISet<Type> typesToCheck = GetTypeWithParentTypesAndInterfaces(typeForCheck);
-            var result = typesToCheck.Contains(parentType, TypeComparerIgnoringGenerics);
+            bool result = typesToCheck.Contains(parentType, TypeComparerIgnoringGenerics);
             return result;
         }
         public static ISet<Type> GetTypeWithParentTypesAndInterfaces(Type type)
@@ -1433,6 +1433,20 @@ namespace GRYLibrary.Core.Miscellaneous
                 return Path.GetFullPath(new Uri(Path.Combine(baseDirectory, path)).LocalPath);
             }
         }
+        public static XmlDocument XDocumentToXMLDocument(this XDocument xDocument)
+        {
+            XmlDocument xmlDocument = new();
+            using XmlReader xmlReader = xDocument.CreateReader();
+            xmlDocument.Load(xmlReader);
+            return xmlDocument;
+        }
+
+        public static XDocument XMLDocumentToXDocument(this XmlDocument xmlDocument)
+        {
+            using XmlNodeReader xmlNodeReader = new(xmlDocument);
+            xmlNodeReader.MoveToContent();
+            return XDocument.Load(xmlNodeReader);
+        }
         /// <summary>
         /// This function takes a given <paramref name="xml"/>-string and validates it against a given <paramref name="xsd"/>-string.
         /// </summary>
@@ -1442,14 +1456,32 @@ namespace GRYLibrary.Core.Miscellaneous
         /// </returns>
         public static bool ValidateXMLAgainstXSD(string xml, string xsd, out IList<object> errorMessages)
         {
+            XmlDocument xmlDocument = new();
+            xmlDocument.LoadXml(xml);
+            XmlSchema xsdDocument = XmlSchema.Read(new StringReader(xsd), null);
+            return ValidateXMLAgainstXSD(xmlDocument, xsdDocument, out errorMessages);
+        }
+        public static bool ValidateXMLAgainstXSD(string xml, XmlSchema xsdDocument, out IList<object> errorMessages)
+        {
+            XmlDocument xmlDocument = new XmlDocument();
+            xmlDocument.LoadXml(xml);
+            return ValidateXMLAgainstXSD(xmlDocument, xsdDocument, out errorMessages);
+        }
+        public static bool ValidateXMLAgainstXSD(XmlDocument xmlDocument, string xsd, out IList<object> errorMessages)
+        {
+            XmlSchema xsdDocument = XmlSchema.Read(new StringReader(xsd), null);
+            return ValidateXMLAgainstXSD(xmlDocument, xsdDocument, out errorMessages);
+        }
+        public static bool ValidateXMLAgainstXSD(XmlDocument xmlDocument, XmlSchema xsdDocument, out IList<object> errorMessages)
+        {
             errorMessages = new List<object>();
             try
             {
                 XmlSchemaSet schemaSet = new();
-                schemaSet.Add(null, XmlReader.Create(new StringReader(xsd)));
-                XDocument xDocument = XDocument.Parse(xml);
+                schemaSet.Add(xsdDocument);
 
                 List<object> events = new();
+                XDocument xDocument = xmlDocument.XMLDocumentToXDocument();
                 xDocument.Validate(schemaSet, (o, eventArgument) =>
                 {
                     events.Add(eventArgument);
@@ -1466,40 +1498,67 @@ namespace GRYLibrary.Core.Miscellaneous
             return errorMessages.Count == 0;
         }
 
-        public static readonly XmlWriterSettings ApplyXSLTToXMLXMLWriterDefaultSettings = new() { Indent = true, Encoding = new UTF8Encoding(false), OmitXmlDeclaration = true, IndentChars = "    " };
-        public static readonly string ApplyXSLTToXMLXMLWriterDefaultXMLDeclaration = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n";
-        public static string ApplyXSLTToXML(string xml, string xslt)
+        public static readonly XmlWriterSettings XMLWriterDefaultSettings = new() { Indent = true, Encoding = new UTF8Encoding(false), OmitXmlDeclaration = false, IndentChars = "    " };
+
+        public static XmlDocument ApplyXSLTToXML(string xml, string xslt)
         {
-            return ApplyXSLTToXML(xml, xslt, ApplyXSLTToXMLXMLWriterDefaultXMLDeclaration, ApplyXSLTToXMLXMLWriterDefaultSettings);
+            XmlDocument xmlDocument = new();
+            xmlDocument.LoadXml(xml);
+            XslCompiledTransform xsltDocument = new();
+            xsltDocument.Load(XmlReader.Create(new StringReader(xslt)));
+            return ApplyXSLTToXML(xmlDocument, xsltDocument, XMLWriterDefaultSettings);
         }
-        public static string ApplyXSLTToXML(string xml, string xslt, string xmlDeclaration)
+        public static XmlDocument ApplyXSLTToXML(string xml, string xslt, XmlWriterSettings applyXSLTToXMLXMLWriterDefaultSettings)
         {
-            return ApplyXSLTToXML(xml, xslt, xmlDeclaration, ApplyXSLTToXMLXMLWriterDefaultSettings);
+            XmlDocument xmlDocument = new();
+            xmlDocument.LoadXml(xml);
+            XslCompiledTransform xsltDocument = new();
+            xsltDocument.Load(XmlReader.Create(new StringReader(xslt)));
+            return ApplyXSLTToXML(xmlDocument, xsltDocument, applyXSLTToXMLXMLWriterDefaultSettings);
         }
-        public static string ApplyXSLTToXML(string xml, string xslt, XmlWriterSettings applyXSLTToXMLXMLWriterDefaultSettings)
+        public static XmlDocument ApplyXSLTToXML(XmlDocument xmlDocument, string xslt)
         {
-            return ApplyXSLTToXML(xml, xslt, ApplyXSLTToXMLXMLWriterDefaultXMLDeclaration, applyXSLTToXMLXMLWriterDefaultSettings);
+            XslCompiledTransform xsltDocument = new();
+            xsltDocument.Load(XmlReader.Create(new StringReader(xslt)));
+            return ApplyXSLTToXML(xmlDocument, xsltDocument, XMLWriterDefaultSettings);
         }
-        public static string ApplyXSLTToXML(string xml, string xslt, string xmlDeclaration, XmlWriterSettings applyXSLTToXMLXMLWriterDefaultSettings)
+        public static XmlDocument ApplyXSLTToXML(XmlDocument xmlDocument, string xslt, XmlWriterSettings applyXSLTToXMLXMLWriterDefaultSettings)
         {
-            XslCompiledTransform myXslTrans = new();
-            myXslTrans.Load(XmlReader.Create(new StringReader(xslt)));
+            XslCompiledTransform xsltDocument = new();
+            xsltDocument.Load(XmlReader.Create(new StringReader(xslt)));
+            return ApplyXSLTToXML(xmlDocument, xsltDocument, applyXSLTToXMLXMLWriterDefaultSettings);
+        }
+        public static XmlDocument ApplyXSLTToXML(string xml, XslCompiledTransform xsltDocument)
+        {
+            XmlDocument xmlDocument = new();
+            xmlDocument.LoadXml(xml);
+            return ApplyXSLTToXML(xmlDocument, xsltDocument, XMLWriterDefaultSettings);
+        }
+        public static XmlDocument ApplyXSLTToXML(string xml, XslCompiledTransform xsltDocument, XmlWriterSettings applyXSLTToXMLXMLWriterDefaultSettings)
+        {
+            XmlDocument xmlDocument = new();
+            xmlDocument.LoadXml(xml);
+            return ApplyXSLTToXML(xmlDocument, xsltDocument, applyXSLTToXMLXMLWriterDefaultSettings);
+        }
+        public static XmlDocument ApplyXSLTToXML(XmlDocument xmlDocument, XslCompiledTransform xsltDocument, XmlWriterSettings applyXSLTToXMLXMLWriterDefaultSettings)
+        {
             using StringWriter stringWriter = new();
-            using (XmlWriter xmlWriter = XmlWriter.Create(stringWriter, applyXSLTToXMLXMLWriterDefaultSettings))
-            {
-                myXslTrans.Transform(XmlReader.Create(new StringReader(xml)), xmlWriter);
-            }
-            return xmlDeclaration + stringWriter.ToString();
+            using XmlWriter xmlWriter = XmlWriter.Create(stringWriter, applyXSLTToXMLXMLWriterDefaultSettings);
+            using XmlReader xmlReader = new XmlNodeReader(xmlDocument);
+            xsltDocument.Transform(xmlReader, xmlWriter);
+            XmlDocument result = new();
+            result.LoadXml(stringWriter.ToString());
+            return result;
+
         }
         public static readonly Encoding FormatXMLFile_DefaultEncoding = new UTF8Encoding(false);
-        public static readonly XmlWriterSettings FormatXMLFile_DefaultXmlWriterSettings = new() { Indent = true, IndentChars = "    " };
         public static void FormatXMLFile(string file)
         {
-            FormatXMLFile(file, FormatXMLFile_DefaultEncoding, FormatXMLFile_DefaultXmlWriterSettings);
+            FormatXMLFile(file, FormatXMLFile_DefaultEncoding, XMLWriterDefaultSettings);
         }
         public static void FormatXMLFile(string file, Encoding encoding)
         {
-            FormatXMLFile(file, encoding, FormatXMLFile_DefaultXmlWriterSettings);
+            FormatXMLFile(file, encoding, XMLWriterDefaultSettings);
         }
         public static void FormatXMLFile(string file, XmlWriterSettings settings)
         {
@@ -1507,11 +1566,11 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static void FormatXMLFile(string file, Encoding encoding, XmlWriterSettings settings)
         {
-            File.WriteAllText(file, FormatXMLString(File.ReadAllText(file), settings), encoding);
+            File.WriteAllText(file, FormatXMLString(File.ReadAllText(file, encoding), settings), encoding);
         }
         public static string FormatXMLString(string xmlString)
         {
-            return FormatXMLString(xmlString, FormatXMLFile_DefaultXmlWriterSettings);
+            return FormatXMLString(xmlString, XMLWriterDefaultSettings);
         }
         public static string FormatXMLString(string xmlString, XmlWriterSettings settings)
         {
@@ -1531,7 +1590,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static string UintToBinaryString(uint binaryString, bool padLeft = true)
         {
-            var result = Convert.ToString(binaryString, 2);
+            string result = Convert.ToString(binaryString, 2);
             if (padLeft)
             {
                 result = result.PadLeft(32, '0');
@@ -1546,20 +1605,25 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             throw new NotImplementedException();
         }
-
+       
         public static string XmlToString(XmlDocument xmlDocument)
         {
-            StringBuilder stringBuilder = new();
-            using (XmlWriter writer = XmlWriter.Create(stringBuilder, new XmlWriterSettings
-            {
-                Encoding = FormatXMLFile_DefaultEncoding,
-                Indent = true,
-                IndentChars = "  ",
-                OmitXmlDeclaration = false,
-                NewLineChars = Environment.NewLine
-            }))
-                xmlDocument.Save(writer);
-            return stringBuilder.ToString();
+            return XmlToString(xmlDocument, new UTF8Encoding(false), XMLWriterDefaultSettings);
+        }
+        public static string XmlToString(XmlDocument xmlDocument, Encoding encoding)
+        {
+            return XmlToString(xmlDocument, encoding, XMLWriterDefaultSettings);
+        }
+        public static string XmlToString(XmlDocument xmlDocument, XmlWriterSettings xmlWriterSettings)
+        {
+            return XmlToString(xmlDocument, new UTF8Encoding(false), xmlWriterSettings);
+        }
+        public static string XmlToString(XmlDocument xmlDocument, Encoding encoding, XmlWriterSettings xmlWriterSettings)
+        {
+            using StringWriterWithEncoding stringWriter = new StringWriterWithEncoding(encoding);
+            using XmlWriter xmlWriter = XmlWriter.Create(stringWriter, xmlWriterSettings);
+            xmlDocument.Save(xmlWriter);
+            return stringWriter.ToString();
         }
         public static void AddMountPointForVolume(Guid volumeId, string mountPoint)
         {

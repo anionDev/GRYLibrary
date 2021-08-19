@@ -1,6 +1,7 @@
 ﻿using GRYLibrary.Core.Miscellaneous;
 using System.Threading;
 using Semaphore = GRYLibrary.Core.Miscellaneous.Semaphore;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GRYLibrary.Tests.Testcases
 {

@@ -3,6 +3,7 @@ using GRYLibrary.Core.Playlists.ConcretePlaylistHandler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GRYLibrary.Tests.Testcases
 {

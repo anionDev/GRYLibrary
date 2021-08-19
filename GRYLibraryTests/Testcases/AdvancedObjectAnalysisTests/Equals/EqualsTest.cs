@@ -4,6 +4,7 @@ using GRYLibrary.Tests.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GRYLibrary.Tests.Testcases.AdvancedObjectAnalysisTests.Equals
 {
