@@ -66,6 +66,23 @@ namespace GRYLibrary.Core.LogObject
             configuration.ResetToDefaultValues(logFile);
             return new GRYLog(configuration);
         }
+        public static GRYLog GetOrCreateAndGet(string configurationFile, string logFile = null)
+        {
+            GRYLogConfiguration configuration;
+            if (File.Exists(configurationFile))
+            {
+                configuration = GRYLogConfiguration.LoadConfiguration(configurationFile);
+            }
+            else
+            {
+                configuration = new();
+                configuration.ResetToDefaultValues();
+            }
+            configuration.SetLogFile(logFile);
+            configuration.GetLogTarget<LogFile>().Enabled = logFile != null;
+            GRYLogConfiguration.SaveConfiguration(configurationFile, configuration);
+            return new GRYLog(configuration);
+        }
         public static GRYLog CreateByConfigurationFile(string configurationFile)
         {
             return new GRYLog(GRYLogConfiguration.LoadConfiguration(configurationFile));
