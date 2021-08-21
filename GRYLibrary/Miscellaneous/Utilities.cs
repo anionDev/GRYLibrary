@@ -32,6 +32,7 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using static GRYLibrary.Core.Miscellaneous.TableGenerator;
 using GRYLibrary.Core.Exceptions;
+using System.Security.Cryptography.X509Certificates;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
@@ -1624,6 +1625,10 @@ namespace GRYLibrary.Core.Miscellaneous
             using XmlWriter xmlWriter = XmlWriter.Create(stringWriter, xmlWriterSettings);
             xmlDocument.Save(xmlWriter);
             return stringWriter.ToString();
+        }
+        public static bool IsSelfSIgned(X509Certificate certificate)
+        {
+            return certificate.Subject.Equals(certificate.Issuer);
         }
         public static void AddMountPointForVolume(Guid volumeId, string mountPoint)
         {
