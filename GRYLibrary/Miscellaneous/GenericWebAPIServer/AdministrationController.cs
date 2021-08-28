@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GRYLibrary.Core.Miscellaneous.GenericWebAPIServer
 {
@@ -20,16 +22,16 @@ namespace GRYLibrary.Core.Miscellaneous.GenericWebAPIServer
         [HttpGet]
         [Route("/" + nameof(Version))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status406)]
-        public string Version()
+        [ProducesResponseType(StatusCodes.Status406NotAcceptable)]
+        public IActionResult Version()
         {
             if (_SettingsInterface.ProgramVersionIsQueryable)
             {
-                return _AdministrationSettings.Version.ToString();
+                return this.StatusCode(StatusCodes.Status200OK, _AdministrationSettings.Version.ToString());
             }
             else
             {
-                return this.StatusCode(StatusCodes.Status406);
+                return this.StatusCode(StatusCodes.Status406NotAcceptable);
             }
         }
     }

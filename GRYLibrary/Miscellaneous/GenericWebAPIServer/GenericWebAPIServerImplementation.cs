@@ -1,4 +1,11 @@
 ﻿using GRYLibrary.Core.LogObject;
+using GRYLibrary.Core.Miscellaneous.GenericWebAPIServer.ConcreteEnvironments;
+using GRYLibrary.Core.Miscellaneous.GenericWebAPIServer.Middlewares;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -8,12 +15,14 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
+using NSwag.AspNetCore;
 
 namespace GRYLibrary.Core.Miscellaneous.GenericWebAPIServer
 {
     public class GenericWebAPIServerImplementation<Startup, SettingsInterface, SettingsType>
-        where Startup : IStartup, new()
-        where SettingsInterface : IWebserverSettingsInterface
+        where Startup : AbstractStartup, new()
+        where SettingsInterface : ISettingsInterface
         where SettingsType : SettingsInterface, new()
     {
         public IEnvironment Environment { get; set; }
@@ -57,7 +66,7 @@ namespace GRYLibrary.Core.Miscellaneous.GenericWebAPIServer
                 ConfigurationBuilder builder = new();
                 builder
                     .SetBasePath(ConfigurationFolder)
-                    .AddJsonFile(AppSettingsFileName, optional: false, reloadOnChange: true)
+                    .AddJsonFile(Path.Combine(ConfigurationFolder, AppSettingsFileName), optional: false, reloadOnChange: true)
                     .AddEnvironmentVariables();
                 Configuration = builder.Build();
 
@@ -67,7 +76,7 @@ namespace GRYLibrary.Core.Miscellaneous.GenericWebAPIServer
                 WebHostBuilder hostBuilder = new();
                 hostBuilder.UseKestrel(options =>
                     {
-                        X509Certificate2 certificate = new(Path.Combine(Settings.Settings.GetConfigurationFolder(), CurrentSettings.CertificateFile), CurrentSettings.CertificatePassword);
+                        X509Certificate2 certificate = new(Path.Combine(CurrentSettings.CertificateFile), CurrentSettings.CertificatePassword);
                         if (Environment is Productive && Utilities.IsSelfSIgned(certificate))
                         {
                             LogObject.LogWarning($"The used certificate '{CurrentSettings.CertificateFile}' is self-signed. This is not recommended for a productive environment.");
@@ -104,15 +113,7 @@ namespace GRYLibrary.Core.Miscellaneous.GenericWebAPIServer
             services.AddSingleton<IAdministrationSettings>((_) => new AdministrationSettings(ProgramName, Version, Environment));
             services.AddControllers();
             //TODO: .AddAntiforgey()
-            if (!(Environment is Productive))
-            {
-                services.AddOpenApiDocument((settings) =>
-                {
-                    settings.Title = ProgramName;
-                    settings.Version = Version;
-                });
-            }
-
+            services.AddOpenApiDocument(); // add OpenAPI v3 document
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -139,8 +140,9 @@ namespace GRYLibrary.Core.Miscellaneous.GenericWebAPIServer
             else
             {
                 app.UseDeveloperExceptionPage();
-                app.UseOpenApi();
-                app.UseSwaggerUi3();
+                app.UseOpenApi(); // serve OpenAPI/Swagger documents
+                app.UseSwaggerUi3(); // serve Swagger UI
+                app.UseReDoc(); // serve ReDoc UI
             }
             app.UseLog();
             app.UseExceptionManager();
@@ -148,9 +150,10 @@ namespace GRYLibrary.Core.Miscellaneous.GenericWebAPIServer
             {
                 app.UseRequestCounter();
             }
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseHsts();
-            app.UseRouting();
+            //app.UseRouting();
+            //app.UseAuthorization();
             app.UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();

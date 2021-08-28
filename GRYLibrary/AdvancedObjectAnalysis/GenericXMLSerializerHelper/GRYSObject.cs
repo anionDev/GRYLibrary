@@ -285,8 +285,11 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
             {
                 if (Utilities.IsAssignableFrom(this._Object, typeof(Type)))
                 {
-                    simplifiedPrimitive.TypeName = typeof(Type).AssemblyQualifiedName;
                     simplifiedPrimitive.Value = ((Type)this._Object).AssemblyQualifiedName;
+                }
+                else if (this._Object.GetType().IsEnum)
+                {
+                    simplifiedPrimitive.Value = (int)this._Object;
                 }
                 else
                 {

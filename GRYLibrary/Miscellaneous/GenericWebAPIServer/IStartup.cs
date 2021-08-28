@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GRYLibrary.Core.Miscellaneous.GenericWebAPIServer
 {
-    public interface IStartup
+    public interface IStartup/*: Microsoft.AspNetCore.Hosting.IStartup*/
     {
         public void ConfigureServices(IServiceCollection services);
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env);

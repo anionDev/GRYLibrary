@@ -77,6 +77,8 @@ namespace GRYLibrary.Core.LogObject
             {
                 configuration = new();
                 configuration.ResetToDefaultValues();
+                configuration.ConfigurationFile = configurationFile;
+                configuration.ReloadConfigurationWhenConfigurationFileWillBeChanged = true;
             }
             configuration.SetLogFile(logFile);
             configuration.GetLogTarget<LogFile>().Enabled = logFile != null;

@@ -918,11 +918,20 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         /// <summary>
         /// Casts an object to the given type if possible.
-        /// This can be useful for example to to cast 'Action&lt;Object&gt' to 'Action' or 'Func&lt;string&gt' to 'Func&lt;Object&gt' to fulfil interface-compatibility.
+        /// This can be useful for example to to cast 'Action&lt;Object&gt;' to 'Action' or 'Func&lt;string&gt;' to 'Func&lt;Object&gt;' to fulfil interface-compatibility.
         /// </summary>
         public static object Cast(object @object, Type targetType)
         {
-            throw new NotImplementedException(); // TODO call CastHelper using reflection
+            if (@object.GetType().Equals(targetType))
+            {
+                return @object;
+            }
+            else
+            {
+                var method = typeof(Utilities).GetMethod(nameof(CastHelper), BindingFlags.NonPublic | BindingFlags.Static);
+                method = method.MakeGenericMethod(new Type[] { targetType });
+                return method.Invoke(null, new object[] { @object });
+            }
         }
         private static T CastHelper<T>(object @object)
         {
@@ -1464,7 +1473,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static bool ValidateXMLAgainstXSD(string xml, XmlSchema xsdDocument, out IList<object> errorMessages)
         {
-            XmlDocument xmlDocument = new XmlDocument();
+            XmlDocument xmlDocument = new();
             xmlDocument.LoadXml(xml);
             return ValidateXMLAgainstXSD(xmlDocument, xsdDocument, out errorMessages);
         }
@@ -1606,7 +1615,7 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             throw new NotImplementedException();
         }
-       
+
         public static string XmlToString(XmlDocument xmlDocument)
         {
             return XmlToString(xmlDocument, new UTF8Encoding(false), XMLWriterDefaultSettings);
@@ -1621,7 +1630,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static string XmlToString(XmlDocument xmlDocument, Encoding encoding, XmlWriterSettings xmlWriterSettings)
         {
-            using StringWriterWithEncoding stringWriter = new StringWriterWithEncoding(encoding);
+            using StringWriterWithEncoding stringWriter = new(encoding);
             using XmlWriter xmlWriter = XmlWriter.Create(stringWriter, xmlWriterSettings);
             xmlDocument.Save(xmlWriter);
             return stringWriter.ToString();

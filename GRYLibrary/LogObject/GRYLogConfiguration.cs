@@ -12,7 +12,7 @@ using Console = GRYLibrary.Core.LogObject.ConcreteLogTargets.Console;
 
 namespace GRYLibrary.Core.LogObject
 {
-    public sealed class GRYLogConfiguration : IGRYSerializable, IDisposable
+    public sealed class GRYLogConfiguration : IDisposable
     {
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace GRYLibrary.Core.LogObject
         public string Name { get; set; }
         public bool WriteDetailsOfLoggedExceptionsToLogEntry { get; set; }
         public string DateFormat { get; set; }
-        public List<XMLSerializer.KeyValuePair<LogLevel, LoggedMessageTypeConfiguration>> LoggedMessageTypesConfiguration { get; set; }
+        public IList<XMLSerializer.KeyValuePair<LogLevel, LoggedMessageTypeConfiguration>> LoggedMessageTypesConfiguration { get; set; }
         public bool ConvertTimeForLogentriesToUTCFormat { get; set; }
         public bool LogEveryLineOfLogEntryInNewLine { get; set; }
         public bool StoreProcessedLogItemsInternally { get; set; }
@@ -127,11 +127,11 @@ namespace GRYLibrary.Core.LogObject
         }
         public static GRYLogConfiguration LoadConfiguration(string configurationFile)
         {
-            return Utilities.LoadFromDisk<GRYLogConfiguration>(configurationFile).Object;
+            return Generic.GenericDeserializeFromFile<GRYLogConfiguration>(configurationFile);
         }
         public static void SaveConfiguration(string configurationFile, GRYLogConfiguration configuration)
         {
-            Utilities.PersistToDisk(configuration, configurationFile);
+            Generic.GenericSerializeToFile(configuration, configurationFile);
         }
 
         public void SetEnabledOfAllLogTargets(bool newEnabledValue)
@@ -163,22 +163,6 @@ namespace GRYLibrary.Core.LogObject
         {
             return Generic.GenericToString(this);
         }
-
-        public XmlSchema GetSchema()
-        {
-            return Generic.GenericGetSchema(this);
-        }
-
-        public void ReadXml(XmlReader reader)
-        {
-            Generic.GenericReadXml(this, reader);
-        }
-
-        public void WriteXml(XmlWriter writer)
-        {
-            Generic.GenericWriteXml(this, writer);
-        }
-
         public ISet<Type> GetExtraTypesWhichAreRequiredForSerialization()
         {
             return new HashSet<Type>();

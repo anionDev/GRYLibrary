@@ -662,5 +662,16 @@ namespace GRYLibrary.Tests.Testcases
             Assert.IsTrue(expected.SequenceEqual(actual));
 
         }
+        [TestMethod]
+        public void CastTest()
+        {
+            System.Collections.Generic.KeyValuePair<object, object> testObject = new System.Collections.Generic.KeyValuePair<object, object>(1, 2);
+            System.Collections.Generic.KeyValuePair<int, int> expectedObject = new System.Collections.Generic.KeyValuePair<int, int>(1, 2);
+
+          var actualObject=  Core.Miscellaneous.Utilities.Cast(testObject, expectedObject.GetType());
+
+            Assert.AreNotEqual(testObject, actualObject);
+            Assert.AreEqual(expectedObject, actualObject);
+        }
     }
 }
