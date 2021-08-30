@@ -48,7 +48,7 @@ Since the GRYLibrary is not an open-source-project in the [conventional sense of
 
 #### Developer-hints
 
-To compile GRYLibrary and running testcases the copy-program `cp` must be available as commandline command.
+To compile GRYLibrary and running testcases `echo` and the copy-program `cp` must be available as commandline command on your system.
 
 ## License
 

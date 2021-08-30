@@ -11,18 +11,18 @@ namespace GRYLibrary.Tests.Testcases
     public class ExternalProgramExecutorTest
     {
         [TestMethod]
-        public void TestSimpleEcho()
+        public void TestEchoWithSomeSpecialCharacter()
         {
-            string testStdOut = "test";
-            ExternalProgramExecutor e = new("echo", testStdOut);
-            int result = e.StartSynchronously();
+            string testStdOut = "test \\ \" < > ' testend";
+            ExternalProgramExecutor externalProgramExecutor = new("echo", '"' + testStdOut.Replace("\"", "\\\"") + '"');
+            int result = externalProgramExecutor.StartSynchronously();
             Assert.AreEqual(0, result);
-            Assert.AreEqual(1, e.AllStdOutLines.Length);
-            Assert.AreEqual(testStdOut, e.AllStdOutLines[0]);
-            Assert.AreEqual(0, e.AllStdErrLines.Length);
+            Assert.AreEqual(1, externalProgramExecutor.AllStdOutLines.Length);
+            Assert.AreEqual(testStdOut, externalProgramExecutor.AllStdOutLines[0]);
+            Assert.AreEqual(0, externalProgramExecutor.AllStdErrLines.Length);
         }
         [TestMethod]
-        public void TestCopyFile1()
+        public void TestCopyFileWithSpaceInFilename()
         {
             using (TemporaryDirectory temporaryDirectory = new())
             {
@@ -31,6 +31,28 @@ namespace GRYLibrary.Tests.Testcases
                 var file1 = Path.Combine(temporaryDirectory.TemporaryDirectoryPath, file1name);
                 Core.Miscellaneous.Utilities.EnsureFileExists(file1);
                 string file2name = "File 2.txt";
+                var file2 = Path.Combine(temporaryDirectory.TemporaryDirectoryPath, file2name);
+                Core.Miscellaneous.Utilities.AssertCondition(!File.Exists(file2));
+                ExternalProgramExecutor externalProgramExecutor = new("cp", $"\"{file1name}\" \"{file2name}\"", temporaryDirectory.TemporaryDirectoryPath);
+                externalProgramExecutor.ThrowErrorIfExitCodeIsNotZero = true;
+
+                //act
+                externalProgramExecutor.StartSynchronously();
+
+                //assert
+                Assert.IsTrue(File.Exists(file2));
+            }
+        }
+        [TestMethod]
+        public void TestCopyFileUseUmlautsAndOtherCharacterFromOtherLanguages()
+        {
+            using (TemporaryDirectory temporaryDirectory = new())
+            {
+                //arrange
+                string file1name = "Sourcefile.txt";
+                var file1 = Path.Combine(temporaryDirectory.TemporaryDirectoryPath, file1name);
+                Core.Miscellaneous.Utilities.EnsureFileExists(file1);
+                string file2name = "[SpecialCharacterTest]äöüßÄÖ'ÜÆÑçéý[_SpecialCharacterTest].txt";
                 var file2 = Path.Combine(temporaryDirectory.TemporaryDirectoryPath, file2name);
                 Core.Miscellaneous.Utilities.AssertCondition(!File.Exists(file2));
                 ExternalProgramExecutor externalProgramExecutor = new("cp", $"\"{file1name}\" \"{file2name}\"", temporaryDirectory.TemporaryDirectoryPath);

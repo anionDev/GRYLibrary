@@ -39,7 +39,7 @@ namespace GRYLibrary.Core.Miscellaneous
     {
         #region Constants
         public const string EmptyString = "";
-        public const string SpecialCharacterTestString = "<Special-character-Test: (^äöüß/\\$€\"\'+-*®¬¼😊👍✆⊆ℙ≈∑∞∫/𝄞𝄤𝅘𝅥𝅮) (您好) (Здравствуйте) (नमस्कार)>";
+        public const string SpecialCharacterTestString = "<SpecialCharacterTest>äöüßÄÖÜÆÑçéý &← /\\*#^°'`´\" ?|§@$€%-_²⁶₇¬∀∈∑∜∫∰≈≪ﬁ.Доброе утро صبح به خیر शुभ प्रभात 좋은 아침 സുപ്രഭാതം おはようございます ហ្គុនមូហ្កិន</SpecialCharacterTest>";
         #endregion
 
         public static (T[], T[]) Split<T>(T[] source, int index)
