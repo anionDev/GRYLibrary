@@ -7,7 +7,6 @@ using GRYLibrary.Tests.TestData.TestTypes.SimpleDataStructure;
 using GRYLibrary.Tests.TestData.TestTypes.XMLSerializableType;
 using GRYLibrary.Tests.TestData.TypeWithCommonInterfaces;
 using GRYLibrary.Tests.Utilities;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GRYLibrary.Tests.Testcases.AdvancedObjectAnalysisTests.Serializer
 {
@@ -313,11 +313,11 @@ namespace GRYLibrary.Tests.Testcases.AdvancedObjectAnalysisTests.Serializer
         public void ComplexDataStructure2EqualType()
         {
             // arrange
-            var t1 = new OtherType() { Id = Guid.Parse("8e6ce36f-3ce4-4d2f-bff8-6e78db373001"), Name = "type_1" };
-            var t2_1 = new DotNetType() { Id = Guid.Parse("8e6ce36f-3ce4-4d2f-bff8-6e78db373002"), Name = "type_2", Type = typeof(bool) };
-            var t2_2 = new DotNetType() { Id = Guid.Parse("8e6ce36f-3ce4-4d2f-bff8-6e78db373002"), Name = "type_2", Type = typeof(bool) };
-            var t3 = new DotNetType() { Id = Guid.Parse("8e6ce36f-3ce4-4d2f-bff8-6e78db373003"), Name = "type_3", Type = typeof(bool) };
-            var t4 = new DotNetType() { Id = Guid.Parse("8e6ce36f-3ce4-4d2f-bff8-6e78db373004"), Name = "type_4", Type = typeof(int) };
+            OtherType t1 = new OtherType() { Id = Guid.Parse("8e6ce36f-3ce4-4d2f-bff8-6e78db373001"), Name = "type_1" };
+            DotNetType t2_1 = new DotNetType() { Id = Guid.Parse("8e6ce36f-3ce4-4d2f-bff8-6e78db373002"), Name = "type_2", Type = typeof(bool) };
+            DotNetType t2_2 = new DotNetType() { Id = Guid.Parse("8e6ce36f-3ce4-4d2f-bff8-6e78db373002"), Name = "type_2", Type = typeof(bool) };
+            DotNetType t3 = new DotNetType() { Id = Guid.Parse("8e6ce36f-3ce4-4d2f-bff8-6e78db373003"), Name = "type_3", Type = typeof(bool) };
+            DotNetType t4 = new DotNetType() { Id = Guid.Parse("8e6ce36f-3ce4-4d2f-bff8-6e78db373004"), Name = "type_4", Type = typeof(int) };
 
             // act & assert
             Assert.IsTrue(t1.Equals(t1));

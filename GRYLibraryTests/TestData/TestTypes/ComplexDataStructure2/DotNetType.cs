@@ -1,9 +1,4 @@
-﻿using GRYLibrary.Core.AdvancedObjectAnalysis;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace GRYLibrary.Tests.TestData.TestTypes.ComplexDataStructure2
 {

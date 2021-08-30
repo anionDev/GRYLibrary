@@ -15,7 +15,7 @@ namespace GRYLibrary.Tests.Testcases.GraphTests
         public void SimpleVertexTest()
         {
             Vertex v1 = new("v1");
-            Assert.AreEqual(0, v1.GetConnectedEdges().Count());
+            Assert.AreEqual(0, v1.GetConnectedEdges().Count);
             Assert.AreEqual("v1", v1.Name);
             Assert.AreEqual(v1, v1);
         }
@@ -86,13 +86,12 @@ namespace GRYLibrary.Tests.Testcases.GraphTests
             g.AddEdge(e4);
             g.AddEdge(e5);
 
-            Assert.AreEqual(5, g.Vertices.Count());
-            Assert.AreEqual(5, g.Edges.Count());
-            Assert.AreEqual(2, v1.GetConnectedEdges().Count());
+            Assert.AreEqual(5, g.Vertices.Count);
+            Assert.AreEqual(5, g.Edges.Count);
+            Assert.AreEqual(2, v1.GetConnectedEdges().Count);
 
             //test TryGetConnectionBetween:
-            Edge e1Reloaded;
-            Assert.IsTrue(g.TryGetEdge(v1, v2, out e1Reloaded));
+            Assert.IsTrue(g.TryGetEdge(v1, v2, out Edge e1Reloaded));
             Assert.AreEqual(e1, e1Reloaded);
 
             DirectedEdge e45 = new(v4, v5, "e45");
@@ -108,11 +107,10 @@ namespace GRYLibrary.Tests.Testcases.GraphTests
             //test TryGetConnectionBetween with selfloop:
             DirectedEdge eSelfLoop = new(v1, v1, "e11");
             g.AddEdge(eSelfLoop);
-            Edge eSelfLoopReloaded;
-            g.TryGetEdge(v1, v1, out eSelfLoopReloaded);
+            g.TryGetEdge(v1, v1, out Edge eSelfLoopReloaded);
             Assert.AreEqual(eSelfLoop, eSelfLoopReloaded);
-            Assert.AreEqual(5, g.Vertices.Count());
-            Assert.AreEqual(6, g.Edges.Count());
+            Assert.AreEqual(5, g.Vertices.Count);
+            Assert.AreEqual(6, g.Edges.Count);
             Assert.AreEqual(2, g.GetMinimumDegree());
             Assert.AreEqual(4, g.GetMaximumDegree());
 
@@ -130,8 +128,8 @@ namespace GRYLibrary.Tests.Testcases.GraphTests
             Assert.IsFalse(g.TryGetEdge(v1, v1, out _));
             g.SelfLoopIsAllowed = false;
             Assert.IsFalse(g.SelfLoopIsAllowed);
-            Assert.AreEqual(5, g.Vertices.Count());
-            Assert.AreEqual(5, g.Edges.Count());
+            Assert.AreEqual(5, g.Vertices.Count);
+            Assert.AreEqual(5, g.Edges.Count);
 
             ISet<Vertex> successorsOfv5 = g.GetDirectSuccessors(v5);
             Assert.AreEqual(1, successorsOfv5.Count);
@@ -171,16 +169,14 @@ namespace GRYLibrary.Tests.Testcases.GraphTests
             g.AddEdge(e4);
             g.AddEdge(e5);
 
-            Assert.AreEqual(5, g.Vertices.Count());
-            Assert.AreEqual(5, g.Edges.Count());
-            Assert.AreEqual(2, v1.GetConnectedEdges().Count());
+            Assert.AreEqual(5, g.Vertices.Count);
+            Assert.AreEqual(5, g.Edges.Count);
+            Assert.AreEqual(2, v1.GetConnectedEdges().Count);
 
             //test TryGetEdge:
-            Edge e1Reloaded1;
-            Assert.IsTrue(g.TryGetEdge(v1, v2, out e1Reloaded1));
+            Assert.IsTrue(g.TryGetEdge(v1, v2, out Edge e1Reloaded1));
             Assert.AreEqual(e1, e1Reloaded1);
-            Edge e1Reloaded2;
-            Assert.IsTrue(g.TryGetEdge(v2, v1, out e1Reloaded2));
+            Assert.IsTrue(g.TryGetEdge(v2, v1, out Edge e1Reloaded2));
             Assert.AreEqual(e1, e1Reloaded2);
 
             Assert.AreEqual(e1Reloaded1, e1Reloaded2);
@@ -198,11 +194,10 @@ namespace GRYLibrary.Tests.Testcases.GraphTests
             //test TryGetConnectionBetween with selfloop:
             UndirectedEdge eSelfLoop = new(new Vertex[] { v1, v1 }, "e11");
             g.AddEdge(eSelfLoop);
-            Edge eSelfLoopReloaded;
-            g.TryGetEdge(v1, v1, out eSelfLoopReloaded);
+            g.TryGetEdge(v1, v1, out Edge eSelfLoopReloaded);
             Assert.AreEqual(eSelfLoop, eSelfLoopReloaded);
-            Assert.AreEqual(5, g.Vertices.Count());
-            Assert.AreEqual(6, g.Edges.Count());
+            Assert.AreEqual(5, g.Vertices.Count);
+            Assert.AreEqual(6, g.Edges.Count);
 
             try
             {
@@ -218,8 +213,8 @@ namespace GRYLibrary.Tests.Testcases.GraphTests
             Assert.IsFalse(g.TryGetEdge(v1, v1, out _));
             g.SelfLoopIsAllowed = false;
             Assert.IsFalse(g.SelfLoopIsAllowed);
-            Assert.AreEqual(5, g.Vertices.Count());
-            Assert.AreEqual(5, g.Edges.Count());
+            Assert.AreEqual(5, g.Vertices.Count);
+            Assert.AreEqual(5, g.Edges.Count);
 
             ISet<Vertex> successorsOfv4 = g.GetDirectSuccessors(v4, true);
             Assert.AreEqual(2, successorsOfv4.Count);

@@ -360,7 +360,7 @@ namespace GRYLibrary.Core.Graph
         }
         public override int GetHashCode()
         {
-            return this._Vertices.Count().GetHashCode() ^ this.Edges.Count.GetHashCode();
+            return this._Vertices.Count.GetHashCode() ^ this.Edges.Count.GetHashCode();
         }
         /// <remarks>This operations is not implemented yet.</remarks>
         public bool IsSubgraph(Graph subgraph, out IDictionary<Vertex, Vertex> mappingFromSubgraphToThisGraph)
@@ -388,7 +388,7 @@ namespace GRYLibrary.Core.Graph
             {
                 throw new UnallowedOperationException($"Graphs of types {this.GetType().FullName} and {otherGraph.GetType().FullName} are not comparable.");
             }
-            if (this._Vertices.Count != otherGraph._Vertices.Count || this.Edges.Count() != otherGraph.Edges.Count())
+            if (this._Vertices.Count != otherGraph._Vertices.Count || this.Edges.Count != otherGraph.Edges.Count)
             {
                 bijectionFromOtherGraphToThisGraph = null;
                 return false;

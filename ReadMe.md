@@ -41,8 +41,14 @@ The public key token of all official GRYLibrary-releases is `fa37b6e9de549c68`. 
 
 ### Contribute
 
+#### General
+
 Feel free to contribute to this product by creating [issues](https://github.com/anionDev/GRYLibrary/issues) for feature-requests, bug-reports, etc.
 Since the GRYLibrary is not an open-source-project in the [conventional sense of free software](https://www.gnu.org/philosophy/free-sw.en.html) contributing by creating a pullrequest is a little bit tricky (concerning license-issues). If you want to contribute to this project then please contact the owner of the GRYLibrary.
+
+#### Developer-hints
+
+To compile GRYLibrary and running testcases `echo` and the copy-program `cp` must be available as commandline command on your system.
 
 ## License
 
