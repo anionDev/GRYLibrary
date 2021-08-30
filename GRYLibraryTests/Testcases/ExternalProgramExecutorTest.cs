@@ -73,14 +73,24 @@ namespace GRYLibrary.Tests.Testcases
             semaphore.Increment();
             externalProgramExecutor.ExecutionFinishedEvent += (ExternalProgramExecutor sender, int exitCode) =>
             {
-                Assert.AreEqual(0, exitCode);
-                semaphore.Decrement();
+                if (0 == exitCode)
+                {
+                    semaphore.Decrement();
+                }
+                else
+                {
+                    semaphore.Increment();
+                }
             };
             externalProgramExecutor.StartAsynchronously();
             Assert.AreNotEqual(0, externalProgramExecutor.ProcessId);
-            while (semaphore.Value != 0)
+            while (semaphore.Value == 1)
             {
                 Thread.Sleep(200);
+            }
+            if (semaphore.Value > 1)
+            {
+                Assert.Fail();
             }
         }
     }
