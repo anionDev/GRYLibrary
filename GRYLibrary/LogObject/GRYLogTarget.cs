@@ -26,7 +26,7 @@ namespace GRYLibrary.Core.LogObject
                  LogLevel.Critical
             };
         public bool Enabled { get; set; } = true;
-        public abstract ISet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization();
+        public abstract HashSet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization();
         internal void Execute(LogItem logItem, GRYLog logObject)
         {
             this.ExecuteImplementation(logItem, logObject);

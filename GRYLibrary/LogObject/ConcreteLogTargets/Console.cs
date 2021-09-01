@@ -25,7 +25,7 @@ namespace GRYLibrary.Core.LogObject.ConcreteLogTargets
             this.WriteWithColorToConsole(formattedMessage[cb..ce], output, logItem.LogLevel, logObject);
             output.Write(formattedMessage[ce..] + Environment.NewLine);
         }
-        public override ISet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization()
+        public override HashSet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization()
         {
             return new HashSet<Type>() { typeof(ConsoleColor) };
         }

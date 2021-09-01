@@ -19,7 +19,7 @@ namespace GRYLibrary.Core.LogObject
         /// If this value is false then changing this value in the configuration-file has no effect.
         /// </summary>
         public bool ReloadConfigurationWhenConfigurationFileWillBeChanged { get; set; }
-        public IList<GRYLogTarget> LogTargets { get; set; }
+        public List<GRYLogTarget> LogTargets { get; set; }
         public bool WriteLogEntriesAsynchronous { get; set; }
         public bool Enabled { get; set; }
         public string ConfigurationFile { get; set; }
@@ -32,7 +32,7 @@ namespace GRYLibrary.Core.LogObject
         public string Name { get; set; }
         public bool WriteDetailsOfLoggedExceptionsToLogEntry { get; set; }
         public string DateFormat { get; set; }
-        public IList<XMLSerializer.KeyValuePair<LogLevel, LoggedMessageTypeConfiguration>> LoggedMessageTypesConfiguration { get; set; }
+        public List<XMLSerializer.KeyValuePair<LogLevel, LoggedMessageTypeConfiguration>> LoggedMessageTypesConfiguration { get; set; }
         public bool ConvertTimeForLogentriesToUTCFormat { get; set; }
         public bool LogEveryLineOfLogEntryInNewLine { get; set; }
         public bool StoreProcessedLogItemsInternally { get; set; }
@@ -127,11 +127,11 @@ namespace GRYLibrary.Core.LogObject
         }
         public static GRYLogConfiguration LoadConfiguration(string configurationFile)
         {
-            return Generic.GenericDeserializeFromFile<GRYLogConfiguration>(configurationFile);
+            return Utilities.LoadFromDisk<GRYLogConfiguration>(configurationFile).Object;
         }
         public static void SaveConfiguration(string configurationFile, GRYLogConfiguration configuration)
         {
-            Generic.GenericSerializeToFile(configuration, configurationFile);
+            Utilities.PersistToDisk(configuration, configurationFile).SaveObjectToFile();
         }
 
         public void SetEnabledOfAllLogTargets(bool newEnabledValue)

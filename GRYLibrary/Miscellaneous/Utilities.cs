@@ -920,22 +920,34 @@ namespace GRYLibrary.Core.Miscellaneous
         /// Casts an object to the given type if possible.
         /// This can be useful for example to to cast 'Action&lt;Object&gt;' to 'Action' or 'Func&lt;string&gt;' to 'Func&lt;Object&gt;' to fulfil interface-compatibility.
         /// </summary>
-        public static object Cast(object @object, Type targetType)
+        internal /*TODO change to public when it works properly*/ static object Cast(object @object, Type targetType)
         {
-            if (@object.GetType().Equals(targetType))
+            return Cast(@object, targetType, DefaultConversions);
+        }
+        private static readonly IList<object> _DefaultConversions = new List<object>() { /*TODO*/};
+        public static IList<object> DefaultConversions { get { return _DefaultConversions.ToList(); } }
+        public static object Cast(object @object, Type targetType, IList<object> customConversions)
+        {
+            var typeOfObject = @object.GetType();
+            if (typeOfObject.Equals(targetType))
             {
                 return @object;
             }
-            else
+            foreach (var customConversion in customConversions)
             {
-                var method = typeof(Utilities).GetMethod(nameof(CastHelper), BindingFlags.NonPublic | BindingFlags.Static);
-                method = method.MakeGenericMethod(new Type[] { targetType });
-                return method.Invoke(null, new object[] { @object });
+                if (TypeComparerIgnoringGenerics.Equals(typeOfObject, (Type)customConversion/*.GetTypeWhichIsApplicable()*/))
+                {
+                    // return customConversion.Convert(@object,typeOfObject);
+                }
             }
+            var method = typeof(Utilities).GetMethod(nameof(CastHelper), BindingFlags.NonPublic | BindingFlags.Static);
+            method = method.MakeGenericMethod(new Type[] { targetType });
+            return method.Invoke(null, new object[] { @object });
+
         }
         private static T CastHelper<T>(object @object)
         {
-            return (T)@object;
+            return (T)(dynamic)@object;
         }
         public static long GetTotalFreeSpace(string driveName)
         {
@@ -2205,7 +2217,7 @@ namespace GRYLibrary.Core.Miscellaneous
                 return ReferenceEquals(item1, item2);
             }
             Type type = item1.GetType();
-            if (!type.Equals(item2.GetType()))//TODO ignore generics here when type is keyvaluepair
+            if (!TypeComparerIgnoringGenerics.Equals(type, item2.GetType()))//TODO ignore generics here when type is keyvaluepair
             {
                 return false;
             }
@@ -2219,6 +2231,16 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 return item1.Equals(item2);
             }
+        }
+
+        private static (string, string) GetBaseTypeInformation(Type type)
+        {
+            string name = type.Name;
+            if (name.Contains("`"))
+            {
+                name = name.Split('`')[0];
+            }
+            return (name, type.Namespace);
         }
 
         public static bool HasValueType(object @object)

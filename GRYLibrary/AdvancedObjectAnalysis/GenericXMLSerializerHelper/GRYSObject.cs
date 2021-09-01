@@ -26,8 +26,14 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
             GRYSObject result = new()
             {
                 Objects = new HashSet<FlatObject>(dictionary.Values),
-                RootObjectId = dictionary[@object].ObjectId
             };
+            foreach (var key in dictionary.Keys)
+            {
+                if (key == @object)
+                {
+                    result.RootObjectId = dictionary[@object].ObjectId;
+                }
+            }
             return result;
         }
 
@@ -41,7 +47,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
             if (EnumerableTools.ObjectIsKeyValuePair(@object))
             {
                 KeyValuePair<object, object> kvp = EnumerableTools.ObjectToKeyValuePair<object, object>(@object);
-                @object = new XMLSerializer.KeyValuePair<object, object>(kvp.Key, kvp.Value);
+                @object = new XMLSerializer.KeyValuePair<dynamic, dynamic>(kvp.Key, kvp.Value);
             }
             if (dictionary.ContainsKey(@object))
             {
