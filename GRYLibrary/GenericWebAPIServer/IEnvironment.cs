@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GRYLibrary.Core.Miscellaneous.GenericWebAPIServer
+namespace GRYLibrary.Core.GenericWebAPIServer
 {
     public interface IEnvironment
     {

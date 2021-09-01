@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GRYLibrary.Core.Miscellaneous.GenericWebAPIServer
+namespace GRYLibrary.Core.GenericWebAPIServer
 {
     [Route("Administration")]
     public class AdministrationController : ControllerBase

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Reflection;
 
-namespace GRYLibrary.Core.Miscellaneous.GenericWebAPIServer.Middlewares
+namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
 {
     /// <summary>
     /// Contains common extensions for middlewares

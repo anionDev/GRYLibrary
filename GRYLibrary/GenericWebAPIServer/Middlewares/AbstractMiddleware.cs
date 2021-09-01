@@ -4,7 +4,7 @@ using System;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace GRYLibrary.Core.Miscellaneous.GenericWebAPIServer.Middlewares
+namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
 {
     /// <summary>
     /// Represents a base-class for middlewares in the context of .NET WebAPI-projects.

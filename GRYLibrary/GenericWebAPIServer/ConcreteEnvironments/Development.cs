@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GRYLibrary.Core.Miscellaneous.GenericWebAPIServer.ConcreteEnvironments
+namespace GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments
 {
     public class Development : IEnvironment
     {

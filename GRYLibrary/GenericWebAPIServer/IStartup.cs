@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GRYLibrary.Core.Miscellaneous.GenericWebAPIServer
+namespace GRYLibrary.Core.GenericWebAPIServer
 {
     public interface IStartup/*: Microsoft.AspNetCore.Hosting.IStartup*/
     {

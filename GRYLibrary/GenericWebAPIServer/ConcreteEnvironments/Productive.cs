@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GRYLibrary.Core.Miscellaneous.GenericWebAPIServer.ConcreteEnvironments
+namespace GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments
 {
-    public class QualityCheck : IEnvironment
+    public class Productive : IEnvironment
     {
         #region Overhead
-        public static QualityCheck Instance { get; } = new QualityCheck();
-        private QualityCheck()
+        public static Productive Instance { get; } = new Productive();
+        private Productive()
         {
         }
         public void Accept(IEnvironmentVisitor visitor)

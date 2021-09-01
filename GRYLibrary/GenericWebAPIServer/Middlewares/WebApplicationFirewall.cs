@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GRYLibrary.Core.Miscellaneous.GenericWebAPIServer.Middlewares
+namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
 {
     /// <summary>
     /// Represents a webapplicationfirewall
@@ -23,6 +23,7 @@ namespace GRYLibrary.Core.Miscellaneous.GenericWebAPIServer.Middlewares
             // - the route or the payload contains some "strange" context (e.g. only one single quote or something like this (rules/exceptions must be definable for specific routes)) or
             // - the json-/xml-payload is syntactically invalid or
             // - an xml-payload uses external entities or
+            // - the response is much longer than expected/allowed (must be configured by the application which is using this middleware)
             
             return _Next(context);
         }

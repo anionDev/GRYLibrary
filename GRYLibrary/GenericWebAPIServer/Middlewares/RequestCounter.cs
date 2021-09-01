@@ -4,21 +4,21 @@ using System;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace GRYLibrary.Core.Miscellaneous.GenericWebAPIServer.Middlewares
+namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
 {
     /// <summary>
-    /// Represents a middleware which logs the requests.
+    /// Represents a middleware which counts requests for paid Web-APIs.
     /// </summary>
-    public class Log : AbstractMiddleware
+    public class RequestCounter : AbstractMiddleware
     {
         /// <inheritdoc>/>
-        public Log(RequestDelegate next) : base(next)
+        public RequestCounter(RequestDelegate next) : base(next)
         {
         }
         /// <inheritdoc>/>
         public override Task Invoke(HttpContext context)
         {
-            // TODO log request.route, request.sourceip, response.statuscode, duration of creating response (nothing else)
+            // TODO if response is 200 then add it to database
 
             return _Next(context);
         }

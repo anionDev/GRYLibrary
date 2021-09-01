@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using NSwag.AspNetCore;
 
-namespace GRYLibrary.Core.Miscellaneous.GenericWebAPIServer
+namespace GRYLibrary.Core.GenericWebAPIServer
 {
     public class GenericWebAPIServerImplementation<Startup, SettingsInterface, SettingsType>
         where Startup : AbstractStartup, new()
