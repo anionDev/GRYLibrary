@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
@@ -22,7 +20,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
             {
                 // TODO if response.statuscode is 500 then log requestbody
                 return _Next(context);
-                            }
+            }
             catch (Exception exception)
             {
                 // TODO log exception and requestbody, return 500

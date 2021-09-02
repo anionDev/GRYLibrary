@@ -1,12 +1,9 @@
 ﻿using GRYLibrary.Core.AdvancedObjectAnalysis;
 using System;
-using System.Xml;
-using System.Xml.Schema;
-using System.Xml.Serialization;
 
 namespace GRYLibrary.Core.LogObject
 {
-    public class LoggedMessageTypeConfiguration : IXmlSerializable
+    public class LoggedMessageTypeConfiguration
     {
         public ConsoleColor ConsoleColor { get; set; }
         public string CustomText { get; set; }
@@ -25,21 +22,6 @@ namespace GRYLibrary.Core.LogObject
         public override string ToString()
         {
             return Generic.GenericToString(this);
-        }
-
-        public XmlSchema GetSchema()
-        {
-            return Generic.GenericGetSchema(this);
-        }
-
-        public void ReadXml(XmlReader reader)
-        {
-            Generic.GenericReadXml(this, reader);
-        }
-
-        public void WriteXml(XmlWriter writer)
-        {
-            Generic.GenericWriteXml(this, writer);
         }
         #endregion
     }

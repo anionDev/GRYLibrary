@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GRYLibrary.Core.GenericWebAPIServer
@@ -12,11 +8,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer
     public class AdministrationController : ControllerBase
     {
         private readonly IAdministrationSettings _AdministrationSettings;
-        private readonly ISettingsInterface _SettingsInterface;
+        private readonly ISettingsInterface _Settings;
         public AdministrationController(IAdministrationSettings administrationSettings, ISettingsInterface settings)
         {
             this._AdministrationSettings = administrationSettings;
-            this._SettingsInterface = settings;
+            this._Settings = settings;
         }
 
         [HttpGet]
@@ -25,7 +21,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         [ProducesResponseType(StatusCodes.Status406NotAcceptable)]
         public IActionResult Version()
         {
-            if (_SettingsInterface.ProgramVersionIsQueryable)
+            if (_Settings.ProgramVersionIsQueryable || !(_AdministrationSettings.Environment is Productive))
             {
                 return this.StatusCode(StatusCodes.Status200OK, _AdministrationSettings.Version.ToString());
             }

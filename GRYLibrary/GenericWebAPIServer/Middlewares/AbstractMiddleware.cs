@@ -1,7 +1,4 @@
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares

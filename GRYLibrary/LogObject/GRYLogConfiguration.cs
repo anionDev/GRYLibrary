@@ -1,13 +1,11 @@
 ﻿using GRYLibrary.Core.AdvancedObjectAnalysis;
-using GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper;
 using GRYLibrary.Core.LogObject.ConcreteLogTargets;
 using GRYLibrary.Core.Miscellaneous;
+using GRYLibrary.Core.XMLSerializer;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Xml;
-using System.Xml.Schema;
 using Console = GRYLibrary.Core.LogObject.ConcreteLogTargets.Console;
 
 namespace GRYLibrary.Core.LogObject
@@ -32,7 +30,7 @@ namespace GRYLibrary.Core.LogObject
         public string Name { get; set; }
         public bool WriteDetailsOfLoggedExceptionsToLogEntry { get; set; }
         public string DateFormat { get; set; }
-        public List<XMLSerializer.KeyValuePair<LogLevel, LoggedMessageTypeConfiguration>> LoggedMessageTypesConfiguration { get; set; }
+        public List<SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>> LoggedMessageTypesConfiguration { get; set; }
         public bool ConvertTimeForLogentriesToUTCFormat { get; set; }
         public bool LogEveryLineOfLogEntryInNewLine { get; set; }
         public bool StoreProcessedLogItemsInternally { get; set; }
@@ -40,7 +38,7 @@ namespace GRYLibrary.Core.LogObject
         public GRYLogConfiguration() { }
         public LoggedMessageTypeConfiguration GetLoggedMessageTypesConfigurationByLogLevel(LogLevel logLevel)
         {
-            foreach (XMLSerializer.KeyValuePair<LogLevel, LoggedMessageTypeConfiguration> obj in this.LoggedMessageTypesConfiguration)
+            foreach (SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration> obj in this.LoggedMessageTypesConfiguration)
             {
                 if (obj.Key == logLevel)
                 {
@@ -81,19 +79,19 @@ namespace GRYLibrary.Core.LogObject
             this.PrintErrorsAsInformation = false;
             this.WriteDetailsOfLoggedExceptionsToLogEntry = true;
             this.DateFormat = "yyyy-MM-dd HH:mm:ss";
-            this.LoggedMessageTypesConfiguration = new List<XMLSerializer.KeyValuePair<LogLevel, LoggedMessageTypeConfiguration>>();
+            this.LoggedMessageTypesConfiguration = new List<SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>>();
             this.ConvertTimeForLogentriesToUTCFormat = false;
             this.LogEveryLineOfLogEntryInNewLine = false;
             this.Name = string.Empty;
             this.StoreProcessedLogItemsInternally = false;
-            this.LoggedMessageTypesConfiguration = new List<XMLSerializer.KeyValuePair<LogLevel, LoggedMessageTypeConfiguration>>
+            this.LoggedMessageTypesConfiguration = new List<SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>>
             {
-                new XMLSerializer.KeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Trace, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Trace), ConsoleColor =  ConsoleColor.Gray }),
-                new XMLSerializer.KeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Debug, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Debug), ConsoleColor = ConsoleColor.Cyan }),
-                new XMLSerializer.KeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Information, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Information), ConsoleColor = ConsoleColor.DarkGreen }),
-                new XMLSerializer.KeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Warning, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Warning), ConsoleColor = ConsoleColor.DarkYellow }),
-                new XMLSerializer.KeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Error, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Error), ConsoleColor = ConsoleColor.Red }),
-                new XMLSerializer.KeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Critical, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Critical), ConsoleColor = ConsoleColor.DarkRed })
+                new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Trace, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Trace), ConsoleColor =  ConsoleColor.Gray }),
+                new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Debug, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Debug), ConsoleColor = ConsoleColor.Cyan }),
+                new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Information, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Information), ConsoleColor = ConsoleColor.DarkGreen }),
+                new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Warning, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Warning), ConsoleColor = ConsoleColor.DarkYellow }),
+                new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Error, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Error), ConsoleColor = ConsoleColor.Red }),
+                new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Critical, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Critical), ConsoleColor = ConsoleColor.DarkRed })
             };
 
             this.LogTargets = new List<GRYLogTarget>
@@ -125,13 +123,13 @@ namespace GRYLibrary.Core.LogObject
             }
             throw new KeyNotFoundException($"No {typeof(Target).Name}-target available");
         }
-        public static GRYLogConfiguration LoadConfiguration(string configurationFile)
-        {
-            return Utilities.LoadFromDisk<GRYLogConfiguration>(configurationFile).Object;
-        }
         public static void SaveConfiguration(string configurationFile, GRYLogConfiguration configuration)
         {
             Utilities.PersistToDisk(configuration, configurationFile).SaveObjectToFile();
+        }
+        public static GRYLogConfiguration LoadConfiguration(string configurationFile)
+        {
+            return Utilities.LoadFromDisk<GRYLogConfiguration>(configurationFile).Object;
         }
 
         public void SetEnabledOfAllLogTargets(bool newEnabledValue)

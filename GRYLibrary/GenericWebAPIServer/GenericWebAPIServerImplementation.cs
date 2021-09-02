@@ -1,6 +1,6 @@
 ﻿using GRYLibrary.Core.LogObject;
-using GRYLibrary.Core.Miscellaneous.GenericWebAPIServer.ConcreteEnvironments;
-using GRYLibrary.Core.Miscellaneous.GenericWebAPIServer.Middlewares;
+using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
+using GRYLibrary.Core.GenericWebAPIServer.Middlewares;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -8,21 +8,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reflection;
-using NSwag.AspNetCore;
+using GRYLibrary.Core.Miscellaneous;
 
 namespace GRYLibrary.Core.GenericWebAPIServer
 {
     public class GenericWebAPIServerImplementation<Startup, SettingsInterface, SettingsType>
         where Startup : AbstractStartup, new()
-        where SettingsInterface : ISettingsInterface
+        where SettingsInterface : class, ISettingsInterface
         where SettingsType : SettingsInterface, new()
     {
         public IEnvironment Environment { get; set; }
@@ -45,19 +40,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         }
         public int Run()
         {
-
-            if (ConfigurationFolder != default)
-            {
-                Utilities.EnsureDirectoryExists(ConfigurationFolder);
-            }
-            if (DataFolder != default)
-            {
-                Utilities.EnsureDirectoryExists(DataFolder);
-            }
-            if (LogFolder != default)
-            {
-                Utilities.EnsureDirectoryExists(LogFolder);
-            }
             LogObject = GRYLog.GetOrCreateAndGet($"{ConfigurationFolder}/Log.configuration", $"{LogFolder}/{ProgramName}_{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss", CultureInfo.InvariantCulture)}.log");
             try
             {
@@ -76,7 +58,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 WebHostBuilder hostBuilder = new();
                 hostBuilder.UseKestrel(options =>
                     {
-                        X509Certificate2 certificate = new(Path.Combine(CurrentSettings.CertificateFile), CurrentSettings.CertificatePassword);
+                        X509Certificate2 certificate = new(Path.Combine(ConfigurationFolder, CurrentSettings.CertificateFile), CurrentSettings.CertificatePassword);
                         if (Environment is Productive && Utilities.IsSelfSIgned(certificate))
                         {
                             LogObject.LogWarning($"The used certificate '{CurrentSettings.CertificateFile}' is self-signed. This is not recommended for a productive environment.");
@@ -92,6 +74,12 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
                 IWebHost host = hostBuilder.Build();
                 OnStart();
+                string address = $"https://localhost:{CurrentSettings.HTTPSPort}/swagger/index.html";
+                if (Environment is Development)
+                {
+                    LogObject.Log($"The API-explorer is available under the address '{address}'");
+                
+                }
                 host.Run();
 
                 OnStop();
@@ -107,9 +95,27 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 LogObject.Log($"Finished {ProgramName}", LogLevel.Debug);
             }
         }
+
+        public void Initialize()
+        {
+
+            if (ConfigurationFolder != default)
+            {
+                Utilities.EnsureDirectoryExists(ConfigurationFolder);
+            }
+            if (DataFolder != default)
+            {
+                Utilities.EnsureDirectoryExists(DataFolder);
+            }
+            if (LogFolder != default)
+            {
+                Utilities.EnsureDirectoryExists(LogFolder);
+            }
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<ISettingsInterface>((_) => new SettingsType());
+            services.AddSingleton<SettingsInterface>((_) => new SettingsType());
             services.AddSingleton<IAdministrationSettings>((_) => new AdministrationSettings(ProgramName, Version, Environment));
             services.AddControllers();
             //TODO: .AddAntiforgey()
@@ -152,7 +158,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             }
             //app.UseHttpsRedirection();
             app.UseHsts();
-            //app.UseRouting();
+            app.UseRouting();
             //app.UseAuthorization();
             app.UseEndpoints(endpoints =>
                 {

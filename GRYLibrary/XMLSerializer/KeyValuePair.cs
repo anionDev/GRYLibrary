@@ -1,11 +1,16 @@
 ﻿using GRYLibrary.Core.AdvancedObjectAnalysis;
+using GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper;
+using System;
+using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Schema;
-using System.Xml.Serialization;
 
 namespace GRYLibrary.Core.XMLSerializer
 {
-    public class KeyValuePair<TKey, TValue> : IXmlSerializable
+    /// <summary>
+    /// Represents a key-value-pair which is serializable by implementing <see cref="IGRYSerializable"/>.
+    /// </summary>
+    public class KeyValuePair<TKey, TValue> : IGRYSerializable
     {
         public KeyValuePair()
         {
@@ -53,6 +58,11 @@ namespace GRYLibrary.Core.XMLSerializer
         public void WriteXml(XmlWriter writer)
         {
             Generic.GenericWriteXml(this, writer);
+        }
+
+        public ISet<Type> GetExtraTypesWhichAreRequiredForSerialization()
+        {
+           return new HashSet<Type>();
         }
         #endregion
     }

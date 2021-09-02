@@ -1,7 +1,6 @@
 ﻿using GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper;
 using GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper.CustomComparer;
 using GRYLibrary.Core.AdvancedXMLSerialysis;
-using GRYLibrary.Core.LogObject;
 using GRYLibrary.Core.Miscellaneous;
 using System;
 using System.Collections;
