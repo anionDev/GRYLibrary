@@ -1,6 +1,6 @@
 ﻿# GRYLibrary
 
-[![CodeFactor](https://www.codefactor.io/repository/github/aniondev/grylibrary/badge/master)](https://www.codefactor.io/repository/github/aniondev/grylibrary/overview/master)
+[![CodeFactor](https://www.codefactor.io/repository/github/aniondev/grylibrary/badge/main)](https://www.codefactor.io/repository/github/aniondev/grylibrary/overview/main)
 ![Generic badge](https://img.shields.io/badge/testcoverage-48%25-green)
 ![GitHub last commit](https://img.shields.io/github/last-commit/anionDev/GRYLibrary)
 ![Lines of code](https://img.shields.io/tokei/lines/github/anionDev/GRYLibrary)
@@ -41,14 +41,20 @@ The public key token of all official GRYLibrary-releases is `fa37b6e9de549c68`. 
 
 ### Contribute
 
+#### General
+
 Feel free to contribute to this product by creating [issues](https://github.com/anionDev/GRYLibrary/issues) for feature-requests, bug-reports, etc.
 Since the GRYLibrary is not an open-source-project in the [conventional sense of free software](https://www.gnu.org/philosophy/free-sw.en.html) contributing by creating a pullrequest is a little bit tricky (concerning license-issues). If you want to contribute to this project then please contact the owner of the GRYLibrary.
+
+#### Developer-hints
+
+To compile GRYLibrary and running testcases `echo` and the copy-program `cp` must be available as commandline command on your system.
 
 ## License
 
 There are the following licenses for the GRYLibrary available
 
-- The GRYLibrary is generally and commonly licensed under the terms of GRYL. The concrete license-text can be found [here](https://raw.githubusercontent.com/anionDev/GRYLibrary/master/License.txt). This license-text does obviously not apply to the other following licenses.
+- The GRYLibrary is generally and commonly licensed under the terms of GRYL. The concrete license-text can be found [here](https://raw.githubusercontent.com/anionDev/GRYLibrary/main/License.txt). This license-text does obviously not apply to the other following licenses.
 - There are some special licenses for certain scopes:
   - [epew](https://github.com/anionDev/ExternalProgramExecutionWrapper) is allowed to use the [Nuget-release](https://www.nuget.org/packages/GRYLibrary) of the GRYLibrary under the Terms of the MIT-license for executing programs as main-purpose of epew and for nothing else.
   - [ReliablePlayer](https://github.com/anionDev/ReliablePlayer) is allowed to use the [Nuget-release](https://www.nuget.org/packages/GRYLibrary) of the GRYLibrary under the Terms of the MIT-license to help implement features provided in the official repository and release of ReliablePlayer and for nothing else.
