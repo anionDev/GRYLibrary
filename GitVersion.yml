@@ -15,6 +15,6 @@ branches:
     regex: 'stable'
     increment: Patch
     mode: ContinuousDelivery
-    source-branches: ['stable']
+    source-branches: ['main']
 ignore:
   sha: []
