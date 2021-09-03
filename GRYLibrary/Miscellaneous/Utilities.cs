@@ -33,6 +33,7 @@ using System.Reactive.Subjects;
 using static GRYLibrary.Core.Miscellaneous.TableGenerator;
 using GRYLibrary.Core.Exceptions;
 using System.Security.Cryptography.X509Certificates;
+using NJsonSchema.Validation;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
@@ -75,6 +76,39 @@ namespace GRYLibrary.Core.Miscellaneous
                 action(i);
             }
         }
+
+        public static string NormalizePath(string path)
+        {
+            return OperatingSystem.OperatingSystem.GetCurrentOperatingSystem().Accept(new NormalizePathVisitor(path));
+        }
+
+        private class NormalizePathVisitor : IOperatingSystemVisitor<string>
+        {
+            public readonly char WindowsPathSeparatorChar = Path.DirectorySeparatorChar;
+            public readonly char LinuxAndOSXPathSeparatorChar = Path.AltDirectorySeparatorChar;
+            private readonly string _Path;
+
+            public NormalizePathVisitor(string path)
+            {
+                this._Path = path;
+            }
+
+            public string Handle(OSX operatingSystem)
+            {
+                return _Path.Replace(WindowsPathSeparatorChar, LinuxAndOSXPathSeparatorChar);
+            }
+
+            public string Handle(Windows operatingSystem)
+            {
+                return _Path.Replace(LinuxAndOSXPathSeparatorChar, WindowsPathSeparatorChar);
+            }
+
+            public string Handle(Linux operatingSystem)
+            {
+                return _Path.Replace(WindowsPathSeparatorChar, LinuxAndOSXPathSeparatorChar);
+            }
+        }
+
         /// <summary>
         /// Checks if the given <paramref name="subList"/> is contained in <paramref name="list"/>.
         /// </summary>
@@ -163,6 +197,26 @@ namespace GRYLibrary.Core.Miscellaneous
                 result[i] = ByteArrayToUnsignedInteger32Bit(new byte[] { byteArray[4 * i], byteArray[(4 * i) + 1], byteArray[(4 * i) + 2], byteArray[(4 * i) + 3] });
             }
             return result;
+        }
+
+        public static string Format(ValidationError error)
+        {
+            Dictionary<string, string> values = new();
+
+            values.Add(nameof(error.Kind), error.Kind.ToString());
+            values.Add(nameof(error.Path), error.Path);
+            values.Add(nameof(error.Property), error.Property);
+            if (error.HasLineInfo)
+            {
+                values.Add(nameof(error.LineNumber), error.LineNumber.ToString());
+                values.Add(nameof(error.LinePosition), error.LinePosition.ToString());
+            }
+            return FormatKeyValuePairs(values);
+        }
+
+        public static string FormatKeyValuePairs(Dictionary<string, string> values)
+        {
+            return "{" + string.Join(", ", values.Select(kvp => $"'{kvp.Key}':'{kvp.Value}'")) + "}";
         }
 
         public static void Shuffle<T>(this IList<T> list)
@@ -516,15 +570,13 @@ namespace GRYLibrary.Core.Miscellaneous
         public static void CopyFolderAcrossVolumes(string sourceFolder, string destinationFolder)
         {
             EnsureDirectoryExists(destinationFolder);
-            string[] files = Directory.GetFiles(sourceFolder);
-            foreach (string file in files)
+            foreach (string file in Directory.GetFiles(sourceFolder))
             {
                 string name = Path.GetFileName(file);
                 string destination = Path.Combine(destinationFolder, name);
                 File.Copy(file, destination);
             }
-            string[] folders = Directory.GetDirectories(sourceFolder);
-            foreach (string folder in folders)
+            foreach (string folder in Directory.GetDirectories(sourceFolder))
             {
                 string name = Path.GetFileName(folder);
                 string destination = Path.Combine(destinationFolder, name);

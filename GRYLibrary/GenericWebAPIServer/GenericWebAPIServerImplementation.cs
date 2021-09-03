@@ -12,9 +12,17 @@ using System.Globalization;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using GRYLibrary.Core.Miscellaneous;
+using System.Text;
+using System.Threading.Tasks;
+using NJsonSchema;
 
 namespace GRYLibrary.Core.GenericWebAPIServer
 {
+    /// <remarks>
+    /// When running and debugging CryptoCurrencyOnlineToolsNodeBitcoin locally the "Development"-configuration is supposed to be used.
+    /// When running CryptoCurrencyOnlineToolsNodeBitcoin on a test-system in a docker-container the "QualityCheck"-configuration is supposed to be used.
+    /// When running CryptoCurrencyOnlineToolsNodeBitcoin on a productive-system in a docker-container the "Productive"-configuration is supposed to be used.
+    /// </remarks>
     public class GenericWebAPIServerImplementation<Startup, SettingsInterface, SettingsType>
         where Startup : AbstractStartup, new()
         where SettingsInterface : class, ISettingsInterface
@@ -29,26 +37,28 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         public string ConfigurationFolder { get; set; } = default;
         public string DataFolder { get; set; } = default;
         public string LogFolder { get; set; } = default;
-        public string AppSettingsFileName { get; set; } = "AppSettings.json";
+        public string AppSettingsFile { get; set; } = "AppSettings.json";
+        public string AppSettingsSchemaFile { get; set; } = default;
         public GRYLog LogObject { get; private set; }
         public Version Version { get; set; }
 
-        public GenericWebAPIServerImplementation(string programName, Version version)
+        public GenericWebAPIServerImplementation(string programName, Version version, IEnvironment environment)
         {
             this.ProgramName = programName;
             this.Version = version;
+            this.Environment = environment;
         }
         public int Run()
         {
-            LogObject = GRYLog.GetOrCreateAndGet($"{ConfigurationFolder}/Log.configuration", $"{LogFolder}/{ProgramName}_{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss", CultureInfo.InvariantCulture)}.log");
             try
             {
-                LogObject.Log($"Started {ProgramName}", LogLevel.Debug);
+                Log(logObject => logObject.Log($"Started {ProgramName}", LogLevel.Debug));
+                ValidateAppSettings();
 
                 ConfigurationBuilder builder = new();
                 builder
                     .SetBasePath(ConfigurationFolder)
-                    .AddJsonFile(Path.Combine(ConfigurationFolder, AppSettingsFileName), optional: false, reloadOnChange: true)
+                    .AddJsonFile(Path.Combine(ConfigurationFolder, AppSettingsFile), optional: false, reloadOnChange: true)
                     .AddEnvironmentVariables();
                 Configuration = builder.Build();
 
@@ -57,19 +67,21 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
                 WebHostBuilder hostBuilder = new();
                 hostBuilder.UseKestrel(options =>
+                {
+                    var pfxFilePath = Utilities.NormalizePath(Path.Combine(ConfigurationFolder, CurrentSettings.CertificateFile));
+                    var cvertificatePasswordFilePath = Utilities.NormalizePath(Path.Combine(ConfigurationFolder, CurrentSettings.CertificatePasswordFile));
+                    X509Certificate2 certificate = new(pfxFilePath, File.ReadAllText(cvertificatePasswordFilePath, new UTF8Encoding(false)));
+                    if (Environment is Productive && Utilities.IsSelfSIgned(certificate))
                     {
-                        X509Certificate2 certificate = new(Path.Combine(ConfigurationFolder, CurrentSettings.CertificateFile), CurrentSettings.CertificatePassword);
-                        if (Environment is Productive && Utilities.IsSelfSIgned(certificate))
-                        {
-                            LogObject.LogWarning($"The used certificate '{CurrentSettings.CertificateFile}' is self-signed. This is not recommended for a productive environment.");
-                        }
-                        options.AddServerHeader = false;
-                        options.Limits.MaxRequestBodySize = CurrentSettings.MaxRequestBodySize;
-                        options.Listen(System.Net.IPAddress.Loopback, CurrentSettings.HTTPSPort, listenOptions =>
-                        {
-                            listenOptions.UseHttps(certificate);
-                        });
+                        Log(logObject => logObject.LogWarning($"The used certificate '{CurrentSettings.CertificateFile}' is self-signed. Using self-signed certificates is not recommended in a productive environment."));
+                    }
+                    options.AddServerHeader = false;
+                    options.Limits.MaxRequestBodySize = CurrentSettings.MaxRequestBodySize;
+                    options.Listen(System.Net.IPAddress.Loopback, CurrentSettings.HTTPSPort, listenOptions =>
+                    {
+                        listenOptions.UseHttps(certificate);
                     });
+                });
                 hostBuilder.UseStartup<Startup>();
 
                 IWebHost host = hostBuilder.Build();
@@ -77,8 +89,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 string address = $"https://localhost:{CurrentSettings.HTTPSPort}/swagger/index.html";
                 if (Environment is Development)
                 {
-                    LogObject.Log($"The API-explorer is available under the address '{address}'");
-                
+                    Log(logObject => logObject.Log($"The API-explorer is available under the address '{address}'"));
                 }
                 host.Run();
 
@@ -87,18 +98,57 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             }
             catch (Exception exception)
             {
-                LogObject.Log(exception, "Fatal error occurred");
+                Log(logObject => logObject.Log(exception, "Fatal error occurred"));
                 return 1;
             }
             finally
             {
-                LogObject.Log($"Finished {ProgramName}", LogLevel.Debug);
+                Log(logObject => logObject.Log($"Finished {ProgramName}", LogLevel.Debug));
+            }
+        }
+
+        private void ValidateAppSettings()
+        {
+            string appSettingsFile = Path.Combine(ConfigurationFolder, AppSettingsFile);
+            if (File.Exists(appSettingsFile))
+            {
+                string appSettingsSchemaFile = Path.Combine(ConfigurationFolder, AppSettingsSchemaFile);
+                if (string.IsNullOrWhiteSpace(appSettingsSchemaFile))
+                {
+                    Log(logObject => logObject.Log($"No json schema defined for app-settings-file.", LogLevel.Warning));
+                }
+                else
+                {
+                    if (File.Exists(appSettingsSchemaFile))
+                    {
+
+                        Task<JsonSchema> schemaTask = JsonSchema.FromFileAsync(appSettingsSchemaFile);
+                        schemaTask.Wait();
+                        System.Collections.Generic.ICollection<NJsonSchema.Validation.ValidationError> errors = schemaTask.Result.Validate(File.ReadAllText(Path.Combine(ConfigurationFolder, appSettingsFile), new UTF8Encoding(false)));
+                        if (errors.Count > 0)
+                        {
+                            Log(logObject => logObject.Log($"The appsettings are not matching the defined schema. The following errors occurred.", LogLevel.Error));
+                            foreach (NJsonSchema.Validation.ValidationError error in errors)
+                            {
+                                LogObject.Log($"Json validation error {Utilities.Format(error)}", LogLevel.Error);
+                            }
+                            throw new InvalidDataException($"The app-settings defined in '{appSettingsFile}' are not matching the schema defined in '{appSettingsSchemaFile}'.");
+                        }
+                    }
+                    else
+                    {
+                        throw new FileNotFoundException($"App-settings-schema-file '{appSettingsSchemaFile}' was not found.");
+                    }
+                }
+            }
+            else
+            {
+                throw new FileNotFoundException($"App-settings-file '{appSettingsFile}' was not found.");
             }
         }
 
         public void Initialize()
         {
-
             if (ConfigurationFolder != default)
             {
                 Utilities.EnsureDirectoryExists(ConfigurationFolder);
@@ -111,6 +161,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             {
                 Utilities.EnsureDirectoryExists(LogFolder);
             }
+            LogObject = GRYLog.GetOrCreateAndGet($"{ConfigurationFolder}/Log.configuration", $"{LogFolder}/{ProgramName}_{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss", CultureInfo.InvariantCulture)}.log");
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -164,6 +215,30 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 {
                     endpoints.MapControllers();
                 });
+        }
+
+        public string GetDefaultAppDataFolder(string applicationFolder, IEnvironment environment)
+        {
+            string prefix;
+            if (environment is Development)
+            {
+                prefix = applicationFolder;
+            }
+            else
+            {
+                prefix = Path.DirectorySeparatorChar.ToString();
+            }
+            return prefix + "AppData";
+        }
+        public void Log(Action<GRYLog> log)
+        {
+            lock (LogObject)
+            {
+                using (LogObject.UseSubNamespace("Server"))
+                {
+                    log(LogObject);
+                }
+            }
         }
     }
 }

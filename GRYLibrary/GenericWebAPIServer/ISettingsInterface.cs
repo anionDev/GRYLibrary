@@ -2,10 +2,10 @@
 {
     public interface ISettingsInterface
     {
-        public bool ProgramVersionIsQueryable{ get; set; }
         public ushort HTTPSPort { get; set; }
         public string CertificateFile { get; set; }
-        public string CertificatePassword { get; set; }
+        public string CertificatePasswordFile { get; set; }
+        public bool ProgramVersionIsQueryable{ get; set; }
         public long MaxRequestBodySize { get; set; }
     }
 }
