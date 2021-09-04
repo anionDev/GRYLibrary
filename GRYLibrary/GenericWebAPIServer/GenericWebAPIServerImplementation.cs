@@ -15,6 +15,7 @@ using GRYLibrary.Core.Miscellaneous;
 using System.Text;
 using System.Threading.Tasks;
 using NJsonSchema;
+using Microsoft.AspNetCore.Server.Kestrel.Https;
 
 namespace GRYLibrary.Core.GenericWebAPIServer
 {
@@ -55,19 +56,25 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 Log(logObject => logObject.Log($"Started {ProgramName}", LogLevel.Debug));
                 ValidateAppSettings();
 
-                ConfigurationBuilder builder = new();
-                builder
+                ConfigurationBuilder configurationBuilder = new();
+                configurationBuilder
                     .SetBasePath(ConfigurationFolder)
                     .AddJsonFile(Path.Combine(ConfigurationFolder, AppSettingsFile), optional: false, reloadOnChange: true)
                     .AddEnvironmentVariables();
-                Configuration = builder.Build();
+                Configuration = configurationBuilder.Build();
 
                 CurrentSettings = new SettingsType();
                 Configuration.GetSection("Settings").Bind(CurrentSettings);
 
-                WebHostBuilder hostBuilder = new();
-                hostBuilder.UseKestrel(options =>
+                WebHostBuilder webHostBuilder = new();
+                string domainWithProtocol = $"https://{CurrentSettings.Domain}:{CurrentSettings.HTTPSPort}";
+                webHostBuilder.UseUrls(domainWithProtocol);
+                webHostBuilder.UseKestrel(kestrelServerOptions =>
                 {
+                    kestrelServerOptions.ConfigureHttpsDefaults(httpsConnectionAdapterOptions2 =>
+                    {
+                        httpsConnectionAdapterOptions2.ClientCertificateMode = ClientCertificateMode.NoCertificate;
+                    });
                     var pfxFilePath = Utilities.NormalizePath(Path.Combine(ConfigurationFolder, CurrentSettings.CertificateFile));
                     var cvertificatePasswordFilePath = Utilities.NormalizePath(Path.Combine(ConfigurationFolder, CurrentSettings.CertificatePasswordFile));
                     X509Certificate2 certificate = new(pfxFilePath, File.ReadAllText(cvertificatePasswordFilePath, new UTF8Encoding(false)));
@@ -75,21 +82,21 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                     {
                         Log(logObject => logObject.LogWarning($"The used certificate '{CurrentSettings.CertificateFile}' is self-signed. Using self-signed certificates is not recommended in a productive environment."));
                     }
-                    options.AddServerHeader = false;
-                    options.Limits.MaxRequestBodySize = CurrentSettings.MaxRequestBodySize;
-                    options.Listen(System.Net.IPAddress.Loopback, CurrentSettings.HTTPSPort, listenOptions =>
+                    kestrelServerOptions.AddServerHeader = false;
+                    kestrelServerOptions.Limits.MaxRequestBodySize = CurrentSettings.MaxRequestBodySize;
+                    kestrelServerOptions.Listen(System.Net.IPAddress.Loopback, CurrentSettings.HTTPSPort, listenOptions =>
                     {
                         listenOptions.UseHttps(certificate);
                     });
                 });
-                hostBuilder.UseStartup<Startup>();
+                webHostBuilder.UseStartup<Startup>();
 
-                IWebHost host = hostBuilder.Build();
+                IWebHost host = webHostBuilder.Build();
                 OnStart();
-                string address = $"https://localhost:{CurrentSettings.HTTPSPort}/swagger/index.html";
+                string apiExplorerAddress = $"{domainWithProtocol}/swagger/index.html";
                 if (Environment is Development)
                 {
-                    Log(logObject => logObject.Log($"The API-explorer is available under the address '{address}'"));
+                    Log(logObject => logObject.Log($"The API-explorer is available under the address '{apiExplorerAddress}'"));
                 }
                 host.Run();
 

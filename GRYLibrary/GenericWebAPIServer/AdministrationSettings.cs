@@ -7,13 +7,13 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         /// <inheritdoc/>
         public string ProgramName { get; set; }
         /// <inheritdoc/>
-        public Version Version { get; set; }
+        public Version ProgramVersion { get; set; }
         /// <inheritdoc/>
         public IEnvironment Environment { get; set; }
-        public AdministrationSettings(string programName, Version version, IEnvironment environment)
+        public AdministrationSettings(string programName, Version programVersion, IEnvironment environment)
         {
             ProgramName = programName;
-            Version = version;
+            ProgramVersion = programVersion;
             Environment = environment;
         }
     }
