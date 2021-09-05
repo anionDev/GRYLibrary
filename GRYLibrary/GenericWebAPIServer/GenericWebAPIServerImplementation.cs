@@ -29,9 +29,10 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         where SettingsInterface : class, ISettingsInterface
         where SettingsType : SettingsInterface, new()
     {
-        public IEnvironment Environment { get; set; }
+        public IEnvironment Environment { get; private set; }
         public IConfiguration Configuration { get; private set; } = default;
         public SettingsInterface CurrentSettings { get; private set; } = default;
+        public IAdministrationSettings AdministrationSettings { get; private set; } = default;
         public Action OnStart { get; set; } = () => { };
         public Action OnStop { get; set; } = () => { };
         public string ProgramName { get; set; } = default;
@@ -42,7 +43,8 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         public string AppSettingsSchemaFile { get; set; } = default;
         public GRYLog LogObject { get; private set; }
         public Version Version { get; set; }
-
+        public string LogNamespaceForOverhead { get; set; } = "Server";
+        public string LogNamespaceForLogMiddleware { get; set; } = "WebServerLog";
         public GenericWebAPIServerImplementation(string programName, Version version, IEnvironment environment)
         {
             this.ProgramName = programName;
@@ -53,21 +55,12 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         {
             try
             {
-                Log(logObject => logObject.Log($"Started {ProgramName}", LogLevel.Debug));
-                ValidateAppSettings();
+                Log(logObject => logObject.Log($"Started {ProgramName}", LogLevel.Debug), LogNamespaceForOverhead);
 
-                ConfigurationBuilder configurationBuilder = new();
-                configurationBuilder
-                    .SetBasePath(ConfigurationFolder)
-                    .AddJsonFile(Path.Combine(ConfigurationFolder, AppSettingsFile), optional: false, reloadOnChange: true)
-                    .AddEnvironmentVariables();
-                Configuration = configurationBuilder.Build();
-
-                CurrentSettings = new SettingsType();
-                Configuration.GetSection("Settings").Bind(CurrentSettings);
+                string domainWithProtocol = $"https://{CurrentSettings.Domain}:{CurrentSettings.HTTPSPort}";
 
                 WebHostBuilder webHostBuilder = new();
-                string domainWithProtocol = $"https://{CurrentSettings.Domain}:{CurrentSettings.HTTPSPort}";
+                webHostBuilder.UseEnvironment(Environment.GetType().Name);
                 webHostBuilder.UseUrls(domainWithProtocol);
                 webHostBuilder.UseKestrel(kestrelServerOptions =>
                 {
@@ -80,7 +73,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                     X509Certificate2 certificate = new(pfxFilePath, File.ReadAllText(cvertificatePasswordFilePath, new UTF8Encoding(false)));
                     if (Environment is Productive && Utilities.IsSelfSIgned(certificate))
                     {
-                        Log(logObject => logObject.LogWarning($"The used certificate '{CurrentSettings.CertificateFile}' is self-signed. Using self-signed certificates is not recommended in a productive environment."));
+                        Log(logObject => logObject.LogWarning($"The used certificate '{CurrentSettings.CertificateFile}' is self-signed. Using self-signed certificates is not recommended in a productive environment."), LogNamespaceForOverhead);
                     }
                     kestrelServerOptions.AddServerHeader = false;
                     kestrelServerOptions.Limits.MaxRequestBodySize = CurrentSettings.MaxRequestBodySize;
@@ -96,7 +89,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 string apiExplorerAddress = $"{domainWithProtocol}/swagger/index.html";
                 if (Environment is Development)
                 {
-                    Log(logObject => logObject.Log($"The API-explorer is available under the address '{apiExplorerAddress}'"));
+                    Log(logObject => logObject.Log($"The API-explorer is available under the address '{apiExplorerAddress}'"), LogNamespaceForOverhead);
                 }
                 host.Run();
 
@@ -105,12 +98,12 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             }
             catch (Exception exception)
             {
-                Log(logObject => logObject.Log(exception, "Fatal error occurred"));
+                Log(logObject => logObject.Log(exception, "Fatal error occurred"), LogNamespaceForOverhead);
                 return 1;
             }
             finally
             {
-                Log(logObject => logObject.Log($"Finished {ProgramName}", LogLevel.Debug));
+                Log(logObject => logObject.Log($"Finished {ProgramName}", LogLevel.Debug), LogNamespaceForOverhead);
             }
         }
 
@@ -122,7 +115,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 string appSettingsSchemaFile = Path.Combine(ConfigurationFolder, AppSettingsSchemaFile);
                 if (string.IsNullOrWhiteSpace(appSettingsSchemaFile))
                 {
-                    Log(logObject => logObject.Log($"No json schema defined for app-settings-file.", LogLevel.Warning));
+                    Log(logObject => logObject.Log($"No json schema defined for app-settings-file.", LogLevel.Warning), LogNamespaceForOverhead);
                 }
                 else
                 {
@@ -134,7 +127,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                         System.Collections.Generic.ICollection<NJsonSchema.Validation.ValidationError> errors = schemaTask.Result.Validate(File.ReadAllText(Path.Combine(ConfigurationFolder, appSettingsFile), new UTF8Encoding(false)));
                         if (errors.Count > 0)
                         {
-                            Log(logObject => logObject.Log($"The appsettings are not matching the defined schema. The following errors occurred.", LogLevel.Error));
+                            Log(logObject => logObject.Log($"The appsettings are not matching the defined schema. The following errors occurred.", LogLevel.Error), LogNamespaceForOverhead);
                             foreach (NJsonSchema.Validation.ValidationError error in errors)
                             {
                                 LogObject.Log($"Json validation error {Utilities.Format(error)}", LogLevel.Error);
@@ -169,34 +162,45 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 Utilities.EnsureDirectoryExists(LogFolder);
             }
             LogObject = GRYLog.GetOrCreateAndGet($"{ConfigurationFolder}/Log.configuration", $"{LogFolder}/{ProgramName}_{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss", CultureInfo.InvariantCulture)}.log");
+
+            ValidateAppSettings();
+
+            ConfigurationBuilder configurationBuilder = new();
+            configurationBuilder
+                .SetBasePath(ConfigurationFolder)
+                .AddJsonFile(Path.Combine(ConfigurationFolder, AppSettingsFile), optional: false, reloadOnChange: true)
+                .AddEnvironmentVariables();
+            Configuration = configurationBuilder.Build();
+
+            CurrentSettings = new SettingsType();
+            Configuration.GetSection("Settings").Bind(CurrentSettings);
+            this.AdministrationSettings = new AdministrationSettings(ProgramName, Version, Environment, ConfigurationFolder);
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<SettingsInterface>((_) => new SettingsType());
-            services.AddSingleton<IAdministrationSettings>((_) => new AdministrationSettings(ProgramName, Version, Environment));
+            services.AddSingleton<IAdministrationSettings>((_) => AdministrationSettings);
             services.AddControllers();
             //TODO: .AddAntiforgey()
             services.AddOpenApiDocument(); // add OpenAPI v3 document
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            Log(logObject => logObject.Log($"Current environment: {Environment.GetType().Name}", LogLevel.Information), LogNamespaceForOverhead);
             if (Environment is Development)
             {
-                Utilities.AssertCondition(env.IsDevelopment());
-                Utilities.AssertCondition(!env.IsProduction());
+                Utilities.AssertCondition(env.IsEnvironment(nameof(Development)));
             }
 
             if (Environment is QualityCheck)
             {
-                Utilities.AssertCondition(!env.IsDevelopment());
-                Utilities.AssertCondition(!env.IsProduction());
+                Utilities.AssertCondition(env.IsEnvironment(nameof(QualityCheck)));
             }
 
             if (Environment is Productive)
             {
-                Utilities.AssertCondition(!env.IsDevelopment());
-                Utilities.AssertCondition(env.IsProduction());
+                Utilities.AssertCondition(env.IsEnvironment(nameof(Productive)));
                 app.UseDDOSProtection();
                 app.UseWebApplicationFirewall();
                 app.UseObfuscation();
@@ -208,7 +212,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 app.UseSwaggerUi3(); // serve Swagger UI
                 app.UseReDoc(); // serve ReDoc UI
             }
-            app.UseLog();
+            app.UseLog(log => Log(log, LogNamespaceForLogMiddleware));
             app.UseExceptionManager();
             if (Environment is Productive)
             {
@@ -237,11 +241,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             }
             return prefix + "AppData";
         }
-        public void Log(Action<GRYLog> log)
+        public void Log(Action<GRYLog> log, string subNamespace)
         {
             lock (LogObject)
             {
-                using (LogObject.UseSubNamespace("Server"))
+                using (LogObject.UseSubNamespace(subNamespace))
                 {
                     log(LogObject);
                 }

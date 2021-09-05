@@ -1,4 +1,6 @@
+using GRYLibrary.Core.LogObject;
 using Microsoft.AspNetCore.Builder;
+using System;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
 {
@@ -23,9 +25,14 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
             return builder.UseMiddleware<Obfuscation>();
         }
         /// <summary>Configure the application to use <see cref="Log"/>.</summary>
-        public static IApplicationBuilder UseLog(this IApplicationBuilder builder)
+        public static IApplicationBuilder UseLog(this IApplicationBuilder builder, GRYLog logObject)
         {
-            return builder.UseMiddleware<Log>();
+            return UseLog(builder, (logAction) => logAction(logObject));
+        }
+        /// <summary>Configure the application to use <see cref="Log"/>.</summary>
+        public static IApplicationBuilder UseLog(this IApplicationBuilder builder, Action<Action<GRYLog>> logAction)
+        {
+            return builder.UseMiddleware<Log>(logAction);
         }
         /// <summary>Configure the application to use <see cref="ExceptionManager"/>.</summary>
         public static IApplicationBuilder UseExceptionManager(this IApplicationBuilder builder)

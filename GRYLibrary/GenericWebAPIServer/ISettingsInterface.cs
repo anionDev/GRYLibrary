@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GRYLibrary.Core.GenericWebAPIServer
+﻿namespace GRYLibrary.Core.GenericWebAPIServer
 {
     public interface ISettingsInterface
     {
