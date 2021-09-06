@@ -93,13 +93,21 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
                     PropertyInfo property = typeOfObject.GetProperty(attribute.Name);
                     if (property != null)
                     {
-                        if (attribute.ObjectId.Equals(default))
+                        if (property.PropertyType.Equals(typeof(Type)))
                         {
-                            property.SetValue(@object, Utilities.GetDefault(property.PropertyType));
+                            property.SetValue(@object, Type.GetType(this._DeserializedObjects[attribute.ObjectId].ToString()));
                         }
                         else
                         {
-                            property.SetValue(@object, this._DeserializedObjects[attribute.ObjectId]);
+                            if (attribute.ObjectId.Equals(default))
+                            {
+                                property.SetValue(@object, Utilities.GetDefault(property.PropertyType));
+                            }
+                            else
+                            {
+                                property.SetValue(@object, this._DeserializedObjects[attribute.ObjectId]);
+                            }
+
                         }
                         continue;
                     }
