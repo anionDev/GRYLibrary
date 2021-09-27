@@ -10,8 +10,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GRYLibraryTests", "GRYLibra
 		{2376C925-4667-4565-85D6-ED64C2C3C78D} = {2376C925-4667-4565-85D6-ED64C2C3C78D}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{6CD86B70-5923-42A4-90EA-830ABA2C75C1}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,16 +38,6 @@ Global
 		{46F9F1F0-E41B-4C0F-BFDE-74DFE31EEA21}.QualityCheck|Any CPU.Build.0 = QualityCheck|Any CPU
 		{46F9F1F0-E41B-4C0F-BFDE-74DFE31EEA21}.Release|Any CPU.ActiveCfg = QualityCheck|Any CPU
 		{46F9F1F0-E41B-4C0F-BFDE-74DFE31EEA21}.Release|Any CPU.Build.0 = QualityCheck|Any CPU
-		{6CD86B70-5923-42A4-90EA-830ABA2C75C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6CD86B70-5923-42A4-90EA-830ABA2C75C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6CD86B70-5923-42A4-90EA-830ABA2C75C1}.Development|Any CPU.ActiveCfg = Debug|Any CPU
-		{6CD86B70-5923-42A4-90EA-830ABA2C75C1}.Development|Any CPU.Build.0 = Debug|Any CPU
-		{6CD86B70-5923-42A4-90EA-830ABA2C75C1}.Productive|Any CPU.ActiveCfg = Debug|Any CPU
-		{6CD86B70-5923-42A4-90EA-830ABA2C75C1}.Productive|Any CPU.Build.0 = Debug|Any CPU
-		{6CD86B70-5923-42A4-90EA-830ABA2C75C1}.QualityCheck|Any CPU.ActiveCfg = Debug|Any CPU
-		{6CD86B70-5923-42A4-90EA-830ABA2C75C1}.QualityCheck|Any CPU.Build.0 = Debug|Any CPU
-		{6CD86B70-5923-42A4-90EA-830ABA2C75C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6CD86B70-5923-42A4-90EA-830ABA2C75C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
