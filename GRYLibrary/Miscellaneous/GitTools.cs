@@ -313,6 +313,10 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             return GitChangesHelper(repositoryFolder, "diff --cached");
         }
+        public static void GitRenameBranch(string repositoryFolder,string oldBranchName,string newBranchName)
+        {
+            ExecuteGitCommand(repositoryFolder, $"branch -m {oldBranchName} {newBranchName}",true);
+        }
 
         private static bool GitChangesHelper(string repositoryFolder, string argument)
         {
