@@ -1786,22 +1786,18 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 throw new Exception($"Exitcode of mountvol was {externalProgramExecutor.ExitCode}. StdErr:" + string.Join(Environment.NewLine, externalProgramExecutor.AllStdErrLines));
             }
-            for (int i = 0; i < externalProgramExecutor.AllStdOutLines.Length; i++)
+
+            for (int indexOfCurrentLine = 0; indexOfCurrentLine < externalProgramExecutor.AllStdOutLines.Length - 1; indexOfCurrentLine++)
             {
-                string line = externalProgramExecutor.AllStdOutLines[i].Trim();
+                string line = externalProgramExecutor.AllStdOutLines[indexOfCurrentLine].Trim();
                 if (line.StartsWith($"\\\\?\\Volume{{{volumeId}}}\\"))
                 {
-                    int j = i;
-                    do
+                    int indexOfNextLine = indexOfCurrentLine + 1;
+                    string mountPath = externalProgramExecutor.AllStdOutLines[indexOfNextLine].Trim();
+                    if (Directory.Exists(mountPath))
                     {
-                        j += 1;
-                        string mountPath = externalProgramExecutor.AllStdOutLines[j].Trim();
-                        if (Directory.Exists(mountPath))
-                        {
-                            result.Add(mountPath);
-                        }
-                    } while (!string.IsNullOrWhiteSpace(externalProgramExecutor.AllStdOutLines[j]));
-                    return result;
+                        result.Add(mountPath);
+                    }
                 }
             }
             return result;
