@@ -1,7 +1,7 @@
 ﻿# GRYLibrary
 
 [![CodeFactor](https://www.codefactor.io/repository/github/aniondev/grylibrary/badge/main)](https://www.codefactor.io/repository/github/aniondev/grylibrary/overview/main)
-![Generic badge](https://img.shields.io/badge/testcoverage-48%25-green)
+![Generic badge](https://img.shields.io/badge/testcoverage-46%25-green)
 ![GitHub last commit](https://img.shields.io/github/last-commit/anionDev/GRYLibrary)
 ![Lines of code](https://img.shields.io/tokei/lines/github/anionDev/GRYLibrary)
 
@@ -31,7 +31,7 @@ The GRYLibrary-reference can be found [here](https://aniondev.github.io/GRYLibra
 
 ### Platform
 
-The latest NuGet-package is designed for .NET 5.0.
+The latest NuGet-package is designed for .NET 6.0.
 
 ### Signing
 
@@ -45,6 +45,10 @@ The public key token of all official GRYLibrary-releases is `fa37b6e9de549c68`. 
 
 Feel free to contribute to this product by creating [issues](https://github.com/anionDev/GRYLibrary/issues) for feature-requests, bug-reports, etc.
 Since the GRYLibrary is not an open-source-project in the [conventional sense of free software](https://www.gnu.org/philosophy/free-sw.en.html) contributing by creating a pullrequest is a little bit tricky (concerning license-issues). If you want to contribute to this project then please contact the owner of the GRYLibrary.
+
+#### Branching-system
+
+This repository applies the [GitFlowSimplified](https://projects.aniondev.de/CommonUtilities/Templates/ProjectTemplates/-/blob/main/Templates/Conventions/BranchingSystem/GitFlowSimplified.md)-branching-system.
 
 #### Developer-hints
 

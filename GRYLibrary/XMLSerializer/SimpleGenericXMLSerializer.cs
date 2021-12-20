@@ -74,5 +74,3 @@ namespace GRYLibrary.Core.XMLSerializer
         }
     }
 }
-
-
