@@ -38,7 +38,7 @@ namespace GRYLibrary.Tests.TestData.TestTypes.XMLSerializableType
                     TList = new List<SimpleDataStructure1>() { SimpleDataStructure1.GetRandom(), SimpleDataStructure1.GetRandom() },
                     TSet = new HashSet<SimpleDataStructure1>() { SimpleDataStructure1.GetRandom(), SimpleDataStructure1.GetRandom() },
                     TDictionary1 = new Dictionary<string, SimpleDataStructure1>() { { "key", null } },
-                    TDictionary2 = new Dictionary<int, SimpleDataStructure1>() { { 5, SimpleDataStructure1.GetRandom() } , { default, SimpleDataStructure1.GetRandom() } },
+                    TDictionary2 = new Dictionary<int, SimpleDataStructure1>() { { 5, SimpleDataStructure1.GetRandom() }, { default, SimpleDataStructure1.GetRandom() } },
                     TObject = SimpleDataStructure1.GetRandom()
                 },
             };

@@ -51,7 +51,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper.
         }
         public override bool IsApplicable(Type typeOfObject1, Type typeOfObject2)
         {
-            return EnumerableTools.TypeIsEnumerable(typeOfObject1) && EnumerableTools.TypeIsEnumerable(typeOfObject2) ;
+            return EnumerableTools.TypeIsEnumerable(typeOfObject1) && EnumerableTools.TypeIsEnumerable(typeOfObject2);
         }
     }
 }

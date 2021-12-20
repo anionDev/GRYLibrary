@@ -32,7 +32,7 @@ namespace GRYLibrary.Core.Miscellaneous
                 {
                     for (int j = 0; j < array.GetLength(1); j++)
                     {
-                        newArray[i+ 1, j] = array[i , j];
+                        newArray[i + 1, j] = array[i, j];
                     }
                 }
                 array = newArray;
@@ -280,12 +280,12 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             public override void Accept(ITableOutputTypeVisitor visitor)
             {
-             visitor.Handle(this);
+                visitor.Handle(this);
             }
 
             public override T Accept<T>(ITableOutputTypeVisitor<T> visitor)
             {
-              return visitor.Handle(this);
+                return visitor.Handle(this);
             }
         }
         public sealed class CSV : TableOutputType

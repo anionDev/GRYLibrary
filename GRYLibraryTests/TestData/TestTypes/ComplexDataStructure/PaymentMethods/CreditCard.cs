@@ -2,7 +2,7 @@
 
 namespace GRYLibrary.Tests.TestData.TestTypes.ComplexDataStructure.PaymentMethods
 {
-    public class CreditCard: PaymentMethod
+    public class CreditCard : PaymentMethod
     {
         public string CreditCardNumber { get; set; }
         #region Overhead

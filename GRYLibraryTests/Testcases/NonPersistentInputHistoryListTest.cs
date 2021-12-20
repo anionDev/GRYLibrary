@@ -46,12 +46,12 @@ namespace GRYLibrary.Tests.Testcases
             Assert.AreEqual(input4, inpustList.DownPressed());
             Assert.AreEqual(string.Empty, inpustList.DownPressed());
             Assert.AreEqual(string.Empty, inpustList.DownPressed());
-            
+
             Assert.AreEqual(input4, inpustList.UpPressed());
             Assert.AreEqual(input3, inpustList.UpPressed());
 
             inpustList.EnterPressed(input5);
-            
+
             Assert.AreEqual(input5, inpustList.UpPressed());
             Assert.AreEqual(input4, inpustList.UpPressed());
             Assert.AreEqual(input3, inpustList.UpPressed());

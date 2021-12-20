@@ -62,7 +62,7 @@ namespace GRYLibrary.Core.XMLSerializer
 
         public ISet<Type> GetExtraTypesWhichAreRequiredForSerialization()
         {
-           return new HashSet<Type>();
+            return new HashSet<Type>();
         }
         #endregion
     }

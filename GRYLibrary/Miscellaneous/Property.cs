@@ -188,7 +188,7 @@ namespace GRYLibrary.Core.Miscellaneous
             }
             throw new Exception("Value was not set at moment " + dateTime.ToString("yyyy/MM/dd HH:mm:ss"));
         }
-       }
+    }
     public class PropertyChangedEvengArgument<T>
     {
         internal PropertyChangedEvengArgument(T oldValue, T newValue, DateTime changeMoment)

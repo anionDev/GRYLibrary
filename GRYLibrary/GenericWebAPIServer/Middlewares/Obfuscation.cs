@@ -16,7 +16,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
         public override Task Invoke(HttpContext context)
         {
             // TODO change response to either return 200 (Ok) or else 400 (bad request, because it was a request which did not result in 200).
-            
+
             return _Next(context);
         }
     }

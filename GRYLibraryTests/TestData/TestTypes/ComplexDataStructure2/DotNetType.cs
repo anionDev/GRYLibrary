@@ -8,7 +8,7 @@ namespace GRYLibrary.Tests.TestData.TestTypes.ComplexDataStructure2
         #region Overhead
         public override bool Equals(object @object)
         {
-            return base.Equals( @object);
+            return base.Equals(@object);
         }
 
         public override int GetHashCode()
