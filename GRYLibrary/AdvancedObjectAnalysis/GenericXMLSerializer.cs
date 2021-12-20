@@ -13,6 +13,9 @@ using System.Xml.Serialization;
 
 namespace GRYLibrary.Core.AdvancedXMLSerialysis
 {
+    /// <summary>
+    /// Represents a generic xml-serializer for nearly arbitrary types.
+    /// </summary>
     public class GenericXMLSerializer
     {
         public SerializationConfiguration SerializationConfiguration { get; set; }
