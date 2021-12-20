@@ -26,7 +26,7 @@ namespace GRYLibrary.Core.LogObject.ConcreteLogTargets
             externalProgramExecutor.StartSynchronously();
         }
 
-        public override ISet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization()
+        public override HashSet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization()
         {
             return new HashSet<Type>();
         }

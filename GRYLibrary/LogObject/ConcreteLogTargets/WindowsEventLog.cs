@@ -54,7 +54,7 @@ namespace GRYLibrary.Core.LogObject.ConcreteLogTargets
             }
             throw new KeyNotFoundException($"Loglevel '{logLevel}' is not writeable to windows-eventlog");
         }
-        public override ISet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization()
+        public override HashSet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization()
         {
             return new HashSet<Type>();
         }

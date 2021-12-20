@@ -32,6 +32,8 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using static GRYLibrary.Core.Miscellaneous.TableGenerator;
 using GRYLibrary.Core.Exceptions;
+using System.Security.Cryptography.X509Certificates;
+using NJsonSchema.Validation;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
@@ -74,6 +76,39 @@ namespace GRYLibrary.Core.Miscellaneous
                 action(i);
             }
         }
+
+        public static string NormalizePath(string path)
+        {
+            return OperatingSystem.OperatingSystem.GetCurrentOperatingSystem().Accept(new NormalizePathVisitor(path));
+        }
+
+        private class NormalizePathVisitor : IOperatingSystemVisitor<string>
+        {
+            public readonly char WindowsPathSeparatorChar = Path.DirectorySeparatorChar;
+            public readonly char LinuxAndOSXPathSeparatorChar = Path.AltDirectorySeparatorChar;
+            private readonly string _Path;
+
+            public NormalizePathVisitor(string path)
+            {
+                this._Path = path;
+            }
+
+            public string Handle(OSX operatingSystem)
+            {
+                return _Path.Replace(WindowsPathSeparatorChar, LinuxAndOSXPathSeparatorChar);
+            }
+
+            public string Handle(Windows operatingSystem)
+            {
+                return _Path.Replace(LinuxAndOSXPathSeparatorChar, WindowsPathSeparatorChar);
+            }
+
+            public string Handle(Linux operatingSystem)
+            {
+                return _Path.Replace(WindowsPathSeparatorChar, LinuxAndOSXPathSeparatorChar);
+            }
+        }
+
         /// <summary>
         /// Checks if the given <paramref name="subList"/> is contained in <paramref name="list"/>.
         /// </summary>
@@ -162,6 +197,26 @@ namespace GRYLibrary.Core.Miscellaneous
                 result[i] = ByteArrayToUnsignedInteger32Bit(new byte[] { byteArray[4 * i], byteArray[(4 * i) + 1], byteArray[(4 * i) + 2], byteArray[(4 * i) + 3] });
             }
             return result;
+        }
+
+        public static string Format(ValidationError error)
+        {
+            Dictionary<string, string> values = new();
+
+            values.Add(nameof(error.Kind), error.Kind.ToString());
+            values.Add(nameof(error.Path), error.Path);
+            values.Add(nameof(error.Property), error.Property);
+            if (error.HasLineInfo)
+            {
+                values.Add(nameof(error.LineNumber), error.LineNumber.ToString());
+                values.Add(nameof(error.LinePosition), error.LinePosition.ToString());
+            }
+            return FormatKeyValuePairs(values);
+        }
+
+        public static string FormatKeyValuePairs(Dictionary<string, string> values)
+        {
+            return "{" + string.Join(", ", values.Select(kvp => $"'{kvp.Key}':'{kvp.Value}'")) + "}";
         }
 
         public static void Shuffle<T>(this IList<T> list)
@@ -515,15 +570,13 @@ namespace GRYLibrary.Core.Miscellaneous
         public static void CopyFolderAcrossVolumes(string sourceFolder, string destinationFolder)
         {
             EnsureDirectoryExists(destinationFolder);
-            string[] files = Directory.GetFiles(sourceFolder);
-            foreach (string file in files)
+            foreach (string file in Directory.GetFiles(sourceFolder))
             {
                 string name = Path.GetFileName(file);
                 string destination = Path.Combine(destinationFolder, name);
                 File.Copy(file, destination);
             }
-            string[] folders = Directory.GetDirectories(sourceFolder);
-            foreach (string folder in folders)
+            foreach (string folder in Directory.GetDirectories(sourceFolder))
             {
                 string name = Path.GetFileName(folder);
                 string destination = Path.Combine(destinationFolder, name);
@@ -917,15 +970,36 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         /// <summary>
         /// Casts an object to the given type if possible.
-        /// This can be useful for example to to cast 'Action&lt;Object&gt' to 'Action' or 'Func&lt;string&gt' to 'Func&lt;Object&gt' to fulfil interface-compatibility.
+        /// This can be useful for example to to cast 'Action&lt;Object&gt;' to 'Action' or 'Func&lt;string&gt;' to 'Func&lt;Object&gt;' to fulfil interface-compatibility.
         /// </summary>
-        public static object Cast(object @object, Type targetType)
+        internal /*TODO change to public when it works properly*/ static object Cast(object @object, Type targetType)
         {
-            throw new NotImplementedException(); // TODO call CastHelper using reflection
+            return Cast(@object, targetType, DefaultConversions);
+        }
+        private static readonly IList<object> _DefaultConversions = new List<object>() { /*TODO*/};
+        public static IList<object> DefaultConversions { get { return _DefaultConversions.ToList(); } }
+        public static object Cast(object @object, Type targetType, IList<object> customConversions)
+        {
+            var typeOfObject = @object.GetType();
+            if (typeOfObject.Equals(targetType))
+            {
+                return @object;
+            }
+            foreach (var customConversion in customConversions)
+            {
+                if (TypeComparerIgnoringGenerics.Equals(typeOfObject, (Type)customConversion/*.GetTypeWhichIsApplicable()*/))
+                {
+                    // return customConversion.Convert(@object,typeOfObject);
+                }
+            }
+            var method = typeof(Utilities).GetMethod(nameof(CastHelper), BindingFlags.NonPublic | BindingFlags.Static);
+            method = method.MakeGenericMethod(new Type[] { targetType });
+            return method.Invoke(null, new object[] { @object });
+
         }
         private static T CastHelper<T>(object @object)
         {
-            return (T)@object;
+            return (T)(dynamic)@object;
         }
         public static long GetTotalFreeSpace(string driveName)
         {
@@ -1463,7 +1537,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static bool ValidateXMLAgainstXSD(string xml, XmlSchema xsdDocument, out IList<object> errorMessages)
         {
-            XmlDocument xmlDocument = new XmlDocument();
+            XmlDocument xmlDocument = new();
             xmlDocument.LoadXml(xml);
             return ValidateXMLAgainstXSD(xmlDocument, xsdDocument, out errorMessages);
         }
@@ -1605,7 +1679,7 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             throw new NotImplementedException();
         }
-       
+
         public static string XmlToString(XmlDocument xmlDocument)
         {
             return XmlToString(xmlDocument, new UTF8Encoding(false), XMLWriterDefaultSettings);
@@ -1620,10 +1694,14 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static string XmlToString(XmlDocument xmlDocument, Encoding encoding, XmlWriterSettings xmlWriterSettings)
         {
-            using StringWriterWithEncoding stringWriter = new StringWriterWithEncoding(encoding);
+            using StringWriterWithEncoding stringWriter = new(encoding);
             using XmlWriter xmlWriter = XmlWriter.Create(stringWriter, xmlWriterSettings);
             xmlDocument.Save(xmlWriter);
             return stringWriter.ToString();
+        }
+        public static bool IsSelfSIgned(X509Certificate certificate)
+        {
+            return certificate.Subject.Equals(certificate.Issuer);
         }
         public static void AddMountPointForVolume(Guid volumeId, string mountPoint)
         {
@@ -1708,22 +1786,18 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 throw new Exception($"Exitcode of mountvol was {externalProgramExecutor.ExitCode}. StdErr:" + string.Join(Environment.NewLine, externalProgramExecutor.AllStdErrLines));
             }
-            for (int i = 0; i < externalProgramExecutor.AllStdOutLines.Length; i++)
+
+            for (int indexOfCurrentLine = 0; indexOfCurrentLine < externalProgramExecutor.AllStdOutLines.Length - 1; indexOfCurrentLine++)
             {
-                string line = externalProgramExecutor.AllStdOutLines[i].Trim();
+                string line = externalProgramExecutor.AllStdOutLines[indexOfCurrentLine].Trim();
                 if (line.StartsWith($"\\\\?\\Volume{{{volumeId}}}\\"))
                 {
-                    int j = i;
-                    do
+                    int indexOfNextLine = indexOfCurrentLine + 1;
+                    string mountPath = externalProgramExecutor.AllStdOutLines[indexOfNextLine].Trim();
+                    if (Directory.Exists(mountPath))
                     {
-                        j += 1;
-                        string mountPath = externalProgramExecutor.AllStdOutLines[j].Trim();
-                        if (Directory.Exists(mountPath))
-                        {
-                            result.Add(mountPath);
-                        }
-                    } while (!string.IsNullOrWhiteSpace(externalProgramExecutor.AllStdOutLines[j]));
-                    return result;
+                        result.Add(mountPath);
+                    }
                 }
             }
             return result;
@@ -2191,7 +2265,7 @@ namespace GRYLibrary.Core.Miscellaneous
                 return ReferenceEquals(item1, item2);
             }
             Type type = item1.GetType();
-            if (!type.Equals(item2.GetType()))//TODO ignore generics here when type is keyvaluepair
+            if (!TypeComparerIgnoringGenerics.Equals(type, item2.GetType()))//TODO ignore generics here when type is keyvaluepair
             {
                 return false;
             }
@@ -2205,6 +2279,16 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 return item1.Equals(item2);
             }
+        }
+
+        private static (string, string) GetBaseTypeInformation(Type type)
+        {
+            string name = type.Name;
+            if (name.Contains("`"))
+            {
+                name = name.Split('`')[0];
+            }
+            return (name, type.Namespace);
         }
 
         public static bool HasValueType(object @object)

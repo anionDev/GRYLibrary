@@ -57,7 +57,7 @@ namespace GRYLibrary.Core.LogObject.ConcreteLogTargets
             this._Pool.Clear();
         }
 
-        public override ISet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization()
+        public override HashSet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization()
         {
             return new HashSet<Type>();
         }
