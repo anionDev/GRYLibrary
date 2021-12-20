@@ -7,7 +7,7 @@ namespace GRYLibrary.Tests.TestData.TestTypes.XMLSerializableType
 {
     public class TypeWithEnumerable : IXmlSerializable
     {
-       public System.Collections.IEnumerable Enumerable { get; set; }
+        public System.Collections.IEnumerable Enumerable { get; set; }
 
         #region Overhead
         public override bool Equals(object @object)

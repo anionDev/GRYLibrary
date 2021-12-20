@@ -20,7 +20,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
             // - the json-/xml-payload is syntactically invalid or
             // - an xml-payload uses external entities or
             // - the response is much longer than expected/allowed (must be configured by the application which is using this middleware)
-            
+
             return _Next(context);
         }
     }

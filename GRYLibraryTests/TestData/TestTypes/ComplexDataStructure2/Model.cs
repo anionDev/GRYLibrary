@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 
 namespace GRYLibrary.Tests.TestData.TestTypes.ComplexDataStructure2
 {
-    public class Model:IXmlSerializable
+    public class Model : IXmlSerializable
     {
         public ISet<ModelType> Types { get; set; } = new HashSet<ModelType>();
         #region Overhead

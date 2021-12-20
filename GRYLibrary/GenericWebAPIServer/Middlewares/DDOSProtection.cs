@@ -6,10 +6,10 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     /// <summary>
     /// Represents a DDOS-proection.
     /// </summary>
-    public class DDOSProtection: AbstractMiddleware
+    public class DDOSProtection : AbstractMiddleware
     {
         /// <inheritdoc>/>
-        public DDOSProtection(RequestDelegate next):base(next)
+        public DDOSProtection(RequestDelegate next) : base(next)
         {
         }
         /// <inheritdoc>/>

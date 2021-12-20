@@ -5,9 +5,9 @@ namespace GRYLibrary.Core.GenericWebAPIServer
     public class AdministrationSettings : IAdministrationSettings
     {
         /// <inheritdoc/>
-        public string ProgramName { get;  }
+        public string ProgramName { get; }
         /// <inheritdoc/>
-        public Version ProgramVersion { get;  }
+        public Version ProgramVersion { get; }
         /// <inheritdoc/>
         public IEnvironment Environment { get; }
         public string ConfigurationFolder { get; }

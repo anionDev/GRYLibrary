@@ -9,7 +9,7 @@ namespace GRYLibrary.Tests.TestData.TestTypes.ComplexDataStructure
         public string Surname { get; set; }
         public string ContactPhoneNumber { get; set; }
         public Address MainResidence { get; set; }
-        public DateTime DateOfBirth { get ; set; }
+        public DateTime DateOfBirth { get; set; }
 
         internal static ICustomer GetRandom()
         {
