@@ -1,12 +1,12 @@
-﻿using System;
+﻿using GRYLibrary.Core.Miscellaneous.CustomDisposables;
 
 namespace GRYLibrary.Core.LogObject
 {
-    public class GRYLogSubNamespaceProvider : IDisposable
+    public class GRYLogSubNamespaceProvider : CustomDisposable
     {
         private readonly GRYLog _LogObject;
         private readonly string _SubNamespace;
-        public readonly string _OriginalNamespace;
+        private readonly string _OriginalNamespace;
 
         public GRYLogSubNamespaceProvider(GRYLog logObject, string subnamespace)
         {
@@ -27,12 +27,7 @@ namespace GRYLibrary.Core.LogObject
                 }
                 this._LogObject.Configuration.Name = $"{prefix}{this._SubNamespace}";
             }
-        }
-
-        public void Dispose()
-        {
-            this._LogObject.Configuration.Name = this._OriginalNamespace;
+            this.DisposeAction = () => this._LogObject.Configuration.Name = this._OriginalNamespace;
         }
     }
-
 }

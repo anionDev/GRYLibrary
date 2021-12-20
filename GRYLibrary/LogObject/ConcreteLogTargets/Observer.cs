@@ -8,7 +8,7 @@ namespace GRYLibrary.Core.LogObject.ConcreteLogTargets
     {
         public Observer() { }
 
-        public override ISet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization()
+        public override HashSet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization()
         {
             return new HashSet<Type>();
         }

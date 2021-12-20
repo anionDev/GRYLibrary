@@ -26,8 +26,14 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
             GRYSObject result = new()
             {
                 Objects = new HashSet<FlatObject>(dictionary.Values),
-                RootObjectId = dictionary[@object].ObjectId
             };
+            foreach (var key in dictionary.Keys)
+            {
+                if (key == @object)
+                {
+                    result.RootObjectId = dictionary[@object].ObjectId;
+                }
+            }
             return result;
         }
 
@@ -41,7 +47,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
             if (EnumerableTools.ObjectIsKeyValuePair(@object))
             {
                 KeyValuePair<object, object> kvp = EnumerableTools.ObjectToKeyValuePair<object, object>(@object);
-                @object = new XMLSerializer.KeyValuePair<object, object>(kvp.Key, kvp.Value);
+                @object = new XMLSerializer.KeyValuePair<dynamic, dynamic>(kvp.Key, kvp.Value);
             }
             if (dictionary.ContainsKey(@object))
             {
@@ -87,13 +93,21 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
                     PropertyInfo property = typeOfObject.GetProperty(attribute.Name);
                     if (property != null)
                     {
-                        if (attribute.ObjectId.Equals(default))
+                        if (property.PropertyType.Equals(typeof(Type)))
                         {
-                            property.SetValue(@object, Utilities.GetDefault(property.PropertyType));
+                            property.SetValue(@object, Type.GetType(this._DeserializedObjects[attribute.ObjectId].ToString()));
                         }
                         else
                         {
-                            property.SetValue(@object, this._DeserializedObjects[attribute.ObjectId]);
+                            if (attribute.ObjectId.Equals(default))
+                            {
+                                property.SetValue(@object, Utilities.GetDefault(property.PropertyType));
+                            }
+                            else
+                            {
+                                property.SetValue(@object, this._DeserializedObjects[attribute.ObjectId]);
+                            }
+
                         }
                         continue;
                     }
@@ -285,8 +299,11 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
             {
                 if (Utilities.IsAssignableFrom(this._Object, typeof(Type)))
                 {
-                    simplifiedPrimitive.TypeName = typeof(Type).AssemblyQualifiedName;
                     simplifiedPrimitive.Value = ((Type)this._Object).AssemblyQualifiedName;
+                }
+                else if (this._Object.GetType().IsEnum)
+                {
+                    simplifiedPrimitive.Value = (int)this._Object;
                 }
                 else
                 {

@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 
@@ -97,12 +98,21 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis
             }
             return stringWriter.ToString();
         }
+
+        internal static void GenericSerializeToFile(object @object, string file)
+        {
+            File.WriteAllBytes(file, new UTF8Encoding(false).GetBytes(GenericSerialize(@object)));
+        }
         public static T GenericDeserialize<T>(string serializedObject)
         {
             using XmlReader xmlReader = XmlReader.Create(new StringReader(serializedObject));
             T result = (T)Activator.CreateInstance(typeof(T));
             GenericReadXml(result, xmlReader);
             return result;
+        }
+        public static T GenericDeserializeFromFile<T>(string file)
+        {
+            return GenericDeserialize<T>(new UTF8Encoding(false).GetString(File.ReadAllBytes(file)));
         }
     }
 }

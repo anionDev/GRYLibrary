@@ -55,9 +55,21 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             return TypeIsDictionary(@object.GetType());
         }
-        public static void AddItemToEnumerable(object enumerable, object[] addMethodArgument)
+        public static void AddItemToEnumerable(object enumerable, object[] addMethodArguments)
         {
-            enumerable.GetType().GetMethod("Add").Invoke(enumerable, addMethodArgument);
+            List<object> castedArguments = new List<object>();
+            var addMethod = enumerable.GetType().GetMethod("Add");
+            Utilities.AssertCondition(addMethod.GetParameters().Length == addMethodArguments.Length);
+            for (int i = 0; i < addMethodArguments.Length; i++)
+            {
+                object argument = addMethodArguments[i];
+                if (argument != null)
+                {
+                    argument = Utilities.Cast(addMethodArguments[i], addMethod.GetParameters()[i].ParameterType);
+                }
+                castedArguments.Add(argument);
+            }
+            enumerable.GetType().GetMethod("Add").Invoke(enumerable, castedArguments.ToArray());
         }
         public static bool TypeIsDictionary(this Type type)
         {
