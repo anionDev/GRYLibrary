@@ -31,7 +31,7 @@ The GRYLibrary-reference can be found [here](https://aniondev.github.io/GRYLibra
 
 ### Platform
 
-The latest NuGet-package is designed for .NET 5.0.
+The latest NuGet-package is designed for .NET 6.0.
 
 ### Signing
 
