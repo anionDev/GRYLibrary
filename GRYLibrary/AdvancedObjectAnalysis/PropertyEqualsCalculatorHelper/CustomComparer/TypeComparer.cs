@@ -28,7 +28,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper.
 
         public override bool IsApplicable(Type typeOfObject1, Type typeOfObject2)
         {
-            return Miscellaneous.Utilities.TypeIsAssignableFrom(typeOfObject1, typeof(Type))&&Miscellaneous.Utilities.TypeIsAssignableFrom(typeOfObject2, typeof(Type));
+            return Miscellaneous.Utilities.TypeIsAssignableFrom(typeOfObject1, typeof(Type)) && Miscellaneous.Utilities.TypeIsAssignableFrom(typeOfObject2, typeof(Type));
         }
     }
 }

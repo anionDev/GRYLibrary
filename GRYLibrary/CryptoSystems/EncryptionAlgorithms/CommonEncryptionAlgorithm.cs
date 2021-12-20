@@ -2,11 +2,11 @@
 
 namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms
 {
-    public abstract class CommonEncryptionAlgorithm: EncryptionAlgorithm
+    public abstract class CommonEncryptionAlgorithm : EncryptionAlgorithm
     {
         /// <summary>
-         /// Use this function to encrypt data.
-         /// </summary>
+        /// Use this function to encrypt data.
+        /// </summary>
         public abstract byte[] Encrypt(byte[] unencryptedData, byte[] password);
         public string Encrypt(string unencryptedData, string password)
         {

@@ -2,7 +2,7 @@
 
 namespace GRYLibrary.Tests.TestData.TestTypes.ComplexDataStructure
 {
-    public interface IPerson 
+    public interface IPerson
     {
         public string Forename { get; set; }
         public string Surname { get; set; }

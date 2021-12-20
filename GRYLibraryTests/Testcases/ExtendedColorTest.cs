@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace GRYLibrary.Tests.Testcases
 {
     [TestClass]
-   public class ExtendedColorTest
+    public class ExtendedColorTest
     {
         [TestMethod]
         public void ExtendedColorTest1()
@@ -28,13 +28,13 @@ namespace GRYLibrary.Tests.Testcases
             byte testValueG = 0;
             byte testValueB = 10;
 
-            ExtendedColor color = new(testValueA,testValueR,testValueG,testValueB);
+            ExtendedColor color = new(testValueA, testValueR, testValueG, testValueB);
             Assert.AreEqual(-922812406, color.ColorCode);
             Assert.AreEqual(testValueA, color.A);
             Assert.AreEqual(testValueR, color.R);
             Assert.AreEqual(testValueG, color.G);
             Assert.AreEqual(testValueB, color.B);
-            Assert.AreEqual(System.Drawing.Color.FromArgb(testValueA,testValueR,testValueG,testValueB), color.DrawingColor);
+            Assert.AreEqual(System.Drawing.Color.FromArgb(testValueA, testValueR, testValueG, testValueB), color.DrawingColor);
             Assert.AreEqual("C8FF000A", color.GetARGBString());
             Assert.AreEqual("FF000A", color.GetRGBString());
             Assert.AreEqual("ExtendedColor(A=200,R=255,G=0,B=10)", color.ToString());

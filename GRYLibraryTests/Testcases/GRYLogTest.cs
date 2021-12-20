@@ -27,10 +27,10 @@ namespace GRYLibrary.Tests.Testcases
             Assert.AreEqual("Processed 003/122 items (2,46%)", logObject.ProcessedLogItems[1].PlainMessage);
             Assert.AreEqual("Processed 73/73 items (100%)", logObject.ProcessedLogItems[2].PlainMessage);
         }
-            [TestMethod]
-            public void TestLogFileWithRelativePath()
-            {
-                string logFile = "logfile.log";
+        [TestMethod]
+        public void TestLogFileWithRelativePath()
+        {
+            string logFile = "logfile.log";
             Core.Miscellaneous.Utilities.EnsureFileDoesNotExist(logFile);
             try
             {
