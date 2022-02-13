@@ -1409,37 +1409,42 @@ namespace GRYLibrary.Core.Miscellaneous
             return item;
         }
 
-        public static IList<string[]> ReadCSVFile(string file, out string[] headLines, string separator = ";", bool firstLineContainsHeadlines = false, bool trimValues = true)
+        public static IList<string[]> ReadCSVFile(string file, out string[] headLines, string separator = ";", bool firstLineContainsHeadlines = false, bool trimValues = true, bool treatHashAsComment = false)
         {
-            return ReadCSVFile(file, new UTF8Encoding(false), out headLines, separator, firstLineContainsHeadlines, trimValues);
+            return ReadCSVFile(file, new UTF8Encoding(false), out headLines, separator, firstLineContainsHeadlines, trimValues, treatHashAsComment);
         }
-        public static IList<string[]> ReadCSVFile(string file, Encoding encoding, out string[] headLines, string separator = ";", bool firstLineContainsHeadlines = false, bool trimValues = true)
+        public static IList<string[]> ReadCSVFile(string file, Encoding encoding, out string[] headLines, string separator = ";", bool firstLineContainsHeadlines = false, bool trimValues = true, bool treatHashAsComment = false)
         {
             List<string[]> outterList = new();
             string[] lines = File.ReadAllLines(file, encoding);
             List<string> headlineValues = new();
+            bool isFirstLine = true;
             for (int i = 0; i < lines.Length; i++)
             {
                 string line = lines[i].Trim();
-                if (i == 0 && firstLineContainsHeadlines)
+                if (!(treatHashAsComment && line.StartsWith("#")))
                 {
-                    headlineValues.AddRange(line.Split(new string[] { separator }, StringSplitOptions.None).Select(item => NormalizeCSVItemForReading(item, trimValues)));
-                }
-                else
-                {
-                    if (!string.IsNullOrEmpty(line))
+                    if (isFirstLine && firstLineContainsHeadlines)
                     {
-                        List<string> innerList = new();
-                        if (line.Contains(separator))
-                        {
-                            innerList.AddRange(line.Split(new string[] { separator }, StringSplitOptions.None).Select(item => NormalizeCSVItemForReading(item, trimValues)));
-                        }
-                        else
-                        {
-                            innerList.Add(line);
-                        }
-                        outterList.Add(innerList.ToArray());
+                        headlineValues.AddRange(line.Split(new string[] { separator }, StringSplitOptions.None).Select(item => NormalizeCSVItemForReading(item, trimValues)));
                     }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(line))
+                        {
+                            List<string> innerList = new();
+                            if (line.Contains(separator))
+                            {
+                                innerList.AddRange(line.Split(new string[] { separator }, StringSplitOptions.None).Select(item => NormalizeCSVItemForReading(item, trimValues)));
+                            }
+                            else
+                            {
+                                innerList.Add(line);
+                            }
+                            outterList.Add(innerList.ToArray());
+                        }
+                    }
+                    isFirstLine = false;
                 }
             }
             if (firstLineContainsHeadlines)
