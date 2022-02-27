@@ -15,7 +15,7 @@ namespace GRYLibrary.Core.Miscellaneous.Healthcheck
         {
             this.File = file;
         }
-        public void SetState(HealthcheckValue value)
+        public void SetState(HealthcheckValue value, string message = "")
         {
             Utilities.EnsureFileExists(File);
             string text;
@@ -28,11 +28,15 @@ namespace GRYLibrary.Core.Miscellaneous.Healthcheck
                 text = string.Empty;
             }
             text = text + Enum.GetName(typeof(HealthcheckValue), value);
+            if (!string.IsNullOrWhiteSpace(message))
+            {
+                text = $"{text} ({message})";
+            }
             Utilities.AppendLineToFile(File, text, Encoding);
         }
         public void Dispose()
         {
-            SetState(HealthcheckValue.NotRunning);
+            SetState(HealthcheckValue.NotRunning, "Disposed");
         }
     }
 }
