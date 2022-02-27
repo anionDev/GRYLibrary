@@ -2,14 +2,15 @@ Copyright © 2021 Marius Göcke
 
 GRYLibrary itself is licensed under the terms of the GRYLibrary-License version 1.7 (see appendix 1).
 GRYLibrary uses dependencies which are released under their own license:
+ - Microsoft.AspNetCore.Http is licensed under the terms of the Apache-license version 2.0 (see appendix 3)
  - Microsoft.CSharp is licensed under the terms of the MIT-license (see appendix 2)
+ - Microsoft.Extensions.Logging.Abstractions is licensed under the MIT-license (see appendix 2)
  - Microsoft.Extensions.Logging.EventLog is licensed under the terms of the Apache-license version 2.0 (see appendix 3)
  - Microsoft.Win32.Registry is licensed under the terms of the MIT-license (see appendix 2)
- - System.Collections.Immutable is licensed under the terms of the MIT-license (see appendix 2)
- - System.Reactive is licensed under the terms of the MIT-license (see appendix 2)
  - NJsonSchema is licensed under the terms of the MIT-license (see appendix 2)
  - NSwag.AspNetCore is licensed under the terms of the MIT-license (see appendix 2)
- - Microsoft.AspNetCore.Http is licensed under the terms of the Apache-license version 2.0 (see appendix 3)
+ - System.Collections.Immutable is licensed under the terms of the MIT-license (see appendix 2)
+ - System.Reactive is licensed under the terms of the MIT-license (see appendix 2)
 
 ----------------------------------------------------------------------
 Appendix 1:
