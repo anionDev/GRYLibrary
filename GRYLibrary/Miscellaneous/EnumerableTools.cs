@@ -59,13 +59,13 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             List<object> castedArguments = new List<object>();
             var addMethod = enumerable.GetType().GetMethod("Add");
-            Utilities.AssertCondition(addMethod.GetParameters().Length == addMethodArguments.Length);
+            AssertCondition(addMethod.GetParameters().Length == addMethodArguments.Length);
             for (int i = 0; i < addMethodArguments.Length; i++)
             {
                 object argument = addMethodArguments[i];
                 if (argument != null)
                 {
-                    argument = Utilities.Cast(addMethodArguments[i], addMethod.GetParameters()[i].ParameterType);
+                    argument = Cast(addMethodArguments[i], addMethod.GetParameters()[i].ParameterType);
                 }
                 castedArguments.Add(argument);
             }
