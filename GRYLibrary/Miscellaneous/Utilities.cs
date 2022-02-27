@@ -547,6 +547,35 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             return $"{Math.Floor(timespan.TotalHours).ToString().PadLeft(2, '0')}:{timespan.Minutes.ToString().PadLeft(2, '0')}:{timespan.Seconds.ToString().PadLeft(2, '0')}";
         }
+        public static string DateTimeToISO8601String(DateTime dateTime, bool addMilliseconds = true)
+        {
+            string format;
+            if (addMilliseconds)
+            {
+                format = "yyyy-MM-dd'T'HH:mm:ss,fff";
+            }
+            else
+            {
+                format = "yyyy-MM-dd'T'HH:mm:ss";
+            }
+            return dateTime.ToString(format, CultureInfo.InvariantCulture);
+        }
+        public static string DateTimeToUserFriendlyString(DateTime dateTime)
+        {
+            return DateTimeToISO8601String(dateTime, false);
+        }
+        public static string DateTimeForFilename(DateTime dateTime)
+        {
+            return dateTime.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture);
+        }
+        public static string DateToUserFriendlyString(DateOnly date)
+        {
+            return $"{date.Year.ToString().PadLeft(4, '0')}-{date.Month.ToString().PadLeft(2, '0')}-{date.Day.ToString().PadLeft(2, '0')}";
+        }
+        public static string TimeToUserFriendlyString(TimeOnly time)
+        {
+            return $"{time.Hour.ToString().PadLeft(2, '0')}:{time.Minute.ToString().PadLeft(2, '0')}:{time.Second.ToString().PadLeft(2, '0')}";
+        }
 
         public static void EnsureDirectoryDoesNotExist(string path)
         {
@@ -1062,6 +1091,20 @@ namespace GRYLibrary.Core.Miscellaneous
         public static bool AppendFileDoesNeedNewLineCharacter(string file)
         {
             return !AppendFileDoesNotNeedNewLineCharacter(file);
+        }
+        public static void AppendLineToFile(string file, string content, Encoding encoding)
+        {
+            string stringToAppend;
+            if (AppendFileDoesNeedNewLineCharacter(file))
+            {
+                stringToAppend = "\n";
+            }
+            else
+            {
+                stringToAppend = string.Empty;
+            }
+            stringToAppend = stringToAppend + content;
+            File.AppendAllText(file, stringToAppend, encoding);
         }
         public static bool IsRelativePath(string path)
         {
