@@ -686,5 +686,14 @@ namespace GRYLibrary.Tests.Testcases
             Assert.AreNotEqual(testObject, actualObject);
             Assert.AreEqual(expectedObject, actualObject);
         }
+        [TestMethod]
+        public void DateAndTimeToStringTest()
+        {
+            Assert.AreEqual("2022-02-27_15-05-00", Core.Miscellaneous.Utilities.DateTimeForFilename(new DateTime(2022, 02, 27, 15, 05, 00)));
+            Assert.AreEqual("2022-02-27T15:05:00,120", Core.Miscellaneous.Utilities.DateTimeToISO8601String(new DateTime(2022, 02, 27, 15, 05, 00, 120)));
+            Assert.AreEqual("2022-02-27T15:05:00", Core.Miscellaneous.Utilities.DateTimeToUserFriendlyString(new DateTime(2022, 02, 27, 15, 05, 00)));
+            Assert.AreEqual("2022-02-27", Core.Miscellaneous.Utilities.DateToUserFriendlyString(new DateOnly(2022, 02, 27)));
+            Assert.AreEqual("15:05:00", Core.Miscellaneous.Utilities.TimeToUserFriendlyString(new TimeOnly(15, 05, 00)));
+        }
     }
 }
