@@ -1767,7 +1767,7 @@ namespace GRYLibrary.Core.Miscellaneous
             externalProgramExecutor.StartSynchronously();
             if (externalProgramExecutor.ExitCode != 0)
             {
-                throw new Exception($"Exitcode of mountvol was {externalProgramExecutor.ExitCode}. StdErr:" + string.Join(Environment.NewLine, externalProgramExecutor.AllStdErrLines));
+                throw new Exception($"Exitcode of mountvol was {externalProgramExecutor.ExitCode}. StdOut:"+ string.Join(Environment.NewLine, externalProgramExecutor.AllStdOutLines) + "; StdErr:" + string.Join(Environment.NewLine, externalProgramExecutor.AllStdErrLines));
             }
         }
         public static ISet<Guid> GetAvailableVolumeIds()
@@ -1861,7 +1861,7 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             using ExternalProgramExecutor externalProgramExecutor = new("mountvol", $"{mountPoint} /d")
             {
-                ThrowErrorIfExitCodeIsNotZero = true,
+                ThrowErrorIfExitCodeIsNotZero = false,
                 CreateWindow = false
             };
             externalProgramExecutor.StartSynchronously();
@@ -1869,7 +1869,7 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 throw new Exception($"Exitcode of mountvol was {externalProgramExecutor.ExitCode}. StdErr:{Environment.NewLine}" + string.Join(Environment.NewLine, externalProgramExecutor.AllStdErrLines));
             }
-            if (mountPoint.Length > 3)
+            if (mountPoint.Length > 3)//if mountpoint is something like "C:\Folder\MyMountPoint" (and not something like "H:\") then remove the folder "MyMountPoint"
             {
                 EnsureDirectoryDoesNotExist(mountPoint);
             }
