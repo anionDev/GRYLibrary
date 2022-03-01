@@ -28,7 +28,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public ExtendedColor(byte a, byte r, byte g, byte b) : this(Color.FromArgb(a, r, g, b).ToArgb())
         {
         }
-        public ExtendedColor(byte r, byte g, byte b) : this(255, r, b, g)
+        public ExtendedColor(byte r, byte g, byte b) : this(255, r, g, b)
         {
         }
         public ExtendedColor(int colorCode)
