@@ -592,6 +592,24 @@ namespace GRYLibrary.Core.Miscellaneous
                 File.Delete(path);
             }
         }
+
+        public static bool IsSymbolicLink(string file)
+        {
+            if (File.Exists(file))
+            {
+                return FileHasAttribute(file, FileAttributes.ReparsePoint);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static bool FileHasAttribute(string file, FileAttributes attribute)
+        {
+            return (File.GetAttributes(file) & attribute) == attribute;
+        }
+
         public static string TypeArrayToString(Type[] types)
         {
             return string.Format("{{{0}}}", string.Join(", ", types.Select((type) => type.Name)));
