@@ -15,11 +15,11 @@ def run_testcases_for_csharp_project(sc:ScriptCollectionCore,repository_folder:s
     GeneralUtilities.ensure_file_does_not_exist(l2)
     os.rename(l1,l2)
 
-def RunTestcasesStarter():
+def run_testcases():
     sc=ScriptCollectionCore()
     repository_folder=str(Path(os.path.dirname(__file__)).parent.absolute())
     run_testcases_for_csharp_project(sc,repository_folder)
     sc.generate_coverage_report(repository_folder)
 
 if __name__=="__main__":
-    RunTestcasesStarter()
+    run_testcases()
