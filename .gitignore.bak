@@ -3,6 +3,7 @@ Other/TestCoverage/Report/*
 Other/Badges/TestCoverage/*
 !Other/Badges/TestCoverage/badge_shieldsio_linecoverage_blue.svg
 
+GRYLibraryTests/GRYLibrary.TestCoverage.opencover.xml
 Other/ReferenceArticles/api/.manifest
 Other/ReferenceArticles/api/*.yml
 

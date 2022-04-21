@@ -17,6 +17,7 @@
 	<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 	<Nullable>disable</Nullable>
 	<Configurations>Development;Productive;QualityCheck</Configurations>
+    <IsTestProject>false</IsTestProject>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|AnyCPU'">
@@ -79,7 +80,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="6.0.0" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
     <PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
     <PackageReference Include="NJsonSchema" Version="10.6.10" />
     <PackageReference Include="NSwag.AspNetCore" Version="13.15.10" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
