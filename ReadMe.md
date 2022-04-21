@@ -1,7 +1,7 @@
 ﻿# GRYLibrary
 
 [![CodeFactor](https://www.codefactor.io/repository/github/aniondev/grylibrary/badge/main)](https://www.codefactor.io/repository/github/aniondev/grylibrary/overview/main)
-![Coverage](./Other/Badges/badge_shieldsio_linecoverage_blue.svg)
+![Coverage](./Other/Badges/TestCoverage/badge_shieldsio_linecoverage_blue.svg)
 ![GitHub last commit](https://img.shields.io/github/last-commit/anionDev/GRYLibrary)
 ![Lines of code](https://img.shields.io/tokei/lines/github/anionDev/GRYLibrary)
 
