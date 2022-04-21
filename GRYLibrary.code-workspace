@@ -30,6 +30,7 @@
 	},
 	"settings": {
 		"files.exclude": {
+			".coverage": true,
 			"GRYLibrary/bin": true,
 			"GRYLibrary/obj": true,
 			"GRYLibraryTests/bin": true,
