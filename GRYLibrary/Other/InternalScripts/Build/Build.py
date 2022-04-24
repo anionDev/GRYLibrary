@@ -23,10 +23,13 @@ def dotnet_sign_file(self:ScriptCollectionCore,file:str, keyfile:str):
     os.remove(directory+os.path.sep+filename+".res")
 
 def standardized_tasks_build_for_dotnet_create_package(self:ScriptCollectionCore,repository:str,codeunitname:str,outputfolder:str,push:bool,push_options:str):
-    self.run_program("nuget", f"pack {repository}.nuspec",os.path.join(repository,codeunitname,"Other","InternalScripts","Build"))
+    build_folder=os.path.join(repository,codeunitname,"Other","InternalScripts","Build")
+    nupkg_file=f"{build_folder}/{codeunitname}.nupkg"
+    GeneralUtilities.ensure_file_does_not_exist(nupkg_file)
+    self.run_program("nuget", f"pack {codeunitname}.nuspec",build_folder)
     GeneralUtilities.ensure_directory_does_not_exist(outputfolder)
     GeneralUtilities.ensure_directory_exists(outputfolder)
-    os.rename(f"{codeunitname}.nuspec",f"Result/{codeunitname}.nuspec")
+    os.rename(nupkg_file,f"{build_folder}/Result/{codeunitname}.nupkg")
 
 
     if push:
