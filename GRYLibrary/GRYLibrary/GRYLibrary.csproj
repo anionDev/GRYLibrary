@@ -2,9 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <PreserveCompilationContext>false</PreserveCompilationContext>
     <Version>0.11.21</Version>
     <Authors>Marius Göcke</Authors>
-    <Copyright>Copyright © 2021 Marius Göcke</Copyright>
+    <Copyright>Copyright © 2022 Marius Göcke</Copyright>
     <Description>The GRYLibrary is a collection with some useful .NET classes and functions which are very easy (re)usable.</Description>
     <OutputType>Library</OutputType>
     <PackageProjectUrl>https://github.com/anionDev/GRYLibrary</PackageProjectUrl>
