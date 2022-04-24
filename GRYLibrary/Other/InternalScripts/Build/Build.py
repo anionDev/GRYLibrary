@@ -26,7 +26,7 @@ def standardized_tasks_build_for_dotnet_create_package(self:ScriptCollectionCore
     self.run_program("nuget", f"pack {repository}.nuspec",os.path.join(repository,codeunitname,"Other","InternalScripts","Build"))
     GeneralUtilities.ensure_directory_does_not_exist(outputfolder)
     GeneralUtilities.ensure_directory_exists(outputfolder)
-    os.rename(f"{codeunitname}.nuspec","Result/{codeunitname}.nuspec")
+    os.rename(f"{codeunitname}.nuspec",f"Result/{codeunitname}.nuspec")
 
 
     if push:
