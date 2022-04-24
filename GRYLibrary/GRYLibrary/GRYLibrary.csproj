@@ -87,7 +87,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="cp -f &quot;$(ProjectDir)..\License.txt&quot; &quot;$(OutDir)GRYLibrary.License.txt&quot;" />
+    <Exec Command="cp -f &quot;$(ProjectDir)..\..\License.txt&quot; &quot;$(OutDir)GRYLibrary.License.txt&quot;" />
   </Target>
 
 </Project>

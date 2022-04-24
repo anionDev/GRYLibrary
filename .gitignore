@@ -1,7 +1,7 @@
-Other/TestCoverage/Report/*
-!Other/TestCoverage/Report/.gitignore
-Other/Badges/TestCoverage/*
-!Other/Badges/TestCoverage/badge_shieldsio_linecoverage_blue.svg
+GRYLibrary/Other/TestCoverage/Report/*
+!GRYLibrary/Other/TestCoverage/Report/.gitignore
+GRYLibrary/Other/TestCoverage/Badges/*
+!GRYLibrary/Other/TestCoverage/Badges/badge_shieldsio_linecoverage_blue.svg
 
 GRYLibraryTests/TestCoverage.xml
 

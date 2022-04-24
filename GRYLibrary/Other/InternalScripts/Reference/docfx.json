@@ -1,0 +1,63 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": [
+            "GRYLibrary.csproj"
+          ],
+          "src":"../../../GRYLibrary"
+        }
+      ],
+      "dest": "./Result",
+      "disableGitFeatures": true,
+      "disableDefaultFilter": false
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [
+          "**.md",
+          "**.yml"
+        ],
+        "src":"../../ReferenceArticles"
+      },
+      {
+       "files": [
+          "**.yml"
+        ],
+        "src":"../../ReferenceArticles/api",
+        "dest":"api"
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "images/**"
+        ],
+        "src":"../../ReferenceArticles"
+      }
+    ],
+    "overwrite": [
+      {
+        "files": [
+        ],
+        "exclude": [
+        ]
+      }
+    ],
+    "dest": "./Reference",
+    "globalMetadataFiles": [],
+    "fileMetadataFiles": [],
+    "template": [
+      "default"
+    ],
+    "postProcessors": [],
+    "markdownEngineName": "markdig",
+    "noLangKeyword": false,
+    "keepFileLink": false,
+    "cleanupCacheHistory": true,
+    "disableGitFeatures": true
+  }
+}

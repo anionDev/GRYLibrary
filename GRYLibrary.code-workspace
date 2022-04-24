@@ -8,9 +8,27 @@
 		"version": "2.0.0",
 		"tasks": [
 			{
-				"label": "Run testcases",
+				"label": "GRYLibrary: Run testcases",
 				"command": "python",
-				"args": ["InternalScripts/RunTestcases.py"],
+				"args": ["${workspaceFolder}/GRYLibrary/Other/InternalScripts/QualityCheck/RunTestcases.py"],
+				"type": "shell",
+			},
+			{
+				"label": "GRYLibrary: Linting",
+				"command": "python",
+				"args": ["${workspaceFolder}/GRYLibrary/Other/InternalScripts/QualityCheck/Linting.py"],
+				"type": "shell",
+			},
+			{
+				"label": "GRYLibrary: Generate reference",
+				"command": "python",
+				"args": ["${workspaceFolder}/GRYLibrary/Other/InternalScripts/Reference/GenerateReference.py"],
+				"type": "shell",
+			},
+			{
+				"label": "GRYLibrary: Build",
+				"command": "python",
+				"args": ["${workspaceFolder}/GRYLibrary/Other/InternalScripts/Build/Build.py"],
 				"type": "shell",
 			}
 		]
@@ -23,7 +41,6 @@
 				"type": "python",
 				"request": "launch",
 				"program": "${file}",
-				"args": [],
 				"console": "integratedTerminal"
 			}
 		]
