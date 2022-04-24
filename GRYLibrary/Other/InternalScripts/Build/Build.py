@@ -1,8 +1,9 @@
 import os
+import sys
 from pathlib import Path
+from lxml import etree
 from ScriptCollection.ScriptCollectionCore import ScriptCollectionCore
 from ScriptCollection.GeneralUtilities import GeneralUtilities
-import sys
 
 def dotnet_sign_file(self:ScriptCollectionCore,file:str, keyfile:str):
     directory=os.path.dirname(file)
@@ -23,19 +24,24 @@ def dotnet_sign_file(self:ScriptCollectionCore,file:str, keyfile:str):
     os.remove(directory+os.path.sep+filename+".res")
 
 def standardized_tasks_build_for_dotnet_create_package(self:ScriptCollectionCore,repository:str,codeunitname:str,outputfolder:str,push:bool,push_options:str):
+    #TODO update version in nuspec-file
     build_folder=os.path.join(repository,codeunitname,"Other","InternalScripts","Build")
-    nupkg_file=f"{build_folder}/{codeunitname}.nupkg"
+    root: etree._ElementTree = etree.parse(os.path.join(build_folder, f"{codeunitname}.nuspec"))
+    version=root.xpath("//*[name() = 'package']/*[name() = 'metadata']/*[name() = 'version']/text()")[0]
+    nupkg_filename=f"{codeunitname}.{version}.nupkg"
+    nupkg_file=f"{build_folder}/{nupkg_filename}"
     GeneralUtilities.ensure_file_does_not_exist(nupkg_file)
     self.run_program("nuget", f"pack {codeunitname}.nuspec",build_folder)
     GeneralUtilities.ensure_directory_does_not_exist(outputfolder)
     GeneralUtilities.ensure_directory_exists(outputfolder)
-    os.rename(nupkg_file,f"{build_folder}/Result/{codeunitname}.nupkg")
+    os.rename(nupkg_file,f"{build_folder}/Result/{nupkg_filename}")
 
 
     if push:
         pass#TODO push using push_options
 
 def standardized_tasks_build_for_dotnet_build(self:ScriptCollectionCore,codeunitfolder:str,codeunitname:str,buildconfiguration:str,outputfolder:str,files_to_sign:dict()):
+    #TODO update version in csproj-file
     self.run_program("dotnet", f"clean -c {buildconfiguration}", codeunitfolder)
     GeneralUtilities.ensure_directory_does_not_exist(outputfolder)
     GeneralUtilities.ensure_directory_exists(outputfolder)
