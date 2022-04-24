@@ -5,6 +5,7 @@ GRYLibrary/Other/TestCoverage/Badges/*
 
 GRYLibrary/Other/InternalScripts/Reference/Result
 GRYLibrary/Other/InternalScripts/Reference/ResultMetadata
+GRYLibrary/Other/InternalScripts/Reference/obj
 
 GRYLibraryTests/TestCoverage.xml
 

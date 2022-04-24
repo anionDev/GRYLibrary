@@ -28,7 +28,7 @@
           "**.yml"
         ],
         "src":"../../ReferenceArticles/api",
-        "dest":"api"
+        "dest":"Result/api"
       }
     ],
     "resource": [
