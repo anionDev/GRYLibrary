@@ -22,8 +22,13 @@ def dotnet_sign_file(self:ScriptCollectionCore,file:str, keyfile:str):
     os.remove(directory+os.path.sep+filename+".il")
     os.remove(directory+os.path.sep+filename+".res")
 
-def standardized_tasks_build_for_dotnet_create_package(self:ScriptCollectionCore,codeunitname:str,repository:str,push:bool,push_options:str):
+def standardized_tasks_build_for_dotnet_create_package(self:ScriptCollectionCore,repository:str,codeunitname:str,outputfolder:str,push:bool,push_options:str):
     self.run_program("nuget", f"pack {repository}.nuspec",os.path.join(repository,codeunitname,"Other","InternalScripts","Build"))
+    GeneralUtilities.ensure_directory_does_not_exist(outputfolder)
+    GeneralUtilities.ensure_directory_exists(outputfolder)
+    os.rename(f"{codeunitname}.nuspec","Result/{codeunitname}.nuspec")
+
+
     if push:
         pass#TODO push using push_options
 
@@ -48,13 +53,14 @@ def standardized_tasks_build_for_dotnet_executable_project_in_common_project_str
 
 def standardized_tasks_build_for_dotnet_library_project_in_common_project_structure(self:ScriptCollectionCore,repository_folder:str,codeunitname:str,buildconfiguration:str,commandline_arguments:list[str]):
     standardized_tasks_build_for_dotnet_executable_project_in_common_project_structure(self,repository_folder,codeunitname,buildconfiguration,commandline_arguments)
+    outputfolder=os.path.join(os.path.dirname(__file__),"Result")
     push=False
     push_options=""
     for commandline_argument in commandline_arguments:
         if commandline_argument.startswith("-push:"):
             push=True
             push_options=commandline_argument[len("-push:"):]
-    standardized_tasks_build_for_dotnet_create_package(self,repository_folder,push,push_options)
+    standardized_tasks_build_for_dotnet_create_package(self,repository_folder,codeunitname,outputfolder,push,push_options)
 
 def build():
     standardized_tasks_build_for_dotnet_library_project_in_common_project_structure(ScriptCollectionCore(),
