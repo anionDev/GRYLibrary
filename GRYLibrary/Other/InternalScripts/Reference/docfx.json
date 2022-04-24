@@ -9,7 +9,7 @@
           "src":"../../../GRYLibrary"
         }
       ],
-      "dest": "./Result",
+      "dest": "./ResultMetadata",
       "disableGitFeatures": true,
       "disableDefaultFilter": false
     }
@@ -47,7 +47,7 @@
         ]
       }
     ],
-    "dest": "./Reference",
+    "dest": "./Result",
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],
     "template": [
