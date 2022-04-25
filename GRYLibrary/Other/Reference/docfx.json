@@ -9,7 +9,7 @@
           "src":"../../../GRYLibrary"
         }
       ],
-      "dest": "./ResultMetadata",
+      "dest": "./GeneratedReferenceMetadata",
       "disableGitFeatures": true,
       "disableDefaultFilter": false
     }
@@ -21,14 +21,14 @@
           "**.md",
           "**.yml"
         ],
-        "src":"../../ReferenceArticles"
+        "src":"./ReferenceContent"
       },
       {
        "files": [
           "**.yml"
         ],
-        "src":"../../ReferenceArticles/api",
-        "dest":"Result/api"
+        "src":"./ReferenceContent/api",
+        "dest":"GeneratedReference/api"
       }
     ],
     "resource": [
@@ -36,7 +36,7 @@
         "files": [
           "images/**"
         ],
-        "src":"../../ReferenceArticles"
+        "src":"./ReferenceContent"
       }
     ],
     "overwrite": [
@@ -47,7 +47,7 @@
         ]
       }
     ],
-    "dest": "./Result",
+    "dest": "./GeneratedReference",
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],
     "template": [
