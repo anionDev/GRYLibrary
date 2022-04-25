@@ -10,25 +10,25 @@
 			{
 				"label": "GRYLibrary: Run testcases",
 				"command": "python",
-				"args": ["${workspaceFolder}/GRYLibrary/Other/InternalScripts/QualityCheck/RunTestcases.py"],
+				"args": ["${workspaceFolder}/GRYLibrary/Other/QualityCheck/RunTestcases.py"],
 				"type": "shell",
 			},
 			{
 				"label": "GRYLibrary: Linting",
 				"command": "python",
-				"args": ["${workspaceFolder}/GRYLibrary/Other/InternalScripts/QualityCheck/Linting.py"],
+				"args": ["${workspaceFolder}/GRYLibrary/Other/QualityCheck/Linting.py"],
 				"type": "shell",
 			},
 			{
 				"label": "GRYLibrary: Generate reference",
 				"command": "python",
-				"args": ["${workspaceFolder}/GRYLibrary/Other/InternalScripts/Reference/GenerateReference.py"],
+				"args": ["${workspaceFolder}/GRYLibrary/Other/Reference/GenerateReference.py"],
 				"type": "shell",
 			},
 			{
 				"label": "GRYLibrary: Build",
 				"command": "python",
-				"args": ["${workspaceFolder}/GRYLibrary/Other/InternalScripts/Build/Build.py"],
+				"args": ["${workspaceFolder}/GRYLibrary/Other/Build/Build.py"],
 				"type": "shell",
 			}
 		]
@@ -46,6 +46,9 @@
 		]
 	},
 	"settings": {
+		"files.associations": {
+			"*.codeunit": "xml",
+		  },
 		"files.exclude": {
 			".coverage": true,
 			"GRYLibrary/bin": true,
