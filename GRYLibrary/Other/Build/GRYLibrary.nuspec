@@ -21,6 +21,6 @@
     <files>
         <file src="Result/GRYLibrary.dll" target="lib/net6" />
         <file src="Result/GRYLibrary.License.txt" target="lib/net6" />
-        <file src="../../../GRYLibrary/GRYLibraryIcon.png" target="images\" />
+        <file src="../../GRYLibrary/GRYLibraryIcon.png" target="images\" />
     </files>
 </package>

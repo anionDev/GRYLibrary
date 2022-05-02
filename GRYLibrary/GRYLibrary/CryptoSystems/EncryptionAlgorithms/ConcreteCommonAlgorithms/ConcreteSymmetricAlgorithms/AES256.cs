@@ -6,6 +6,7 @@ namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteCommonAlgor
 {
     public class AES256 : SymmetricEncryptionAlgorithm
     {
+#pragma warning disable SYSLIB0022 // Typ oder Element ist veraltet
         private const int _AESBlockLength = 16;
         /// <inheritdoc/>
         public override byte[] Decrypt(byte[] encryptedData, byte[] password)
@@ -80,5 +81,6 @@ namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteCommonAlgor
         {
             return Utilities.PadLeft(System.Text.Encoding.ASCII.GetBytes(nameof(AES256)), 10);
         }
+#pragma warning restore SYSLIB0022 // Typ oder Element ist veraltet
     }
 }

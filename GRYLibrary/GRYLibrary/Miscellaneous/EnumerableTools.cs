@@ -57,7 +57,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static void AddItemToEnumerable(object enumerable, object[] addMethodArguments)
         {
-            List<object> castedArguments = new List<object>();
+            List<object> castedArguments = new();
             var addMethod = enumerable.GetType().GetMethod("Add");
             AssertCondition(addMethod.GetParameters().Length == addMethodArguments.Length);
             for (int i = 0; i < addMethodArguments.Length; i++)
@@ -299,7 +299,7 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             return new EnumerableComparer(new PropertyEqualsCalculatorConfiguration()).EqualsTyped(enumerable1, enumerable2);
         }
-        /// <returns>Returns true if and only if the items in <paramref name="list1"/> and <paramref name="list2"/> are equal (ignoring the order) using the GRYLibrary-AdvancedObjectAnalysis for object-comparison.</returns>
+        /// <returns>Returns true if and only if the items in <paramref name="set1"/> and <paramref name="set2"/> are equal (ignoring the order) using the GRYLibrary-AdvancedObjectAnalysis for object-comparison.</returns>
         public static bool SetEquals<T>(this ISet<T> set1, ISet<T> set2)
         {
             return new SetComparer(new PropertyEqualsCalculatorConfiguration()).EqualsTyped(set1, set2);

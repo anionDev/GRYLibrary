@@ -8,11 +8,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     /// </summary>
     public class RequestCounter : AbstractMiddleware
     {
-        /// <inheritdoc>/>
+        /// <inheritdoc/>
         public RequestCounter(RequestDelegate next) : base(next)
         {
         }
-        /// <inheritdoc>/>
+        /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
         {
             // TODO if response is 200 then add it to database

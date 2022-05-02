@@ -38,7 +38,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public string WorkingDirectory { get; set; }
         public bool UpdateConsoleTitle { get; set; } = false;
         /// <remarks>
-        /// This property will be ignored if <see cref="RunSynchronously"/>==false.
+        /// This property will be ignored when running thw program asynchronously.
         /// </remarks>
         public bool ThrowErrorIfExitCodeIsNotZero { get; set; } = false;
         public int? TimeoutInMilliseconds { get; set; }

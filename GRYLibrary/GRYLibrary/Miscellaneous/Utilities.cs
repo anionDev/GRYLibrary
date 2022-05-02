@@ -1462,7 +1462,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         internal static string EscapeForCSV(string item)
         {
-            if (item.Contains("\""))
+            if (item.Contains('"'))
             {
                 item = item.Replace("\"", "\"\"");
                 item = $"\"{item}\"";
@@ -2283,7 +2283,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         private static bool HasPath(string str)
         {
-            return str.Contains("/") || str.Contains("\\");
+            return str.Contains('/') || str.Contains('\\');
         }
 
         public static string GetAssertionFailMessage(object expectedObject, object actualObject, int maxLengthPerObject = 1000)
@@ -2350,7 +2350,7 @@ namespace GRYLibrary.Core.Miscellaneous
         private static (string, string) GetBaseTypeInformation(Type type)
         {
             string name = type.Name;
-            if (name.Contains("`"))
+            if (name.Contains('`'))
             {
                 name = name.Split('`')[0];
             }

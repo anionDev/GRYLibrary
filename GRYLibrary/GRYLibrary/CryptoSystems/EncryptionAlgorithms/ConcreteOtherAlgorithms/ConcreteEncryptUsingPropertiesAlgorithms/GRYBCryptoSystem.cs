@@ -23,9 +23,9 @@ namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteOtherAlgori
     /// The secret service creates a master key mk (mk is technically a private key for an RSA-keypair).
     /// Company c want to encrypt userdata with a user-specific password p. p can be defined by the c or by the user or can be a user-client-side generated password. (p is technically a private key for an RSA-keypair.) c does neither have to know p nor mk.
     /// Then the public keys of mk and p will be added to <see cref="PasswordEncryptionKeys"/>.
-    /// Now c can encrypt and decrypt data with gcs.<see cref="Encrypt(byte[], byte[])"/> and gcs.<see cref="Decrypt(byte[], byte[])"/>.
-    /// The encrypted data can be decrypted either with the password used when calling <see cref="Encrypt(byte[], byte[])"/> or (by s) using mp as password.
-    /// (In General: The data can be decrypted with all keys which are contained in <see cref="PasswordEncryptionKeys"/> when <see cref="Encrypt(byte[], byte[])"/> is called.)
+    /// Now c can encrypt and decrypt data with gcs.<see cref="CommonEncryptionAlgorithm.Encrypt(byte[], byte[])"/> and gcs.<see cref="Decrypt(byte[], byte[])"/>.
+    /// The encrypted data can be decrypted either with the password used when calling <see cref="CommonEncryptionAlgorithm.Encrypt(byte[], byte[])"/> or (by s) using mp as password.
+    /// (In General: The data can be decrypted with all keys which are contained in <see cref="PasswordEncryptionKeys"/> when <see cref="CommonEncryptionAlgorithm.Encrypt(byte[], byte[])"/> is called.)
     /// </example>
     public class GRYBCryptoSystem : EncryptUsingPropertiesAlgorithm
     {
@@ -43,7 +43,7 @@ namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteOtherAlgori
 
         /// <inheritdoc/>
         /// <param name="password">
-        /// As password you can either use any private key of a public key which was contained in <see cref="PasswordEncryptionKeys"/> when calling <see cref="Encrypt(byte[], byte[])"/>.
+        /// As password you can either use any private key of a public key which was contained in <see cref="PasswordEncryptionKeys"/> when calling <see cref="CommonEncryptionAlgorithm.Encrypt(byte[], byte[])"/>.
         /// </param>
         public override byte[] Decrypt(byte[] encryptedData, byte[] password)
         {

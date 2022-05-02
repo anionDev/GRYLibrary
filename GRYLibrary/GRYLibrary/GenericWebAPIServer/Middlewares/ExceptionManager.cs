@@ -9,11 +9,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     /// </summary>
     public class ExceptionManager : AbstractMiddleware
     {
-        /// <inheritdoc>/>
+        /// <inheritdoc/>
         public ExceptionManager(RequestDelegate next) : base(next)
         {
         }
-        /// <inheritdoc>/>
+        /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
         {
             try
@@ -21,7 +21,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
                 // TODO if response.statuscode is 500 then log requestbody
                 return _Next(context);
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 // TODO log exception and requestbody, return 500
                 throw;

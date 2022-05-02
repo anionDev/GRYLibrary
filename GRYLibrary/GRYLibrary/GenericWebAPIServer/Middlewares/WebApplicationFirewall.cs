@@ -8,11 +8,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     /// </summary>
     public class WebApplicationFirewall : AbstractMiddleware
     {
-        /// <inheritdoc>/>
+        /// <inheritdoc/>
         public WebApplicationFirewall(RequestDelegate next) : base(next)
         {
         }
-        /// <inheritdoc>/>
+        /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
         {
             // TODO log & block request when

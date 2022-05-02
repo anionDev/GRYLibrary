@@ -33,7 +33,7 @@ namespace GRYLibrary.Core.Miscellaneous
             foreach (string rawLine in commandresult.StdOutLines)
             {
                 string line = rawLine.Trim();
-                if (line.Contains(" "))
+                if (line.Contains(' '))
                 {
                     string[] splitted = line.Split(' ');
                     int amountOfWhitespaces = splitted.Length - 1;
@@ -142,7 +142,7 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             return ExecuteGitCommand(repository, "branch -r", true).StdOutLines.Where(line => !string.IsNullOrWhiteSpace(line)).Select(line =>
             {
-                if (line.Contains("/"))
+                if (line.Contains('/'))
                 {
                     string[] splitted = line.Split(new[] { '/' }, 2);
                     return new Tuple<string, string>(splitted[0].Trim(), splitted[1].Trim());
@@ -255,7 +255,7 @@ namespace GRYLibrary.Core.Miscellaneous
         /// <param name="commitMessage">Message for the commit</param>
         /// <param name="commitWasCreated">Will be set to true if and only if really a commit was created. Will be set to false if and only if there are no changes to get committed.</param>
         /// <returns>Returns the commit-id of the currently checked out commit. This returns the id of the new created commit if there were changes which were committed by this function.</returns>
-        /// <exception cref="UnexpectedExitCodeException">If there are uncommitted changes in submodules of <paramref name="repositoryFolder"/>.</exception>
+        /// <exception cref="Exceptions.UnexpectedExitCodeException">If there are uncommitted changes in submodules of <paramref name="repositoryFolder"/>.</exception>
         public static string GitCommit(string repositoryFolder, string commitMessage, out bool commitWasCreated, bool writeOutputToConsole = false)
         {
             commitWasCreated = false;

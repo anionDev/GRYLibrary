@@ -8,11 +8,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     /// </summary>
     public class DDOSProtection : AbstractMiddleware
     {
-        /// <inheritdoc>/>
+        /// <inheritdoc/>
         public DDOSProtection(RequestDelegate next) : base(next)
         {
         }
-        /// <inheritdoc>/>
+        /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
         {
             // TODO create a self-learning database and block undesired traffic due to configuration

@@ -1,11 +1,11 @@
 
-ScriptCollection/Other/QualityCheck/TestCoverage/TestCoverageReport
-ScriptCollection/Other/QualityCheck/TestCoverage/Badges/*
-!ScriptCollection/Other/QualityCheck/TestCoverage/Badges/badge_shieldsio_linecoverage_blue.svg
-ScriptCollection/Other/Reference/GeneratedReferenceMetadata
-ScriptCollection/Other/Reference/GeneratedReference
-ScriptCollection/Other/Reference/obj
-ScriptCollection/Other/Build/BuildArtifact
+GRYLibrary/Other/QualityCheck/TestCoverage/TestCoverageReport
+GRYLibrary/Other/QualityCheck/TestCoverage/Badges/*
+!GRYLibrary/Other/QualityCheck/TestCoverage/Badges/badge_shieldsio_linecoverage_blue.svg
+GRYLibrary/Other/Reference/GeneratedReferenceMetadata
+GRYLibrary/Other/Reference/GeneratedReference
+GRYLibrary/Other/Reference/obj
+GRYLibrary/Other/Build/BuildArtifact
 
 GRYLibrary/Other/InternalScripts/Build/Result
 

@@ -8,11 +8,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     /// </summary>
     public class Obfuscation : AbstractMiddleware
     {
-        /// <inheritdoc>/>
+        /// <inheritdoc/>
         public Obfuscation(RequestDelegate next) : base(next)
         {
         }
-        /// <inheritdoc>/>
+        /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
         {
             // TODO change response to either return 200 (Ok) or else 400 (bad request, because it was a request which did not result in 200).
