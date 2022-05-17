@@ -6,7 +6,7 @@
           "files": [
             "GRYLibrary.csproj"
           ],
-          "src":"../../../GRYLibrary"
+          "src":"../../GRYLibrary"
         }
       ],
       "dest": "./GeneratedReferenceMetadata",

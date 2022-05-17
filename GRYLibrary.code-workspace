@@ -8,6 +8,12 @@
 		"version": "2.0.0",
 		"tasks": [
 			{
+				"label": "GRYLibrary: Common tasks",
+				"command": "python",
+				"args": ["${workspaceFolder}/GRYLibrary/Other/CommonTasks.py"],
+				"type": "shell",
+			},
+			{
 				"label": "GRYLibrary: Run testcases",
 				"command": "python",
 				"args": ["${workspaceFolder}/GRYLibrary/Other/QualityCheck/RunTestcases.py"],
@@ -58,5 +64,12 @@
 			"TestResults": true,
 			".vs": true,
 		}
+		"spellright.language": [
+			"en",
+		],
+		"spellright.documentTypes": [
+			"markdown",
+			"plaintext",
+		],
 	}
 }

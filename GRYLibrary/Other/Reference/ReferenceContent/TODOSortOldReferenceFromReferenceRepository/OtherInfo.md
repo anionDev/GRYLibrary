@@ -1,3 +1,0 @@
-# OtherInfo
-
-OtherInfo-text
