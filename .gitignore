@@ -1,6 +1,13 @@
-GRYLibraryTests/GRYLibrary.TestCoverage.opencover.xml
-Other/ReferenceArticles/api/.manifest
-Other/ReferenceArticles/api/*.yml
+
+GRYLibrary/Other/QualityCheck/TestCoverage/TestCoverageReport
+GRYLibrary/Other/QualityCheck/TestCoverage/Badges/*
+!GRYLibrary/Other/QualityCheck/TestCoverage/Badges/badge_shieldsio_linecoverage_blue.svg
+GRYLibrary/Other/Reference/GeneratedReferenceMetadata
+GRYLibrary/Other/Reference/GeneratedReference
+GRYLibrary/Other/Reference/obj
+GRYLibrary/Other/Build/BuildArtifact
+
+GRYLibrary/Other/InternalScripts/Build/Result
 
 # -------------------------------------------------------------------------------------
 # From https://raw.githubusercontent.com/github/gitignore/master/VisualStudio.gitignore
