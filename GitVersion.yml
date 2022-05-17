@@ -1,3 +1,4 @@
+=======
 mode: Mainline
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatch
@@ -23,11 +24,6 @@ branches:
     source-branches: ['main']
   bug:
     regex: ^bug\/\S+
-    increment: Patch
-    mode: ContinuousDelivery
-    source-branches: ['main']
-  codequality:
-    regex: ^codequality\/\S+
     increment: Patch
     mode: ContinuousDelivery
     source-branches: ['main']
