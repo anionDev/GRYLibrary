@@ -35,7 +35,7 @@ def common_tasks():
     version = sc.getversion_from_arguments_or_gitversion(file, sys.argv)
     sc.update_version_of_codeunit_to_project_version(file, version)
     replace_version_in_nuspec_file(sc, GeneralUtilities.resolve_relative_path("./Build/GRYLibrary.nuspec", folder_of_current_file), version)
-    replace_version_in_csproj_file(sc, GeneralUtilities.resolve_relative_path("./GRYLibrary/GRYLibrary.csproj", folder_of_current_file), version)
+    replace_version_in_csproj_file(sc, GeneralUtilities.resolve_relative_path("../GRYLibrary/GRYLibrary.csproj", folder_of_current_file), version)
 
 
 if __name__ == "__main__":
