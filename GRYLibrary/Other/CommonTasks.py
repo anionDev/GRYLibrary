@@ -29,7 +29,7 @@ def replace_version_in_csproj_file(self: ScriptCollectionCore, csproj_file: str,
 
 
 def common_tasks():
-    file = Path(__file__).absolute()
+    file = str(Path(__file__).absolute())
     folder_of_current_file = os.path.dirname(file)
     sc = ScriptCollectionCore()
     version = sc.getversion_from_arguments_or_gitversion(file, sys.argv)
@@ -38,4 +38,5 @@ def common_tasks():
     replace_version_in_csproj_file(sc, GeneralUtilities.resolve_relative_path("./GRYLibrary/GRYLibrary.csproj", folder_of_current_file), version)
 
 
-common_tasks()
+if __name__ == "__main__":
+    common_tasks()

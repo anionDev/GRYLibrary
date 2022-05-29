@@ -115,7 +115,7 @@ def standardized_tasks_run_testcases_for_dotnet_project_in_common_project_struct
 
 
 def run_testcases():
-    standardized_tasks_run_testcases_for_dotnet_project_in_common_project_structure(ScriptCollectionCore(), __file__, "QualityCheck", sys.argv)
+    standardized_tasks_run_testcases_for_dotnet_project_in_common_project_structure(ScriptCollectionCore(), str(Path(__file__).absolute()), "QualityCheck", sys.argv)
 
 
 if __name__ == "__main__":

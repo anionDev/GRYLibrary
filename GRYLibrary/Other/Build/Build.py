@@ -78,7 +78,7 @@ def standardized_tasks_build_for_dotnet_library_project_in_common_project_struct
 
 
 def build():
-    standardized_tasks_build_for_dotnet_library_project_in_common_project_structure(ScriptCollectionCore(), Path(__file__).absolute(), "QualityCheck", sys.argv)
+    standardized_tasks_build_for_dotnet_library_project_in_common_project_structure(ScriptCollectionCore(), str(Path(__file__).absolute()), "QualityCheck", sys.argv)
 
 
 if __name__ == "__main__":
