@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
     <metadata minClientVersion="2.12">
         <id>GRYLibrary</id>
-        <version>0.11.22</version>
+        <version>0.12.0</version>
         <title>GRYLibrary</title>
         <authors>Marius Göcke</authors>
         <owners>Marius Göcke</owners>
@@ -19,8 +19,8 @@
         <icon>images\GRYLibraryIcon.png</icon>
     </metadata>
     <files>
-        <file src="Result/GRYLibrary.dll" target="lib/net6" />
-        <file src="Result/GRYLibrary.License.txt" target="lib/net6" />
+        <file src="BuildArtifact/GRYLibrary/GRYLibrary.dll" target="lib/net6" />
+        <file src="BuildArtifact/GRYLibrary/GRYLibrary.License.txt" target="lib/net6" />
         <file src="../../GRYLibrary/GRYLibraryIcon.png" target="images\" />
     </files>
 </package>
