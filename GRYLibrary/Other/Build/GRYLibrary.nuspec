@@ -19,8 +19,8 @@
         <icon>images\GRYLibraryIcon.png</icon>
     </metadata>
     <files>
-        <file src="BuildArtifact/GRYLibrary.dll" target="lib/net6" />
-        <file src="BuildArtifact/GRYLibrary.License.txt" target="lib/net6" />
+        <file src="BuildArtifact/GRYLibrary/GRYLibrary.dll" target="lib/net6" />
+        <file src="BuildArtifact/GRYLibrary/GRYLibrary.License.txt" target="lib/net6" />
         <file src="../../GRYLibrary/GRYLibraryIcon.png" target="images\" />
     </files>
 </package>

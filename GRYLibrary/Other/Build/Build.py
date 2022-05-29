@@ -6,6 +6,7 @@ from ScriptCollection.ScriptCollectionCore import ScriptCollectionCore
 from ScriptCollection.GeneralUtilities import GeneralUtilities
 
 
+@GeneralUtilities.check_arguments
 def dotnet_sign_file(self: ScriptCollectionCore, file: str, keyfile: str):
     directory = os.path.dirname(file)
     filename = os.path.basename(file)
@@ -25,6 +26,7 @@ def dotnet_sign_file(self: ScriptCollectionCore, file: str, keyfile: str):
     os.remove(directory+os.path.sep+filename+".res")
 
 
+@GeneralUtilities.check_arguments
 def standardized_tasks_build_for_dotnet_create_package(self: ScriptCollectionCore, repository: str, codeunitname: str, outputfolder: str):
     build_folder = os.path.join(repository, codeunitname, "Other","Build")
     root: etree._ElementTree = etree.parse(os.path.join(build_folder, f"{codeunitname}.nuspec"))
@@ -38,7 +40,8 @@ def standardized_tasks_build_for_dotnet_create_package(self: ScriptCollectionCor
     os.rename(nupkg_file, f"{build_folder}/BuildArtifact/{nupkg_filename}")
 
 
-def standardized_tasks_build_for_dotnet_build(self: ScriptCollectionCore, csproj_file: str, buildconfiguration: str, outputfolder: str, files_to_sign: dict()):
+@GeneralUtilities.check_arguments
+def standardized_tasks_build_for_dotnet_build(self: ScriptCollectionCore, csproj_file: str, buildconfiguration: str, outputfolder: str, files_to_sign: dict):
     # TODO update version in csproj-file
     csproj_file_folder = os.path.dirname(csproj_file)
     csproj_file_name = os.path.basename(csproj_file)
@@ -50,30 +53,34 @@ def standardized_tasks_build_for_dotnet_build(self: ScriptCollectionCore, csproj
         dotnet_sign_file(self, os.path.join(outputfolder, file), keyfile)
 
 
-def standardized_tasks_build_for_dotnet_executable_project_in_common_project_structure(self: ScriptCollectionCore, repository_folder: str, codeunitname: str, buildconfiguration: str, build_test_project_too: bool, commandline_arguments: list[str]):
-    csproj_file = os.path.join(repository_folder, codeunitname, codeunitname, codeunitname+".csproj")
-    csproj_test_file = os.path.join(repository_folder, codeunitname, codeunitname+"Tests", codeunitname+"Tests.csproj")
-    outputfolder = os.path.join(repository_folder, codeunitname, "Other", "Build", "BuildArtifact")
+@GeneralUtilities.check_arguments
+def standardized_tasks_build_for_dotnet_project_in_common_project_structure(self: ScriptCollectionCore, repository_folder: str, codeunitname: str, buildconfiguration: str, build_test_project_too: bool, output_folder: str, commandline_arguments: list[str]):
+    codeunit_folder=os.path.join(repository_folder, codeunitname)
+    csproj_file = os.path.join(codeunit_folder, codeunitname, codeunitname+".csproj")
+    csproj_test_file = os.path.join(codeunit_folder, codeunitname+"Tests", codeunitname+"Tests.csproj")
     commandline_arguments = commandline_arguments[1:]
     files_to_sign: dict() = dict()
     for commandline_argument in commandline_arguments:
         if commandline_argument.startswith("-sign:"):
             commandline_argument_splitted: list[str] = commandline_argument.split(":")
             files_to_sign[commandline_argument_splitted[1]] = commandline_argument_splitted[2]
-
-    standardized_tasks_build_for_dotnet_build(self, csproj_file, buildconfiguration, outputfolder, files_to_sign)
+    self.run_program("dotnet","restore",codeunit_folder)
+    standardized_tasks_build_for_dotnet_build(self, csproj_file,buildconfiguration,os.path.join( output_folder,codeunitname), files_to_sign)
     if build_test_project_too:
-        standardized_tasks_build_for_dotnet_build(self, csproj_test_file, buildconfiguration, outputfolder, files_to_sign)
+        standardized_tasks_build_for_dotnet_build(self, csproj_test_file, buildconfiguration, os.path.join( output_folder,codeunitname+"Tests"), files_to_sign)
 
 
+@GeneralUtilities.check_arguments
 def standardized_tasks_build_for_dotnet_library_project_in_common_project_structure(self: ScriptCollectionCore, buildscript_file: str, buildconfiguration: str = "Release", commandline_arguments: list[str] = []):
     repository_folder: str = str(Path(os.path.dirname(buildscript_file)).parent.parent.parent.absolute())
     codeunitname: str = os.path.basename(str(Path(os.path.dirname(buildscript_file)).parent.parent.absolute()))
-    standardized_tasks_build_for_dotnet_executable_project_in_common_project_structure(self, repository_folder, codeunitname, buildconfiguration, True, commandline_arguments)
     for commandline_argument in commandline_arguments:
         if commandline_argument.startswith("-buildconfiguration:"):
             buildconfiguration = commandline_argument[len("-buildconfiguration:"):]
     outputfolder = os.path.join(os.path.dirname(buildscript_file), "BuildArtifact")
+    GeneralUtilities.ensure_directory_does_not_exist(outputfolder)
+    GeneralUtilities.ensure_directory_exists(outputfolder)
+    standardized_tasks_build_for_dotnet_project_in_common_project_structure(self, repository_folder, codeunitname, buildconfiguration, True,outputfolder, commandline_arguments)
     standardized_tasks_build_for_dotnet_create_package(self, repository_folder, codeunitname, outputfolder)
 
 
