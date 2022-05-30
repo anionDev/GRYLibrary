@@ -27,8 +27,8 @@ This script expectes that a test-coverage-badges should be added to '<repository
                      f"-verbosity:{verbose_argument_for_reportgenerator}", os.path.join(repository_folder, codeunitname))
 
     # Generating badges
-    GeneralUtilities.ensure_directory_does_not_exist(os.path.join(repository_folder, "Other/QualityCheck/TestCoverage/Badges"))
-    GeneralUtilities.ensure_directory_exists(os.path.join(repository_folder, "Other/QualityCheck/TestCoverage/Badges"))
+    GeneralUtilities.ensure_directory_does_not_exist(os.path.join(repository_folder, codeunitname,"Other/QualityCheck/TestCoverage/Badges"))
+    GeneralUtilities.ensure_directory_exists(os.path.join(repository_folder, codeunitname,"Other/QualityCheck/TestCoverage/Badges"))
     self.run_program("reportgenerator", "-reports:Other/QualityCheck/TestCoverage/TestCoverage.xml -targetdir:Other/QualityCheck/TestCoverage/Badges -reporttypes:Badges " +
                      f"-verbosity:{verbose_argument_for_reportgenerator}",  os.path.join(repository_folder, codeunitname))
 
