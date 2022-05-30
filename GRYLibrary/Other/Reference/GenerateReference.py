@@ -2,6 +2,7 @@ import os
 import sys
 from pathlib import Path
 from ScriptCollection.ScriptCollectionCore import ScriptCollectionCore
+from ScriptCollection.GeneralUtilities import GeneralUtilities
 
 
 def standardized_tasks_generate_refefrence_for_dotnet_project_in_common_project_structure(self: ScriptCollectionCore, generate_reference_file:str, commandline_arguments: list[str] = []):
