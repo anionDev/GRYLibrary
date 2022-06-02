@@ -21,6 +21,7 @@ def dotnet_sign_file(self: ScriptCollectionCore, file: str, keyfile: str):
         raise Exception("Only .dll-files and .exe-files can be signed")
     self.run_program("ildasm",
                      f'/all /typelist /text /out="{filename}.il" "{filename}.{extension}"', directory)
+    os.remove(os.path.join(directory,filename+".dll"))
     time.sleep(2)
     self.run_program("ilasm",
                      f'/{extension} /res:"{filename}.res" /optimize /key="{keyfile}" "{filename}.il"', directory)
