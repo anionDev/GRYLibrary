@@ -45,7 +45,7 @@ def standardized_tasks_build_for_dotnet_build(self: ScriptCollectionCore, csproj
     # TODO update version in csproj-file
     csproj_file_folder = os.path.dirname(csproj_file)
     csproj_file_name = os.path.basename(csproj_file)
-    self.run_program("dotnet", f"clean", csproj_file_folder)
+    self.run_program("dotnet", "clean", csproj_file_folder)
     GeneralUtilities.ensure_directory_does_not_exist(outputfolder)
     GeneralUtilities.ensure_directory_exists(outputfolder)
     self.run_program("dotnet", f"build {csproj_file_name} -c {buildconfiguration} -o {outputfolder}", csproj_file_folder)
@@ -54,7 +54,8 @@ def standardized_tasks_build_for_dotnet_build(self: ScriptCollectionCore, csproj
 
 
 @GeneralUtilities.check_arguments
-def standardized_tasks_build_for_dotnet_project_in_common_project_structure(self: ScriptCollectionCore, repository_folder: str, codeunitname: str, buildconfiguration: str, build_test_project_too: bool, output_folder: str, commandline_arguments: list[str]):
+def standardized_tasks_build_for_dotnet_project_in_common_project_structure(self: ScriptCollectionCore, repository_folder: str, codeunitname: str,
+                                                                            buildconfiguration: str, build_test_project_too: bool, output_folder: str, commandline_arguments: list[str]):
     codeunit_folder = os.path.join(repository_folder, codeunitname)
     csproj_file = os.path.join(codeunit_folder, codeunitname, codeunitname+".csproj")
     csproj_test_file = os.path.join(codeunit_folder, codeunitname+"Tests", codeunitname+"Tests.csproj")
@@ -63,7 +64,7 @@ def standardized_tasks_build_for_dotnet_project_in_common_project_structure(self
     for commandline_argument in commandline_arguments:
         if commandline_argument.startswith("-sign:"):
             commandline_argument_splitted: list[str] = commandline_argument.split(":")
-            files_to_sign[commandline_argument_splitted[1]] = commandline_argument[len("-sign:"+commandline_argument_splitted[1]):]
+            files_to_sign[commandline_argument_splitted[1]] = commandline_argument[len("-sign:"+commandline_argument_splitted[1])+1:]
     self.run_program("dotnet", "restore", codeunit_folder)
     standardized_tasks_build_for_dotnet_build(self, csproj_file, buildconfiguration, os.path.join(output_folder, codeunitname), files_to_sign)
     if build_test_project_too:
