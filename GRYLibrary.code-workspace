@@ -4,18 +4,72 @@
 			"path": "."
 		}
 	],
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "GRYLibrary: Common tasks",
+				"command": "python",
+				"args": ["${workspaceFolder}/GRYLibrary/Other/CommonTasks.py"],
+				"type": "shell",
+			},
+			{
+				"label": "GRYLibrary: Run testcases",
+				"command": "python",
+				"args": ["${workspaceFolder}/GRYLibrary/Other/QualityCheck/RunTestcases.py"],
+				"type": "shell",
+			},
+			{
+				"label": "GRYLibrary: Linting",
+				"command": "python",
+				"args": ["${workspaceFolder}/GRYLibrary/Other/QualityCheck/Linting.py"],
+				"type": "shell",
+			},
+			{
+				"label": "GRYLibrary: Generate reference",
+				"command": "python",
+				"args": ["${workspaceFolder}/GRYLibrary/Other/Reference/GenerateReference.py"],
+				"type": "shell",
+			},
+			{
+				"label": "GRYLibrary: Build",
+				"command": "python",
+				"args": ["${workspaceFolder}/GRYLibrary/Other/Build/Build.py"],
+				"type": "shell",
+			}
+		]
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"name": "Debug current file",
+				"type": "python",
+				"request": "launch",
+				"program": "${file}",
+				"console": "integratedTerminal"
+			}
+		]
+	},
 	"settings": {
+		"files.associations": {
+			"*.codeunit": "xml",
+		  },
 		"files.exclude": {
+			".coverage": true,
 			"GRYLibrary/bin": true,
 			"GRYLibrary/obj": true,
 			"GRYLibraryTests/bin": true,
 			"GRYLibraryTests/obj": true,
 			"TestResults": true,
 			".vs": true,
-			"GRYLibraryPublicKey.snk": true,
-			"GRYLibrary.code-workspace": true,
-			"GRYLibrary.sln": true,
-			"index.html": true,
 		}
+		"spellright.language": [
+			"en",
+		],
+		"spellright.documentTypes": [
+			"markdown",
+			"plaintext",
+		],
 	}
 }
