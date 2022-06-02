@@ -63,7 +63,7 @@ def standardized_tasks_build_for_dotnet_project_in_common_project_structure(self
     for commandline_argument in commandline_arguments:
         if commandline_argument.startswith("-sign:"):
             commandline_argument_splitted: list[str] = commandline_argument.split(":")
-            files_to_sign[commandline_argument_splitted[1]] = commandline_argument_splitted[2]
+            files_to_sign[commandline_argument_splitted[1]] = commandline_argument[len("-sign:"+commandline_argument_splitted[1]):]
     self.run_program("dotnet", "restore", codeunit_folder)
     standardized_tasks_build_for_dotnet_build(self, csproj_file, buildconfiguration, os.path.join(output_folder, codeunitname), files_to_sign)
     if build_test_project_too:
