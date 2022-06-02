@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 from pathlib import Path
 from lxml import etree
 from ScriptCollection.ScriptCollectionCore import ScriptCollectionCore
@@ -20,6 +21,7 @@ def dotnet_sign_file(self: ScriptCollectionCore, file: str, keyfile: str):
         raise Exception("Only .dll-files and .exe-files can be signed")
     self.run_program("ildasm",
                      f'/all /typelist /text /out="{filename}.il" "{filename}.{extension}"', directory)
+    time.sleep(2)
     self.run_program("ilasm",
                      f'/{extension} /res:"{filename}.res" /optimize /key="{keyfile}" "{filename}.il"', directory)
     os.remove(directory+os.path.sep+filename+".il")
