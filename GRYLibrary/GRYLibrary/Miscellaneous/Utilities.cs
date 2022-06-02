@@ -1785,7 +1785,7 @@ namespace GRYLibrary.Core.Miscellaneous
             externalProgramExecutor.StartSynchronously();
             if (externalProgramExecutor.ExitCode != 0)
             {
-                throw new Exception($"Exitcode of mountvol was {externalProgramExecutor.ExitCode}. StdOut:"+ string.Join(Environment.NewLine, externalProgramExecutor.AllStdOutLines) + "; StdErr:" + string.Join(Environment.NewLine, externalProgramExecutor.AllStdErrLines));
+                throw new Exception($"Exitcode of mountvol was {externalProgramExecutor.ExitCode}. StdOut:" + string.Join(Environment.NewLine, externalProgramExecutor.AllStdOutLines) + "; StdErr:" + string.Join(Environment.NewLine, externalProgramExecutor.AllStdErrLines));
             }
         }
         public static ISet<Guid> GetAvailableVolumeIds()
@@ -1839,6 +1839,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static ISet<string> GetMountPoints(Guid volumeId)
         {
+            //TODO this function must be implemented depending on os
             HashSet<string> result = new();
             using ExternalProgramExecutor externalProgramExecutor = new("mountvol", string.Empty)
             {
@@ -1859,11 +1860,28 @@ namespace GRYLibrary.Core.Miscellaneous
                 if (line.StartsWith($"\\\\?\\Volume{{{volumeId}}}\\"))
                 {
                     int indexOfNextLine = indexOfCurrentLine + 1;
-                    string mountPath = externalProgramExecutor.AllStdOutLines[indexOfNextLine].Trim();
-                    if (Directory.Exists(mountPath))
+                    bool tryNextLine = true;
+                    while (tryNextLine)
                     {
-                        result.Add(mountPath);
+                        if (indexOfNextLine <= externalProgramExecutor.AllStdOutLines.Length-1)
+                        {
+                            string nextLine = externalProgramExecutor.AllStdOutLines[indexOfNextLine].Trim();
+                            if (!nextLine.StartsWith(@"\\?\") && Directory.Exists(nextLine))
+                            {
+                                result.Add(nextLine);
+                            }
+                            else
+                            {
+                                tryNextLine = false;
+                            }
+                            indexOfNextLine = indexOfNextLine + 1;
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
+                    break;
                 }
             }
             return result;
