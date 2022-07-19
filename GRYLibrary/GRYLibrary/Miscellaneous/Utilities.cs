@@ -1863,7 +1863,7 @@ namespace GRYLibrary.Core.Miscellaneous
                     bool tryNextLine = true;
                     while (tryNextLine)
                     {
-                        if (indexOfNextLine <= externalProgramExecutor.AllStdOutLines.Length-1)
+                        if (indexOfNextLine <= externalProgramExecutor.AllStdOutLines.Length - 1)
                         {
                             string nextLine = externalProgramExecutor.AllStdOutLines[indexOfNextLine].Trim();
                             if (!nextLine.StartsWith(@"\\?\") && Directory.Exists(nextLine))
