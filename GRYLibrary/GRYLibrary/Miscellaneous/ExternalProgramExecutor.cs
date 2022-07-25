@@ -1,5 +1,7 @@
 ﻿using GRYLibrary.Core.Exceptions;
 using GRYLibrary.Core.LogObject;
+using GRYLibrary.Core.OperatingSystem;
+using GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
@@ -7,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,10 +40,20 @@ namespace GRYLibrary.Core.Miscellaneous
         public string LogNamespace { get; set; }
         public string WorkingDirectory { get; set; }
         public bool UpdateConsoleTitle { get; set; } = false;
+        public bool DelegateToEpew { get; set; } = false;
         /// <remarks>
         /// This property will be ignored when running thw program asynchronously.
         /// </remarks>
         public bool ThrowErrorIfExitCodeIsNotZero { get; set; } = false;
+        public bool ElevatePrivileges { get; set; } = false;
+        /// <remarks>
+        /// This property will be ignored when <see cref="ElevatePrivileges"/>==false.
+        /// </remarks>
+        public string? User { get; set; } = null;
+        /// <remarks>
+        /// This property will be ignored when <see cref="ElevatePrivileges"/>==false.
+        /// </remarks>
+        public string? Password { get; set; } = null;
         public int? TimeoutInMilliseconds { get; set; }
         internal string CMD { get; private set; }
         public bool PrintErrorsAsInformation { get; set; }
@@ -263,6 +276,18 @@ namespace GRYLibrary.Core.Miscellaneous
                     RedirectStandardError = true,
                     CreateNoWindow = !this.CreateWindow,
                 };
+                if (DelegateToEpew)
+                {
+                    StartInfo.Arguments = $"--Program \"{StartInfo.FileName}\" --Argument {Convert.ToBase64String(new System.Text.UTF8Encoding(false).GetBytes(StartInfo.Arguments))} --ArgumentIsBase64Encoded --Workingdirectory \"{StartInfo.WorkingDirectory}\"";
+                    StartInfo.FileName = ElevatePrivileges ? "EpewAdmin" : "Epew";
+                }
+                else
+                {
+                    if (ElevatePrivileges)
+                    {
+                        throw new NotSupportedException($"Starting a program with elevated privileges is only supported with {nameof(DelegateToEpew)}==true");
+                    }
+                }
                 this._Process.StartInfo = StartInfo;
                 this._Process.OutputDataReceived += (object sender, DataReceivedEventArgs dataReceivedEventArgs) =>
                 {
@@ -338,8 +363,6 @@ namespace GRYLibrary.Core.Miscellaneous
             task.Start();
             return task;
         }
-
-
         public void Dispose()
         {
             if (this._SubNamespace != null)

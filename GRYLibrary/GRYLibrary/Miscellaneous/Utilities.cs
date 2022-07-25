@@ -34,6 +34,7 @@ using static GRYLibrary.Core.Miscellaneous.TableGenerator;
 using GRYLibrary.Core.Exceptions;
 using System.Security.Cryptography.X509Certificates;
 using NJsonSchema.Validation;
+using System.Security.Principal;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
@@ -52,6 +53,53 @@ namespace GRYLibrary.Core.Miscellaneous
             Array.Copy(source, 0, first, 0, index);
             Array.Copy(source, index, last, 0, len2);
             return (first, last);
+        }
+        public static bool IsAdministrator()
+        {
+            return OperatingSystem.OperatingSystem.GetCurrentOperatingSystem().Accept(new IsAdministratorVisitor());
+        }
+        private class IsAdministratorVisitor : IOperatingSystemVisitor<bool>
+        {
+            public bool Handle(OSX operatingSystem)
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    throw new NotImplementedException();
+                }
+                else
+                {
+                    throw new NotSupportedException();
+                }
+            }
+
+            public bool Handle(Windows operatingSystem)
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+
+                    using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
+                    {
+                        WindowsPrincipal principal = new WindowsPrincipal(identity);
+                        return principal.IsInRole(WindowsBuiltInRole.Administrator);
+                    }
+                }
+                else
+                {
+                    throw new NotSupportedException();
+                }
+            }
+
+            public bool Handle(Linux operatingSystem)
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    throw new NotImplementedException();
+                }
+                else
+                {
+                    throw new NotSupportedException();
+                }
+            }
         }
         public static PercentValue ToPercentValue(this float value)
         {
