@@ -1,6 +1,5 @@
 ﻿using System;
-using GRYLibrary.Core.Miscellaneous;
-using GRYLibrary.Core.Miscellaneous.ExecutePrograms;
+using GRYLibrary.Core.ExecutePrograms;
 
 namespace GRYLibrary.Core.Exceptions
 {

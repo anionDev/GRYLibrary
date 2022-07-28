@@ -1,6 +1,4 @@
 ﻿using GRYLibrary.Core.AdvancedObjectAnalysis;
-using GRYLibrary.Core.LogObject;
-using GRYLibrary.Core.LogObject.ConcreteLogTargets;
 using GRYLibrary.Core.XMLSerializer;
 using System;
 using System.IO;
@@ -8,6 +6,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Extensions.Logging;
+using GRYLibrary.Core.Log;
+using GRYLibrary.Core.Log.ConcreteLogTargets;
 
 namespace GRYLibrary.Tests.Testcases
 {

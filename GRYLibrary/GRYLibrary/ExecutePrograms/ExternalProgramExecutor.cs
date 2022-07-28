@@ -1,8 +1,6 @@
 ﻿using GRYLibrary.Core.Exceptions;
 using GRYLibrary.Core.Log;
-using GRYLibrary.Core.Miscellaneous.ExecutePrograms.WaitingStates;
-using GRYLibrary.Core.OperatingSystem;
-using GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems;
+using GRYLibrary.Core.ExecutePrograms.WaitingStates;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
@@ -10,12 +8,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using GRYLibrary.Core.Miscellaneous;
 
-namespace GRYLibrary.Core.Miscellaneous.ExecutePrograms
+namespace GRYLibrary.Core.ExecutePrograms
 {
     public sealed class ExternalProgramExecutor : IDisposable
     {

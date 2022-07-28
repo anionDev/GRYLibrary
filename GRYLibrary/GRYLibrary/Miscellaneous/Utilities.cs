@@ -35,8 +35,8 @@ using GRYLibrary.Core.Exceptions;
 using System.Security.Cryptography.X509Certificates;
 using NJsonSchema.Validation;
 using System.Security.Principal;
-using GRYLibrary.Core.Miscellaneous.ExecutePrograms;
-using GRYLibrary.Core.Miscellaneous.ExecutePrograms.WaitingStates;
+using GRYLibrary.Core.ExecutePrograms;
+using GRYLibrary.Core.ExecutePrograms.WaitingStates;
 
 namespace GRYLibrary.Core.Miscellaneous
 {

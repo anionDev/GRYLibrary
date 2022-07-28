@@ -1,11 +1,6 @@
-﻿using GRYLibrary.Core.Miscellaneous.ExecutePrograms.WaitingStates;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GRYLibrary.Core.ExecutePrograms.WaitingStates;
 
-namespace GRYLibrary.Core.Miscellaneous.ExecutePrograms
+namespace GRYLibrary.Core.ExecutePrograms
 {
     public abstract class WaitingState
     {
