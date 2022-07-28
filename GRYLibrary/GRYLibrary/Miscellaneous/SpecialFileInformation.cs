@@ -1,4 +1,6 @@
-﻿using GRYLibrary.Core.OperatingSystem;
+﻿using GRYLibrary.Core.Miscellaneous.ExecutePrograms;
+using GRYLibrary.Core.Miscellaneous.ExecutePrograms.WaitingStates;
+using GRYLibrary.Core.OperatingSystem;
 using GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems;
 using System;
 using System.Runtime.InteropServices;
@@ -18,7 +20,7 @@ namespace GRYLibrary.Core.Miscellaneous
             if (FileIsExecutable(file))
             {
                 using ExternalProgramExecutor result = new(file, string.Empty);
-                result.StartSynchronously();
+                result.Run();
                 return result;
             }
             else
@@ -29,7 +31,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public static void OpenFileWithDefaultProgram(string file)
         {
-            new ExternalProgramExecutor(file, string.Empty).StartAsynchronously();
+            new ExternalProgramExecutor(new ExternalProgramExecutorConfiguration { Program=file,WaitingState=new RunAsynchronously()}).Run();
         }
         private class FileIsExecutableVisitor : IOperatingSystemVisitor<bool>
         {

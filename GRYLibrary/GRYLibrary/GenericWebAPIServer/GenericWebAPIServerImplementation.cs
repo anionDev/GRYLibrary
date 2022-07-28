@@ -1,4 +1,4 @@
-﻿using GRYLibrary.Core.LogObject;
+﻿using GRYLibrary.Core.Log;
 using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using GRYLibrary.Core.GenericWebAPIServer.Middlewares;
 using Microsoft.AspNetCore.Builder;

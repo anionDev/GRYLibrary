@@ -1,4 +1,4 @@
-﻿namespace GRYLibrary.Core.Event
+﻿namespace GRYLibrary.Core.Miscellaneous.Event
 {
     public class Argument<SenderType, EventArgumentType>
     {

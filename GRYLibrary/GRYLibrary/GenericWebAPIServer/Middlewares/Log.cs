@@ -1,4 +1,4 @@
-using GRYLibrary.Core.LogObject;
+using GRYLibrary.Core.Log;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Threading.Tasks;

@@ -1,5 +1,6 @@
 ﻿using System;
 using GRYLibrary.Core.Miscellaneous;
+using GRYLibrary.Core.Miscellaneous.ExecutePrograms;
 
 namespace GRYLibrary.Core.Exceptions
 {
@@ -13,7 +14,7 @@ namespace GRYLibrary.Core.Exceptions
 
         private static string GetMessage(ExternalProgramExecutor externalProgramExecutor)
         {
-            return $"'{externalProgramExecutor.Title}' had exitcode {externalProgramExecutor.ExitCode}.{Environment.NewLine}{Environment.NewLine}{externalProgramExecutor.GetSummaryOfExecutedProgram()}";
+            return $"'{externalProgramExecutor.Configuration.Title}' had exitcode {externalProgramExecutor.ExitCode}.{Environment.NewLine}{Environment.NewLine}{externalProgramExecutor.GetSummaryOfExecutedProgram()}";
         }
     }
 }
