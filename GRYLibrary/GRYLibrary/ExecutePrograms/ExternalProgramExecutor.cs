@@ -64,7 +64,6 @@ namespace GRYLibrary.Core.ExecutePrograms
                 return this._Running;
             }
         }
-        private static readonly GRYLog _DefaultLog = GRYLog.Create();
         private readonly object _LockObject = new();
         private readonly ConcurrentQueue<(LogLevel, string)> _NotLoggedOutputLines = new();
         public void Run()
@@ -129,7 +128,7 @@ namespace GRYLibrary.Core.ExecutePrograms
             }
             if (this.LogObject == default)
             {
-                this.LogObject = _DefaultLog;
+                this.LogObject = GRYLog.Create();
                 if (this.Configuration.Verbosity == Verbosity.Verbose)
                 {
                     foreach (GRYLogTarget logtarget in this.LogObject.Configuration.LogTargets)
@@ -147,7 +146,7 @@ namespace GRYLibrary.Core.ExecutePrograms
             this.LogStart();
         }
 
-        public static string CreateEpewArgumentString(string programPathAndFile, string arguments, string workingDirectory, bool printErrorsAsInformation, int? timeoutInMilliseconds, Verbosity verbosity, bool addLogOverhead, string logFile, string title, WaitingState waitingState, string logNamespace, bool elevatePrivileges)
+        public static string CreateEpewArgumentString(string programPathAndFile, string arguments, string workingDirectory, bool printErrorsAsInformation, int? timeoutInMilliseconds, Verbosity verbosity, bool addLogOverhead, string logFile, string title, WaitingState waitingState, string logNamespace, string user, string password)
         {
             string result = $"--Program \"{programPathAndFile}\"";
             if (arguments != null)
@@ -185,9 +184,9 @@ namespace GRYLibrary.Core.ExecutePrograms
             {
                 result = $"{result} --LogNamespace \"{logNamespace}\"";
             }
-            if (elevatePrivileges)
+            if (user!=null)
             {
-                result = $"{result} --ElevatePrivileges";
+                result = $"{result} --User \"{user}\" --Password \"{password}\"";
             }
             result = $"{result} {waitingState.Accept(_GetWaitingStateCreateEpewArgumentStringVisitor)}";
             // TODO add missing Epew-arguments
@@ -299,19 +298,24 @@ namespace GRYLibrary.Core.ExecutePrograms
                     RedirectStandardError = true,
                     CreateNoWindow = !this.Configuration.CreateWindow,
                 };
+
+                if (Configuration.User != null)
+                {
+
+                    System.Security.SecureString password = new System.Security.SecureString();                  
+                    StartInfo.UserName = Configuration.User;
+                    for (int x = 0; x < Configuration.Password.Length; x++)
+                    {
+                        password.AppendChar(Configuration.Password[x]);
+                    }
+                    StartInfo.Password = password;
+                }
                 if (Configuration.DelegateToEpew)
                 {
                     StartInfo.Arguments = ExternalProgramExecutor.CreateEpewArgumentString(
                         Configuration.Program, Configuration.Argument, Configuration.WorkingDirectory, Configuration.PrintErrorsAsInformation, Configuration.TimeoutInMilliseconds, Configuration.Verbosity,
-                        Configuration.AddLogOverhead, Configuration.LogFile, Configuration.Title, Configuration.WaitingState, Configuration.LogNamespace, Configuration.ElevatePrivileges);
+                        Configuration.AddLogOverhead, Configuration.LogFile, Configuration.Title, Configuration.WaitingState, Configuration.LogNamespace, Configuration.User,Configuration.Password);
                     StartInfo.FileName = "Epew";
-                }
-                else
-                {
-                    if (Configuration.ElevatePrivileges)
-                    {
-                        throw new NotSupportedException($"Starting a program with elevated privileges is only supported with {nameof(Configuration.DelegateToEpew)}==true");
-                    }
                 }
                 this._Process.StartInfo = StartInfo;
                 this._Process.OutputDataReceived += (object sender, DataReceivedEventArgs dataReceivedEventArgs) =>
@@ -397,10 +401,6 @@ namespace GRYLibrary.Core.ExecutePrograms
             if (this._Process != null)
             {
                 this._Process.Dispose();
-            }
-            if (_DefaultLog != null)
-            {
-                _DefaultLog.Dispose();
             }
         }
 

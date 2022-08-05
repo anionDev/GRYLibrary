@@ -27,7 +27,8 @@ namespace GRYLibrary.Core.ExecutePrograms
 
         public string LogNamespace { get; set; } = null;
 
-        public bool ElevatePrivileges { get; set; } = false;
+        public string User { get; set; } = null;
+        public string Password{ get; set; } = null;
         public bool UpdateConsoleTitle { get; set; } = false;
         public bool DelegateToEpew { get; set; } = false;
     }
