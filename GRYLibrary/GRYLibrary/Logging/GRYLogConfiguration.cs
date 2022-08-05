@@ -1,14 +1,14 @@
 ﻿using GRYLibrary.Core.AdvancedObjectAnalysis;
-using GRYLibrary.Core.LogObject.ConcreteLogTargets;
+using GRYLibrary.Core.Log.ConcreteLogTargets;
 using GRYLibrary.Core.Miscellaneous;
 using GRYLibrary.Core.XMLSerializer;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Console = GRYLibrary.Core.LogObject.ConcreteLogTargets.Console;
+using Console = GRYLibrary.Core.Log.ConcreteLogTargets.Console;
 
-namespace GRYLibrary.Core.LogObject
+namespace GRYLibrary.Core.Log
 {
     public sealed class GRYLogConfiguration : IDisposable
     {
@@ -79,11 +79,11 @@ namespace GRYLibrary.Core.LogObject
             this.PrintErrorsAsInformation = false;
             this.WriteDetailsOfLoggedExceptionsToLogEntry = true;
             this.DateFormat = "yyyy-MM-dd HH:mm:ss";
-            this.LoggedMessageTypesConfiguration = new List<SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>>();
             this.ConvertTimeForLogentriesToUTCFormat = false;
             this.LogEveryLineOfLogEntryInNewLine = false;
             this.Name = string.Empty;
             this.StoreProcessedLogItemsInternally = false;
+            this.LoggedMessageTypesConfiguration = new List<SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>>();
             this.LoggedMessageTypesConfiguration = new List<SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>>
             {
                 new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Trace, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Trace), ConsoleColor =  ConsoleColor.Gray }),
@@ -96,7 +96,7 @@ namespace GRYLibrary.Core.LogObject
 
             this.LogTargets = new List<GRYLogTarget>
             {
-                new Console() { Enabled = true, Format = GRYLogLogFormat.GRYLogFormat },
+                new Console() { Enabled = true, Format = GRYLogLogFormat.OnlyMessage },
                 new LogFile() { Enabled = !string.IsNullOrWhiteSpace(logFile), Format = GRYLogLogFormat.GRYLogFormat, File = logFile }
             };
         }

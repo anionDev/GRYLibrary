@@ -1,7 +1,7 @@
 ﻿using GRYLibrary.Core.AdvancedObjectAnalysis;
 using System;
 
-namespace GRYLibrary.Core.LogObject
+namespace GRYLibrary.Core.Log
 {
     public class LoggedMessageTypeConfiguration
     {

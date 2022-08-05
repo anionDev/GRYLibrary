@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace GRYLibrary.Core.LogObject.ConcreteLogTargets
+namespace GRYLibrary.Core.Log.ConcreteLogTargets
 {
     public sealed class Console : GRYLogTarget
     {

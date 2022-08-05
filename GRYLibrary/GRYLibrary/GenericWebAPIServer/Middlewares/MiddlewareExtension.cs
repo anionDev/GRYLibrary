@@ -1,4 +1,4 @@
-using GRYLibrary.Core.LogObject;
+using GRYLibrary.Core.Log;
 using Microsoft.AspNetCore.Builder;
 using System;
 

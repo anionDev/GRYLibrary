@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace GRYLibrary.Core.LogObject
+namespace GRYLibrary.Core.Log
 {
     public struct LogItem
     {
