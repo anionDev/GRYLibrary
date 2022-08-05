@@ -16,6 +16,7 @@
 	<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 	<Configurations>Development;Productive;QualityCheck</Configurations>
 	<PreserveCompilationContext>true</PreserveCompilationContext>
+    <LangVersion>10.0</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|AnyCPU'">
@@ -25,7 +26,6 @@
     <Optimize>false</Optimize>
     <OutputPath>bin\Development\</OutputPath>
     <DefineConstants>TRACE;DEBUG;Development</DefineConstants>
-    <LangVersion>9.0</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -43,7 +43,6 @@
     <Optimize>false</Optimize>
     <OutputPath>bin\QualityCheck\</OutputPath>
     <DefineConstants>TRACE;QualityCheck</DefineConstants>
-    <LangVersion>9.0</LangVersion>
     <ErrorReport>none</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -61,7 +60,6 @@
     <Optimize>true</Optimize>
     <OutputPath>bin\Productive\</OutputPath>
     <DefineConstants>Productive</DefineConstants>
-    <LangVersion>9.0</LangVersion>
     <ErrorReport>none</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>

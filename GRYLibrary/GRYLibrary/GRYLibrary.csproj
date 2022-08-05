@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <PreserveCompilationContext>false</PreserveCompilationContext>
-    <Version>0.12.4</Version>
+    <Version>0.12.5</Version>
     <Authors>Marius Göcke</Authors>
     <Copyright>Copyright © 2022 Marius Göcke</Copyright>
     <Description>The GRYLibrary is a collection with some useful .NET classes and functions which are very easy (re)usable.</Description>
@@ -19,6 +19,7 @@
 	<Nullable>disable</Nullable>
 	<Configurations>Development;Productive;QualityCheck</Configurations>
     <IsTestProject>false</IsTestProject>
+    <LangVersion>10.0</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|AnyCPU'">
@@ -28,7 +29,6 @@
     <Optimize>false</Optimize>
     <OutputPath>bin\Development\</OutputPath>
     <DefineConstants>TRACE;DEBUG;Development</DefineConstants>
-    <LangVersion>9.0</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -46,7 +46,6 @@
     <Optimize>false</Optimize>
     <OutputPath>bin\QualityCheck\</OutputPath>
     <DefineConstants>TRACE;QualityCheck</DefineConstants>
-    <LangVersion>9.0</LangVersion>
     <ErrorReport>none</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -64,7 +63,6 @@
     <Optimize>true</Optimize>
     <OutputPath>bin\Productive\</OutputPath>
     <DefineConstants>Productive</DefineConstants>
-    <LangVersion>9.0</LangVersion>
     <ErrorReport>none</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>

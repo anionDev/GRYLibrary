@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace GRYLibrary.Core.LogObject.ConcreteLogTargets
+namespace GRYLibrary.Core.Log.ConcreteLogTargets
 {
     public sealed class Observer : GRYLogTarget
     {

@@ -1,8 +1,9 @@
 ﻿using GRYLibrary.Core.Miscellaneous;
+using GRYLibrary.Core.ExecutePrograms;
 using System;
 using System.Collections.Generic;
 
-namespace GRYLibrary.Core.LogObject.ConcreteLogTargets
+namespace GRYLibrary.Core.Log.ConcreteLogTargets
 {
     public sealed class Syslog : GRYLogTarget
     {
@@ -19,11 +20,8 @@ namespace GRYLibrary.Core.LogObject.ConcreteLogTargets
                 messageId = $"--rfc5424 --msgid {logItem.MessageId}";
             }
 
-            using ExternalProgramExecutor externalProgramExecutor = new("Logger", $"--tag {Utilities.GetNameOfCurrentExecutable()} {messageId} -- [{logItem.LogLevel}] [{logObject.Configuration.Name}] {logItem.PlainMessage}")
-            {
-                ThrowErrorIfExitCodeIsNotZero = true
-            };
-            externalProgramExecutor.StartSynchronously();
+            using ExternalProgramExecutor externalProgramExecutor = new("Logger", $"--tag {Utilities.GetNameOfCurrentExecutable()} {messageId} -- [{logItem.LogLevel}] [{logObject.Configuration.Name}] {logItem.PlainMessage}");
+            externalProgramExecutor.Run();
         }
 
         public override HashSet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization()

@@ -1,4 +1,4 @@
-﻿using GRYLibrary.Core.LogObject.ConcreteLogTargets;
+﻿using GRYLibrary.Core.Log.ConcreteLogTargets;
 using GRYLibrary.Core.Miscellaneous;
 using Microsoft.Extensions.Logging;
 using System;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace GRYLibrary.Core.LogObject
+namespace GRYLibrary.Core.Log
 {
     public sealed class GRYLog : IDisposable, ILogger
     {
@@ -331,7 +331,7 @@ namespace GRYLibrary.Core.LogObject
         }
 
         public const string _Indentation = "    ";
-        private string GetExceptionMessage(Exception exception, string message = null, uint indentationLevel = 1, string exceptionTitle = "Exception-information")
+        public string GetExceptionMessage(Exception exception, string message = null, uint indentationLevel = 1, string exceptionTitle = "Exception-information")
         {
             if (string.IsNullOrWhiteSpace(message))
             {

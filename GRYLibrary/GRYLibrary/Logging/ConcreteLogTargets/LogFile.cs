@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GRYLibrary.Core.LogObject.ConcreteLogTargets
+namespace GRYLibrary.Core.Log.ConcreteLogTargets
 {
     public sealed class LogFile : GRYLogTarget
     {

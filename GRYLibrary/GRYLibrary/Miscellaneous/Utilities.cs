@@ -23,7 +23,7 @@ using System.Net.Sockets;
 using GRYLibrary.Core.OperatingSystem;
 using GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems;
 using System.Runtime.InteropServices;
-using GRYLibrary.Core.LogObject;
+using GRYLibrary.Core.Log;
 using GRYLibrary.Core.AdvancedObjectAnalysis;
 using System.Collections;
 using System.Diagnostics;
@@ -34,6 +34,9 @@ using static GRYLibrary.Core.Miscellaneous.TableGenerator;
 using GRYLibrary.Core.Exceptions;
 using System.Security.Cryptography.X509Certificates;
 using NJsonSchema.Validation;
+using System.Security.Principal;
+using GRYLibrary.Core.ExecutePrograms;
+using GRYLibrary.Core.ExecutePrograms.WaitingStates;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
@@ -42,6 +45,7 @@ namespace GRYLibrary.Core.Miscellaneous
         #region Constants
         public const string EmptyString = "";
         public const string SpecialCharacterTestString = "<SpecialCharacterTest>äöüßÄÖÜÆÑçéý &← /\\*#^°'`´\" ?|§@$€%-_²⁶₇¬∀∈∑∜∫∰≈≪ﬁ.Доброе утро صبح به خیر शुभ प्रभात 좋은 아침 സുപ്രഭാതം おはようございます ហ្គុនមូហ្កិន</SpecialCharacterTest>";
+
         #endregion
 
         public static (T[], T[]) Split<T>(T[] source, int index)
@@ -52,6 +56,51 @@ namespace GRYLibrary.Core.Miscellaneous
             Array.Copy(source, 0, first, 0, index);
             Array.Copy(source, index, last, 0, len2);
             return (first, last);
+        }
+        public static bool IsAdministrator()
+        {
+            return OperatingSystem.OperatingSystem.GetCurrentOperatingSystem().Accept(new IsAdministratorVisitor());
+        }
+        private class IsAdministratorVisitor : IOperatingSystemVisitor<bool>
+        {
+            public bool Handle(OSX operatingSystem)
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    throw new NotImplementedException();
+                }
+                else
+                {
+                    throw new NotSupportedException();
+                }
+            }
+
+            public bool Handle(Windows operatingSystem)
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+
+                    using WindowsIdentity identity = WindowsIdentity.GetCurrent();
+                    WindowsPrincipal principal = new(identity);
+                    return principal.IsInRole(WindowsBuiltInRole.Administrator);
+                }
+                else
+                {
+                    throw new NotSupportedException();
+                }
+            }
+
+            public bool Handle(Linux operatingSystem)
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    throw new NotImplementedException();
+                }
+                else
+                {
+                    throw new NotSupportedException();
+                }
+            }
         }
         public static PercentValue ToPercentValue(this float value)
         {
@@ -1775,14 +1824,10 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 EnsureDirectoryExists(mountPoint);
             }
-            using ExternalProgramExecutor externalProgramExecutor = new("mountvol", $"{mountPoint} \\\\?\\Volume{{{volumeId}}}\\")
-            {
-                ThrowErrorIfExitCodeIsNotZero = true,
-                CreateWindow = false
-            };
+            using ExternalProgramExecutor externalProgramExecutor = new("mountvol", $"{mountPoint} \\\\?\\Volume{{{volumeId}}}\\");
             externalProgramExecutor.LogObject = GRYLog.Create();
             externalProgramExecutor.LogObject.Configuration.Enabled = false;
-            externalProgramExecutor.StartSynchronously();
+            externalProgramExecutor.Run();
             if (externalProgramExecutor.ExitCode != 0)
             {
                 throw new Exception($"Exitcode of mountvol was {externalProgramExecutor.ExitCode}. StdOut:" + string.Join(Environment.NewLine, externalProgramExecutor.AllStdOutLines) + "; StdErr:" + string.Join(Environment.NewLine, externalProgramExecutor.AllStdErrLines));
@@ -1790,14 +1835,10 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static ISet<Guid> GetAvailableVolumeIds()
         {
-            using ExternalProgramExecutor externalProgramExecutor = new("mountvol", string.Empty)
-            {
-                ThrowErrorIfExitCodeIsNotZero = true,
-                CreateWindow = false
-            };
+            using ExternalProgramExecutor externalProgramExecutor = new("mountvol", string.Empty);
             externalProgramExecutor.LogObject = GRYLog.Create();
             externalProgramExecutor.LogObject.Configuration.Enabled = false;
-            externalProgramExecutor.StartSynchronously();
+            externalProgramExecutor.Run();
             if (externalProgramExecutor.ExitCode != 0)
             {
                 throw new Exception($"Exitcode of mountvol was {externalProgramExecutor.ExitCode}. StdErr:" + string.Join(Environment.NewLine, externalProgramExecutor.AllStdErrLines));
@@ -1841,14 +1882,10 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             //TODO this function must be implemented depending on os
             HashSet<string> result = new();
-            using ExternalProgramExecutor externalProgramExecutor = new("mountvol", string.Empty)
-            {
-                ThrowErrorIfExitCodeIsNotZero = true,
-                CreateWindow = false
-            };
+            using ExternalProgramExecutor externalProgramExecutor = new("mountvol", string.Empty);
             externalProgramExecutor.LogObject = GRYLog.Create();
             externalProgramExecutor.LogObject.Configuration.Enabled = false;
-            externalProgramExecutor.StartSynchronously();
+            externalProgramExecutor.Run();
             if (externalProgramExecutor.ExitCode != 0)
             {
                 throw new Exception($"Exitcode of mountvol was {externalProgramExecutor.ExitCode}. StdErr:" + string.Join(Environment.NewLine, externalProgramExecutor.AllStdErrLines));
@@ -1895,12 +1932,9 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static void RemoveMountPointOfVolume(string mountPoint)
         {
-            using ExternalProgramExecutor externalProgramExecutor = new("mountvol", $"{mountPoint} /d")
-            {
-                ThrowErrorIfExitCodeIsNotZero = false,
-                CreateWindow = false
-            };
-            externalProgramExecutor.StartSynchronously();
+            using ExternalProgramExecutor externalProgramExecutor = new("mountvol", $"{mountPoint} /d");
+            externalProgramExecutor.Configuration.WaitingState = new RunSynchronously() { ThrowErrorIfExitCodeIsNotZero = false };
+            externalProgramExecutor.Run();
             if (externalProgramExecutor.ExitCode != 0)
             {
                 throw new Exception($"Exitcode of mountvol was {externalProgramExecutor.ExitCode}. StdErr:{Environment.NewLine}" + string.Join(Environment.NewLine, externalProgramExecutor.AllStdErrLines));
@@ -2480,13 +2514,9 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static string ToPascalCase(this string input)
         {
-            if (input == null)
-            {
-                return string.Empty;
-            }
-            IEnumerable<string> words = input.Split(new[] { '-', '_' }, StringSplitOptions.RemoveEmptyEntries)
-                         .Select(word => word.Substring(0, 1).ToUpper() +
-                                         word[1..].ToLower());
+            IEnumerable<string> words = input
+                .Split(new[] { '-', '_' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(word => word[..1].ToUpper() + word[1..].ToLower());
 
             return string.Concat(words);
         }
@@ -2647,6 +2677,10 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 throw new NotSupportedException();
             }
+        }
+        public static NullReferenceException CreateNullReferenceExceptionDueToParameter(string parameterName)
+        {
+            return new NullReferenceException($"Parameter {parameterName} is null");
         }
     }
 }

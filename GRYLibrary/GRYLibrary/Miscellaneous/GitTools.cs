@@ -1,4 +1,6 @@
-﻿using GRYLibrary.Core.LogObject;
+﻿using GRYLibrary.Core.Log;
+using GRYLibrary.Core.ExecutePrograms;
+using GRYLibrary.Core.ExecutePrograms.WaitingStates;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,14 +15,11 @@ namespace GRYLibrary.Core.Miscellaneous
             using GRYLog log = GRYLog.Create();
             log.Configuration.Enabled = true;
             log.Configuration.SetEnabledOfAllLogTargets(writeOutputToConsole);
-            using ExternalProgramExecutor externalProgramExecutor = new("git", argument, repositoryFolder)
-            {
-                LogObject = log,
-                TimeoutInMilliseconds = timeoutInMilliseconds,
-                PrintErrorsAsInformation = printErrorsAsInformation,
-                ThrowErrorIfExitCodeIsNotZero = throwErrorIfExitCodeIsNotZero
-            };
-            externalProgramExecutor.StartSynchronously();
+            using ExternalProgramExecutor externalProgramExecutor = new("git", argument, repositoryFolder);
+            externalProgramExecutor.Configuration.TimeoutInMilliseconds = timeoutInMilliseconds;
+            externalProgramExecutor.Configuration.PrintErrorsAsInformation = printErrorsAsInformation;
+            externalProgramExecutor.Configuration.WaitingState = new RunSynchronously() { ThrowErrorIfExitCodeIsNotZero = throwErrorIfExitCodeIsNotZero };
+            externalProgramExecutor.Run();
             return new GitCommandResult(argument, repositoryFolder, externalProgramExecutor.AllStdOutLines, externalProgramExecutor.AllStdErrLines, externalProgramExecutor.ExitCode);
         }
         /// <returns>

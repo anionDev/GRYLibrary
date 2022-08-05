@@ -1,4 +1,4 @@
-﻿using GRYLibrary.Core.Event;
+﻿using GRYLibrary.Core.Miscellaneous.Event;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
