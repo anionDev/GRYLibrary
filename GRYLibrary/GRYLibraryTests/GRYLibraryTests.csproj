@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <Authors>Marius Göcke</Authors>
-    <Copyright>Copyright © 2021 Marius Göcke</Copyright>
+    <Copyright>Copyright © 2022 Marius Göcke</Copyright>
     <Description>GRYLibraryTests is the testproject for the GRYLibrary.</Description>
     <OutputType>Library</OutputType>
     <PackageProjectUrl>https://github.com/anionDev/GRYLibrary</PackageProjectUrl>
@@ -12,14 +12,14 @@
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <RootNamespace>GRYLibrary.Tests</RootNamespace>
     <StartupObject></StartupObject>
-	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-	<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
-	<Configurations>Development;Productive;QualityCheck</Configurations>
-	<PreserveCompilationContext>true</PreserveCompilationContext>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+    <Configurations>Development;QualityCheck;Productive</Configurations>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
     <LangVersion>10.0</LangVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)'=='Development'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
@@ -36,7 +36,7 @@
     <WarningsAsErrors>NU1605</WarningsAsErrors>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='QualityCheck|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)'=='QualityCheck'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
@@ -53,7 +53,7 @@
     <WarningsAsErrors>NU1605</WarningsAsErrors>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Productive|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)'=='Productive'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
