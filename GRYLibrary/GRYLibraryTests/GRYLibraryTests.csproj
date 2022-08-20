@@ -2,8 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <IsPackable>false</IsPackable>
     <Authors>Marius Göcke</Authors>
+    <Version>0.12.10</Version>
+    <AssemblyVersion>0.12.10</AssemblyVersion>
+    <FileVersion>0.12.10</FileVersion>
+    <IsPackable>false</IsPackable>
+    <PreserveCompilationContext>false</PreserveCompilationContext>
     <Copyright>Copyright © 2022 Marius Göcke</Copyright>
     <Description>GRYLibraryTests is the testproject for the GRYLibrary.</Description>
     <OutputType>Library</OutputType>
@@ -11,11 +15,11 @@
     <RepositoryUrl>https://github.com/anionDev/GRYLibrary</RepositoryUrl>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <RootNamespace>GRYLibrary.Tests</RootNamespace>
-    <StartupObject></StartupObject>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+    <Nullable>disable</Nullable>
     <Configurations>Development;QualityCheck;Productive</Configurations>
-    <PreserveCompilationContext>true</PreserveCompilationContext>
+    <IsTestProject>true</IsTestProject>
     <LangVersion>10.0</LangVersion>
   </PropertyGroup>
 
