@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <PreserveCompilationContext>false</PreserveCompilationContext>
-    <Version>0.12.9</Version>
+    <Version>0.12.10</Version>
     <Authors>Marius Göcke</Authors>
     <Copyright>Copyright © 2022 Marius Göcke</Copyright>
     <Description>The GRYLibrary is a collection with some useful .NET classes and functions which are very easy (re)usable.</Description>
