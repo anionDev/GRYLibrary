@@ -2,9 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <PreserveCompilationContext>false</PreserveCompilationContext>
-    <Version>0.12.5</Version>
     <Authors>Marius Göcke</Authors>
+    <Version>0.12.12</Version>
+    <AssemblyVersion>0.12.12</AssemblyVersion>
+    <FileVersion>0.12.12</FileVersion>
+    <IsPackable>false</IsPackable>
+    <PreserveCompilationContext>false</PreserveCompilationContext>
     <Copyright>Copyright © 2022 Marius Göcke</Copyright>
     <Description>The GRYLibrary is a collection with some useful .NET classes and functions which are very easy (re)usable.</Description>
     <OutputType>Library</OutputType>
@@ -12,17 +15,17 @@
     <RepositoryUrl>https://github.com/anionDev/GRYLibrary</RepositoryUrl>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <RootNamespace>GRYLibrary.Core</RootNamespace>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <ApplicationIcon>GRYLibraryIcon.ico</ApplicationIcon>
-	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-	<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
-	<Nullable>disable</Nullable>
-	<Configurations>Development;Productive;QualityCheck</Configurations>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+    <Nullable>disable</Nullable>
+    <Configurations>Development;QualityCheck;Productive</Configurations>
     <IsTestProject>false</IsTestProject>
     <LangVersion>10.0</LangVersion>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <ApplicationIcon>GRYLibraryIcon.ico</ApplicationIcon>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)'=='Development'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
@@ -39,7 +42,7 @@
     <WarningsAsErrors>NU1605</WarningsAsErrors>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='QualityCheck|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)'=='QualityCheck'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
@@ -56,7 +59,7 @@
     <WarningsAsErrors>NU1605</WarningsAsErrors>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Productive|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)'=='Productive'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
