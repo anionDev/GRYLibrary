@@ -1,12 +1,12 @@
 ﻿# GRYLibrary
 
 [![CodeFactor](https://www.codefactor.io/repository/github/aniondev/grylibrary/badge/main)](https://www.codefactor.io/repository/github/aniondev/grylibrary/overview/main)
-![Coverage](./GRYLibrary/Other/QualityCheck/TestCoverage/Badges/badge_shieldsio_linecoverage_blue.svg)
+![Coverage](./GRYLibrary/Other/Resources/TestCoverageBadges/badge_shieldsio_linecoverage_blue.svg)
 ![Lines of code](https://img.shields.io/tokei/lines/github/anionDev/GRYLibrary)
 
 The GRYLibrary is a collection with some useful .NET classes and functions which are very easy (re)usable.
 
-The GRYLibrary follows the declarative-programming-paradigm:
+The GRYLibrary follows the declarative-programming-paradigm where possible:
 
 You should say what you want to do, and not how to do it. This paradigm results in code which is easy to understand and can be written very quickly without loosing the overview of your code.
 
