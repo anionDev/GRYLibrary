@@ -7,13 +7,13 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/aniondev/grylibrary/badge/main)](https://www.codefactor.io/repository/github/aniondev/grylibrary/overview/main)
 ![NuGet](https://img.shields.io/nuget/dt/GRYLibrary.svg)
 ![Coverage](./GRYLibrary/Other/Resources/TestCoverageBadges/badge_shieldsio_linecoverage_blue.svg)
+
+![License](https://img.shields.io/badge/license-Depends_on_the_use_case-blue)
+![GitHub last commit](https://img.shields.io/github/last-commit/anionDev/GRYLibrary)
+![GitHub issues](https://img.shields.io/github/issues-raw/anionDev/GRYLibrary)
 <!--![Lines of code](https://img.shields.io/tokei/lines/github/anionDev/GRYLibrary) disabled because it does not work, see https://github.com/badges/shields/issues/7569 -->
 
 The GRYLibrary is a collection with some useful .NET classes and functions which are very easy (re)usable.
-
-The GRYLibrary follows the declarative-programming-paradigm:
-
-You should say what you want to do, and not how to do it. This paradigm results in code which is easy to understand and can be written very quickly without loosing the overview of your code.
 
 ## Getting Started
 
@@ -30,6 +30,12 @@ Install-Package GRYLibrary
 The GRYLibrary-reference can be found [here](https://aniondev.github.io/GRYLibraryReference).
 
 ## Hints
+
+### Paradigms
+
+The GRYLibrary follows the declarative-programming-paradigm:
+
+You should say what you want to do, and not how to do it. This paradigm results in code which is easy to understand and can be written very quickly without loosing the overview of your code.
 
 ### Platform
 
