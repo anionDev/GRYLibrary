@@ -1,8 +1,13 @@
 ﻿# GRYLibrary
 
+![.NET](https://img.shields.io/badge/.NET-6-blue)
+[![NuGet](https://img.shields.io/nuget/v/GRYLibrary.svg?color=green)](https://www.nuget.org/packages/GRYLibrary)
+![Dependencies](https://img.shields.io/librariesio/github/anionDev/GRYLibrary)
+
 [![CodeFactor](https://www.codefactor.io/repository/github/aniondev/grylibrary/badge/main)](https://www.codefactor.io/repository/github/aniondev/grylibrary/overview/main)
-![Coverage](./GRYLibrary/Other/QualityCheck/TestCoverage/Badges/badge_shieldsio_linecoverage_blue.svg)
-![Lines of code](https://img.shields.io/tokei/lines/github/anionDev/GRYLibrary)
+![NuGet](https://img.shields.io/nuget/dt/GRYLibrary.svg)
+![Coverage](./GRYLibrary/Other/Resources/TestCoverageBadges/badge_shieldsio_linecoverage_blue.svg)
+<!--![Lines of code](https://img.shields.io/tokei/lines/github/anionDev/GRYLibrary) disabled because it does not work, see https://github.com/badges/shields/issues/7569 -->
 
 The GRYLibrary is a collection with some useful .NET classes and functions which are very easy (re)usable.
 
@@ -13,8 +18,6 @@ You should say what you want to do, and not how to do it. This paradigm results 
 ## Getting Started
 
 ### Installation
-
-[![NuGet](https://img.shields.io/nuget/v/GRYLibrary.svg?color=green)](https://www.nuget.org/packages/GRYLibrary) ![Nuget](https://img.shields.io/nuget/dt/GRYLibrary.svg)
 
 Install the GRYLibrary as NuGet-package using the Package Manager Console:
 
