@@ -14,6 +14,7 @@ def common_tasks():
     TasksForCommonProjectStructure().update_version_of_codeunit_to_project_version(file, version)
     sc.replace_version_in_nuspec_file(GeneralUtilities.resolve_relative_path("./Build/GRYLibrary.nuspec", folder_of_current_file), version)
     sc.replace_version_in_csproj_file(GeneralUtilities.resolve_relative_path("../GRYLibrary/GRYLibrary.csproj", folder_of_current_file), version)
+    sc.replace_version_in_csproj_file(GeneralUtilities.resolve_relative_path("../GRYLibraryTests/GRYLibraryTests.csproj", folder_of_current_file), version)
 
 
 if __name__ == "__main__":
