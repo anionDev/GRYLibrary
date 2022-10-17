@@ -68,6 +68,6 @@ There are the following licenses for the GRYLibrary available
 
 - The GRYLibrary is generally and commonly licensed under the terms of GRYL. The concrete license-text can be found [here](https://raw.githubusercontent.com/anionDev/GRYLibrary/main/License.txt). This license-text does obviously not apply to the other following licenses.
 - There are some special licenses for certain scopes:
-  - [epew](https://github.com/anionDev/ExternalProgramExecutionWrapper) is allowed to use the [Nuget-release](https://www.nuget.org/packages/GRYLibrary) of the GRYLibrary under the Terms of the MIT-license for executing programs as main-purpose of epew and for nothing else.
-  - [ReliablePlayer](https://github.com/anionDev/ReliablePlayer) is allowed to use the [Nuget-release](https://www.nuget.org/packages/GRYLibrary) of the GRYLibrary under the Terms of the MIT-license to help implement features provided in the official repository and release of ReliablePlayer and for nothing else.
+  - [epew](https://github.com/anionDev/ExternalProgramExecutionWrapper) is allowed to use the [NuGet-release](https://www.nuget.org/packages/GRYLibrary) of the GRYLibrary under the Terms of the MIT-license for executing programs as main-purpose of epew and for nothing else.
+  - [ReliablePlayer](https://github.com/anionDev/ReliablePlayer) is allowed to use the [NuGet-release](https://www.nuget.org/packages/GRYLibrary) of the GRYLibrary under the Terms of the MIT-license to help implement features provided in the official repository and release of ReliablePlayer and for nothing else.
 - If you need another license-type or you want to use the GRYLibrary in your company then please contact the owner of the GRYLibrary.
