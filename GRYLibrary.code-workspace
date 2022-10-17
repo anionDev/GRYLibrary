@@ -8,33 +8,52 @@
 		"version": "2.0.0",
 		"tasks": [
 			{
+				"label": "GRYLibrary: Build entire codeunit",
+				"command": "SCBuildCodeunit",
+				"args": [
+					"--codeunitfolder",
+					"${workspaceFolder}/GRYLibrary"
+				],
+				"type": "shell",
+			},
+			{
 				"label": "GRYLibrary: Common tasks",
 				"command": "python",
-				"args": ["${workspaceFolder}/GRYLibrary/Other/CommonTasks.py"],
-				"type": "shell",
-			},
-			{
-				"label": "GRYLibrary: Run testcases",
-				"command": "python",
-				"args": ["${workspaceFolder}/GRYLibrary/Other/QualityCheck/RunTestcases.py"],
-				"type": "shell",
-			},
-			{
-				"label": "GRYLibrary: Linting",
-				"command": "python",
-				"args": ["${workspaceFolder}/GRYLibrary/Other/QualityCheck/Linting.py"],
-				"type": "shell",
-			},
-			{
-				"label": "GRYLibrary: Generate reference",
-				"command": "python",
-				"args": ["${workspaceFolder}/GRYLibrary/Other/Reference/GenerateReference.py"],
+				"args": [
+					"${workspaceFolder}/GRYLibrary/Other/CommonTasks.py"
+				],
 				"type": "shell",
 			},
 			{
 				"label": "GRYLibrary: Build",
 				"command": "python",
-				"args": ["${workspaceFolder}/GRYLibrary/Other/Build/Build.py"],
+				"args": [
+					"${workspaceFolder}/GRYLibrary/Other/Build/Build.py"
+				],
+				"type": "shell",
+			},
+			{
+				"label": "GRYLibrary: Run testcases",
+				"command": "python",
+				"args": [
+					"${workspaceFolder}/GRYLibrary/Other/QualityCheck/RunTestcases.py"
+				],
+				"type": "shell",
+			},
+			{
+				"label": "GRYLibrary: Linting",
+				"command": "python",
+				"args": [
+					"${workspaceFolder}/GRYLibrary/Other/QualityCheck/Linting.py"
+				],
+				"type": "shell",
+			},
+			{
+				"label": "GRYLibrary: Generate reference",
+				"command": "python",
+				"args": [
+					"${workspaceFolder}/GRYLibrary/Other/Reference/GenerateReference.py"
+				],
 				"type": "shell",
 			}
 		]
@@ -54,7 +73,7 @@
 	"settings": {
 		"files.associations": {
 			"*.codeunit": "xml",
-		  },
+		},
 		"files.exclude": {
 			".coverage": true,
 			"GRYLibrary/bin": true,
@@ -63,7 +82,7 @@
 			"GRYLibraryTests/obj": true,
 			"TestResults": true,
 			".vs": true,
-		}
+		},
 		"spellright.language": [
 			"en",
 		],
