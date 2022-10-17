@@ -1,6 +1,7 @@
 # GRYLibrary-reference
 
-## Links
+TODO
 
-- [Articles](articles/index.md)
-- [API Documentation](api/index.md)
+Example picture:
+
+![Image not available](images/Example.png "Example picture")
