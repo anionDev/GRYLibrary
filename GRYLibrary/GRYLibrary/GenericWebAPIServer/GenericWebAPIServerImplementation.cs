@@ -42,10 +42,10 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         public string AppSettingsFile { get; set; } = "AppSettings.json";
         public string AppSettingsSchemaFile { get; set; } = default;
         public GRYLog LogObject { get; private set; }
-        public Version Version { get; set; }
+        public System.Version Version { get; set; }
         public string LogNamespaceForOverhead { get; set; } = "Server";
         public string LogNamespaceForLogMiddleware { get; set; } = "WebServerLog";
-        public GenericWebAPIServerImplementation(string programName, Version version, IEnvironment environment)
+        public GenericWebAPIServerImplementation(string programName, System.Version version, IEnvironment environment)
         {
             this.ProgramName = programName;
             this.Version = version;

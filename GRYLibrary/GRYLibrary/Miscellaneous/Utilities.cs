@@ -37,6 +37,7 @@ using NJsonSchema.Validation;
 using System.Security.Principal;
 using GRYLibrary.Core.ExecutePrograms;
 using GRYLibrary.Core.ExecutePrograms.WaitingStates;
+using Newtonsoft.Json;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
@@ -2681,6 +2682,25 @@ namespace GRYLibrary.Core.Miscellaneous
         public static NullReferenceException CreateNullReferenceExceptionDueToParameter(string parameterName)
         {
             return new NullReferenceException($"Parameter {parameterName} is null");
+        }
+
+        public static T LoadSettingsFromLokalJSONFile<T>(bool createFileIsNotExist = true) where T : new()
+        {
+            string workingDirectory = Directory.GetCurrentDirectory();
+            string file = Path.Combine(workingDirectory, "appsettings.json");
+            T result;
+            Encoding encoding = new UTF8Encoding(false);
+            if (File.Exists(file))
+            {
+                result = JsonConvert.DeserializeObject<T>(File.ReadAllText(file, encoding));
+            }
+            else
+            {
+                result = new T();
+                string content = Newtonsoft.Json.JsonConvert.SerializeObject(result, Newtonsoft.Json.Formatting.Indented);
+                File.WriteAllText(file, content, encoding);
+            }
+            return result;
         }
     }
 }
