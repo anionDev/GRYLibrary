@@ -82,9 +82,9 @@
     <PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="6.0.0" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
     <PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
-    <PackageReference Include="NJsonSchema" Version="10.7.2" />
-    <PackageReference Include="NSwag.AspNetCore" Version="13.16.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.2" />
+    <PackageReference Include="NJsonSchema" Version="10.8.0" />
+    <PackageReference Include="NSwag.AspNetCore" Version="13.17.0" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
   </ItemGroup>
 
