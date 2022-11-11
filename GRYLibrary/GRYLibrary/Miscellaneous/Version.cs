@@ -230,11 +230,6 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         #endregion
         #region IComparable Members
-        /// <summary>
-        /// Compares to.
-        /// </summary>
-        /// <param name="obj">Obj.</param>
-        /// <returns></returns>
         public int CompareTo(object version)
         {
             if (version == null)
