@@ -1,23 +1,20 @@
 ﻿# GRYLibrary
 
-![.NET](https://img.shields.io/badge/.NET-6-blue)
-[![NuGet](https://img.shields.io/nuget/v/GRYLibrary.svg?color=green)](https://www.nuget.org/packages/GRYLibrary)
-![Dependencies](https://img.shields.io/librariesio/github/anionDev/GRYLibrary)
-
 [![CodeFactor](https://www.codefactor.io/repository/github/aniondev/grylibrary/badge/main)](https://www.codefactor.io/repository/github/aniondev/grylibrary/overview/main)
-![NuGet](https://img.shields.io/nuget/dt/GRYLibrary.svg)
 ![Coverage](./GRYLibrary/Other/Resources/TestCoverageBadges/badge_shieldsio_linecoverage_blue.svg)
-
-![License](https://img.shields.io/badge/license-Depends_on_the_use_case-blue)
-![GitHub last commit](https://img.shields.io/github/last-commit/anionDev/GRYLibrary)
-![GitHub issues](https://img.shields.io/github/issues-raw/anionDev/GRYLibrary)
-<!--![Lines of code](https://img.shields.io/tokei/lines/github/anionDev/GRYLibrary) disabled because it does not work, see https://github.com/badges/shields/issues/7569 -->
+![Lines of code](https://img.shields.io/tokei/lines/github/anionDev/GRYLibrary)
 
 The GRYLibrary is a collection with some useful .NET classes and functions which are very easy (re)usable.
+
+The GRYLibrary follows the declarative-programming-paradigm where possible:
+
+You should say what you want to do, and not how to do it. This paradigm results in code which is easy to understand and can be written very quickly without loosing the overview of your code.
 
 ## Getting Started
 
 ### Installation
+
+[![NuGet](https://img.shields.io/nuget/v/GRYLibrary.svg?color=green)](https://www.nuget.org/packages/GRYLibrary) ![Nuget](https://img.shields.io/nuget/dt/GRYLibrary.svg)
 
 Install the GRYLibrary as NuGet-package using the Package Manager Console:
 
@@ -30,12 +27,6 @@ Install-Package GRYLibrary
 The GRYLibrary-reference can be found [here](https://aniondev.github.io/GRYLibraryReference).
 
 ## Hints
-
-### Paradigms
-
-The GRYLibrary follows the declarative-programming-paradigm:
-
-You should say what you want to do, and not how to do it. This paradigm results in code which is easy to understand and can be written very quickly without loosing the overview of your code.
 
 ### Platform
 
@@ -68,6 +59,6 @@ There are the following licenses for the GRYLibrary available
 
 - The GRYLibrary is generally and commonly licensed under the terms of GRYL. The concrete license-text can be found [here](https://raw.githubusercontent.com/anionDev/GRYLibrary/main/License.txt). This license-text does obviously not apply to the other following licenses.
 - There are some special licenses for certain scopes:
-  - [epew](https://github.com/anionDev/ExternalProgramExecutionWrapper) is allowed to use the [NuGet-release](https://www.nuget.org/packages/GRYLibrary) of the GRYLibrary under the Terms of the MIT-license for executing programs as main-purpose of epew and for nothing else.
-  - [ReliablePlayer](https://github.com/anionDev/ReliablePlayer) is allowed to use the [NuGet-release](https://www.nuget.org/packages/GRYLibrary) of the GRYLibrary under the Terms of the MIT-license to help implement features provided in the official repository and release of ReliablePlayer and for nothing else.
+  - [epew](https://github.com/anionDev/ExternalProgramExecutionWrapper) is allowed to use the [Nuget-release](https://www.nuget.org/packages/GRYLibrary) of the GRYLibrary under the Terms of the MIT-license for executing programs as main-purpose of epew and for nothing else.
+  - [ReliablePlayer](https://github.com/anionDev/ReliablePlayer) is allowed to use the [Nuget-release](https://www.nuget.org/packages/GRYLibrary) of the GRYLibrary under the Terms of the MIT-license to help implement features provided in the official repository and release of ReliablePlayer and for nothing else.
 - If you need another license-type or you want to use the GRYLibrary in your company then please contact the owner of the GRYLibrary.
