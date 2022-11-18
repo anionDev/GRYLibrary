@@ -8,11 +8,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     /// <summary>
     /// Represents a middleware which logs the requests.
     /// </summary>
-    public class Log : AbstractMiddleware
+    public class RequestLoggingMiddleware : AbstractMiddleware
     {
         private readonly Action<Action<GRYLog>> _LogAction;
         /// <inheritdoc/>
-        public Log(RequestDelegate next, Action<Action<GRYLog>> logAction) : base(next)
+        public RequestLoggingMiddleware(RequestDelegate next, Action<Action<GRYLog>> logAction) : base(next)
         {
             this._LogAction = logAction;
         }

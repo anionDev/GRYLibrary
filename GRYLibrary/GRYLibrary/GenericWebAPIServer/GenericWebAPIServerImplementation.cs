@@ -26,41 +26,32 @@ namespace GRYLibrary.Core.GenericWebAPIServer
     /// </remarks>
     public class GenericWebAPIServerImplementation<Startup, SettingsInterface, SettingsType>
         where Startup : AbstractStartup, new()
-        where SettingsInterface : class, ISettingsInterface
+        where SettingsInterface : class, IISettingsInterface
         where SettingsType : SettingsInterface, new()
     {
-        public IEnvironment Environment { get; private set; }
         public IConfiguration Configuration { get; private set; } = default;
         public SettingsInterface CurrentSettings { get; private set; } = default;
-        public IAdministrationSettings AdministrationSettings { get; private set; } = default;
         public Action OnStart { get; set; } = () => { };
         public Action OnStop { get; set; } = () => { };
-        public string ProgramName { get; set; } = default;
         public string ConfigurationFolder { get; set; } = default;
-        public string DataFolder { get; set; } = default;
-        public string LogFolder { get; set; } = default;
         public string AppSettingsFile { get; set; } = "AppSettings.json";
         public string AppSettingsSchemaFile { get; set; } = default;
         public GRYLog LogObject { get; private set; }
-        public System.Version Version { get; set; }
         public string LogNamespaceForOverhead { get; set; } = "Server";
         public string LogNamespaceForLogMiddleware { get; set; } = "WebServerLog";
-        public GenericWebAPIServerImplementation(string programName, System.Version version, IEnvironment environment)
+        public GenericWebAPIServerImplementation()
         {
-            this.ProgramName = programName;
-            this.Version = version;
-            this.Environment = environment;
         }
         public int Run()
         {
             try
             {
-                Log(logObject => logObject.Log($"Started {ProgramName}", LogLevel.Debug), LogNamespaceForOverhead);
+                Log(logObject => logObject.Log($"Started {this.CurrentSettings.GetProgramName()}", LogLevel.Debug), LogNamespaceForOverhead);
 
                 string domainWithProtocol = $"https://{CurrentSettings.Domain}:{CurrentSettings.HTTPSPort}";
 
                 WebHostBuilder webHostBuilder = new();
-                webHostBuilder.UseEnvironment(Environment.GetType().Name);
+                webHostBuilder.UseEnvironment(this.CurrentSettings.GetEnvironment().GetType().Name);
                 webHostBuilder.UseUrls(domainWithProtocol);
                 webHostBuilder.UseKestrel(kestrelServerOptions =>
                 {
@@ -71,12 +62,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                     var pfxFilePath = Utilities.NormalizePath(Path.Combine(ConfigurationFolder, CurrentSettings.CertificateFile));
                     var cvertificatePasswordFilePath = Utilities.NormalizePath(Path.Combine(ConfigurationFolder, CurrentSettings.CertificatePasswordFile));
                     X509Certificate2 certificate = new(pfxFilePath, File.ReadAllText(cvertificatePasswordFilePath, new UTF8Encoding(false)));
-                    if (Environment is Productive && Utilities.IsSelfSIgned(certificate))
+                    if (this.CurrentSettings.GetEnvironment() is Productive && Utilities.IsSelfSIgned(certificate))
                     {
                         Log(logObject => logObject.LogWarning($"The used certificate '{CurrentSettings.CertificateFile}' is self-signed. Using self-signed certificates is not recommended in a productive environment."), LogNamespaceForOverhead);
                     }
                     kestrelServerOptions.AddServerHeader = false;
-                    kestrelServerOptions.Limits.MaxRequestBodySize = CurrentSettings.MaxRequestBodySize;
                     kestrelServerOptions.Listen(System.Net.IPAddress.Loopback, CurrentSettings.HTTPSPort, listenOptions =>
                     {
                         listenOptions.UseHttps(certificate);
@@ -87,7 +77,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 IWebHost host = webHostBuilder.Build();
                 OnStart();
                 string apiExplorerAddress = $"{domainWithProtocol}/swagger/index.html";
-                if (Environment is Development)
+                if (this.CurrentSettings.GetEnvironment() is Development)
                 {
                     Log(logObject => logObject.Log($"The API-explorer is available under the address '{apiExplorerAddress}'"), LogNamespaceForOverhead);
                 }
@@ -103,7 +93,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             }
             finally
             {
-                Log(logObject => logObject.Log($"Finished {ProgramName}", LogLevel.Debug), LogNamespaceForOverhead);
+                Log(logObject => logObject.Log($"Finished {this.CurrentSettings.GetProgramName()}", LogLevel.Debug), LogNamespaceForOverhead);
             }
         }
 
@@ -143,25 +133,18 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             }
             else
             {
-                throw new FileNotFoundException($"App-settings-file '{appSettingsFile}' was not found.");
+                //TODO create file
             }
         }
 
         public void Initialize()
         {
-            if (ConfigurationFolder != default)
+            LogObject = GRYLog.Create();//transient log
+            if (ConfigurationFolder == default)
             {
-                Utilities.EnsureDirectoryExists(ConfigurationFolder);
+                throw new ArgumentNullException($"{nameof(ConfigurationFolder)} is not defined");
             }
-            if (DataFolder != default)
-            {
-                Utilities.EnsureDirectoryExists(DataFolder);
-            }
-            if (LogFolder != default)
-            {
-                Utilities.EnsureDirectoryExists(LogFolder);
-            }
-            LogObject = GRYLog.GetOrCreateAndGet($"{ConfigurationFolder}/Log.configuration", $"{LogFolder}/{ProgramName}_{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss", CultureInfo.InvariantCulture)}.log");
+            Utilities.EnsureDirectoryExists(ConfigurationFolder);
 
             ValidateAppSettings();
 
@@ -174,31 +157,23 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
             CurrentSettings = new SettingsType();
             Configuration.GetSection("Settings").Bind(CurrentSettings);
-            this.AdministrationSettings = new AdministrationSettings(ProgramName, Version, Environment, ConfigurationFolder);
+            LogObject = GRYLog.GetOrCreateAndGet($"{ConfigurationFolder}/Log.configuration", $"{CurrentSettings.GetLogFolder()}/{this.CurrentSettings.GetProgramName()}_{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss", CultureInfo.InvariantCulture)}.log");//logfile is availabe so use this instead now
         }
 
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddSingleton<SettingsInterface>((_) => new SettingsType());
-            services.AddSingleton<IAdministrationSettings>((_) => AdministrationSettings);
-            services.AddControllers();
-            //TODO: .AddAntiforgey()
-            services.AddOpenApiDocument(); // add OpenAPI v3 document
-        }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            Log(logObject => logObject.Log($"Current environment: {Environment.GetType().Name}", LogLevel.Information), LogNamespaceForOverhead);
-            if (Environment is Development)
+            Log(logObject => logObject.Log($"Current environment: {this.CurrentSettings.GetEnvironment().GetType().Name}", LogLevel.Information), LogNamespaceForOverhead);
+            if (this.CurrentSettings.GetEnvironment() is Development)
             {
                 Utilities.AssertCondition(env.IsEnvironment(nameof(Development)));
             }
 
-            if (Environment is QualityCheck)
+            if (this.CurrentSettings.GetEnvironment() is QualityCheck)
             {
                 Utilities.AssertCondition(env.IsEnvironment(nameof(QualityCheck)));
             }
 
-            if (Environment is Productive)
+            if (this.CurrentSettings.GetEnvironment() is Productive)
             {
                 Utilities.AssertCondition(env.IsEnvironment(nameof(Productive)));
                 app.UseDDOSProtection();
@@ -214,7 +189,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             }
             app.UseLog(log => Log(log, LogNamespaceForLogMiddleware));
             app.UseExceptionManager();
-            if (Environment is Productive)
+            if (this.CurrentSettings.GetEnvironment() is QualityCheck || this.CurrentSettings.GetEnvironment() is Productive)
             {
                 app.UseRequestCounter();
             }

@@ -24,15 +24,15 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
         {
             return builder.UseMiddleware<Obfuscation>();
         }
-        /// <summary>Configure the application to use <see cref="Log"/>.</summary>
+        /// <summary>Configure the application to use <see cref="RequestLoggingMiddleware"/>.</summary>
         public static IApplicationBuilder UseLog(this IApplicationBuilder builder, GRYLog logObject)
         {
             return UseLog(builder, (logAction) => logAction(logObject));
         }
-        /// <summary>Configure the application to use <see cref="Log"/>.</summary>
+        /// <summary>Configure the application to use <see cref="RequestLoggingMiddleware"/>.</summary>
         public static IApplicationBuilder UseLog(this IApplicationBuilder builder, Action<Action<GRYLog>> logAction)
         {
-            return builder.UseMiddleware<Log>(logAction);
+            return builder.UseMiddleware<RequestLoggingMiddleware>(logAction);
         }
         /// <summary>Configure the application to use <see cref="ExceptionManager"/>.</summary>
         public static IApplicationBuilder UseExceptionManager(this IApplicationBuilder builder)
