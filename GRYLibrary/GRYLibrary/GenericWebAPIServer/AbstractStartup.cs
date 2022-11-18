@@ -17,9 +17,10 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         public abstract void ConfigureImplementation(IApplicationBuilder app);
         public  void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IISettingsInterface>((_) => CurrentSettings);
             services.AddControllers();
-            //TODO: .AddAntiforgey()
-            //TODO do this on compiletime: services.AddOpenApiDocument(); // add OpenAPI v3 document
+            //TODO: services.AddAntiforgey()
+            //TODO on compiletime generate openapi-json-document like services.AddOpenApiDocument() would do
             ConfigureServicesImplementation(services);
         }
         public  void Configure(IApplicationBuilder app)
