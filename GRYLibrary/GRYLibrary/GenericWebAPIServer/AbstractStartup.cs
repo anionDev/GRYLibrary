@@ -1,38 +1,57 @@
 
+using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using GRYLibrary.Core.GenericWebAPIServer.Middlewares;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
 
 namespace GRYLibrary.Core.GenericWebAPIServer
 {
-    public abstract class AbstractStartup 
+    public abstract class AbstractStartup
     {
-        public AbstractStartup()
-        {
-        }
-        public abstract void ConfigureServicesImplementation(IServiceCollection services);
+        public IISettingsInterface CurrentSettings { get; set; }       
+       public abstract void ConfigureServicesImplementation(IServiceCollection services);
         public abstract void ConfigureImplementation(IApplicationBuilder app);
-
-        void ConfigureServices(IServiceCollection services)
+        public  void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<SettingsInterface>((_) => new SettingsType());//TODO get this generics from implementing class
             services.AddControllers();
             //TODO: .AddAntiforgey()
             //TODO do this on compiletime: services.AddOpenApiDocument(); // add OpenAPI v3 document
             ConfigureServicesImplementation(services);
         }
-
-        void Configure(IApplicationBuilder app)
+        public  void Configure(IApplicationBuilder app)
         {
-            app.UseMiddleware<DDOSProtection>();
-            app.UseMiddleware<Obfuscation>();
-            app.UseMiddleware<ExceptionManager>();
+            app.UseHttpsRedirection();
+            app.UseHsts();
+            if (this.CurrentSettings.GetEnvironment() is Productive)
+            {
+                app.UseMiddleware<DDOSProtection>();
+                app.UseMiddleware<Obfuscation>();
+            }
+            else
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseOpenApi(); // serve OpenAPI/Swagger documents
+                app.UseSwaggerUi3(); // serve Swagger UI
+                app.UseReDoc(); // serve ReDoc UI
+            }
             app.UseMiddleware<RequestLoggingMiddleware>();
-            app.UseMiddleware<RequestCounter>();
+            app.UseMiddleware<ExceptionManager>();
+            if (this.CurrentSettings.GetEnvironment() is QualityCheck || this.CurrentSettings.GetEnvironment() is Productive)
+            {
+                app.UseMiddleware<RequestCounter>();
+            }
             app.UseMiddleware<WebApplicationFirewall>();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
             ConfigureImplementation(app);
         }
+
     }
 }

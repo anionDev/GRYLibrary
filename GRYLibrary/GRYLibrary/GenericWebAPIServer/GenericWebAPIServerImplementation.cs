@@ -16,6 +16,8 @@ using System.Text;
 using System.Threading.Tasks;
 using NJsonSchema;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
+using System.Reflection.PortableExecutable;
+using System.Collections.Generic;
 
 namespace GRYLibrary.Core.GenericWebAPIServer
 {
@@ -24,8 +26,8 @@ namespace GRYLibrary.Core.GenericWebAPIServer
     /// When running CryptoCurrencyOnlineToolsNodeBitcoin on a test-system in a docker-container the "QualityCheck"-configuration is supposed to be used.
     /// When running CryptoCurrencyOnlineToolsNodeBitcoin on a productive-system in a docker-container the "Productive"-configuration is supposed to be used.
     /// </remarks>
-    public class GenericWebAPIServerImplementation<Startup, SettingsInterface, SettingsType>
-        where Startup : AbstractStartup, new()
+    public class GenericWebAPIServerImplementation<StartupType, SettingsInterface, SettingsType>
+        where StartupType : AbstractStartup, new()
         where SettingsInterface : class, IISettingsInterface
         where SettingsType : SettingsInterface, new()
     {
@@ -39,9 +41,30 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         public GRYLog LogObject { get; private set; }
         public string LogNamespaceForOverhead { get; set; } = "Server";
         public string LogNamespaceForLogMiddleware { get; set; } = "WebServerLog";
-        public GenericWebAPIServerImplementation()
+     
+        public void Initialize()
         {
+            LogObject = GRYLog.Create();//transient log
+            if (ConfigurationFolder == default)
+            {
+                throw new ArgumentNullException($"{nameof(ConfigurationFolder)} is not defined");
+            }
+            Utilities.EnsureDirectoryExists(ConfigurationFolder);
+
+            ValidateAppSettings();
+
+            ConfigurationBuilder configurationBuilder = new();
+            configurationBuilder
+                .SetBasePath(ConfigurationFolder)
+                .AddJsonFile(Path.Combine(ConfigurationFolder, AppSettingsFile), optional: false, reloadOnChange: true)
+                .AddEnvironmentVariables();
+            Configuration = configurationBuilder.Build();
+
+            CurrentSettings = new SettingsType();
+            Configuration.GetSection("Settings").Bind(CurrentSettings);
+            LogObject = GRYLog.GetOrCreateAndGet($"{ConfigurationFolder}/Log.configuration", $"{CurrentSettings.GetLogFolder()}/{this.CurrentSettings.GetProgramName()}_{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss", CultureInfo.InvariantCulture)}.log");//logfile is availabe so use this instead now
         }
+
         public int Run()
         {
             try
@@ -72,7 +95,14 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                         listenOptions.UseHttps(certificate);
                     });
                 });
-                webHostBuilder.UseStartup<Startup>();
+                Log(logObject => logObject.Log($"Current environment: {this.CurrentSettings.GetEnvironment().GetType().Name}", LogLevel.Information), LogNamespaceForOverhead);
+                webHostBuilder.UseStartup((WebHostBuilderContext webHostBuilderContext) =>
+                {
+                    return new StartupType()
+                    {
+                        CurrentSettings = this.CurrentSettings
+                    };
+                });
 
                 IWebHost host = webHostBuilder.Build();
                 OnStart();
@@ -135,86 +165,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             {
                 //TODO create file
             }
-        }
-
-        public void Initialize()
-        {
-            LogObject = GRYLog.Create();//transient log
-            if (ConfigurationFolder == default)
-            {
-                throw new ArgumentNullException($"{nameof(ConfigurationFolder)} is not defined");
-            }
-            Utilities.EnsureDirectoryExists(ConfigurationFolder);
-
-            ValidateAppSettings();
-
-            ConfigurationBuilder configurationBuilder = new();
-            configurationBuilder
-                .SetBasePath(ConfigurationFolder)
-                .AddJsonFile(Path.Combine(ConfigurationFolder, AppSettingsFile), optional: false, reloadOnChange: true)
-                .AddEnvironmentVariables();
-            Configuration = configurationBuilder.Build();
-
-            CurrentSettings = new SettingsType();
-            Configuration.GetSection("Settings").Bind(CurrentSettings);
-            LogObject = GRYLog.GetOrCreateAndGet($"{ConfigurationFolder}/Log.configuration", $"{CurrentSettings.GetLogFolder()}/{this.CurrentSettings.GetProgramName()}_{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss", CultureInfo.InvariantCulture)}.log");//logfile is availabe so use this instead now
-        }
-
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            Log(logObject => logObject.Log($"Current environment: {this.CurrentSettings.GetEnvironment().GetType().Name}", LogLevel.Information), LogNamespaceForOverhead);
-            if (this.CurrentSettings.GetEnvironment() is Development)
-            {
-                Utilities.AssertCondition(env.IsEnvironment(nameof(Development)));
-            }
-
-            if (this.CurrentSettings.GetEnvironment() is QualityCheck)
-            {
-                Utilities.AssertCondition(env.IsEnvironment(nameof(QualityCheck)));
-            }
-
-            if (this.CurrentSettings.GetEnvironment() is Productive)
-            {
-                Utilities.AssertCondition(env.IsEnvironment(nameof(Productive)));
-                app.UseDDOSProtection();
-                app.UseWebApplicationFirewall();
-                app.UseObfuscation();
-            }
-            else
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseOpenApi(); // serve OpenAPI/Swagger documents
-                app.UseSwaggerUi3(); // serve Swagger UI
-                app.UseReDoc(); // serve ReDoc UI
-            }
-            app.UseLog(log => Log(log, LogNamespaceForLogMiddleware));
-            app.UseExceptionManager();
-            if (this.CurrentSettings.GetEnvironment() is QualityCheck || this.CurrentSettings.GetEnvironment() is Productive)
-            {
-                app.UseRequestCounter();
-            }
-            //app.UseHttpsRedirection();
-            app.UseHsts();
-            app.UseRouting();
-            //app.UseAuthorization();
-            app.UseEndpoints(endpoints =>
-                {
-                    endpoints.MapControllers();
-                });
-        }
-
-        public string GetDefaultAppDataFolder(string applicationFolder, IEnvironment environment)
-        {
-            string prefix;
-            if (environment is Development)
-            {
-                prefix = applicationFolder;
-            }
-            else
-            {
-                prefix = Path.DirectorySeparatorChar.ToString();
-            }
-            return prefix + "AppData";
         }
         public void Log(Action<GRYLog> log, string subNamespace)
         {
