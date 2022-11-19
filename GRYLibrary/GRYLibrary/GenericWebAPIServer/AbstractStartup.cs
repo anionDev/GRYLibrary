@@ -22,9 +22,9 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         }
         public void Configure(IApplicationBuilder app)
         {
-            app.UseHttpsRedirection();
-            if (CurrentSettings.Protocol == "https")
+            if (this.CurrentSettings.WebServerSettings.UseHTTPS)
             {
+                app.UseHttpsRedirection();
                 app.UseHsts();
             }
             if (this.CurrentSettings.GetTargetEnvironmentType() is Productive)

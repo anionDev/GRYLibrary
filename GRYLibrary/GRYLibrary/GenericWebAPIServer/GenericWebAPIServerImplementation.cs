@@ -21,9 +21,9 @@ using GRYLibrary.Core.GenericWebAPIServer.Settings;
 namespace GRYLibrary.Core.GenericWebAPIServer
 {
     /// <remarks>
-    /// When running and debugging locally the "Development"-configuration is supposed to be used.
-    /// When running on a test-system in a docker-container the "QualityCheck"-configuration is supposed to be used.
-    /// When running on a productive-system in a docker-container the "Productive"-configuration is supposed to be used.
+    /// When running and debugging locally the <see cref="Development"/>-configuration is supposed to be used.
+    /// When running on a test-system the <see cref="QualityCheck"/>-configuration is supposed to be used.
+    /// When running on a productive-system the <see cref="Productive"/>-configuration is supposed to be used.
     /// </remarks>
     public class GenericWebAPIServerImplementation<StartupType, SettingsInterface, SettingsType>
         where StartupType : AbstractStartup, new()
@@ -35,7 +35,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         public Action OnStart { get; set; } = () => { };
         public Action OnStop { get; set; } = () => { };
         public string ConfigurationFolder { get; set; } = default;
-        public string AppSettingsFile { get; set; } = "AppSettings.json";
+        public string AppSettingsFileName { get; set; } = "AppSettings.json";
         public string AppSettingsSchemaFile { get; set; } = default;
         public GRYLog LogObject { get; private set; }
         public string LogNamespaceForOverhead { get; set; } = "Server";
@@ -55,7 +55,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             ConfigurationBuilder configurationBuilder = new();
             configurationBuilder
                 .SetBasePath(ConfigurationFolder)
-                .AddJsonFile(Path.Combine(ConfigurationFolder, AppSettingsFile), optional: false, reloadOnChange: true)
+                .AddJsonFile(Path.Combine(ConfigurationFolder, AppSettingsFileName), optional: false, reloadOnChange: true)
                 .AddEnvironmentVariables();
             Configuration = configurationBuilder.Build();
 
@@ -70,12 +70,9 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             {
                 Log(logObject => logObject.Log($"Started {this.CurrentSettings.GetProgramName()}", LogLevel.Debug), LogNamespaceForOverhead);
                 Log(logObject => logObject.Log($"Current environment: {this.CurrentSettings.GetTargetEnvironmentType().GetType().Name}", LogLevel.Information), LogNamespaceForOverhead);
-                if (!(this.CurrentSettings.Protocol == "https" || this.CurrentSettings.Protocol == "http"))
-                {
-                    throw new ArgumentException($"Unsupported protocol '{this.CurrentSettings.Protocol}'. Only 'https' and 'http' are supported.");
-                }
-                bool useHTTPS = this.CurrentSettings.Protocol == "https";
-                string domainWithProtocol = $"{this.CurrentSettings.Protocol}://{CurrentSettings.Domain}:{CurrentSettings.Port}";
+
+                string protocol = CurrentSettings.WebServerSettings.UseHTTPS ? "https" : "http";
+                string domainWithProtocol = $"{protocol}://{CurrentSettings.ServerSettings.Domain}:{CurrentSettings.ServerSettings.Port}";
 
                 WebHostBuilder webHostBuilder = new();
                 webHostBuilder.UseEnvironment(this.CurrentSettings.GetTargetEnvironmentType().GetType().Name);
@@ -88,27 +85,31 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                     };
                 });
                 webHostBuilder.UseKestrel(kestrelServerOptions =>
-                 {
-                     if (useHTTPS)
-                     {
-                         kestrelServerOptions.ConfigureHttpsDefaults(httpsConnectionAdapterOptions =>
-                         {
-                             httpsConnectionAdapterOptions.ClientCertificateMode = ClientCertificateMode.NoCertificate;
-                         });
-                         var pfxFilePath = Utilities.NormalizePath(Path.Combine(ConfigurationFolder, CurrentSettings.CertificateFile));
-                         var cvertificatePasswordFilePath = Utilities.NormalizePath(Path.Combine(ConfigurationFolder, CurrentSettings.CertificatePasswordFile));
-                         X509Certificate2 certificate = new(pfxFilePath, File.ReadAllText(cvertificatePasswordFilePath, new UTF8Encoding(false)));
-                         if (this.CurrentSettings.GetTargetEnvironmentType() is Productive && Utilities.IsSelfSIgned(certificate))
-                         {
-                             Log(logObject => logObject.LogWarning($"The used certificate '{CurrentSettings.CertificateFile}' is self-signed. Using self-signed certificates is not recommended in a productive environment."), LogNamespaceForOverhead);
-                         }
-                         kestrelServerOptions.Listen(System.Net.IPAddress.Loopback, CurrentSettings.Port, listenOptions =>
-                         {
-                             listenOptions.UseHttps(certificate);
-                         });
-                     }
-                     kestrelServerOptions.AddServerHeader = false;
-                 });
+                {
+                    X509Certificate2 certificate = null;
+                    if (CurrentSettings.WebServerSettings.UseHTTPS)
+                    {
+                        kestrelServerOptions.ConfigureHttpsDefaults(httpsConnectionAdapterOptions =>
+                        {
+                            httpsConnectionAdapterOptions.ClientCertificateMode = ClientCertificateMode.NoCertificate;
+                        });
+                        var pfxFilePath = Utilities.NormalizePath(Path.Combine(ConfigurationFolder, CurrentSettings.WebServerSettings.EncryptionSettings.CertificateFile));
+                        var cvertificatePasswordFilePath = Utilities.NormalizePath(Path.Combine(ConfigurationFolder, CurrentSettings.WebServerSettings.EncryptionSettings.CertificatePasswordFile));
+                        certificate = new(pfxFilePath, File.ReadAllText(cvertificatePasswordFilePath, new UTF8Encoding(false)));
+                        if (this.CurrentSettings.GetTargetEnvironmentType() is Productive && Utilities.IsSelfSIgned(certificate))
+                        {
+                            Log(logObject => logObject.LogWarning($"The used certificate '{CurrentSettings.WebServerSettings.EncryptionSettings.CertificateFile}' is self-signed. Using self-signed certificates is not recommended in a productive environment."), LogNamespaceForOverhead);
+                        }
+                    }
+                    kestrelServerOptions.Listen(System.Net.IPAddress.Loopback, CurrentSettings.ServerSettings.Port, listenOptions =>
+                    {
+                        if (CurrentSettings.WebServerSettings.UseHTTPS)
+                        {
+                            listenOptions.UseHttps(certificate);
+                        }
+                    });
+                    kestrelServerOptions.AddServerHeader = false;
+                });
 
                 IWebHost host = webHostBuilder.Build();
                 string apiExplorerAddress = $"{domainWithProtocol}/APIExplorer/index.html";
@@ -125,7 +126,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             }
             catch (Exception exception)
             {
-                Log(logObject => logObject.Log(exception, "Fatal error occurred"), LogNamespaceForOverhead);
+                Log(logObject => logObject.Log(exception, "Fatal error occurred."), LogNamespaceForOverhead);
                 return 1;
             }
             finally
@@ -136,7 +137,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
         private void ValidateAppSettings()
         {
-            string appSettingsFile = Path.Combine(ConfigurationFolder, AppSettingsFile);
+            string appSettingsFile = Path.Combine(ConfigurationFolder, AppSettingsFileName);
             if (File.Exists(appSettingsFile))
             {
                 string appSettingsSchemaFile = Path.Combine(ConfigurationFolder, AppSettingsSchemaFile);
