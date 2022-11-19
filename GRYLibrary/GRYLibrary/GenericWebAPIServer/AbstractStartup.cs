@@ -1,33 +1,33 @@
 
 using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using GRYLibrary.Core.GenericWebAPIServer.Middlewares;
+using GRYLibrary.Core.GenericWebAPIServer.Settings;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
 
 namespace GRYLibrary.Core.GenericWebAPIServer
 {
     public abstract class AbstractStartup
     {
-        public IISettingsInterface CurrentSettings { get; set; }       
-       public abstract void ConfigureServicesImplementation(IServiceCollection services);
+        public IISettingsInterface CurrentSettings { get; set; }
+        public abstract void ConfigureServicesImplementation(IServiceCollection services);
         public abstract void ConfigureImplementation(IApplicationBuilder app);
-        public  void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IISettingsInterface>((_) => CurrentSettings);
             services.AddControllers();
-            //TODO: services.AddAntiforgey()
+            //TODO services.AddAntiforgey();
             //TODO on compiletime generate openapi-json-document like services.AddOpenApiDocument() would do
             ConfigureServicesImplementation(services);
         }
-        public  void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app)
         {
             app.UseHttpsRedirection();
-            app.UseHsts();
-            if (this.CurrentSettings.GetEnvironment() is Productive)
+            if (CurrentSettings.Protocol == "https")
+            {
+                app.UseHsts();
+            }
+            if (this.CurrentSettings.GetTargetEnvironmentType() is Productive)
             {
                 app.UseMiddleware<DDOSProtection>();
                 app.UseMiddleware<Obfuscation>();
@@ -41,7 +41,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             }
             app.UseMiddleware<RequestLoggingMiddleware>();
             app.UseMiddleware<ExceptionManager>();
-            if (this.CurrentSettings.GetEnvironment() is QualityCheck || this.CurrentSettings.GetEnvironment() is Productive)
+            if (this.CurrentSettings.GetTargetEnvironmentType() is QualityCheck || this.CurrentSettings.GetTargetEnvironmentType() is Productive)
             {
                 app.UseMiddleware<RequestCounter>();
             }
@@ -53,6 +53,5 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             });
             ConfigureImplementation(app);
         }
-
     }
 }

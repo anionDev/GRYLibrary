@@ -1,6 +1,5 @@
 ﻿using GRYLibrary.Core.Log;
 using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
-using GRYLibrary.Core.GenericWebAPIServer.Middlewares;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -16,15 +15,15 @@ using System.Text;
 using System.Threading.Tasks;
 using NJsonSchema;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
-using System.Reflection.PortableExecutable;
 using System.Collections.Generic;
+using GRYLibrary.Core.GenericWebAPIServer.Settings;
 
 namespace GRYLibrary.Core.GenericWebAPIServer
 {
     /// <remarks>
-    /// When running and debugging CryptoCurrencyOnlineToolsNodeBitcoin locally the "Development"-configuration is supposed to be used.
-    /// When running CryptoCurrencyOnlineToolsNodeBitcoin on a test-system in a docker-container the "QualityCheck"-configuration is supposed to be used.
-    /// When running CryptoCurrencyOnlineToolsNodeBitcoin on a productive-system in a docker-container the "Productive"-configuration is supposed to be used.
+    /// When running and debugging locally the "Development"-configuration is supposed to be used.
+    /// When running on a test-system in a docker-container the "QualityCheck"-configuration is supposed to be used.
+    /// When running on a productive-system in a docker-container the "Productive"-configuration is supposed to be used.
     /// </remarks>
     public class GenericWebAPIServerImplementation<StartupType, SettingsInterface, SettingsType>
         where StartupType : AbstractStartup, new()
@@ -41,13 +40,13 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         public GRYLog LogObject { get; private set; }
         public string LogNamespaceForOverhead { get; set; } = "Server";
         public string LogNamespaceForLogMiddleware { get; set; } = "WebServerLog";
-     
+
         public void Initialize()
         {
             LogObject = GRYLog.Create();//transient log
             if (ConfigurationFolder == default)
             {
-                throw new ArgumentNullException($"{nameof(ConfigurationFolder)} is not defined");
+                throw new ArgumentNullException($"{nameof(ConfigurationFolder)} is not defined.");
             }
             Utilities.EnsureDirectoryExists(ConfigurationFolder);
 
@@ -70,32 +69,17 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             try
             {
                 Log(logObject => logObject.Log($"Started {this.CurrentSettings.GetProgramName()}", LogLevel.Debug), LogNamespaceForOverhead);
-
-                string domainWithProtocol = $"https://{CurrentSettings.Domain}:{CurrentSettings.HTTPSPort}";
+                Log(logObject => logObject.Log($"Current environment: {this.CurrentSettings.GetTargetEnvironmentType().GetType().Name}", LogLevel.Information), LogNamespaceForOverhead);
+                if (!(this.CurrentSettings.Protocol == "https" || this.CurrentSettings.Protocol == "http"))
+                {
+                    throw new ArgumentException($"Unsupported protocol '{this.CurrentSettings.Protocol}'. Only 'https' and 'http' are supported.");
+                }
+                bool useHTTPS = this.CurrentSettings.Protocol == "https";
+                string domainWithProtocol = $"{this.CurrentSettings.Protocol}://{CurrentSettings.Domain}:{CurrentSettings.Port}";
 
                 WebHostBuilder webHostBuilder = new();
-                webHostBuilder.UseEnvironment(this.CurrentSettings.GetEnvironment().GetType().Name);
+                webHostBuilder.UseEnvironment(this.CurrentSettings.GetTargetEnvironmentType().GetType().Name);
                 webHostBuilder.UseUrls(domainWithProtocol);
-                webHostBuilder.UseKestrel(kestrelServerOptions =>
-                {
-                    kestrelServerOptions.ConfigureHttpsDefaults(httpsConnectionAdapterOptions2 =>
-                    {
-                        httpsConnectionAdapterOptions2.ClientCertificateMode = ClientCertificateMode.NoCertificate;
-                    });
-                    var pfxFilePath = Utilities.NormalizePath(Path.Combine(ConfigurationFolder, CurrentSettings.CertificateFile));
-                    var cvertificatePasswordFilePath = Utilities.NormalizePath(Path.Combine(ConfigurationFolder, CurrentSettings.CertificatePasswordFile));
-                    X509Certificate2 certificate = new(pfxFilePath, File.ReadAllText(cvertificatePasswordFilePath, new UTF8Encoding(false)));
-                    if (this.CurrentSettings.GetEnvironment() is Productive && Utilities.IsSelfSIgned(certificate))
-                    {
-                        Log(logObject => logObject.LogWarning($"The used certificate '{CurrentSettings.CertificateFile}' is self-signed. Using self-signed certificates is not recommended in a productive environment."), LogNamespaceForOverhead);
-                    }
-                    kestrelServerOptions.AddServerHeader = false;
-                    kestrelServerOptions.Listen(System.Net.IPAddress.Loopback, CurrentSettings.HTTPSPort, listenOptions =>
-                    {
-                        listenOptions.UseHttps(certificate);
-                    });
-                });
-                Log(logObject => logObject.Log($"Current environment: {this.CurrentSettings.GetEnvironment().GetType().Name}", LogLevel.Information), LogNamespaceForOverhead);
                 webHostBuilder.UseStartup((WebHostBuilderContext webHostBuilderContext) =>
                 {
                     return new StartupType()
@@ -103,17 +87,40 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                         CurrentSettings = this.CurrentSettings
                     };
                 });
+                webHostBuilder.UseKestrel(kestrelServerOptions =>
+                 {
+                     if (useHTTPS)
+                     {
+                         kestrelServerOptions.ConfigureHttpsDefaults(httpsConnectionAdapterOptions =>
+                         {
+                             httpsConnectionAdapterOptions.ClientCertificateMode = ClientCertificateMode.NoCertificate;
+                         });
+                         var pfxFilePath = Utilities.NormalizePath(Path.Combine(ConfigurationFolder, CurrentSettings.CertificateFile));
+                         var cvertificatePasswordFilePath = Utilities.NormalizePath(Path.Combine(ConfigurationFolder, CurrentSettings.CertificatePasswordFile));
+                         X509Certificate2 certificate = new(pfxFilePath, File.ReadAllText(cvertificatePasswordFilePath, new UTF8Encoding(false)));
+                         if (this.CurrentSettings.GetTargetEnvironmentType() is Productive && Utilities.IsSelfSIgned(certificate))
+                         {
+                             Log(logObject => logObject.LogWarning($"The used certificate '{CurrentSettings.CertificateFile}' is self-signed. Using self-signed certificates is not recommended in a productive environment."), LogNamespaceForOverhead);
+                         }
+                         kestrelServerOptions.Listen(System.Net.IPAddress.Loopback, CurrentSettings.Port, listenOptions =>
+                         {
+                             listenOptions.UseHttps(certificate);
+                         });
+                     }
+                     kestrelServerOptions.AddServerHeader = false;
+                 });
 
                 IWebHost host = webHostBuilder.Build();
-                OnStart();
-                string apiExplorerAddress = $"{domainWithProtocol}/swagger/index.html";
-                if (this.CurrentSettings.GetEnvironment() is Development)
+                string apiExplorerAddress = $"{domainWithProtocol}/APIExplorer/index.html";
+                if (this.CurrentSettings.GetTargetEnvironmentType() is Development)
                 {
-                    Log(logObject => logObject.Log($"The API-explorer is available under the address '{apiExplorerAddress}'"), LogNamespaceForOverhead);
+                    Log(logObject => logObject.Log($"The API-explorer is available under the address '{apiExplorerAddress}'."), LogNamespaceForOverhead);
                 }
-                host.Run();
 
+                OnStart();
+                host.Run();
                 OnStop();
+
                 return 0;
             }
             catch (Exception exception)
@@ -144,7 +151,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
                         Task<JsonSchema> schemaTask = JsonSchema.FromFileAsync(appSettingsSchemaFile);
                         schemaTask.Wait();
-                        System.Collections.Generic.ICollection<NJsonSchema.Validation.ValidationError> errors = schemaTask.Result.Validate(File.ReadAllText(Path.Combine(ConfigurationFolder, appSettingsFile), new UTF8Encoding(false)));
+                        ICollection<NJsonSchema.Validation.ValidationError> errors = schemaTask.Result.Validate(File.ReadAllText(Path.Combine(ConfigurationFolder, appSettingsFile), new UTF8Encoding(false)));
                         if (errors.Count > 0)
                         {
                             Log(logObject => logObject.Log($"The appsettings are not matching the defined schema. The following errors occurred.", LogLevel.Error), LogNamespaceForOverhead);
