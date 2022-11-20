@@ -8,5 +8,6 @@
         public System.Version GetVersion();
         public Environment GetTargetEnvironmentType();
         public string GetProgramName();
+       
     }
 }

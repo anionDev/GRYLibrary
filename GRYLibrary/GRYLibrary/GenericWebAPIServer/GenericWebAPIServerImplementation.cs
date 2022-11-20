@@ -17,6 +17,7 @@ using NJsonSchema;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
 using System.Collections.Generic;
 using GRYLibrary.Core.GenericWebAPIServer.Settings;
+using Newtonsoft.Json;
 
 namespace GRYLibrary.Core.GenericWebAPIServer
 {
@@ -50,12 +51,20 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             }
             Utilities.EnsureDirectoryExists(ConfigurationFolder);
 
+
+            if (!File.Exists(GetAppSettingsFile()))
+            {
+                var settings = new SettingsType();
+                var serializedSettings = JsonConvert.SerializeObject(settings, new JsonSerializerSettings { Formatting = Formatting.Indented, });
+                File.WriteAllText(GetAppSettingsFile(), serializedSettings, new UTF8Encoding(false));
+            }
+
             ValidateAppSettings();
 
             ConfigurationBuilder configurationBuilder = new();
             configurationBuilder
                 .SetBasePath(ConfigurationFolder)
-                .AddJsonFile(Path.Combine(ConfigurationFolder, AppSettingsFileName), optional: false, reloadOnChange: true)
+                .AddJsonFile(GetAppSettingsFile(), optional: false, reloadOnChange: true)
                 .AddEnvironmentVariables();
             Configuration = configurationBuilder.Build();
 
@@ -74,6 +83,12 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 string protocol = CurrentSettings.WebServerSettings.UseHTTPS ? "https" : "http";
                 string domainWithProtocol = $"{protocol}://{CurrentSettings.ServerSettings.Domain}:{CurrentSettings.ServerSettings.Port}";
 
+                string webserverBasePath = domainWithProtocol;
+
+                if (CurrentSettings.WebServerSettings.BasePath != null)
+                {
+                    webserverBasePath = webserverBasePath + CurrentSettings.WebServerSettings.BasePath;
+                }
                 WebHostBuilder webHostBuilder = new();
                 webHostBuilder.UseEnvironment(this.CurrentSettings.GetTargetEnvironmentType().GetType().Name);
                 webHostBuilder.UseUrls(domainWithProtocol);
@@ -112,10 +127,13 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 });
 
                 IWebHost host = webHostBuilder.Build();
-                string apiExplorerAddress = $"{domainWithProtocol}/APIExplorer/index.html";
-                if (this.CurrentSettings.GetTargetEnvironmentType() is Development)
+                if (!(this.CurrentSettings.GetTargetEnvironmentType() is Productive))
                 {
-                    Log(logObject => logObject.Log($"The API-explorer is available under the address '{apiExplorerAddress}'."), LogNamespaceForOverhead);
+                    string apiExplorerAddress = $"{webserverBasePath}{WebServerSettings.APIExplorerSubRouter}/index.html";
+                    if (this.CurrentSettings.GetTargetEnvironmentType() is Development)
+                    {
+                        Log(logObject => logObject.Log($"The API-explorer is available under the address '{apiExplorerAddress}'."), LogNamespaceForOverhead);
+                    }
                 }
 
                 OnStart();
@@ -134,44 +152,39 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 Log(logObject => logObject.Log($"Finished {this.CurrentSettings.GetProgramName()}", LogLevel.Debug), LogNamespaceForOverhead);
             }
         }
-
+        private string GetAppSettingsFile()
+        {
+            return Path.Combine(ConfigurationFolder, AppSettingsFileName);
+        }
         private void ValidateAppSettings()
         {
-            string appSettingsFile = Path.Combine(ConfigurationFolder, AppSettingsFileName);
-            if (File.Exists(appSettingsFile))
+            if (string.IsNullOrWhiteSpace(AppSettingsSchemaFile))
             {
-                string appSettingsSchemaFile = Path.Combine(ConfigurationFolder, AppSettingsSchemaFile);
-                if (string.IsNullOrWhiteSpace(appSettingsSchemaFile))
-                {
-                    Log(logObject => logObject.Log($"No json schema defined for app-settings-file.", LogLevel.Warning), LogNamespaceForOverhead);
-                }
-                else
-                {
-                    if (File.Exists(appSettingsSchemaFile))
-                    {
-
-                        Task<JsonSchema> schemaTask = JsonSchema.FromFileAsync(appSettingsSchemaFile);
-                        schemaTask.Wait();
-                        ICollection<NJsonSchema.Validation.ValidationError> errors = schemaTask.Result.Validate(File.ReadAllText(Path.Combine(ConfigurationFolder, appSettingsFile), new UTF8Encoding(false)));
-                        if (errors.Count > 0)
-                        {
-                            Log(logObject => logObject.Log($"The appsettings are not matching the defined schema. The following errors occurred.", LogLevel.Error), LogNamespaceForOverhead);
-                            foreach (NJsonSchema.Validation.ValidationError error in errors)
-                            {
-                                LogObject.Log($"Json validation error {Utilities.Format(error)}", LogLevel.Error);
-                            }
-                            throw new InvalidDataException($"The app-settings defined in '{appSettingsFile}' are not matching the schema defined in '{appSettingsSchemaFile}'.");
-                        }
-                    }
-                    else
-                    {
-                        throw new FileNotFoundException($"App-settings-schema-file '{appSettingsSchemaFile}' was not found.");
-                    }
-                }
+                Log(logObject => logObject.Log($"No json schema defined for app-settings-file.", LogLevel.Warning), LogNamespaceForOverhead);
             }
             else
             {
-                //TODO create file
+                string appSettingsSchemaFile = Path.Combine(ConfigurationFolder, AppSettingsSchemaFile);
+                if (File.Exists(appSettingsSchemaFile))
+                {
+
+                    Task<JsonSchema> schemaTask = JsonSchema.FromFileAsync(appSettingsSchemaFile);
+                    schemaTask.Wait();
+                    ICollection<NJsonSchema.Validation.ValidationError> errors = schemaTask.Result.Validate(File.ReadAllText(GetAppSettingsFile(), new UTF8Encoding(false)));
+                    if (errors.Count > 0)
+                    {
+                        Log(logObject => logObject.Log($"The appsettings are not matching the defined schema. The following errors occurred.", LogLevel.Error), LogNamespaceForOverhead);
+                        foreach (NJsonSchema.Validation.ValidationError error in errors)
+                        {
+                            LogObject.Log($"Json validation error {Utilities.Format(error)}", LogLevel.Error);
+                        }
+                        throw new InvalidDataException($"The app-settings defined in '{GetAppSettingsFile()}' are not matching the schema defined in '{appSettingsSchemaFile}'.");
+                    }
+                }
+                else
+                {
+                    throw new FileNotFoundException($"App-settings-schema-file '{appSettingsSchemaFile}' was not found.");
+                }
             }
         }
         public void Log(Action<GRYLog> log, string subNamespace)
