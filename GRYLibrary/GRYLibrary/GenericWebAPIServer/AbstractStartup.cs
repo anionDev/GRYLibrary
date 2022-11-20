@@ -22,17 +22,18 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         }
         public void Configure(IApplicationBuilder app)
         {
-            if (this.CurrentSettings.WebServerSettings.UseHTTPS)
-            {
-                app.UseHttpsRedirection();
-                app.UseHsts();
-            }
+            app.UseMiddleware<BlackList>();
             if (this.CurrentSettings.GetTargetEnvironmentType() is Productive)
             {
                 app.UseMiddleware<DDOSProtection>();
                 app.UseMiddleware<Obfuscation>();
             }
-            else
+            if (this.CurrentSettings.WebServerSettings.UseHTTPS)
+            {
+                app.UseHttpsRedirection();
+                app.UseHsts();
+            }
+            if (!(this.CurrentSettings.GetTargetEnvironmentType() is Productive))
             {
                 app.UseDeveloperExceptionPage();
                 app.UseOpenApi(); // serve OpenAPI/Swagger documents
