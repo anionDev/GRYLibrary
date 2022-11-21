@@ -35,7 +35,7 @@ namespace GRYLibrary.Tests.Testcases
             Tuple<string, string, string> result = Core.Miscellaneous.Utilities.ResolvePathOfProgram(program, argument, null);
 
             // assert
-            Assert.IsTrue(Core.Miscellaneous.Utilities.IsAbsolutePath(result.Item1));
+            Assert.IsTrue(Path.IsPathFullyQualified(result.Item1));
             Assert.IsTrue(program.Contains(originalProgram));
             Assert.AreEqual(argument, originalArgument);
         }
