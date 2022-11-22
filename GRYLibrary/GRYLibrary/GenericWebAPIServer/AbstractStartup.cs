@@ -22,12 +22,12 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         }
         public void Configure(IApplicationBuilder app)
         {
-            app.UseMiddleware<BlackList>();
             if (this.CurrentSettings.GetTargetEnvironmentType() is Productive)
             {
                 app.UseMiddleware<DDOSProtection>();
                 app.UseMiddleware<Obfuscation>();
             }
+            app.UseMiddleware<BlackList>();
             if (this.CurrentSettings.WebServerSettings.UseHTTPS)
             {
                 app.UseHttpsRedirection();
