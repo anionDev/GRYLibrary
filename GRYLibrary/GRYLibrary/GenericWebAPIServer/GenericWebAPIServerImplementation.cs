@@ -51,7 +51,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             }
             Utilities.EnsureDirectoryExists(ConfigurationFolder);
 
-
             if (!File.Exists(GetAppSettingsFile()))
             {
                 var settings = new SettingsType();
