@@ -4,6 +4,8 @@ using GRYLibrary.Core.GenericWebAPIServer.Middlewares;
 using GRYLibrary.Core.GenericWebAPIServer.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using NSwag;
+using System.Collections.Generic;
 
 namespace GRYLibrary.Core.GenericWebAPIServer
 {
@@ -36,9 +38,26 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             if (!(this.CurrentSettings.GetTargetEnvironmentType() is Productive))
             {
                 app.UseDeveloperExceptionPage();
-                app.UseOpenApi(); // serve OpenAPI/Swagger documents
-                app.UseSwaggerUi3(); // serve Swagger UI
-                app.UseReDoc(); // serve ReDoc UI
+
+                /*
+                TODO
+                app.UseOpenApi(c => {
+                    c.Path = "OpenAPI.json";
+                });
+                 */
+
+                /*
+                //TODO
+                app.UseSwaggerUi3(c =>
+                {
+                    c.RoutePrefix=WebServerSettings.APIExplorerSubRouter;
+                }); 
+                */
+
+            }
+            if (CurrentSettings.WebServerSettings.BasePath != null)
+            {
+                app.UsePathBase(CurrentSettings.WebServerSettings.BasePath);
             }
             app.UseMiddleware<RequestLoggingMiddleware>();
             app.UseMiddleware<ExceptionManager>();
@@ -47,7 +66,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 app.UseMiddleware<RequestCounter>();
             }
             app.UseMiddleware<WebApplicationFirewall>();
-
+            app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
