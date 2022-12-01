@@ -4,8 +4,6 @@ using GRYLibrary.Core.GenericWebAPIServer.Middlewares;
 using GRYLibrary.Core.GenericWebAPIServer.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using NSwag;
-using System.Collections.Generic;
 
 namespace GRYLibrary.Core.GenericWebAPIServer
 {

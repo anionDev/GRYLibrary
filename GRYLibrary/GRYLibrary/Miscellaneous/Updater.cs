@@ -1,37 +1,38 @@
-﻿using System;
+﻿using GRYLibrary.Core.ExecutePrograms;
+using GRYLibrary.Core.ExecutePrograms.WaitingStates;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
     public class Updater
     {
-        private readonly string _BackendAddress;
-        private readonly bool _VerifyBackend;
         private readonly string _CurrentLocation;
         private readonly string _AppName;
         private readonly IList<string> _Locations;
-        public Updater(string backendAddress, IList<string> locations, bool verifyBackend)
+        private readonly Func<Version> _GetLatestVersion;
+        private readonly Func<byte[]> _GetArchiveOfLatestVersion;
+        private byte[] _ArchiveOfLatestVersion = null;
+        public string CommandlineArgumentsForNewInstance { get; set; } = null;
+        public Updater(IList<string> locations, Func<Version> getLatestVersion, Func<byte[]> getArchiveOfLatestVersion)
         {
-            this._BackendAddress = backendAddress;
             this._CurrentLocation = GetCurrentLocation();
             this._AppName = GetAppName();
             this._Locations = locations;
-            this._VerifyBackend = verifyBackend;
+            _GetLatestVersion = getLatestVersion;
+            _GetArchiveOfLatestVersion = getArchiveOfLatestVersion;
         }
 
         private string GetAppName()
         {
-            throw new NotImplementedException();
+            return Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly().Location);
         }
 
         private string GetCurrentLocation()
         {
-            throw new NotImplementedException();
+           return Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
         }
 
         public void Update()
@@ -45,7 +46,7 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 throw new ArgumentException($"At least {minimumRequiredAmount} locations are required.");
             }
-            Version latestVersion = GetLatestVersion();
+            Version latestVersion = _GetLatestVersion();
             Version versionOfCurrentLocation = GetVersionOfLocation(_CurrentLocation);
             bool currentVersionIsOutdated = !latestVersion.Equals(versionOfCurrentLocation);
             string locationForRestart = null;
@@ -68,10 +69,6 @@ namespace GRYLibrary.Core.Miscellaneous
             }
         }
 
-        private Version GetLatestVersion()
-        {
-            throw new NotImplementedException();
-        }
 
         private Version GetVersionOfLocation(string location)
         {
@@ -95,17 +92,24 @@ namespace GRYLibrary.Core.Miscellaneous
 
         private void StartLocation(string location)
         {
-            throw new NotImplementedException();
+            var filename = Path.GetFileName(System.Reflection.Assembly.GetEntryAssembly().Location);
+            var externalProgramExecutor = new ExternalProgramExecutor(Path.Combine(location, filename), CommandlineArgumentsForNewInstance);
+            externalProgramExecutor.Configuration.WaitingState = new RunAsynchronously();
+            externalProgramExecutor.Run();
         }
 
         private void UpdateLocation(string location)
         {
-            throw new NotImplementedException();
+            DownloadLatestVersionIfRequired();
+            throw new NotImplementedException();//TODO replace program in "location" by "_ArchiveOfLatestVersion"
         }
 
-        private byte[] GetArchiveOfLatestVersion()
+        private void DownloadLatestVersionIfRequired()
         {
-            throw new NotImplementedException();
+            if (_ArchiveOfLatestVersion == null)
+            {
+                _ArchiveOfLatestVersion = _GetArchiveOfLatestVersion();
+            }
         }
     }
 }
