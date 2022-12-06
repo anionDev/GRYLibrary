@@ -1,21 +1,19 @@
 ﻿namespace GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments
 {
-    public class Development : IEnvironment
+    public class Development : Environment
     {
-        #region Overhead
         public static Development Instance { get; } = new Development();
         private Development()
         {
         }
-        public void Accept(IEnvironmentVisitor visitor)
+        public override void Accept(IEnvironmentVisitor visitor)
         {
             visitor.Handle(this);
         }
 
-        public T Accept<T>(IEnvironmentVisitor<T> visitor)
+        public override T Accept<T>(IEnvironmentVisitor<T> visitor)
         {
             return visitor.Handle(this);
         }
-        #endregion
     }
 }

@@ -754,7 +754,7 @@ namespace GRYLibrary.Core.Miscellaneous
             public (bool, string) Handle(Windows operatingSystem)
             {
                 string program = null;
-                string[] knownExtension = new string[] { ".exe", ".cmd" };
+                string[] knownExtension = new string[] { ".exe", ".cmd", ".bat" };
                 string paths = Environment.ExpandEnvironmentVariables("%PATH%");
                 bool @break = false;
                 foreach (string path in paths.Split(';'))
@@ -1182,15 +1182,6 @@ namespace GRYLibrary.Core.Miscellaneous
             }
             return Uri.TryCreate(path, UriKind.Relative, out _);
         }
-        public static bool IsAbsolutePath(string path)
-        {
-            if (string.IsNullOrWhiteSpace(path) || path.IndexOfAny(Path.GetInvalidPathChars()) != -1 || path.Length > 255 || !Path.IsPathRooted(path))
-            {
-                return false;
-            }
-            string pathRoot = Path.GetPathRoot(path).Trim();
-            return (pathRoot.Length > 2 || pathRoot == "/") && !(pathRoot == path && pathRoot.StartsWith(@"\\") && pathRoot.IndexOf('\\', 2) == -1);
-        }
         public static string GetAbsolutePath(string basePath, string relativePath)
         {
             if (basePath == null && relativePath == null)
@@ -1614,7 +1605,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public static string ResolveToFullPath(this string path, string baseDirectory)
         {
             path = path.Trim();
-            if (IsAbsolutePath(path))
+            if (Path.IsPathFullyQualified(path))
             {
                 return path;
             }

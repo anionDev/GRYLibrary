@@ -1,21 +1,19 @@
 ﻿namespace GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments
 {
-    public class QualityCheck : IEnvironment
+    public class QualityCheck : Environment
     {
-        #region Overhead
         public static QualityCheck Instance { get; } = new QualityCheck();
         private QualityCheck()
         {
         }
-        public void Accept(IEnvironmentVisitor visitor)
+        public override void Accept(IEnvironmentVisitor visitor)
         {
             visitor.Handle(this);
         }
 
-        public T Accept<T>(IEnvironmentVisitor<T> visitor)
+        public override T Accept<T>(IEnvironmentVisitor<T> visitor)
         {
             return visitor.Handle(this);
         }
-        #endregion
     }
 }

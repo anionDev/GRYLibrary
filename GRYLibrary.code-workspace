@@ -1,7 +1,12 @@
 {
 	"folders": [
 		{
-			"path": "."
+			"path": ".",
+			"name": "Entire repository"
+		},
+		{
+			"path": "./GRYLibrary",
+			"name": "GRYLibrary"
 		}
 	],
 	"tasks": {
@@ -13,46 +18,6 @@
 				"args": [
 					"--codeunitfolder",
 					"${workspaceFolder}/GRYLibrary"
-				],
-				"type": "shell",
-			},
-			{
-				"label": "GRYLibrary: Common tasks",
-				"command": "python",
-				"args": [
-					"${workspaceFolder}/GRYLibrary/Other/CommonTasks.py"
-				],
-				"type": "shell",
-			},
-			{
-				"label": "GRYLibrary: Build",
-				"command": "python",
-				"args": [
-					"${workspaceFolder}/GRYLibrary/Other/Build/Build.py"
-				],
-				"type": "shell",
-			},
-			{
-				"label": "GRYLibrary: Run testcases",
-				"command": "python",
-				"args": [
-					"${workspaceFolder}/GRYLibrary/Other/QualityCheck/RunTestcases.py"
-				],
-				"type": "shell",
-			},
-			{
-				"label": "GRYLibrary: Linting",
-				"command": "python",
-				"args": [
-					"${workspaceFolder}/GRYLibrary/Other/QualityCheck/Linting.py"
-				],
-				"type": "shell",
-			},
-			{
-				"label": "GRYLibrary: Generate reference",
-				"command": "python",
-				"args": [
-					"${workspaceFolder}/GRYLibrary/Other/Reference/GenerateReference.py"
 				],
 				"type": "shell",
 			}
@@ -71,15 +36,8 @@
 		]
 	},
 	"settings": {
-		"files.associations": {
-			"*.codeunit": "xml",
-		},
 		"files.exclude": {
 			".coverage": true,
-			"GRYLibrary/bin": true,
-			"GRYLibrary/obj": true,
-			"GRYLibraryTests/bin": true,
-			"GRYLibraryTests/obj": true,
 			"TestResults": true,
 			".vs": true,
 		},

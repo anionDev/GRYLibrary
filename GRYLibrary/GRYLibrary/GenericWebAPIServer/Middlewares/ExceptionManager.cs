@@ -1,3 +1,4 @@
+using GRYLibrary.Core.Log;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Threading.Tasks;
@@ -9,9 +10,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     /// </summary>
     public class ExceptionManager : AbstractMiddleware
     {
+        private readonly Action<Action<GRYLog>> _LogAction;
         /// <inheritdoc/>
-        public ExceptionManager(RequestDelegate next) : base(next)
+        public ExceptionManager(RequestDelegate next/*, Action<Action<GRYLog>> logAction*/) : base(next)
         {
+            //_LogAction = logAction;
         }
         /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
