@@ -13,9 +13,9 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     {
         private readonly Action<Action<GRYLog>> _LogAction;
         /// <inheritdoc/>
-        public RequestLoggingMiddleware(RequestDelegate next, Action<Action<GRYLog>> logAction) : base(next)
+        public RequestLoggingMiddleware(RequestDelegate next/*, Action<Action<GRYLog>> logAction*/) : base(next)
         {
-            _LogAction = logAction;
+            //_LogAction = logAction;
         }
         /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
@@ -43,7 +43,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
         }
         public virtual ushort GetEventLogIdForRequestLogEntry(string route, ushort responseStatusCode)
         {
-            return 12000;
+            return 9700;
         }
     }
 }

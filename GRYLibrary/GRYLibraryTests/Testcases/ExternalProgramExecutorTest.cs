@@ -1,5 +1,4 @@
-﻿using GRYLibrary.Core.Miscellaneous;
-using System.Threading;
+﻿using System.Threading;
 using Semaphore = GRYLibrary.Core.Miscellaneous.Semaphore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using GRYLibrary.Core.Miscellaneous.CustomDisposables;

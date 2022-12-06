@@ -10,18 +10,18 @@
         <copyright>Copyright © 2022 by Marius Göcke</copyright>
         <description>The GRYLibrary is a collection with some useful .NET classes and functions which are very easy (re)usable.</description>
         <summary>The GRYLibrary is a collection with some useful .NET classes and functions which are very easy (re)usable.</summary>
-        <license type="file">lib/net6/GRYLibrary.License.txt</license>
+        <license type="file">lib/net7/GRYLibrary.License.txt</license>
         <dependencies>
-            <group targetFramework="net6" />
+            <group targetFramework="net7" />
         </dependencies>
         <projectUrl>https://github.com/anionDev/GRYLibrary</projectUrl>
         <repository type="git" url="https://github.com/anionDev/GRYLibrary.git" branch="main" commit="$commitid$" />
         <icon>images\GRYLibraryIcon.png</icon>
     </metadata>
     <files>
-        <file src="../Artifacts/BuildResult_DotNet_win/GRYLibrary.dll" target="lib/net6" />
-        <file src="../Artifacts/BuildResult_DotNet_win/GRYLibrary.License.txt" target="lib/net6" />
-        <file src="../Artifacts/BuildResult_DotNet_win/GRYLibrary.deps.json" target="lib/net6" />
+        <file src="../Artifacts/BuildResult_DotNet_win/GRYLibrary.dll" target="lib/net7" />
+        <file src="../Artifacts/BuildResult_DotNet_win/GRYLibrary.License.txt" target="lib/net7" />
+        <file src="../Artifacts/BuildResult_DotNet_win/GRYLibrary.deps.json" target="lib/net7" />
         <file src="../../GRYLibrary/GRYLibraryIcon.png" target="images\" />
     </files>
 </package>

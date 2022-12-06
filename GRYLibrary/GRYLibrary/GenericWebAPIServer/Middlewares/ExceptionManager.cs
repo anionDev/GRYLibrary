@@ -12,9 +12,9 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     {
         private readonly Action<Action<GRYLog>> _LogAction;
         /// <inheritdoc/>
-        public ExceptionManager(RequestDelegate next, Action<Action<GRYLog>> logAction) : base(next)
+        public ExceptionManager(RequestDelegate next/*, Action<Action<GRYLog>> logAction*/) : base(next)
         {
-            _LogAction = logAction;
+            //_LogAction = logAction;
         }
         /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
