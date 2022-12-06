@@ -754,7 +754,7 @@ namespace GRYLibrary.Core.Miscellaneous
             public (bool, string) Handle(Windows operatingSystem)
             {
                 string program = null;
-                string[] knownExtension = new string[] { ".exe", ".cmd" };
+                string[] knownExtension = new string[] { ".exe", ".cmd", ".bat" };
                 string paths = Environment.ExpandEnvironmentVariables("%PATH%");
                 bool @break = false;
                 foreach (string path in paths.Split(';'))
