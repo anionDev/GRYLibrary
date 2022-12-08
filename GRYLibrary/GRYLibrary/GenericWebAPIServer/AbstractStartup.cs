@@ -19,6 +19,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             //TODO services.AddAntiforgey();
             //TODO on compiletime generate openapi-json-document like services.AddOpenApiDocument() would do
             ConfigureServicesImplementation(services);
+            if (this.CurrentSettings.GetTargetEnvironmentType() is not Productive)
+            {
+                services.AddEndpointsApiExplorer();
+                services.AddSwaggerGen();
+            }
         }
         public void Configure(IApplicationBuilder app)
         {
@@ -33,7 +38,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 app.UseHttpsRedirection();
                 app.UseHsts();
             }
-            if (!(this.CurrentSettings.GetTargetEnvironmentType() is Productive))
+            if (this.CurrentSettings.GetTargetEnvironmentType() is not Productive)
             {
                 app.UseDeveloperExceptionPage();
 
@@ -51,7 +56,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                     c.RoutePrefix=WebServerSettings.APIExplorerSubRouter;
                 }); 
                 */
-
             }
             if (CurrentSettings.WebServerSettings.BasePath != null)
             {
