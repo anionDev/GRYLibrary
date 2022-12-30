@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using GRYLibrary.Core.GenericWebAPIServer.Settings;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,10 +14,10 @@ using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.GenericWebAPIServer
 {
-    public class New
+    public class GenericWebAPIServer
     {
 
-        private static int DefaultWebAPIMainFunction(WebAPIConfiguration initialionWebAPIConfiguration)
+        public static int DefaultWebAPIMainFunction(WebAPIConfiguration initialionWebAPIConfiguration)
         {
             Encoding configurationFileEncoding = new UTF8Encoding(false);
             WebAPIConfigurationVariables webAPIConfigurationVariables = null;
@@ -105,28 +106,5 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             }
             app.Run();
         }
-    }
-    public class WebAPIConfiguration
-    {
-        public WebAPIConfigurationConstants WebAPIConfigurationConstants { get; set; }
-        public WebAPIConfigurationVariables WebAPIConfigurationVariables { get; set; }
-        public Action<WebApplicationBuilder> Configure { get; set; } = (builder) => { };
-    }
-    public class WebAPIConfigurationConstants
-    {
-        public string AppName { get; set; }
-        public string AppVersion { get; set; }
-        public string TargetEnvironmentType { get; set; }
-        public string SwaggerDocumentName { get; set; } = "APISpecification";
-        public string ConfigurationFileName { get; set; } = "APIServerAppSettings.json";
-    }
-    public class WebAPIConfigurationVariables
-    {
-        public string TermsOfServiceURL { get; set; }
-        public string ContactURL { get; set; }
-        public string LicenseURL { get; set; }
-        public string AppDescription { get; set; }
-        public ushort Port { get; set; } = 4422;
-        public string APIRoutePrefix { get; set; } = "API";
     }
 }
