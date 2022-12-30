@@ -39,6 +39,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             {
                 WebAPIConfigurationConstants = initialionWebAPIConfiguration.WebAPIConfigurationConstants,
                 WebAPIConfigurationVariables = webAPIConfigurationVariables,
+                Configure=initialionWebAPIConfiguration.Configure,
             });
             return 0;
         }
@@ -61,6 +62,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             string appVersionString = "v" + configuration.WebAPIConfigurationConstants.AppVersion;
             string swaggerDocumentName = configuration.WebAPIConfigurationConstants.SwaggerDocumentName;
 
+            builder.Services.AddControllers();
             if (!isProductiveEnvironmentType)
             {
                 builder.Services.AddEndpointsApiExplorer();
@@ -87,6 +89,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
                 });
             }
+            configuration.Configure(builder);
             WebApplication app = builder.Build();
             if (!isProductiveEnvironmentType)
             {
@@ -100,7 +103,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                     options.RoutePrefix = configuration.WebAPIConfigurationVariables.APIRoutePrefix;
                 });
             }
-            app.MapControllers();
             app.Run();
         }
     }
@@ -108,6 +110,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
     {
         public WebAPIConfigurationConstants WebAPIConfigurationConstants { get; set; }
         public WebAPIConfigurationVariables WebAPIConfigurationVariables { get; set; }
+        public Action<WebApplicationBuilder> Configure { get; set; } = (builder) => { };
     }
     public class WebAPIConfigurationConstants
     {
