@@ -21,47 +21,50 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         {
             Encoding configurationFileEncoding = new UTF8Encoding(false);
             WebAPIConfigurationVariables webAPIConfigurationVariables = null;
-            if (File.Exists(initialionWebAPIConfiguration.WebAPIConfigurationConstants.ConfigurationFileName))
+            if (File.Exists(initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.ConfigurationFileName))
             {
-                IConfigurationRoot configurationRoot = new ConfigurationBuilder().AddJsonFile(initialionWebAPIConfiguration.WebAPIConfigurationConstants.ConfigurationFileName).Build();
+                IConfigurationRoot configurationRoot = new ConfigurationBuilder().AddJsonFile(initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.ConfigurationFileName).Build();
                 webAPIConfigurationVariables = configurationRoot.GetRequiredSection(nameof(WebAPIConfigurationVariables)).Get<WebAPIConfigurationVariables>();
             }
             else
             {
-                webAPIConfigurationVariables = initialionWebAPIConfiguration.WebAPIConfigurationVariables;
+                webAPIConfigurationVariables = initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables;
                 dynamic configurationFileObject = new
                 {
                     WebAPIConfigurationVariables = webAPIConfigurationVariables
                 };
                 string serialized = Newtonsoft.Json.JsonConvert.SerializeObject(configurationFileObject, Newtonsoft.Json.Formatting.Indented);
-                File.WriteAllText(initialionWebAPIConfiguration.WebAPIConfigurationConstants.ConfigurationFileName, serialized, configurationFileEncoding);
+                File.WriteAllText(initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.ConfigurationFileName, serialized, configurationFileEncoding);
             }
             RunAPIServer(new WebAPIConfiguration()
             {
-                WebAPIConfigurationConstants = initialionWebAPIConfiguration.WebAPIConfigurationConstants,
-                WebAPIConfigurationVariables = webAPIConfigurationVariables,
-                Configure=initialionWebAPIConfiguration.Configure,
+                ConfigureApp = initialionWebAPIConfiguration.ConfigureApp,
+                ConfigureBuilder= initialionWebAPIConfiguration.ConfigureBuilder,
+                WebAPIConfigurationValues=new WebAPIConfigurationValues()
+                {
+                    WebAPIConfigurationConstants = initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants,
+                    WebAPIConfigurationVariables = webAPIConfigurationVariables,
+                }
             });
             return 0;
         }
-        private static void RunAPIServer(WebAPIConfiguration configuration)
+        public static void RunAPIServer(WebAPIConfiguration configuration)
         {
-            bool isDevelopmentEnvironmentType = configuration.WebAPIConfigurationConstants.TargetEnvironmentType == "Development";
-            bool isQualityCheckEnvironmentType = configuration.WebAPIConfigurationConstants.TargetEnvironmentType == "QualityCheck";
-            bool isProductiveEnvironmentType = configuration.WebAPIConfigurationConstants.TargetEnvironmentType == "Productive";
+            bool isDevelopmentEnvironmentType = configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType == "Development";
+            bool isQualityCheckEnvironmentType = configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType == "QualityCheck";
+            bool isProductiveEnvironmentType = configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType == "Productive";
             //TODO assert app.Environment.IsDevelopment()==isDevelopmentEnvironmentType
             WebApplicationBuilder builder = WebApplication.CreateBuilder(new WebApplicationOptions
             {
-                ApplicationName = configuration.WebAPIConfigurationConstants.AppName
+                ApplicationName = configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName
             });
             builder.Services.AddControllers();
             builder.WebHost.ConfigureKestrel(options =>
             {
                 options.AddServerHeader = false;
-                options.ListenAnyIP(configuration.WebAPIConfigurationVariables.Port);
+                options.ListenAnyIP(configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.Port);
             });
-            string appVersionString = "v" + configuration.WebAPIConfigurationConstants.AppVersion;
-            string swaggerDocumentName = configuration.WebAPIConfigurationConstants.SwaggerDocumentName;
+            string appVersionString = "v" + configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppVersion;
 
             builder.Services.AddControllers();
             if (!isProductiveEnvironmentType)
@@ -69,41 +72,30 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen(options =>
                 {
-                    options.SwaggerDoc(swaggerDocumentName, new OpenApiInfo
+                    options.SwaggerDoc(configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.SwaggerDocumentName, new OpenApiInfo
                     {
                         Version = appVersionString,
-                        Title = configuration.WebAPIConfigurationConstants.AppName + " API",
-                        Description = configuration.WebAPIConfigurationVariables.AppDescription,
-                        TermsOfService = new Uri(configuration.WebAPIConfigurationVariables.TermsOfServiceURL),
+                        Title = configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName + " API",
+                        Description = configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.ApplicationSettings.AppDescription,
+                        TermsOfService = new Uri(configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.ApplicationSettings.TermsOfServiceURL),
                         Contact = new OpenApiContact
                         {
                             Name = "Contact",
-                            Url = new Uri(configuration.WebAPIConfigurationVariables.ContactURL)
+                            Url = new Uri(configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.ApplicationSettings.ContactURL)
                         },
                         License = new OpenApiLicense
                         {
                             Name = "License",
-                            Url = new Uri(configuration.WebAPIConfigurationVariables.LicenseURL)
+                            Url = new Uri(configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.ApplicationSettings.LicenseURL)
                         }
                     });
                     string xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
                 });
             }
-            configuration.Configure(builder);
+            configuration.ConfigureBuilder(builder,configuration.WebAPIConfigurationValues);
             WebApplication app = builder.Build();
-            if (!isProductiveEnvironmentType)
-            {
-                app.UseSwagger(options =>
-                {
-                    options.RouteTemplate = $"{configuration.WebAPIConfigurationVariables.APIRoutePrefix}/Other/Resources/{{documentName}}/{configuration.WebAPIConfigurationConstants.AppName}.api.json";
-                });
-                app.UseSwaggerUI(options =>
-                {
-                    options.SwaggerEndpoint($"Other/Resources/{swaggerDocumentName}/{configuration.WebAPIConfigurationConstants.AppName}.api.json", configuration.WebAPIConfigurationConstants.AppName + " " + appVersionString);
-                    options.RoutePrefix = configuration.WebAPIConfigurationVariables.APIRoutePrefix;
-                });
-            }
+           configuration.ConfigureApp(app, configuration.WebAPIConfigurationValues);
             app.Run();
         }
     }

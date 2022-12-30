@@ -12,13 +12,12 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
 {
     public class WebAPIConfigurationConstants
     {
-        public string AppName { get; set; }
-        public string AppVersion { get; set; }
         private string _TargetEnvironmentType;
         public string TargetEnvironmentType { get; set; }
-        public string SwaggerDocumentName { get; set; } = "APISpecification";
+        public string AppName { get; set; }
+        public string AppVersion { get; set; }
         public string ConfigurationFileName { get; set; } = "APIServerAppSettings.json";
-        public Environment GetTargetEnvironment()
+        public Environment GetTargetEnvironmentType()
         {
             if (TargetEnvironmentType == null)
             {

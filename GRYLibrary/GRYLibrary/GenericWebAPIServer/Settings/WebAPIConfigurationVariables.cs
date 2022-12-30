@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GRYLibrary.Core.XMLSerializer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,11 +9,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
 {
     public class WebAPIConfigurationVariables
     {
-        public string TermsOfServiceURL { get; set; }
-        public string ContactURL { get; set; }
-        public string LicenseURL { get; set; }
-        public string AppDescription { get; set; }
-        public ushort Port { get; set; } = 4422;
-        public string APIRoutePrefix { get; set; } = "API";
-    }
+        public ApplicationSettings ApplicationSettings { get; set; } = new ApplicationSettings();
+        public WebServerSettings WebServerSettings { get; set; } = new WebServerSettings();
+     }
 }

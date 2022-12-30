@@ -1,6 +1,7 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using GRYLibrary.Core.GenericWebAPIServer.Middlewares;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,27 +12,26 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
 {
     public class WebAPIConfiguration
     {
-        public WebAPIConfigurationConstants WebAPIConfigurationConstants { get; set; }
-        public WebAPIConfigurationVariables WebAPIConfigurationVariables { get; set; }
-        public Action<WebApplicationBuilder, WebAPIConfigurationConstants, WebAPIConfigurationVariables> Configure { get; set; } = (builder, webAPIConfigurationConstants, webAPIConfigurationVariables) =>
+        public WebAPIConfigurationValues WebAPIConfigurationValues { get; set; }
+        public Action<WebApplicationBuilder, WebAPIConfigurationValues> ConfigureBuilder { get; set; } = (builder, webAPIConfigurationValues) =>
         {
 
-            if (webAPIConfigurationConstants.GetTargetEnvironmentType() is Productive)
+        };
+        public Action<WebApplication, WebAPIConfigurationValues> ConfigureApp { get; set; } = (app, webAPIConfigurationValues) =>
+        {
+            string appVersionString = "v" + webAPIConfigurationValues.WebAPIConfigurationConstants.AppVersion;
+            if (webAPIConfigurationValues.WebAPIConfigurationConstants.GetTargetEnvironmentType() is Productive)
             {
                 app.UseMiddleware<DDOSProtection>();
                 app.UseMiddleware<Obfuscation>();
             }
-            if (webAPIConfigurationConstants.GetTargetEnvironmentType() is not Productive)
+            if (webAPIConfigurationValues.WebAPIConfigurationConstants.GetTargetEnvironmentType() is not Productive)
             {
                 app.UseDeveloperExceptionPage();
             }
-            if (CurrentSettings.WebServerSettings.BasePath != null)
-            {
-                app.UsePathBase(CurrentSettings.WebServerSettings.BasePath);
-            }
             app.UseMiddleware<RequestLoggingMiddleware>();
             app.UseMiddleware<ExceptionManager>();
-            if (!webAPIConfigurationConstants.GetTargetEnvironmentType() is Development)
+            if (!(webAPIConfigurationValues.WebAPIConfigurationConstants.GetTargetEnvironmentType() is Development))
             {
                 app.UseMiddleware<RequestCounter>();
             }
@@ -41,6 +41,20 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
             {
                 endpoints.MapControllers();
             });
+            if (!(webAPIConfigurationValues.WebAPIConfigurationConstants.GetTargetEnvironmentType() is Productive))
+            {
+
+                app.UseSwagger(options =>
+                {
+                    options.RouteTemplate = $"{webAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.APIRoutePrefix}/Other/Resources/{{documentName}}/{webAPIConfigurationValues.WebAPIConfigurationConstants.AppName}.api.json";
+                });
+                app.UseSwaggerUI(options =>
+                {
+                    options.SwaggerEndpoint($"Other/Resources/{webAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.SwaggerDocumentName}/{webAPIConfigurationValues.WebAPIConfigurationConstants.AppName}.api.json", webAPIConfigurationValues.WebAPIConfigurationConstants.AppName + " " + appVersionString);
+                    options.RoutePrefix = webAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.APIRoutePrefix;
+                });
+            }
+
         };
     }
 }
