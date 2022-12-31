@@ -1,4 +1,5 @@
-﻿using GRYLibrary.Core.GenericWebAPIServer.Settings;
+﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
+using GRYLibrary.Core.GenericWebAPIServer.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -6,11 +7,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.GenericWebAPIServer
 {
@@ -19,28 +19,12 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
         public static int DefaultWebAPIMainFunction(WebAPIConfiguration initialionWebAPIConfiguration)
         {
-            Encoding configurationFileEncoding = new UTF8Encoding(false);
-            WebAPIConfigurationVariables webAPIConfigurationVariables = null;
-            if (File.Exists(initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.ConfigurationFileName))
-            {
-                IConfigurationRoot configurationRoot = new ConfigurationBuilder().AddJsonFile(initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.ConfigurationFileName).Build();
-                webAPIConfigurationVariables = configurationRoot.GetRequiredSection(nameof(WebAPIConfigurationVariables)).Get<WebAPIConfigurationVariables>();
-            }
-            else
-            {
-                webAPIConfigurationVariables = initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables;
-                dynamic configurationFileObject = new
-                {
-                    WebAPIConfigurationVariables = webAPIConfigurationVariables
-                };
-                string serialized = Newtonsoft.Json.JsonConvert.SerializeObject(configurationFileObject, Newtonsoft.Json.Formatting.Indented);
-                File.WriteAllText(initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.ConfigurationFileName, serialized, configurationFileEncoding);
-            }
+            WebAPIConfigurationVariables webAPIConfigurationVariables = LoadConfiguration(initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.ConfigurationFileName, initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables);
             RunAPIServer(new WebAPIConfiguration()
             {
                 ConfigureApp = initialionWebAPIConfiguration.ConfigureApp,
-                ConfigureBuilder= initialionWebAPIConfiguration.ConfigureBuilder,
-                WebAPIConfigurationValues=new WebAPIConfigurationValues()
+                ConfigureBuilder = initialionWebAPIConfiguration.ConfigureBuilder,
+                WebAPIConfigurationValues = new WebAPIConfigurationValues()
                 {
                     WebAPIConfigurationConstants = initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants,
                     WebAPIConfigurationVariables = webAPIConfigurationVariables,
@@ -48,12 +32,30 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             });
             return 0;
         }
+
+        private static T LoadConfiguration<T>(string configurationFile, T initialValue)
+        {
+            Encoding configurationFileEncoding = new UTF8Encoding(false);
+            T configuration;
+            if (File.Exists(configurationFile))
+            {
+                IConfigurationRoot configurationRoot = new ConfigurationBuilder().AddJsonFile(configurationFile).Build();
+                configuration = configurationRoot.GetRequiredSection(typeof(T).Name).Get<T>();
+            }
+            else
+            {
+                configuration = initialValue;
+                dynamic expando = new ExpandoObject();
+                ((IDictionary<String, object>)expando)[typeof(T).Name] = configuration;
+                string serialized = Newtonsoft.Json.JsonConvert.SerializeObject(expando, Newtonsoft.Json.Formatting.Indented);
+                File.WriteAllText(configurationFile, serialized, configurationFileEncoding);
+            }
+
+            return configuration;
+        }
+
         public static void RunAPIServer(WebAPIConfiguration configuration)
         {
-            bool isDevelopmentEnvironmentType = configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType == "Development";
-            bool isQualityCheckEnvironmentType = configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType == "QualityCheck";
-            bool isProductiveEnvironmentType = configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType == "Productive";
-            //TODO assert app.Environment.IsDevelopment()==isDevelopmentEnvironmentType
             WebApplicationBuilder builder = WebApplication.CreateBuilder(new WebApplicationOptions
             {
                 ApplicationName = configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName
@@ -67,7 +69,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             string appVersionString = "v" + configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppVersion;
 
             builder.Services.AddControllers();
-            if (!isProductiveEnvironmentType)
+            if (!(configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.GetTargetEnvironmentType() is Productive))
             {
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen(options =>
@@ -93,9 +95,9 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
                 });
             }
-            configuration.ConfigureBuilder(builder,configuration.WebAPIConfigurationValues);
+            configuration.ConfigureBuilder(builder, configuration.WebAPIConfigurationValues);
             WebApplication app = builder.Build();
-           configuration.ConfigureApp(app, configuration.WebAPIConfigurationValues);
+            configuration.ConfigureApp(app, configuration.WebAPIConfigurationValues);
             app.Run();
         }
     }

@@ -1,12 +1,5 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using YamlDotNet.Core.Tokens;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Settings
 {
@@ -16,7 +9,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public string TargetEnvironmentType { get; set; }
         public string AppName { get; set; }
         public string AppVersion { get; set; }
-        public string ConfigurationFileName { get; set; } = "APIServerAppSettings.json";
+        public string ConfigurationFileName { get; set; } = "APIServerSettings.json";
         public Environment GetTargetEnvironmentType()
         {
             if (TargetEnvironmentType == null)
