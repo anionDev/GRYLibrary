@@ -1,4 +1,6 @@
-﻿namespace GRYLibrary.Core.GenericWebAPIServer.Settings
+﻿using GRYLibrary.Core.Log;
+
+namespace GRYLibrary.Core.GenericWebAPIServer.Settings
 {
     public class WebAPIConfigurationVariables
     {

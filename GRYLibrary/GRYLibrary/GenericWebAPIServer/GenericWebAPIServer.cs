@@ -1,26 +1,26 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
+using GRYLibrary.Core.GenericWebAPIServer.Middlewares;
 using GRYLibrary.Core.GenericWebAPIServer.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
-using System.Collections.Generic;
-using System.Dynamic;
 using System.IO;
 using System.Reflection;
-using System.Text;
 
 namespace GRYLibrary.Core.GenericWebAPIServer
 {
-    public class GenericWebAPIServer
+    public static class GenericWebAPIServer
     {
-
         public static int DefaultWebAPIMainFunction(WebAPIConfiguration initialionWebAPIConfiguration)
         {
-            WebAPIConfigurationVariables webAPIConfigurationVariables = LoadConfiguration(initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.ConfigurationFileName, initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables);
-            RunAPIServer(new WebAPIConfiguration()
+            int exitCode;
+            WebAPIConfigurationVariables webAPIConfigurationVariables = Miscellaneous.Utilities.CreateOrLoadLoadJSONConfigurationFile(initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.ConfigurationFileName, initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables);
+            IGeneralLogger logger = GRYLogLogger.Create(initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName, initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables.ApplicationSettings.LogFolder);
+            initialionWebAPIConfiguration.WebAPIConfigurationValues.Logger = logger;
+            var webAPIConfiguration = new WebAPIConfiguration()
             {
                 ConfigureApp = initialionWebAPIConfiguration.ConfigureApp,
                 ConfigureBuilder = initialionWebAPIConfiguration.ConfigureBuilder,
@@ -28,30 +28,21 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 {
                     WebAPIConfigurationConstants = initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants,
                     WebAPIConfigurationVariables = webAPIConfigurationVariables,
-                }
-            });
-            return 0;
-        }
-
-        private static T LoadConfiguration<T>(string configurationFile, T initialValue)
-        {
-            Encoding configurationFileEncoding = new UTF8Encoding(false);
-            T configuration;
-            if (File.Exists(configurationFile))
+                },
+            };
+            IGeneralLogger.Log($"Start {initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", LogLevel.Debug, logger);
+            try
             {
-                IConfigurationRoot configurationRoot = new ConfigurationBuilder().AddJsonFile(configurationFile).Build();
-                configuration = configurationRoot.GetRequiredSection(typeof(T).Name).Get<T>();
+                RunAPIServer(webAPIConfiguration);
+                exitCode = 0;
             }
-            else
+            catch (Exception exception)
             {
-                configuration = initialValue;
-                dynamic expando = new ExpandoObject();
-                ((IDictionary<String, object>)expando)[typeof(T).Name] = configuration;
-                string serialized = Newtonsoft.Json.JsonConvert.SerializeObject(expando, Newtonsoft.Json.Formatting.Indented);
-                File.WriteAllText(configurationFile, serialized, configurationFileEncoding);
+                IGeneralLogger.LogException(exception, $"Fatal error in {initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", initialionWebAPIConfiguration.WebAPIConfigurationValues.Logger);
+                exitCode = 1;
             }
-
-            return configuration;
+            IGeneralLogger.Log($"Finished {initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", LogLevel.Debug, initialionWebAPIConfiguration.WebAPIConfigurationValues.Logger);
+            return exitCode;
         }
 
         public static void RunAPIServer(WebAPIConfiguration configuration)
@@ -69,7 +60,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             string appVersionString = "v" + configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppVersion;
 
             builder.Services.AddControllers();
-            if (!(configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.GetTargetEnvironmentType() is Productive))
+            if (configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.GetTargetEnvironmentType() is not Productive)
             {
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen(options =>
@@ -98,6 +89,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             configuration.ConfigureBuilder(builder, configuration.WebAPIConfigurationValues);
             WebApplication app = builder.Build();
             configuration.ConfigureApp(app, configuration.WebAPIConfigurationValues);
+            IGeneralLogger.Log($"Start WebAPI-server", LogLevel.Information, configuration.WebAPIConfigurationValues.Logger);
             app.Run();
         }
     }

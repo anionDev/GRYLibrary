@@ -1,6 +1,7 @@
 using GRYLibrary.Core.Log;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
 
@@ -13,7 +14,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     {
         private readonly Action<Action<GRYLog>> _LogAction;
         /// <inheritdoc/>
-        public RequestLoggingMiddleware(RequestDelegate next/*, Action<Action<GRYLog>> logAction*/) : base(next)
+        public RequestLoggingMiddleware(RequestDelegate next, IOptions<IGeneralLogger> options) : base(next)
         {
             //_LogAction = logAction;
         }
