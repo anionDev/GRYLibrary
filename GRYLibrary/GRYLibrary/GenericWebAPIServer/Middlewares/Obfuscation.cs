@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
+using GRYLibrary.Core.GenericWebAPIServer.Services;
+using GRYLibrary.Core.GenericWebAPIServer.Settings;
+using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
@@ -8,15 +11,49 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     /// </summary>
     public class Obfuscation : AbstractMiddleware
     {
+        private readonly IObfuscationSettings _ObfuscationSettings;
+        private readonly IWebAPIConfigurationVariables _WebAPIConfigurationVariables;
+        private readonly IWebAPIConfigurationConstants _WebAPIConfigurationConstants;
         /// <inheritdoc/>
-        public Obfuscation(RequestDelegate next) : base(next)
+        public Obfuscation(RequestDelegate next, IObfuscationSettings obfuscationSettings, IWebAPIConfigurationVariables webAPIConfigurationVariables, IWebAPIConfigurationConstants webAPIConfigurationConstants) : base(next)
         {
+            this._ObfuscationSettings = obfuscationSettings;
+            this._WebAPIConfigurationVariables = webAPIConfigurationVariables;
+            this._WebAPIConfigurationConstants = webAPIConfigurationConstants;
         }
         /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
         {
-            // TODO change response to either return 200 (Ok) or else 400 (bad request, because it was a request which did not result in 200).
-
+            if (_WebAPIConfigurationConstants.GetTargetEnvironmentType() is Productive)
+            {
+                bool clearResponseBody;
+                int responseStatusCode;
+                if (context.Response.StatusCode == 401)
+                {
+                    clearResponseBody = true;
+                    responseStatusCode = context.Response.StatusCode;
+                }
+                else if (context.Response.StatusCode == 403)
+                {
+                    clearResponseBody = true;
+                    responseStatusCode = context.Response.StatusCode;
+                }
+                else if (context.Response.StatusCode % 100 == 2)
+                {
+                    responseStatusCode = 200;
+                    clearResponseBody = false;
+                }
+                else
+                {
+                    clearResponseBody = true;
+                    responseStatusCode = 400;
+                }
+                context.Response.StatusCode = responseStatusCode; //TODO check why this does not work properly
+                if (clearResponseBody)
+                {
+                    //TODO
+                }
+            }
             return _Next(context);
         }
     }

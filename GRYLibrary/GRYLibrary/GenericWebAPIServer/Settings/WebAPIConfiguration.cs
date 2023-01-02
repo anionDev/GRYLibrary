@@ -31,7 +31,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseMiddleware<RequestLoggingMiddleware>(webAPIConfigurationValues.Logger);
+            app.UseMiddleware<RequestLoggingMiddleware>();
             app.UseMiddleware<ExceptionManager>();
             if (webAPIConfigurationValues.WebAPIConfigurationConstants.GetTargetEnvironmentType() is not Development)
             {

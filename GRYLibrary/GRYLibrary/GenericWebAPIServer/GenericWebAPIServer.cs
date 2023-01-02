@@ -1,5 +1,5 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
-using GRYLibrary.Core.GenericWebAPIServer.Middlewares;
+using GRYLibrary.Core.GenericWebAPIServer.Services;
 using GRYLibrary.Core.GenericWebAPIServer.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -18,7 +18,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         {
             int exitCode;
             WebAPIConfigurationVariables webAPIConfigurationVariables = Miscellaneous.Utilities.CreateOrLoadLoadJSONConfigurationFile(initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.ConfigurationFileName, initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables);
-            IGeneralLogger logger = GRYLogLogger.Create(initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName, initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables.ApplicationSettings.LogFolder);
+            IGeneralLogger logger = GeneralLogger.Create(initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName, initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables.ApplicationSettings.LogFolder);
             initialionWebAPIConfiguration.WebAPIConfigurationValues.Logger = logger;
             var webAPIConfiguration = new WebAPIConfiguration()
             {
@@ -53,7 +53,15 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 ApplicationName = configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName
             });
             builder.Services.AddControllers();
-            builder.Services.AddSingleton<IGeneralLogger>((serviceProvider)=> configuration.WebAPIConfigurationValues.Logger);
+            builder.Services.AddSingleton<IGeneralLogger>((serviceProvider) => configuration.WebAPIConfigurationValues.Logger);
+            builder.Services.AddSingleton<IBlacklistProvider>((serviceProvider) => configuration.WebAPIConfigurationValues.BlackListProvider);
+            builder.Services.AddSingleton<IDDOSProtectionSettings>((serviceProvider) => configuration.WebAPIConfigurationValues.DDOSProtectionSettings);
+            builder.Services.AddSingleton<IObfuscationSettings>((serviceProvider) => configuration.WebAPIConfigurationValues.ObfuscationSettings);
+            builder.Services.AddSingleton<IWebApplicationFirewallSettings>((serviceProvider) => configuration.WebAPIConfigurationValues.WebApplicationFirewallSettings);
+            builder.Services.AddSingleton<IExceptionManagerSettings>((serviceProvider) => configuration.WebAPIConfigurationValues.ExceptionManagerSettings);
+            builder.Services.AddSingleton<IRequestCounterSettings>((serviceProvider) => configuration.WebAPIConfigurationValues.RequestCounterSettings);
+            builder.Services.AddSingleton<IWebAPIConfigurationConstants>((serviceProvider) => configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants);
+            builder.Services.AddSingleton<IWebAPIConfigurationVariables>((serviceProvider) => configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables);
             builder.WebHost.ConfigureKestrel(options =>
             {
                 options.AddServerHeader = false;

@@ -3,7 +3,15 @@ using System;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Settings
 {
-    public class WebAPIConfigurationConstants
+    public interface IWebAPIConfigurationConstants
+    {
+        public string TargetEnvironmentType { get; set; }
+        public string AppName { get; set; }
+        public string AppVersion { get; set; }
+        public string ConfigurationFileName { get; set; } 
+        public Environment GetTargetEnvironmentType();
+    }
+    public class WebAPIConfigurationConstants: IWebAPIConfigurationConstants
     {
         private string _TargetEnvironmentType;
         public string TargetEnvironmentType { get; set; }

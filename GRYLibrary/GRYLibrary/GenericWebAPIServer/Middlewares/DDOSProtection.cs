@@ -1,3 +1,4 @@
+using GRYLibrary.Core.GenericWebAPIServer.Services;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
@@ -8,9 +9,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     /// </summary>
     public class DDOSProtection : AbstractMiddleware
     {
+        private IDDOSProtectionSettings _DDOSProtectionSettings;
         /// <inheritdoc/>
-        public DDOSProtection(RequestDelegate next) : base(next)
+        public DDOSProtection(RequestDelegate next, IDDOSProtectionSettings ddosProtectionSettings) : base(next)
         {
+            this._DDOSProtectionSettings = ddosProtectionSettings;
         }
         /// <inheritdoc/>
         public override Task Invoke(HttpContext context)

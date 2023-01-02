@@ -2,7 +2,7 @@ using GRYLibrary.Core.Log;
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
+namespace GRYLibrary.Core.GenericWebAPIServer.Services
 {
     public interface IGeneralLogger
     {

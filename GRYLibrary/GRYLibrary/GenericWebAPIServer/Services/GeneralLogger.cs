@@ -2,12 +2,12 @@
 using System;
 using System.IO;
 
-namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
+namespace GRYLibrary.Core.GenericWebAPIServer.Services
 {
-    public class GRYLogLogger : IGeneralLogger
+    public class GeneralLogger : IGeneralLogger
     {
         public Action<LogItem> AddLogEntry { get; set; }
-        public static GRYLogLogger Create(string appName, string logFolder)
+        public static GeneralLogger Create(string appName, string logFolder)
         {
             Miscellaneous.Utilities.EnsureDirectoryExists(logFolder);
             var logObject = GRYLog.Create();
@@ -15,7 +15,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
             string logFile = Path.Combine(logFolder, $"{appName}.log");
             initialConfiguration.ResetToDefaultValues(logFile);
             logObject.Configuration = Miscellaneous.Utilities.CreateOrLoadLoadXMLConfigurationFile("LogSettings.xml", initialConfiguration);
-            return new GRYLogLogger()
+            return new GeneralLogger()
             {
                 AddLogEntry = (logEntry) =>
                 {
