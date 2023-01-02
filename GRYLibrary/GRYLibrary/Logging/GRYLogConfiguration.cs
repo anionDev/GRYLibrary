@@ -5,6 +5,7 @@ using GRYLibrary.Core.XMLSerializer;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 using Console = GRYLibrary.Core.Log.ConcreteLogTargets.Console;
 
@@ -12,6 +13,8 @@ namespace GRYLibrary.Core.Log
 {
     public sealed class GRYLogConfiguration : IDisposable
     {
+
+
 
         /// <summary>
         /// If this value is false then changing this value in the configuration-file has no effect.
@@ -28,7 +31,6 @@ namespace GRYLibrary.Core.Log
         /// </summary>
         public bool PrintErrorsAsInformation { get; set; }
         public string Name { get; set; }
-        public bool WriteDetailsOfLoggedExceptionsToLogEntry { get; set; }
         public string DateFormat { get; set; }
         public List<SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>> LoggedMessageTypesConfiguration { get; set; }
         public bool ConvertTimeForLogentriesToUTCFormat { get; set; }
@@ -77,7 +79,6 @@ namespace GRYLibrary.Core.Log
             this.ConfigurationFile = string.Empty;
             this.PrintEmptyLines = false;
             this.PrintErrorsAsInformation = false;
-            this.WriteDetailsOfLoggedExceptionsToLogEntry = true;
             this.DateFormat = "yyyy-MM-dd HH:mm:ss";
             this.ConvertTimeForLogentriesToUTCFormat = false;
             this.LogEveryLineOfLogEntryInNewLine = false;
@@ -93,7 +94,10 @@ namespace GRYLibrary.Core.Log
                 new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Error, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Error), ConsoleColor = ConsoleColor.Red }),
                 new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Critical, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Critical), ConsoleColor = ConsoleColor.DarkRed })
             };
-
+            if (!string.IsNullOrWhiteSpace(logFile))
+            {
+                Utilities.EnsureDirectoryExists(Path.GetDirectoryName(logFile));
+            }
             this.LogTargets = new List<GRYLogTarget>
             {
                 new Console() { Enabled = true, Format = GRYLogLogFormat.OnlyMessage },

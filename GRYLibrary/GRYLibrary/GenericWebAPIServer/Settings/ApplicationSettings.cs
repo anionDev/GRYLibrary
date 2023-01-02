@@ -11,7 +11,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
             {
                 LogFolder = Path.Join(Directory.GetCurrentDirectory(), "Logs");
             }
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
                 || RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
                 || RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
             {
@@ -19,7 +19,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
             }
             else
             {
-                throw new System.Exception();
+                throw new System.Exception("The current OS is not supported.");
             }
         }
         public string TermsOfServiceURL { get; set; }

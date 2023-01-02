@@ -1,11 +1,14 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using GRYLibrary.Core.Miscellaneous;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GRYLibrary.Core.Log
 {
     public struct LogItem
     {
+        private const string _Indentation = "    ";
         private string _FormattedMessage;
         private int _ColorBegin;
         private int _ColorEnd;
@@ -33,9 +36,15 @@ namespace GRYLibrary.Core.Log
             {
                 if (!this._MessageLoaded)
                 {
-                    this._PlainMessage = this._GetMessageFunction();
+                    string plainMessage = this._GetMessageFunction();
+                    if (Exception != null)
+                    {
+                        plainMessage = GetExceptionMessage(Exception, plainMessage);
+                    }
+                    _PlainMessage = plainMessage;
                     this._MessageLoaded = true;
                 }
+
                 return this._PlainMessage;
             }
         }
@@ -64,6 +73,7 @@ namespace GRYLibrary.Core.Log
         public LogItem(Func<string> getMessageFunction, Exception exception, string messageId = null) : this(getMessageFunction, DateTime.Now, LogLevel.Error, exception, messageId)
         {
         }
+
         public LogItem(Func<string> getMessageFunction, LogLevel logLevel, Exception exception, string messageId) : this(getMessageFunction, DateTime.Now, logLevel, exception, messageId)
         {
         }
@@ -73,7 +83,6 @@ namespace GRYLibrary.Core.Log
         public LogItem(string message, DateTime dateTime, LogLevel logLevel) : this(() => message, dateTime, logLevel, null)
         {
         }
-
         public LogItem(string message, DateTime dateTime, Exception exception, string messageId = null) : this(() => message, dateTime, LogLevel.Error, exception, messageId)
         {
         }
@@ -193,6 +202,61 @@ namespace GRYLibrary.Core.Log
         {
             return !(left == right);
         }
-    }
-}
+        private string GetExceptionMessage(Exception exception, string message = null, uint indentationLevel = 1, string exceptionTitle = "Exception-information")
+        {
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                message = "An exception occurred.";
+            }
+            if (!(message.EndsWith(".") | message.EndsWith("?") | message.EndsWith(":") | message.EndsWith("!")))
+            {
+                message += ".";
+            }
+            string result = $"{exceptionTitle}: ";
+            if (exception == null)
+            {
+                result += "null";
+            }
+            else
+            {
+                result += $"'{message}', Exception-type: {exception.GetType().FullName}, Exception-message: '{exception.Message}'";
+                if (true)
+                {
+                    result += @$"
+(Exception-details:
+{this.Indent(this.FormatStackTrace(exception), indentationLevel)},
+{this.Indent(this.FormatStackInnerException(exception, indentationLevel), indentationLevel)}
+)";
+                }
+            }
+            return result;
+        }
+        private string Indent(IList<string> lines, uint indentationLevel)
+        {
+            string fullIndentation = string.Concat(Enumerable.Repeat(_Indentation, (int)indentationLevel));
+            return string.Join(Environment.NewLine, lines.Select(line => fullIndentation + line));
+        }
 
+        private IList<string> FormatStackTrace(Exception exception)
+        {
+            List<string> result = new();
+            if (exception.StackTrace == null)
+            {
+                result.Add("Stack-trace: null");
+            }
+            else
+            {
+                result.Add("Stack-trace:");
+                result.AddRange(Utilities.SplitOnNewLineCharacter(exception.StackTrace));
+            }
+            return result;
+        }
+
+        private IList<string> FormatStackInnerException(Exception exception, uint indentationLevel)
+        {
+            return Utilities.SplitOnNewLineCharacter(this.GetExceptionMessage(exception.InnerException, null, indentationLevel + 1, "Inner exception")).ToList();
+        }
+    }
+
+
+}

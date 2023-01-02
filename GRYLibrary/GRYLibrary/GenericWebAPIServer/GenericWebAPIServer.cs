@@ -28,9 +28,10 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 {
                     WebAPIConfigurationConstants = initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants,
                     WebAPIConfigurationVariables = webAPIConfigurationVariables,
+                    Logger = logger,
                 },
             };
-            IGeneralLogger.Log($"Start {initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", LogLevel.Debug, logger);
+            IGeneralLogger.Log($"Start {initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", LogLevel.Information, logger);
             try
             {
                 RunAPIServer(webAPIConfiguration);
@@ -41,7 +42,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 IGeneralLogger.LogException(exception, $"Fatal error in {initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", initialionWebAPIConfiguration.WebAPIConfigurationValues.Logger);
                 exitCode = 1;
             }
-            IGeneralLogger.Log($"Finished {initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", LogLevel.Debug, initialionWebAPIConfiguration.WebAPIConfigurationValues.Logger);
+            IGeneralLogger.Log($"Finished {initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", LogLevel.Information, initialionWebAPIConfiguration.WebAPIConfigurationValues.Logger);
             return exitCode;
         }
 
@@ -52,6 +53,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 ApplicationName = configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName
             });
             builder.Services.AddControllers();
+            builder.Services.AddSingleton<IGeneralLogger>((serviceProvider)=> configuration.WebAPIConfigurationValues.Logger);
             builder.WebHost.ConfigureKestrel(options =>
             {
                 options.AddServerHeader = false;
