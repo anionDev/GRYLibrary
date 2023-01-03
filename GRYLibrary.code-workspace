@@ -1,13 +1,13 @@
 {
 	"folders": [
 		{
+			"path": "./GRYLibrary",
+			"name": "GRYLibrary"
+		},
+		{
 			"path": ".",
 			"name": "Entire repository"
 		},
-		{
-			"path": "./GRYLibrary",
-			"name": "GRYLibrary"
-		}
 	],
 	"tasks": {
 		"version": "2.0.0",

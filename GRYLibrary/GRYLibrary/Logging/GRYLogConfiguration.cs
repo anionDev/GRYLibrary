@@ -96,7 +96,11 @@ namespace GRYLibrary.Core.Log
             };
             if (!string.IsNullOrWhiteSpace(logFile))
             {
-                Utilities.EnsureDirectoryExists(Path.GetDirectoryName(logFile));
+                string logFolder = Path.GetDirectoryName(logFile);
+                if (!string.IsNullOrWhiteSpace(logFolder))
+                {
+                    Utilities.EnsureDirectoryExists(logFolder);
+                }
             }
             this.LogTargets = new List<GRYLogTarget>
             {
