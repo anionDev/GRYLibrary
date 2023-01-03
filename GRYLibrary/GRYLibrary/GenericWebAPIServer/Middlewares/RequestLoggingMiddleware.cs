@@ -1,6 +1,8 @@
+using GRYLibrary.Core.GenericWebAPIServer.Services;
 using GRYLibrary.Core.Log;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
 
@@ -11,11 +13,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     /// </summary>
     public class RequestLoggingMiddleware : AbstractMiddleware
     {
-        private readonly Action<Action<GRYLog>> _LogAction;
+        private readonly IGeneralLogger _Logger;
         /// <inheritdoc/>
-        public RequestLoggingMiddleware(RequestDelegate next/*, Action<Action<GRYLog>> logAction*/) : base(next)
+        public RequestLoggingMiddleware(RequestDelegate next, IGeneralLogger logger) : base(next)
         {
-            //_LogAction = logAction;
+            _Logger = logger;
         }
         /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
@@ -23,7 +25,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
             //this._LogAction(logObject=>logObject.Log("Some log"));
 
             // TODO log request.route, request.sourceip, response.statuscode, duration of creating response
-
+            _Logger.AddLogEntry(new LogItem("some message"));
             return _Next(context);
         }
         public virtual bool LogFullEntry(string route, ushort responseStatusCode)

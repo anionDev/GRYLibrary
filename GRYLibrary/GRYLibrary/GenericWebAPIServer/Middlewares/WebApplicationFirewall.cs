@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using GRYLibrary.Core.GenericWebAPIServer.Services;
+using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
@@ -8,9 +9,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     /// </summary>
     public class WebApplicationFirewall : AbstractMiddleware
     {
+        private readonly IWebApplicationFirewallSettings _WebApplicationFirewallSettings;
         /// <inheritdoc/>
-        public WebApplicationFirewall(RequestDelegate next) : base(next)
+        public WebApplicationFirewall(RequestDelegate next, IWebApplicationFirewallSettings webApplicationFirewallSettings) : base(next)
         {
+            this._WebApplicationFirewallSettings = webApplicationFirewallSettings;
         }
         /// <inheritdoc/>
         public override Task Invoke(HttpContext context)

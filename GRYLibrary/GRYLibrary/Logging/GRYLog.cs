@@ -210,7 +210,7 @@ namespace GRYLibrary.Core.Log
         }
         public void Log(string message, LogLevel logLevel, Exception exception, string messageId)
         {
-            this.Log(this.GetExceptionMessage(exception, message), logLevel, messageId);
+            this.Log(new LogItem(message, logLevel, exception, messageId));
         }
         public void Log(string message, LogLevel logLevel, string messageId = null)
         {
@@ -235,7 +235,7 @@ namespace GRYLibrary.Core.Log
         }
         public void Log(Func<string> getMessage, LogLevel logLevel, Exception exception, string messageId = null)
         {
-            this.Log(() => this.GetExceptionMessage(exception, getMessage()), logLevel, messageId);
+            this.Log(new LogItem(getMessage(), logLevel, exception,messageId));
         }
         public void Log(Func<string> getMessage, LogLevel logLevel, string messageId = null)
         {
@@ -330,62 +330,6 @@ namespace GRYLibrary.Core.Log
             return logLevel.Equals(LogLevel.Error) || logLevel.Equals(LogLevel.Critical);
         }
 
-        public const string _Indentation = "    ";
-        public string GetExceptionMessage(Exception exception, string message = null, uint indentationLevel = 1, string exceptionTitle = "Exception-information")
-        {
-            if (string.IsNullOrWhiteSpace(message))
-            {
-                message = "An exception occurred.";
-            }
-            if (!(message.EndsWith(".") | message.EndsWith("?") | message.EndsWith(":") | message.EndsWith("!")))
-            {
-                message += ".";
-            }
-            string result = $"{exceptionTitle}: ";
-            if (exception == null)
-            {
-                result += "null";
-            }
-            else
-            {
-                result += $"'{message}', Exception-type: {exception.GetType().FullName}, Exception-message: '{exception.Message}'";
-                if (this.Configuration.WriteDetailsOfLoggedExceptionsToLogEntry)
-                {
-                    result += @$"
-(Exception-details:
-{this.Indent(this.FormatStackTrace(exception), indentationLevel)},
-{this.Indent(this.FormatStackInnerException(exception, indentationLevel), indentationLevel)}
-)";
-                }
-            }
-            return result;
-        }
-
-        private string Indent(IList<string> lines, uint indentationLevel)
-        {
-            string fullIndentation = string.Concat(Enumerable.Repeat(_Indentation, (int)indentationLevel));
-            return string.Join(Environment.NewLine, lines.Select(line => fullIndentation + line));
-        }
-
-        private IList<string> FormatStackTrace(Exception exception)
-        {
-            List<string> result = new();
-            if (exception.StackTrace == null)
-            {
-                result.Add("Stack-trace: null");
-            }
-            else
-            {
-                result.Add("Stack-trace:");
-                result.AddRange(Utilities.SplitOnNewLineCharacter(exception.StackTrace));
-            }
-            return result;
-        }
-
-        private IList<string> FormatStackInnerException(Exception exception, uint indentationLevel)
-        {
-            return Utilities.SplitOnNewLineCharacter(this.GetExceptionMessage(exception.InnerException, null, indentationLevel + 1, "Inner exception")).ToList();
-        }
 
         public void ExecuteAndLogForEach<T>(IEnumerable<T> items, Action<T> itemAction, string nameOfEntireLoopAction, string subNamespaceOfEntireLoopAction, Func<T, string> nameOfSingleItemFunc, Func<T, string> subNamespaceOfSingleItemFunc, bool preventThrowingExceptions = false, LogLevel logLevelForOverhead = LogLevel.Debug)
         {

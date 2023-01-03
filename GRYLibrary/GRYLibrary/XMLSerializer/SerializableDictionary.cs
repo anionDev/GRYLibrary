@@ -13,6 +13,13 @@ namespace GRYLibrary.Core.XMLSerializer
             this._KeySerializer = new XmlSerializer(typeof(TKey));
             this._ValueSerializer = new XmlSerializer(typeof(TValue));
         }
+        public SerializableDictionary(IDictionary<TKey, TValue> values):this()
+        {
+            foreach(System.Collections.Generic.KeyValuePair<TKey, TValue> kvp in values)
+            {
+                this.Add(kvp.Key, kvp.Value);
+            }
+        }
 
         public void ReadXml(System.Xml.XmlReader reader)
         {
