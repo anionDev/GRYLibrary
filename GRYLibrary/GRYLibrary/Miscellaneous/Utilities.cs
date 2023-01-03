@@ -37,7 +37,7 @@ using NJsonSchema.Validation;
 using System.Security.Principal;
 using GRYLibrary.Core.ExecutePrograms;
 using GRYLibrary.Core.ExecutePrograms.WaitingStates;
-using Newtonsoft.Json;
+using Microsoft.Extensions.Configuration;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
@@ -1011,7 +1011,7 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 if (functions.Count == 0)
                 {
-                    throw new ArgumentException($"Argument '{ nameof(functions) }' does not contain any function.");
+                    throw new ArgumentException($"Argument '{nameof(functions)}' does not contain any function.");
                 }
                 Parallel.ForEach(functions, new ParallelOptions { MaxDegreeOfParallelism = _MaximalDegreeOfParallelism }, new Action<Func<T>, ParallelLoopState>((Func<T> function, ParallelLoopState state) =>
                 {
@@ -2675,23 +2675,51 @@ namespace GRYLibrary.Core.Miscellaneous
             return new NullReferenceException($"Parameter {parameterName} is null");
         }
 
-        public static T LoadSettingsFromLokalJSONFile<T>(bool createFileIsNotExist = true) where T : new()
+        public static T CreateOrLoadLoadJSONConfigurationFile<T>(string configurationFile, T initialValue) where T : new()
         {
-            string workingDirectory = Directory.GetCurrentDirectory();
-            string file = Path.Combine(workingDirectory, "appsettings.json");
-            T result;
-            Encoding encoding = new UTF8Encoding(false);
-            if (File.Exists(file))
+            return CreateOrLoadLoadConfigurationFile<T>(configurationFile, initialValue,
+                (configurationFile, initialValue) =>
+                {
+                    dynamic expando = new ExpandoObject();
+                    ((IDictionary<String, object>)expando)[typeof(T).Name] = initialValue;
+                    string serialized = Newtonsoft.Json.JsonConvert.SerializeObject(expando, Newtonsoft.Json.Formatting.Indented);
+                    File.WriteAllText(configurationFile, serialized, new UTF8Encoding(false));
+                }, (configurationFile) =>
+                {
+                    IConfigurationRoot configurationRoot = new ConfigurationBuilder().AddJsonFile(configurationFile).Build();
+                    return configurationRoot.GetRequiredSection(typeof(T).Name).Get<T>();
+                });
+        }
+        public static T CreateOrLoadLoadXMLConfigurationFile<T>(string configurationFile, T initialValue) where T : new()
+        {
+            return CreateOrLoadLoadConfigurationFile<T>(configurationFile, initialValue,
+                (configurationFile, initialValue) =>
+                {
+                    var simpleObjectPersistence = new SimpleObjectPersistence<T>();
+                    simpleObjectPersistence.File = configurationFile;
+                    simpleObjectPersistence.Object = initialValue;
+                    simpleObjectPersistence.SaveObjectToFile();
+                }, (configurationFile) =>
+                {
+                    var simpleObjectPersistence = new SimpleObjectPersistence<T>();
+                    simpleObjectPersistence.File = configurationFile;
+                    simpleObjectPersistence.LoadObjectFromFile();
+                    return simpleObjectPersistence.Object;
+                });
+        }
+        public static T CreateOrLoadLoadConfigurationFile<T>(string configurationFile, T initialValue, Action<string, T> createInitialFile, Func<string, T> loadExistingFile) where T : new()
+        {
+            T configuration;
+            if (File.Exists(configurationFile))
             {
-                result = JsonConvert.DeserializeObject<T>(File.ReadAllText(file, encoding));
+                configuration = loadExistingFile(configurationFile);
             }
             else
             {
-                result = new T();
-                string content = Newtonsoft.Json.JsonConvert.SerializeObject(result, Newtonsoft.Json.Formatting.Indented);
-                File.WriteAllText(file, content, encoding);
+                configuration = initialValue;
+                createInitialFile(configurationFile, initialValue);
             }
-            return result;
+            return configuration;
         }
     }
 }

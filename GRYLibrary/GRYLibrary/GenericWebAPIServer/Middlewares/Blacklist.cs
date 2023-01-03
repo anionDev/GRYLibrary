@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using GRYLibrary.Core.GenericWebAPIServer.Services;
+using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
@@ -8,9 +9,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     /// </summary>
     public class BlackList : AbstractMiddleware
     {
+        private readonly IBlacklistProvider _BlacklistProvider;
         /// <inheritdoc/>
-        public BlackList(RequestDelegate next) : base(next)
+        public BlackList(RequestDelegate next, IBlacklistProvider blacklistProvider) : base(next)
         {
+            this._BlacklistProvider = blacklistProvider;
         }
         /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
