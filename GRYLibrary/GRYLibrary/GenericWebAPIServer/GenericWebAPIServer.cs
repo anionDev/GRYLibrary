@@ -111,7 +111,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                             Url = new Uri(configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.ApplicationSettings.LicenseURL)
                         }
                     });
-                    string xmlFilename = $"{Assembly.GetEntryAssembly().GetName().Name}.xml";
+                    string xmlFilename = $"{configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}.xml";
                     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
                 });
             }
