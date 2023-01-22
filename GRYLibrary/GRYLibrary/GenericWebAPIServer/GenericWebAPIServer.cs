@@ -1,4 +1,5 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
+using GRYLibrary.Core.GenericWebAPIServer.ExecutionModes;
 using GRYLibrary.Core.GenericWebAPIServer.Services;
 using GRYLibrary.Core.GenericWebAPIServer.Settings;
 using Microsoft.AspNetCore.Builder;
@@ -19,16 +20,9 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         public static int DefaultWebAPIMainFunction(WebAPIConfiguration initialionWebAPIConfiguration)
         {
             int exitCode;
-            IGeneralLogger logger;
-            WebAPIConfigurationVariables webAPIConfigurationVariables = Miscellaneous.Utilities.CreateOrLoadLoadJSONConfigurationFile(initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.ConfigurationFileName, initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables);
-            if (Assembly.GetEntryAssembly().GetName().Name == "dotnet-swagger")
-            {
-                logger = GeneralLogger.NoLog();// avoid creation of logging-entries when generating APISpecification-artifact by running "swagger tofile ..."
-            }
-            else
-            {
-                logger = GeneralLogger.Create(initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName, initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables.ApplicationSettings.LogFolder);
-            }
+            ExecutionMode executionMode = GetExecutionMode();
+            IGeneralLogger logger = executionMode.Accept(new GetLoggerVisitor(initialionWebAPIConfiguration));
+            WebAPIConfigurationVariables webAPIConfigurationVariables = executionMode.Accept(new GetWebAPIConfigurationVariablesVisitor(initialionWebAPIConfiguration));
             initialionWebAPIConfiguration.WebAPIConfigurationValues.Logger = logger;
             var webAPIConfiguration = new WebAPIConfiguration()
             {
@@ -54,6 +48,15 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             }
             IGeneralLogger.Log($"Finished {initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", LogLevel.Information, initialionWebAPIConfiguration.WebAPIConfigurationValues.Logger);
             return exitCode;
+        }
+
+        private static ExecutionMode GetExecutionMode()
+        {
+            if (Assembly.GetEntryAssembly().GetName().Name == "dotnet-swagger")
+            {
+                return Analysis.Instance;
+            }
+            return RunProgram.Instance;
         }
 
         public static void RunAPIServer(WebAPIConfiguration configuration)
@@ -128,6 +131,42 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             configuration.ConfigureApp(app, configuration.WebAPIConfigurationValues);
             IGeneralLogger.Log($"Start WebAPI-server", LogLevel.Information, configuration.WebAPIConfigurationValues.Logger);
             app.Run();
+        }
+        private class GetLoggerVisitor : IExecutionModeVisitor<IGeneralLogger>
+        {
+            private readonly WebAPIConfiguration _WebAPIConfiguration;
+            public GetLoggerVisitor(WebAPIConfiguration webAPIConfiguration)
+            {
+                this._WebAPIConfiguration = webAPIConfiguration;
+            }
+            public IGeneralLogger Handle(Analysis analysis)
+            {
+                return GeneralLogger.NoLog();// avoid creation of logging-entries when doing something like generate APISpecification-artifact by running "swagger tofile ..."
+            }
+
+            public IGeneralLogger Handle(RunProgram runProgram)
+            {
+                return GeneralLogger.Create(_WebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName, _WebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables.ApplicationSettings.LogFolder);
+            }
+        }
+        private class GetWebAPIConfigurationVariablesVisitor : IExecutionModeVisitor<WebAPIConfigurationVariables>
+        {
+            private readonly WebAPIConfiguration _WebAPIConfiguration;
+
+            public GetWebAPIConfigurationVariablesVisitor(WebAPIConfiguration webAPIConfiguration)
+            {
+                this._WebAPIConfiguration = webAPIConfiguration;
+            }
+
+            public WebAPIConfigurationVariables Handle(Analysis analysis)
+            {
+                return _WebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables;
+            }
+
+            public WebAPIConfigurationVariables Handle(RunProgram runProgram)
+            {
+                return Miscellaneous.Utilities.CreateOrLoadLoadJSONConfigurationFile(_WebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.ConfigurationFileName, _WebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables);
+            }
         }
     }
 }
