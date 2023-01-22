@@ -24,7 +24,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
         /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
         {
-            if (_WebAPIConfigurationConstants.GetTargetEnvironmentType() is Productive)
+            if (_WebAPIConfigurationConstants.TargetEnvironmentType is Productive)
             {
                 bool clearResponseBody;
                 int responseStatusCode;

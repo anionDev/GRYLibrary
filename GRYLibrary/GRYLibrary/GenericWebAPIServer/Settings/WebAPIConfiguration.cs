@@ -22,18 +22,18 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         };
         public Action<WebApplication, WebAPIConfigurationValues> ConfigureApp { get; set; } = (app, webAPIConfigurationValues) =>
         {
-            if (webAPIConfigurationValues.WebAPIConfigurationConstants.GetTargetEnvironmentType() is Productive)
+            if (webAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is Productive)
             {
                 app.UseMiddleware<DDOSProtection>();
                 app.UseMiddleware<Obfuscation>();
             }
-            if (webAPIConfigurationValues.WebAPIConfigurationConstants.GetTargetEnvironmentType() is Development)
+            if (webAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is Development)
             {
                 app.UseDeveloperExceptionPage();
             }
             app.UseMiddleware<RequestLoggingMiddleware>();
             app.UseMiddleware<ExceptionManager>();
-            if (webAPIConfigurationValues.WebAPIConfigurationConstants.GetTargetEnvironmentType() is not Development)
+            if (webAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is not Development)
             {
                 app.UseMiddleware<RequestCounter>();
             }
@@ -43,7 +43,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
             {
                 endpoints.MapControllers();
             });
-            if (webAPIConfigurationValues.WebAPIConfigurationConstants.GetTargetEnvironmentType() is not Productive)
+            if (webAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is not Productive)
             {
                 app.UseSwagger(options =>
                 {

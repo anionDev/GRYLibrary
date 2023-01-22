@@ -89,7 +89,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                             password = File.ReadAllText(configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePFXFilePath, new UTF8Encoding(false));
                         }
                         X509Certificate2 certificate = new(pfxFilePath, password);
-                        if (configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.GetTargetEnvironmentType() is Productive && Core.Miscellaneous.Utilities.IsSelfSIgned(certificate))
+                        if (configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is Productive && Core.Miscellaneous.Utilities.IsSelfSIgned(certificate))
                         {
                             IGeneralLogger.Log($"The used certificate '{configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePFXFilePath}' is self-signed. Using self-signed certificates is not recommended in a productive environment.", LogLevel.Warning, configuration.WebAPIConfigurationValues.Logger);
                         }
@@ -100,7 +100,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             string appVersionString = "v" + configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppVersion;
 
             builder.Services.AddControllers();
-            if (configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.GetTargetEnvironmentType() is not Productive)
+            if (configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is not Productive)
             {
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen(options =>
