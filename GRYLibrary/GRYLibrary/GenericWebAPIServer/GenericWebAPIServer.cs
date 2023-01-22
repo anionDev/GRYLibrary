@@ -3,7 +3,6 @@ using GRYLibrary.Core.GenericWebAPIServer.Services;
 using GRYLibrary.Core.GenericWebAPIServer.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
@@ -112,7 +111,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                             Url = new Uri(configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.ApplicationSettings.LicenseURL)
                         }
                     });
-                    string xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                    string xmlFilename = $"{configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}.xml";
                     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
                 });
             }
