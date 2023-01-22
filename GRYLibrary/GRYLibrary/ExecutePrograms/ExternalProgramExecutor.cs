@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using GRYLibrary.Core.Miscellaneous;
+using System.Reactive.Concurrency;
 
 namespace GRYLibrary.Core.ExecutePrograms
 {
@@ -129,6 +130,7 @@ namespace GRYLibrary.Core.ExecutePrograms
             if (this.LogObject == default)
             {
                 this.LogObject = GRYLog.Create();
+                this.LogObject.Configuration.ResetToDefaultValues();
                 if (this.Configuration.Verbosity == Verbosity.Verbose)
                 {
                     foreach (GRYLogTarget logtarget in this.LogObject.Configuration.LogTargets)
@@ -184,7 +186,7 @@ namespace GRYLibrary.Core.ExecutePrograms
             {
                 result = $"{result} --LogNamespace \"{logNamespace}\"";
             }
-            if (user!=null)
+            if (user != null)
             {
                 result = $"{result} --User \"{user}\" --Password \"{password}\"";
             }
@@ -302,7 +304,7 @@ namespace GRYLibrary.Core.ExecutePrograms
                 if (Configuration.User != null)
                 {
 
-                    System.Security.SecureString password = new System.Security.SecureString();                  
+                    System.Security.SecureString password = new System.Security.SecureString();
                     StartInfo.UserName = Configuration.User;
                     for (int x = 0; x < Configuration.Password.Length; x++)
                     {
@@ -314,8 +316,8 @@ namespace GRYLibrary.Core.ExecutePrograms
                 {
                     StartInfo.Arguments = ExternalProgramExecutor.CreateEpewArgumentString(
                         Configuration.Program, Configuration.Argument, Configuration.WorkingDirectory, Configuration.PrintErrorsAsInformation, Configuration.TimeoutInMilliseconds, Configuration.Verbosity,
-                        Configuration.AddLogOverhead, Configuration.LogFile, Configuration.Title, Configuration.WaitingState, Configuration.LogNamespace, Configuration.User,Configuration.Password);
-                    StartInfo.FileName = "Epew";
+                        Configuration.AddLogOverhead, Configuration.LogFile, Configuration.Title, Configuration.WaitingState, Configuration.LogNamespace, Configuration.User, Configuration.Password);
+                    StartInfo.FileName = "epew";
                 }
                 this._Process.StartInfo = StartInfo;
                 this._Process.OutputDataReceived += (object sender, DataReceivedEventArgs dataReceivedEventArgs) =>
@@ -337,14 +339,17 @@ namespace GRYLibrary.Core.ExecutePrograms
                 stopWatch.Start();
                 this._Process.Start();
                 this.ProcessId = this._Process.Id;
-                this.LogImmediatelyAfterStart(this._ProcessId);
-                this._Process.BeginOutputReadLine();
-                this._Process.BeginErrorReadLine();
                 this._Running = true;
-                readLogItemsThread = SupervisedThread.Create(this.LogOutputImplementation);
-                readLogItemsThread.Name = $"Logger-Thread for '{this.Configuration.Title}' ({nameof(ExternalProgramExecutor)}({this.Configuration.Title}))";
-                readLogItemsThread.LogOverhead = false;
-                readLogItemsThread.Start();
+                this.LogImmediatelyAfterStart(this._ProcessId);
+                if (this.Configuration.WaitingState is RunSynchronously)
+                {
+                    this._Process.BeginOutputReadLine();
+                    this._Process.BeginErrorReadLine();
+                    readLogItemsThread = SupervisedThread.Create(this.LogOutputImplementation);
+                    readLogItemsThread.Name = $"Logger-Thread for '{this.Configuration.Title}' ({nameof(ExternalProgramExecutor)}({this.Configuration.Title}))";
+                    readLogItemsThread.LogOverhead = false;
+                    readLogItemsThread.Start();
+                }
             }
             catch (Exception exception)
             {
@@ -355,42 +360,63 @@ namespace GRYLibrary.Core.ExecutePrograms
             }
             Task task = new(() =>
             {
+                Configuration.WaitingState.Accept(new RunningHandler(this, stopWatch));
+            });
+            task.Start();
+            return task;
+        }
+        private class RunningHandler : IWaitingStateVisitor
+        {
+            private readonly ExternalProgramExecutor _ExternalProgramExecutor;
+            private readonly Stopwatch _StopWatch;
+
+            public RunningHandler(ExternalProgramExecutor externalProgramExecutor, Stopwatch stopWatch)
+            {
+                this._ExternalProgramExecutor = externalProgramExecutor;
+                this._StopWatch = stopWatch;
+            }
+
+            public void Handle(RunAsynchronously runAsynchronously)
+            {
+                Utilities.NoOperation();
+            }
+
+            public void Handle(RunSynchronously runSynchronously)
+            {
                 try
                 {
-                    this.WaitForProcessEnd(this._Process, stopWatch);
-                    this.ExecutionDuration = stopWatch.Elapsed;
-                    this.ExitCode = this._Process.ExitCode;
-                    while (!this._NotLoggedOutputLines.IsEmpty)
+                    this._ExternalProgramExecutor.WaitForProcessEnd(this._ExternalProgramExecutor._Process, _StopWatch);
+                    this._ExternalProgramExecutor.ExecutionDuration = _StopWatch.Elapsed;
+                    this._ExternalProgramExecutor.ExitCode = this._ExternalProgramExecutor._Process.ExitCode;
+                    while (!this._ExternalProgramExecutor._NotLoggedOutputLines.IsEmpty)
                     {
                         Thread.Sleep(60);
                     }
-                    this._AllStdOutLinesAsArray = this._AllStdOutLines.ToArray();
-                    this._AllStdErrLinesAsArray = this._AllStdErrLines.ToArray();
-                    this.LogEnd();
+                    this._ExternalProgramExecutor._AllStdOutLinesAsArray = this._ExternalProgramExecutor._AllStdOutLines.ToArray();
+                    this._ExternalProgramExecutor._AllStdErrLinesAsArray = this._ExternalProgramExecutor._AllStdErrLines.ToArray();
+                    this._ExternalProgramExecutor.LogEnd();
                     try
                     {
-                        ExecutionFinishedEvent?.Invoke(this, this.ExitCode);
+                        _ExternalProgramExecutor.ExecutionFinishedEvent?.Invoke(this._ExternalProgramExecutor, this._ExternalProgramExecutor.ExitCode);
                     }
                     catch
                     {
                         Utilities.NoOperation();
                     }
-                    if (this.Configuration.WaitingState is RunSynchronously runSynchronously && runSynchronously.ThrowErrorIfExitCodeIsNotZero && this.ExitCode != 0)
+                    if (runSynchronously.ThrowErrorIfExitCodeIsNotZero && this._ExternalProgramExecutor.ExitCode != 0)
                     {
-                        throw new UnexpectedExitCodeException(this);
+                        throw new UnexpectedExitCodeException(this._ExternalProgramExecutor);
                     }
                 }
                 catch (Exception exception)
                 {
-                    this.LogObject.Log("Error while finishing program-execution", exception);
+                    this._ExternalProgramExecutor.LogObject.Log("Error while finishing program-execution", exception);
                 }
                 finally
                 {
-                    this.Dispose();
+                    this._ExternalProgramExecutor.Dispose();
                 }
-            });
-            task.Start();
-            return task;
+            }
         }
         public void Dispose()
         {
@@ -458,6 +484,8 @@ namespace GRYLibrary.Core.ExecutePrograms
             this.Configuration.Program = temp.Item1;
             this.Configuration.Argument = temp.Item2;
             this.Configuration.WorkingDirectory = temp.Item3;
+            this.LogObject.Log($"Program to execute with full path: {this.Configuration.Program}", LogLevel.Debug);
+            this.LogObject.Log($"Program will be executed " + this.Configuration.WaitingState.Accept(GetWaitingStateLabelVisitor.GetWaitingStateLabelVisitorInstance), LogLevel.Debug);
             if (string.IsNullOrWhiteSpace(this.Configuration.WorkingDirectory))
             {
                 this.Configuration.WorkingDirectory = Directory.GetCurrentDirectory();

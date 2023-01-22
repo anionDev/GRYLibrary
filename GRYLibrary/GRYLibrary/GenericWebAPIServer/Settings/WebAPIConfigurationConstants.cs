@@ -13,7 +13,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
     }
     public class WebAPIConfigurationConstants: IWebAPIConfigurationConstants
     {
-        private string _TargetEnvironmentType;
         public string TargetEnvironmentType { get; set; }
         public string AppName { get; set; }
         public string AppVersion { get; set; }

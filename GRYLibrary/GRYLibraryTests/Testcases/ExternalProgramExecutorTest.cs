@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using GRYLibrary.Core.Miscellaneous.CustomDisposables;
 using System.IO;
 using GRYLibrary.Core.ExecutePrograms;
+using GRYLibrary.Core.ExecutePrograms.WaitingStates;
 
 namespace GRYLibrary.Tests.Testcases
 {
@@ -58,34 +59,6 @@ namespace GRYLibrary.Tests.Testcases
 
             //assert
             Assert.IsTrue(File.Exists(file2));
-        }
-        [TestMethod]
-        public void TestAsyncExecution()
-        {
-            ExternalProgramExecutor externalProgramExecutor = new(Utilities.TestUtilities.GetTimeoutTool(), 2.ToString());
-            Semaphore semaphore = new();
-            semaphore.Increment();
-            externalProgramExecutor.ExecutionFinishedEvent += (ExternalProgramExecutor sender, int exitCode) =>
-            {
-                if (0 == exitCode)
-                {
-                    semaphore.Decrement();
-                }
-                else
-                {
-                    semaphore.Increment();
-                }
-            };
-            externalProgramExecutor.Run();
-            Assert.AreNotEqual(0, externalProgramExecutor.ProcessId);
-            while (semaphore.Value == 1)
-            {
-                Thread.Sleep(200);
-            }
-            if (semaphore.Value > 1)
-            {
-                Assert.Fail();
-            }
         }
     }
 }

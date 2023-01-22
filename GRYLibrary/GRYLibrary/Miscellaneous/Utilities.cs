@@ -2322,7 +2322,6 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 throw new FileNotFoundException($"Program '{program}' does not exist");
             }
-
             return new Tuple<string, string, string>(program, argument, workingDirectory);
         }
         private static bool HasPath(string str)

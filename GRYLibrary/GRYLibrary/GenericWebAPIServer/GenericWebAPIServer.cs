@@ -19,8 +19,16 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         public static int DefaultWebAPIMainFunction(WebAPIConfiguration initialionWebAPIConfiguration)
         {
             int exitCode;
+            IGeneralLogger logger;
             WebAPIConfigurationVariables webAPIConfigurationVariables = Miscellaneous.Utilities.CreateOrLoadLoadJSONConfigurationFile(initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.ConfigurationFileName, initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables);
-            IGeneralLogger logger = GeneralLogger.Create(initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName, initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables.ApplicationSettings.LogFolder);
+            if (Assembly.GetEntryAssembly().GetName().Name == "dotnet-swagger")
+            {
+                logger = GeneralLogger.NoLog();// avoid creation of logging-entries when generating APISpecification-artifact by running "swagger tofile ..."
+            }
+            else
+            {
+                logger = GeneralLogger.Create(initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName, initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables.ApplicationSettings.LogFolder);
+            }
             initialionWebAPIConfiguration.WebAPIConfigurationValues.Logger = logger;
             var webAPIConfiguration = new WebAPIConfiguration()
             {
