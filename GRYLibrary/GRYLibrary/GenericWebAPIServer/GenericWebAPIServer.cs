@@ -19,35 +19,45 @@ namespace GRYLibrary.Core.GenericWebAPIServer
     {
         public static int DefaultWebAPIMainFunction(WebAPIConfiguration initialionWebAPIConfiguration)
         {
-            int exitCode;
-            ExecutionMode executionMode = GetExecutionMode();
-            IGeneralLogger logger = executionMode.Accept(new GetLoggerVisitor(initialionWebAPIConfiguration));
-            WebAPIConfigurationVariables webAPIConfigurationVariables = executionMode.Accept(new GetWebAPIConfigurationVariablesVisitor(initialionWebAPIConfiguration));
-            initialionWebAPIConfiguration.WebAPIConfigurationValues.Logger = logger;
-            var webAPIConfiguration = new WebAPIConfiguration()
-            {
-                ConfigureApp = initialionWebAPIConfiguration.ConfigureApp,
-                ConfigureBuilder = initialionWebAPIConfiguration.ConfigureBuilder,
-                WebAPIConfigurationValues = new WebAPIConfigurationValues()
-                {
-                    WebAPIConfigurationConstants = initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants,
-                    WebAPIConfigurationVariables = webAPIConfigurationVariables,
-                    Logger = logger,
-                },
-            };
-            IGeneralLogger.Log($"Start {initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", LogLevel.Information, logger);
             try
             {
-                RunAPIServer(webAPIConfiguration);
-                exitCode = 0;
+                int exitCode;
+                ExecutionMode executionMode = GetExecutionMode();
+                IGeneralLogger logger = executionMode.Accept(new GetLoggerVisitor(initialionWebAPIConfiguration));
+                WebAPIConfigurationVariables webAPIConfigurationVariables = executionMode.Accept(new GetWebAPIConfigurationVariablesVisitor(initialionWebAPIConfiguration));
+                initialionWebAPIConfiguration.WebAPIConfigurationValues.Logger = logger;
+                var webAPIConfiguration = new WebAPIConfiguration()
+                {
+                    ConfigureApp = initialionWebAPIConfiguration.ConfigureApp,
+                    ConfigureBuilder = initialionWebAPIConfiguration.ConfigureBuilder,
+                    WebAPIConfigurationValues = new WebAPIConfigurationValues()
+                    {
+                        WebAPIConfigurationConstants = initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants,
+                        WebAPIConfigurationVariables = webAPIConfigurationVariables,
+                        Logger = logger,
+                    },
+                };
+                IGeneralLogger.Log($"Start {initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", LogLevel.Information, logger);
+                try
+                {
+                    RunAPIServer(webAPIConfiguration);
+                    exitCode = 0;
+                }
+                catch (Exception exception)
+                {
+                    IGeneralLogger.LogException(exception, $"Fatal error in {initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", initialionWebAPIConfiguration.WebAPIConfigurationValues.Logger);
+                    exitCode = 1;
+                }
+                IGeneralLogger.Log($"Finished {initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", LogLevel.Information, initialionWebAPIConfiguration.WebAPIConfigurationValues.Logger);
+                return exitCode;
             }
             catch (Exception exception)
             {
-                IGeneralLogger.LogException(exception, $"Fatal error in {initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", initialionWebAPIConfiguration.WebAPIConfigurationValues.Logger);
-                exitCode = 1;
+                Console.WriteLine("Fatal-exception");
+                Console.WriteLine(exception.Message);
+                Console.WriteLine(exception.StackTrace);
+                throw;
             }
-            IGeneralLogger.Log($"Finished {initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", LogLevel.Information, initialionWebAPIConfiguration.WebAPIConfigurationValues.Logger);
-            return exitCode;
         }
 
         private static ExecutionMode GetExecutionMode()
@@ -165,7 +175,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
             public WebAPIConfigurationVariables Handle(RunProgram runProgram)
             {
-                return Miscellaneous.Utilities.CreateOrLoadLoadJSONConfigurationFile(_WebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.ConfigurationFileName, _WebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables);
+                return Miscellaneous.Utilities.CreateOrLoadLoadJSONConfigurationFile(_WebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.ConfigurationFile, _WebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables);
             }
         }
     }

@@ -251,11 +251,12 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public static string Format(ValidationError error)
         {
-            Dictionary<string, string> values = new();
-
-            values.Add(nameof(error.Kind), error.Kind.ToString());
-            values.Add(nameof(error.Path), error.Path);
-            values.Add(nameof(error.Property), error.Property);
+            Dictionary<string, string> values = new()
+            {
+                { nameof(error.Kind), error.Kind.ToString() },
+                { nameof(error.Path), error.Path },
+                { nameof(error.Property), error.Property }
+            };
             if (error.HasLineInfo)
             {
                 values.Add(nameof(error.LineNumber), error.LineNumber.ToString());
@@ -277,9 +278,7 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 n--;
                 int k = random.Next(n + 1);
-                T value = list[k];
-                list[k] = list[n];
-                list[n] = value;
+                (list[n], list[k]) = (list[k], list[n]);
             }
         }
         public static bool EqualsIgnoringOrder<T>(this IEnumerable<T> list1, IEnumerable<T> list2)
@@ -2694,14 +2693,18 @@ namespace GRYLibrary.Core.Miscellaneous
             return CreateOrLoadLoadConfigurationFile<T>(configurationFile, initialValue,
                 (configurationFile, initialValue) =>
                 {
-                    var simpleObjectPersistence = new SimpleObjectPersistence<T>();
-                    simpleObjectPersistence.File = configurationFile;
-                    simpleObjectPersistence.Object = initialValue;
+                    var simpleObjectPersistence = new SimpleObjectPersistence<T>
+                    {
+                        File = configurationFile,
+                        Object = initialValue
+                    };
                     simpleObjectPersistence.SaveObjectToFile();
                 }, (configurationFile) =>
                 {
-                    var simpleObjectPersistence = new SimpleObjectPersistence<T>();
-                    simpleObjectPersistence.File = configurationFile;
+                    var simpleObjectPersistence = new SimpleObjectPersistence<T>
+                    {
+                        File = configurationFile
+                    };
                     simpleObjectPersistence.LoadObjectFromFile();
                     return simpleObjectPersistence.Object;
                 });
@@ -2715,6 +2718,8 @@ namespace GRYLibrary.Core.Miscellaneous
             }
             else
             {
+                configurationFile = Utilities.ResolveToFullPath(configurationFile);
+                Utilities.EnsureDirectoryExists(Path.GetDirectoryName(configurationFile));
                 configuration = initialValue;
                 createInitialFile(configurationFile, initialValue);
             }
