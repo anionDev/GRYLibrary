@@ -8,6 +8,7 @@
     <FileVersion>0.12.26</FileVersion>
     <IsPackable>false</IsPackable>
     <PreserveCompilationContext>false</PreserveCompilationContext>
+	<GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <Copyright>Copyright © 2022 Marius Göcke</Copyright>
     <Description>The GRYLibrary is a collection with some useful .NET classes and functions which are very easy (re)usable.</Description>
     <OutputType>Library</OutputType>
