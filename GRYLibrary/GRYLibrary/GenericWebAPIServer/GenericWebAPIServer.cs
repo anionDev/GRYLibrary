@@ -190,5 +190,38 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 return Miscellaneous.Utilities.CreateOrLoadLoadJSONConfigurationFile(_WebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.ConfigurationFile, _WebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables);
             }
         }
+        public static string GetBaseFolder(ConcreteEnvironments.Environment environment, string programFolder)
+        {
+            if (environment is Development)
+            {
+                return Path.Join(programFolder, "Workspace");
+            }
+            else
+            {
+                return "/Workspace";
+            }
+        }
+        public class CreateFolderVisitor : IExecutionModeVisitor
+        {
+            private readonly string[] _Folder;
+
+            public CreateFolderVisitor(params string[] folder)
+            {
+                this._Folder = folder;
+            }
+
+            public void Handle(Analysis analysis)
+            {
+                GRYLibrary.Core.Miscellaneous.Utilities.NoOperation();
+            }
+
+            public void Handle(RunProgram runProgram)
+            {
+                foreach (var folder in _Folder)
+                {
+                    GRYLibrary.Core.Miscellaneous.Utilities.EnsureDirectoryExists(folder);
+                }
+            }
+        }
     }
 }
