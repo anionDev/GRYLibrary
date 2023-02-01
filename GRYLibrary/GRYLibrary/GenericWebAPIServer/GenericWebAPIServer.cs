@@ -4,6 +4,7 @@ using GRYLibrary.Core.GenericWebAPIServer.Services;
 using GRYLibrary.Core.GenericWebAPIServer.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
@@ -190,15 +191,16 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 return Miscellaneous.Utilities.CreateOrLoadLoadJSONConfigurationFile<ConfigurationVariablesType, IWebAPIConfigurationVariables>(_WebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.ConfigurationFile, _WebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables);
             }
         }
-        public static string GetBaseFolder(ConcreteEnvironments.GRYEnvironment environment, string programFolder)
+        public static string GetBaseFolderForProjectInCommonProjectStructure(GRYEnvironment environment, string programFolder)
         {
+            string workspaceFolderName = "Workspace";
             if (environment is Development)
             {
-                return Path.Join(programFolder, "Workspace");
+                return Miscellaneous.Utilities.ResolveToFullPath($"../../{workspaceFolderName}", programFolder);
             }
             else
             {
-                return "/Workspace";
+                return $"/{workspaceFolderName}";
             }
         }
         public class CreateFolderVisitor : IExecutionModeVisitor
