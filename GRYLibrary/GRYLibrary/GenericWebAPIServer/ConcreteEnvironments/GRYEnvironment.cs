@@ -2,9 +2,9 @@
 
 namespace GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments
 {
-    public abstract class Environment
+    public abstract class GRYEnvironment
     {
-        private protected Environment() { }
+        private protected GRYEnvironment() { }
         public abstract void Accept(IEnvironmentVisitor visitor);
         public abstract T Accept<T>(IEnvironmentVisitor<T> visitor);
         public override bool Equals(object obj)
@@ -26,7 +26,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments
         {
             return GetType().Name;
         }
-        public static Environment Parse(string environment)
+        public static GRYEnvironment Parse(string environment)
         {
             if (environment == null)
             {

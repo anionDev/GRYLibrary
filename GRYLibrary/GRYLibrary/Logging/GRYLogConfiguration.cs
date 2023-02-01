@@ -11,14 +11,12 @@ using Console = GRYLibrary.Core.Log.ConcreteLogTargets.Console;
 
 namespace GRYLibrary.Core.Log
 {
-    public sealed class GRYLogConfiguration : IDisposable
+    public interface IGRYLogConfiguration : IDisposable
     {
-
-
-
         /// <summary>
         /// If this value is false then changing this value in the configuration-file has no effect.
         /// </summary>
+        [Obsolete]
         public bool ReloadConfigurationWhenConfigurationFileWillBeChanged { get; set; }
         public List<GRYLogTarget> LogTargets { get; set; }
         public bool WriteLogEntriesAsynchronous { get; set; }
@@ -29,6 +27,22 @@ namespace GRYLibrary.Core.Log
         /// <summary>
         /// Represents a value which indicates if the output which goes to stderr should be treated as stdout.       
         /// </summary>
+        public bool PrintErrorsAsInformation { get; set; }
+        public string Name { get; set; }
+        public string DateFormat { get; set; }
+        public List<SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>> LoggedMessageTypesConfiguration { get; set; }
+        public bool ConvertTimeForLogentriesToUTCFormat { get; set; }
+        public bool LogEveryLineOfLogEntryInNewLine { get; set; }
+        public bool StoreProcessedLogItemsInternally { get; set; }
+    }
+    public sealed class GRYLogConfiguration : IGRYLogConfiguration
+    {
+        public bool ReloadConfigurationWhenConfigurationFileWillBeChanged { get; set; }
+        public List<GRYLogTarget> LogTargets { get; set; }
+        public bool WriteLogEntriesAsynchronous { get; set; }
+        public bool Enabled { get; set; }
+        public string ConfigurationFile { get; set; }
+        public bool PrintEmptyLines { get; set; }
         public bool PrintErrorsAsInformation { get; set; }
         public string Name { get; set; }
         public string DateFormat { get; set; }

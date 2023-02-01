@@ -1,6 +1,6 @@
 ﻿namespace GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments
 {
-    public class Development : Environment
+    public class Development : GRYEnvironment
     {
         public static Development Instance { get; } = new Development();
         private Development()
