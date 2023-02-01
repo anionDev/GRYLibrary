@@ -17,39 +17,28 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 {
     public static class GenericWebAPIServer
     {
-        public static int DefaultWebAPIMainFunction(WebAPIConfiguration initialionWebAPIConfiguration)
+        public static int DefaultWebAPIMainFunction(WebAPIConfiguration configuration)
         {
             IGeneralLogger logger = null;
             int exitCode = 1;
             try
             {
-                ExecutionMode executionMode = initialionWebAPIConfiguration.WebAPIConfigurationValues.ExecutionMode;
-                logger = executionMode.Accept(new GetLoggerVisitor(initialionWebAPIConfiguration));
-                WebAPIConfigurationVariables webAPIConfigurationVariables = executionMode.Accept(new GetWebAPIConfigurationVariablesVisitor(initialionWebAPIConfiguration));
-                initialionWebAPIConfiguration.WebAPIConfigurationValues.Logger = logger;
-                var webAPIConfiguration = new WebAPIConfiguration()
-                {
-                    ConfigureApp = initialionWebAPIConfiguration.ConfigureApp,
-                    ConfigureBuilder = initialionWebAPIConfiguration.ConfigureBuilder,
-                    WebAPIConfigurationValues = new WebAPIConfigurationValues()
-                    {
-                        WebAPIConfigurationConstants = initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants,
-                        WebAPIConfigurationVariables = webAPIConfigurationVariables,
-                        Logger = logger,
-                    },
-                };
-                IGeneralLogger.Log($"Start {initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", LogLevel.Information, logger);
+                ExecutionMode executionMode = configuration.WebAPIConfigurationValues.ExecutionMode;
+                configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables = executionMode.Accept(new GetWebAPIConfigurationVariablesVisitor(configuration));
+                logger = executionMode.Accept(new GetLoggerVisitor(configuration));
+                configuration.WebAPIConfigurationValues.Logger = logger;
+                IGeneralLogger.Log($"Start {configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", LogLevel.Information, logger);
                 try
                 {
-                    RunAPIServer(webAPIConfiguration);
+                    RunAPIServer(configuration);
                     exitCode = 0;
                 }
                 catch (Exception exception)
                 {
-                    IGeneralLogger.LogException(exception, $"Fatal error in {initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", initialionWebAPIConfiguration.WebAPIConfigurationValues.Logger);
+                    IGeneralLogger.LogException(exception, $"Fatal error in {configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", configuration.WebAPIConfigurationValues.Logger);
                     exitCode = 2;
                 }
-                IGeneralLogger.Log($"Finished {initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", LogLevel.Information, initialionWebAPIConfiguration.WebAPIConfigurationValues.Logger);
+                IGeneralLogger.Log($"Finished {configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", LogLevel.Information, configuration.WebAPIConfigurationValues.Logger);
             }
             catch (Exception exception)
             {
@@ -64,7 +53,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 {
                     logger.AddLogEntry(new Log.LogItem(message, exception));
                 }
-                if (initialionWebAPIConfiguration.WebAPIConfigurationValues.RethrowInitializationExceptions)
+                if (configuration.WebAPIConfigurationValues.RethrowInitializationExceptions)
                 {
                     throw;
                 }
@@ -171,6 +160,9 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 return GeneralLogger.Create(_WebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName, _WebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables.ApplicationSettings.LogFolder);
             }
         }
+        /// <summary>
+        /// This visitor loads a configuration from disk if possible and if not then the initial configuration will be saved to disk and returned.
+        /// </summary>
         private class GetWebAPIConfigurationVariablesVisitor : IExecutionModeVisitor<WebAPIConfigurationVariables>
         {
             private readonly WebAPIConfiguration _WebAPIConfiguration;
@@ -190,7 +182,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 return Miscellaneous.Utilities.CreateOrLoadLoadJSONConfigurationFile(_WebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.ConfigurationFile, _WebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables);
             }
         }
-        public static string GetBaseFolder(ConcreteEnvironments.Environment environment, string programFolder)
+        public static string GetBaseFolder(ConcreteEnvironments.GRYEnvironment environment, string programFolder)
         {
             if (environment is Development)
             {

@@ -1,6 +1,6 @@
 ﻿namespace GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments
 {
-    public class Productive : Environment
+    public class Productive : GRYEnvironment
     {
         public static Productive Instance { get; } = new Productive();
         private Productive()

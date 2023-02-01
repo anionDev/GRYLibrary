@@ -2673,6 +2673,9 @@ namespace GRYLibrary.Core.Miscellaneous
             return new NullReferenceException($"Parameter {parameterName} is null");
         }
 
+        /// <summary>
+        /// This function loads a configuration from disk if possible and if not then the initial configuration will be saved to disk and returned.
+        /// </summary>
         public static T CreateOrLoadLoadJSONConfigurationFile<T>(string configurationFile, T initialValue) where T : new()
         {
             return CreateOrLoadLoadConfigurationFile<T>(configurationFile, initialValue,
