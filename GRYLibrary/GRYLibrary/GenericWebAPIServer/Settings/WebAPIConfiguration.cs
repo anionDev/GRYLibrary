@@ -9,10 +9,12 @@ using System;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Settings
 {
-    public class WebAPIConfiguration
+    public class WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType>
+        where ConfigurationConstantsType : IWebAPIConfigurationConstants
+        where ConfigurationVariablesType : IWebAPIConfigurationVariables
     {
-        public WebAPIConfigurationValues WebAPIConfigurationValues { get; set; }
-        public Action<WebApplicationBuilder, WebAPIConfigurationValues> ConfigureBuilder { get; set; } = (builder, webAPIConfigurationValues) =>
+        public WebAPIConfigurationValues<ConfigurationConstantsType, ConfigurationVariablesType> WebAPIConfigurationValues { get; set; }
+        public Action<WebApplicationBuilder, WebAPIConfigurationValues<ConfigurationConstantsType, ConfigurationVariablesType>> ConfigureBuilder { get; set; } = (builder, webAPIConfigurationValues) =>
         {
             builder.Services.AddLogging(c => c.ClearProviders());
             builder.Services.AddControllers(mvcOptions =>
@@ -20,7 +22,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
                 mvcOptions.UseGeneralRoutePrefix(webAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.APIRoutePrefix);
             });
         };
-        public Action<WebApplication, WebAPIConfigurationValues> ConfigureApp { get; set; } = (app, webAPIConfigurationValues) =>
+        public Action<WebApplication, WebAPIConfigurationValues<ConfigurationConstantsType, ConfigurationVariablesType>> ConfigureApp { get; set; } = (app, webAPIConfigurationValues) =>
         {
             if (webAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is Productive)
             {

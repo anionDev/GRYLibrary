@@ -2673,12 +2673,9 @@ namespace GRYLibrary.Core.Miscellaneous
             return new NullReferenceException($"Parameter {parameterName} is null");
         }
 
-        /// <summary>
-        /// This function loads a configuration from disk if possible and if not then the initial configuration will be saved to disk and returned.
-        /// </summary>
-        public static T CreateOrLoadLoadJSONConfigurationFile<T>(string configurationFile, T initialValue) where T : new()
+        public static T CreateOrLoadLoadJSONConfigurationFile<T, TBase>(string configurationFile, T initialValue) where T : TBase, new()
         {
-            return CreateOrLoadLoadConfigurationFile<T>(configurationFile, initialValue,
+            return CreateOrLoadLoadConfigurationFile<T, TBase>(configurationFile, initialValue,
                 (configurationFile, initialValue) =>
                 {
                     dynamic expando = new ExpandoObject();
@@ -2691,9 +2688,9 @@ namespace GRYLibrary.Core.Miscellaneous
                     return configurationRoot.GetRequiredSection(typeof(T).Name).Get<T>();
                 });
         }
-        public static T CreateOrLoadLoadXMLConfigurationFile<T>(string configurationFile, T initialValue) where T : new()
+        public static T CreateOrLoadLoadXMLConfigurationFile<T, TBase>(string configurationFile, T initialValue) where T : TBase, new()
         {
-            return CreateOrLoadLoadConfigurationFile<T>(configurationFile, initialValue,
+            return CreateOrLoadLoadConfigurationFile<T, TBase>(configurationFile, initialValue,
                 (configurationFile, initialValue) =>
                 {
                     var simpleObjectPersistence = new SimpleObjectPersistence<T>
@@ -2712,7 +2709,10 @@ namespace GRYLibrary.Core.Miscellaneous
                     return simpleObjectPersistence.Object;
                 });
         }
-        public static T CreateOrLoadLoadConfigurationFile<T>(string configurationFile, T initialValue, Action<string, T> createInitialFile, Func<string, T> loadExistingFile) where T : new()
+        /// <summary>
+        /// This function loads a configuration from disk if possible and if not then the initial configuration will be saved to disk and returned.
+        /// </summary>
+        public static T CreateOrLoadLoadConfigurationFile<T, TBase>(string configurationFile, T initialValue, Action<string, T> createInitialFile, Func<string, T> loadExistingFile) where T : TBase, new()
         {
             T configuration;
             if (File.Exists(configurationFile))

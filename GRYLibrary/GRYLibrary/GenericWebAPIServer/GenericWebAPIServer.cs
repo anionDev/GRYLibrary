@@ -17,15 +17,17 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 {
     public static class GenericWebAPIServer
     {
-        public static int DefaultWebAPIMainFunction(WebAPIConfiguration configuration)
+        public static int DefaultWebAPIMainFunction<ConfigurationConstantsType, ConfigurationVariablesType>(WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType> configuration)
+            where ConfigurationConstantsType : IWebAPIConfigurationConstants
+            where ConfigurationVariablesType : IWebAPIConfigurationVariables, new()
         {
             IGeneralLogger logger = null;
             int exitCode = 1;
             try
             {
                 ExecutionMode executionMode = configuration.WebAPIConfigurationValues.ExecutionMode;
-                configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables = executionMode.Accept(new GetWebAPIConfigurationVariablesVisitor(configuration));
-                logger = executionMode.Accept(new GetLoggerVisitor(configuration));
+                configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables = executionMode.Accept(new GetWebAPIConfigurationVariablesVisitor<ConfigurationConstantsType, ConfigurationVariablesType>(configuration));
+                logger = executionMode.Accept(new GetLoggerVisitor<ConfigurationConstantsType, ConfigurationVariablesType>(configuration));
                 configuration.WebAPIConfigurationValues.Logger = logger;
                 IGeneralLogger.Log($"Start {configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", LogLevel.Information, logger);
                 try
@@ -70,7 +72,9 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             return RunProgram.Instance;
         }
 
-        public static void RunAPIServer(WebAPIConfiguration configuration)
+        public static void RunAPIServer<ConfigurationConstantsType, ConfigurationVariablesType>(WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType> configuration)
+            where ConfigurationConstantsType : IWebAPIConfigurationConstants
+            where ConfigurationVariablesType : IWebAPIConfigurationVariables
         {
             WebApplicationBuilder builder = WebApplication.CreateBuilder(new WebApplicationOptions
             {
@@ -143,10 +147,12 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             IGeneralLogger.Log($"Start WebAPI-server", LogLevel.Information, configuration.WebAPIConfigurationValues.Logger);
             app.Run();
         }
-        private class GetLoggerVisitor : IExecutionModeVisitor<IGeneralLogger>
+        private class GetLoggerVisitor<ConfigurationConstantsType, ConfigurationVariablesType> : IExecutionModeVisitor<IGeneralLogger>
+        where ConfigurationConstantsType : IWebAPIConfigurationConstants
+        where ConfigurationVariablesType : IWebAPIConfigurationVariables
         {
-            private readonly WebAPIConfiguration _WebAPIConfiguration;
-            public GetLoggerVisitor(WebAPIConfiguration webAPIConfiguration)
+            private readonly WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType> _WebAPIConfiguration;
+            public GetLoggerVisitor(WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType> webAPIConfiguration)
             {
                 this._WebAPIConfiguration = webAPIConfiguration;
             }
@@ -163,23 +169,25 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         /// <summary>
         /// This visitor loads a configuration from disk if possible and if not then the initial configuration will be saved to disk and returned.
         /// </summary>
-        private class GetWebAPIConfigurationVariablesVisitor : IExecutionModeVisitor<WebAPIConfigurationVariables>
+        private class GetWebAPIConfigurationVariablesVisitor<ConfigurationConstantsType, ConfigurationVariablesType> : IExecutionModeVisitor<ConfigurationVariablesType>
+            where ConfigurationConstantsType : IWebAPIConfigurationConstants
+            where ConfigurationVariablesType : IWebAPIConfigurationVariables, new()
         {
-            private readonly WebAPIConfiguration _WebAPIConfiguration;
+            private readonly WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType> _WebAPIConfiguration;
 
-            public GetWebAPIConfigurationVariablesVisitor(WebAPIConfiguration webAPIConfiguration)
+            public GetWebAPIConfigurationVariablesVisitor(WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType> webAPIConfiguration)
             {
                 this._WebAPIConfiguration = webAPIConfiguration;
             }
 
-            public WebAPIConfigurationVariables Handle(Analysis analysis)
+            public ConfigurationVariablesType Handle(Analysis analysis)
             {
                 return _WebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables;
             }
 
-            public WebAPIConfigurationVariables Handle(RunProgram runProgram)
+            public ConfigurationVariablesType Handle(RunProgram runProgram)
             {
-                return Miscellaneous.Utilities.CreateOrLoadLoadJSONConfigurationFile(_WebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.ConfigurationFile, _WebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables);
+                return Miscellaneous.Utilities.CreateOrLoadLoadJSONConfigurationFile<ConfigurationVariablesType, IWebAPIConfigurationVariables>(_WebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.ConfigurationFile, _WebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables);
             }
         }
         public static string GetBaseFolder(ConcreteEnvironments.GRYEnvironment environment, string programFolder)

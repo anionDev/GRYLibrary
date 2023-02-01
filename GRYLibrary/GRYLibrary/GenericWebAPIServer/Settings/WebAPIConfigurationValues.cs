@@ -1,9 +1,12 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.ExecutionModes;
 using GRYLibrary.Core.GenericWebAPIServer.Services;
+using System;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Settings
 {
-    public class WebAPIConfigurationValues
+    public class WebAPIConfigurationValues<ConfigurationConstantsType, ConfigurationVariablesType>
+        where ConfigurationConstantsType : IWebAPIConfigurationConstants
+        where ConfigurationVariablesType : IWebAPIConfigurationVariables
     {
         internal IGeneralLogger Logger;
         public IBlacklistProvider BlackListProvider { get; set; } = new BlacklistProvider();
@@ -12,9 +15,10 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public IExceptionManagerSettings ExceptionManagerSettings { get; set; } = new ExceptionManagerSettings();
         public IRequestCounterSettings RequestCounterSettings { get; set; } = new RequestCounterSettings();
         public IWebApplicationFirewallSettings WebApplicationFirewallSettings { get; set; } = new WebApplicationFirewallSettings();
-        public WebAPIConfigurationConstants WebAPIConfigurationConstants { get; set; }
-        public WebAPIConfigurationVariables WebAPIConfigurationVariables { get; set; }
+        public ConfigurationConstantsType WebAPIConfigurationConstants { get; set; }
+        public ConfigurationVariablesType WebAPIConfigurationVariables { get; set; }
         public ExecutionMode ExecutionMode { get; set; } = GenericWebAPIServer.GetExecutionMode();
         public bool RethrowInitializationExceptions { get; set; } = false;
+        public string[] CommandlineArguments { get; set; } = Array.Empty<string>();
     }
 }

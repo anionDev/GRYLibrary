@@ -15,7 +15,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Services
             var initialConfiguration = new GRYLogConfiguration();
             string logFile = Path.Combine(logFolder, $"{appName}.log");
             initialConfiguration.ResetToDefaultValues(logFile);
-            logObject.Configuration = Miscellaneous.Utilities.CreateOrLoadLoadXMLConfigurationFile("LogSettings.xml", initialConfiguration);
+            logObject.Configuration = Miscellaneous.Utilities.CreateOrLoadLoadXMLConfigurationFile<GRYLogConfiguration, IGRYLogConfiguration>("LogSettings.xml", initialConfiguration);
             return new GeneralLogger()
             {
                 AddLogEntry = (logEntry) =>
@@ -26,7 +26,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Services
         }
         public static GeneralLogger NoLog()
         {
-           return new GeneralLogger() { AddLogEntry = (logItem) => { } };
+            return new GeneralLogger() { AddLogEntry = (logItem) => { } };
         }
     }
 }

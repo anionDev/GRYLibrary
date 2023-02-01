@@ -6,14 +6,14 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
 {
     public interface IWebAPIConfigurationConstants
     {
-        public ConcreteEnvironments.GRYEnvironment TargetEnvironmentType { get; }
+        public GRYEnvironment TargetEnvironmentType { get; }
         public string AppName { get; }
         public string AppVersion { get; }
         public string ConfigurationFile { get; }
     }
     public class WebAPIConfigurationConstants : IWebAPIConfigurationConstants
     {
-        public ConcreteEnvironments.GRYEnvironment TargetEnvironmentType { get; private set; }
+        public GRYEnvironment TargetEnvironmentType { get; private set; }
         public string AppName { get; private set; }
         public string AppVersion { get; private set; }
         public string ConfigurationFile { get; private set; }
