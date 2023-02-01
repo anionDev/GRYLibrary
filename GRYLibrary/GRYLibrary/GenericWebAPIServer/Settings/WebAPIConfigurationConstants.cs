@@ -1,4 +1,5 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
+using GRYLibrary.Core.GenericWebAPIServer.ExecutionModes;
 using System;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Settings
@@ -15,7 +16,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public ConcreteEnvironments.Environment TargetEnvironmentType { get; private set; }
         public string AppName { get; private set; }
         public string AppVersion { get; private set; }
-        public string ConfigurationFile { get; private set; } 
+        public string ConfigurationFile { get; private set; }
         public WebAPIConfigurationConstants(ConcreteEnvironments.Environment targetEnvironmentType, string appName, string appVersion, string configurationFile)
         {
             this.TargetEnvironmentType = targetEnvironmentType;

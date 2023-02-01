@@ -19,11 +19,12 @@ namespace GRYLibrary.Core.GenericWebAPIServer
     {
         public static int DefaultWebAPIMainFunction(WebAPIConfiguration initialionWebAPIConfiguration)
         {
+            IGeneralLogger logger = null;
+            int exitCode = 1;
             try
             {
-                int exitCode;
-                ExecutionMode executionMode = GetExecutionMode();
-                IGeneralLogger logger = executionMode.Accept(new GetLoggerVisitor(initialionWebAPIConfiguration));
+                ExecutionMode executionMode = initialionWebAPIConfiguration.WebAPIConfigurationValues.ExecutionMode;
+                logger = executionMode.Accept(new GetLoggerVisitor(initialionWebAPIConfiguration));
                 WebAPIConfigurationVariables webAPIConfigurationVariables = executionMode.Accept(new GetWebAPIConfigurationVariablesVisitor(initialionWebAPIConfiguration));
                 initialionWebAPIConfiguration.WebAPIConfigurationValues.Logger = logger;
                 var webAPIConfiguration = new WebAPIConfiguration()
@@ -46,21 +47,32 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 catch (Exception exception)
                 {
                     IGeneralLogger.LogException(exception, $"Fatal error in {initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", initialionWebAPIConfiguration.WebAPIConfigurationValues.Logger);
-                    exitCode = 1;
+                    exitCode = 2;
                 }
                 IGeneralLogger.Log($"Finished {initialionWebAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", LogLevel.Information, initialionWebAPIConfiguration.WebAPIConfigurationValues.Logger);
-                return exitCode;
             }
             catch (Exception exception)
             {
-                Console.WriteLine("Fatal-exception");
-                Console.WriteLine(exception.Message);
-                Console.WriteLine(exception.StackTrace);
-                throw;
+                string message = "Initialization-exception";
+                if (logger == null)
+                {
+                    Console.WriteLine(message);
+                    Console.WriteLine(exception.Message);
+                    Console.WriteLine(exception.StackTrace);
+                }
+                else
+                {
+                    logger.AddLogEntry(new Log.LogItem(message, exception));
+                }
+                if (initialionWebAPIConfiguration.WebAPIConfigurationValues.RethrowInitializationExceptions)
+                {
+                    throw;
+                }
             }
+            return exitCode;
         }
 
-        private static ExecutionMode GetExecutionMode()
+        public static ExecutionMode GetExecutionMode()
         {
             if (Assembly.GetEntryAssembly().GetName().Name == "dotnet-swagger")
             {

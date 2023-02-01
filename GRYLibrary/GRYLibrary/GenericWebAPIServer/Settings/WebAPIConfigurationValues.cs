@@ -1,4 +1,5 @@
-﻿using GRYLibrary.Core.GenericWebAPIServer.Services;
+﻿using GRYLibrary.Core.GenericWebAPIServer.ExecutionModes;
+using GRYLibrary.Core.GenericWebAPIServer.Services;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Settings
 {
@@ -13,5 +14,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public IWebApplicationFirewallSettings WebApplicationFirewallSettings { get; set; } = new WebApplicationFirewallSettings();
         public WebAPIConfigurationConstants WebAPIConfigurationConstants { get; set; }
         public WebAPIConfigurationVariables WebAPIConfigurationVariables { get; set; }
+        public ExecutionMode ExecutionMode { get; set; } = GenericWebAPIServer.GetExecutionMode();
+        public bool RethrowInitializationExceptions { get; set; } = false;
     }
 }
