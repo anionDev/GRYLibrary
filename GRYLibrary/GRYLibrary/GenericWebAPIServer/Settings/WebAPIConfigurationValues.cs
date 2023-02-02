@@ -1,5 +1,6 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.ExecutionModes;
 using GRYLibrary.Core.GenericWebAPIServer.Services;
+using GRYLibrary.Core.Log;
 using System;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Settings

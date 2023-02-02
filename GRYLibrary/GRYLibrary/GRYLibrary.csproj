@@ -37,7 +37,7 @@
 		<ErrorReport>prompt</ErrorReport>
 		<WarningLevel>4</WarningLevel>
 		<Prefer32Bit>false</Prefer32Bit>
-		<NoWarn>1701;1702;CA1822;CS1591;CS1573;IDE0054;IDE0074</NoWarn>
+		<NoWarn>1701;1702;CA1822;CS1591;CS1573;IDE0054;IDE0074:IDE0090</NoWarn>
 		<DocumentationFile>bin\Development\GRYLibrary.xml</DocumentationFile>
 		<GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
 		<WarningsAsErrors>NU1605</WarningsAsErrors>
@@ -52,7 +52,7 @@
 		<ErrorReport>none</ErrorReport>
 		<WarningLevel>4</WarningLevel>
 		<Prefer32Bit>false</Prefer32Bit>
-		<NoWarn>1701;1702;CA1822;CS1591;CS1573;IDE0054;IDE0074</NoWarn>
+		<NoWarn>1701;1702;CA1822;CS1591;CS1573;IDE0054;IDE0074:IDE0090</NoWarn>
 		<DocumentationFile>bin\QualityCheck\GRYLibrary.xml</DocumentationFile>
 		<GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
 		<WarningsAsErrors>NU1605</WarningsAsErrors>
@@ -67,7 +67,7 @@
 		<ErrorReport>none</ErrorReport>
 		<WarningLevel>4</WarningLevel>
 		<Prefer32Bit>false</Prefer32Bit>
-		<NoWarn>1701;1702;CA1822;CS1591;CS1573;IDE0054;IDE0074</NoWarn>
+		<NoWarn>1701;1702;CA1822;CS1591;CS1573;IDE0054;IDE0074:IDE0090</NoWarn>
 		<DocumentationFile></DocumentationFile>
 		<GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
 		<WarningsAsErrors>NU1605</WarningsAsErrors>

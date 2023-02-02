@@ -48,48 +48,18 @@ namespace GRYLibrary.Core.Log
             {
                 this._ConsoleDefaultColor = System.Console.ForegroundColor;
                 this.Configuration = configuration;
-                this.Configuration.GetLogTarget<LogFile>().Enabled = !string.IsNullOrWhiteSpace(this.Configuration.GetLogFile());
-                if (this.Configuration.ReloadConfigurationWhenConfigurationFileWillBeChanged && File.Exists(this.Configuration.ConfigurationFile))
-                {
-                    this.StartFileWatcherForConfigurationFile(this.Configuration.ConfigurationFile);
-                }
                 this._Initialized = true;
             }
         }
         public static GRYLog Create()
         {
-            return Create(null);
+            return Create(new GRYLogConfiguration());
         }
         public static GRYLog Create(string logFile)
         {
-            GRYLogConfiguration configuration = new();
-            configuration.ResetToDefaultValues(logFile);
-            return new GRYLog(configuration);
+            return Create(GRYLogConfiguration.GetCommonConfiguration(logFile, false));
         }
-        public static GRYLog GetOrCreateAndGet(string configurationFile, string logFile = null)
-        {
-            GRYLogConfiguration configuration;
-            if (File.Exists(configurationFile))
-            {
-                configuration = GRYLogConfiguration.LoadConfiguration(configurationFile);
-            }
-            else
-            {
-                configuration = new();
-                configuration.ResetToDefaultValues();
-                configuration.ConfigurationFile = configurationFile;
-                configuration.ReloadConfigurationWhenConfigurationFileWillBeChanged = true;
-            }
-            configuration.SetLogFile(logFile);
-            configuration.GetLogTarget<LogFile>().Enabled = logFile != null;
-            GRYLogConfiguration.SaveConfiguration(configurationFile, configuration);
-            return new GRYLog(configuration);
-        }
-        public static GRYLog CreateByConfigurationFile(string configurationFile)
-        {
-            return new GRYLog(GRYLogConfiguration.LoadConfiguration(configurationFile));
-        }
-        public static GRYLog CreateByConfiguration(GRYLogConfiguration configuration)
+        public static GRYLog Create(GRYLogConfiguration configuration)
         {
             return new GRYLog(configuration);
         }
@@ -109,34 +79,6 @@ namespace GRYLibrary.Core.Log
                 return false;
             }
             return true;
-        }
-        private void StartFileWatcherForConfigurationFile(string configurationFile)
-        {
-            configurationFile = Utilities.ResolveToFullPath(configurationFile);
-            this._Watcher = new FileSystemWatcher
-            {
-                Path = Path.GetDirectoryName(configurationFile),
-                Filter = Path.GetFileName(configurationFile),
-                NotifyFilter = NotifyFilters.LastWrite,
-            };
-            this._Watcher.Changed += new FileSystemEventHandler((object sender, FileSystemEventArgs eventArgs) =>
-            {
-                try
-                {
-                    this._Watcher.EnableRaisingEvents = false;
-                    System.Threading.Thread.Sleep(200);
-                    this.Configuration = GRYLogConfiguration.LoadConfiguration(configurationFile);
-                }
-                catch (Exception exception)
-                {
-                    this.Log($"Could not reload Configuration of {nameof(GRYLog)} stored in {configurationFile}", LogLevel.Error, exception, 0x78200001.ToString());
-                }
-                finally
-                {
-                    this._Watcher.EnableRaisingEvents = true;
-                }
-            });
-            this._Watcher.EnableRaisingEvents = true;
         }
         /// <remarks>
         /// Will only be used if <see cref="GRYLogConfiguration.StoreProcessedLogItemsInternally"/> is set to true.ls -la

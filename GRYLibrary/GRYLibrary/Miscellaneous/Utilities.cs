@@ -2673,9 +2673,9 @@ namespace GRYLibrary.Core.Miscellaneous
             return new NullReferenceException($"Parameter {parameterName} is null");
         }
 
-        public static T CreateOrLoadLoadJSONConfigurationFile<T, TBase>(string configurationFile, T initialValue) where T : TBase, new()
+        public static T CreateOrLoadJSONConfigurationFile<T, TBase>(string configurationFile, T initialValue) where T : TBase, new()
         {
-            return CreateOrLoadLoadConfigurationFile<T, TBase>(configurationFile, initialValue,
+            return CreateOrLoadConfigurationFile<T, TBase>(configurationFile, initialValue,
                 (configurationFile, initialValue) =>
                 {
                     dynamic expando = new ExpandoObject();
@@ -2688,9 +2688,9 @@ namespace GRYLibrary.Core.Miscellaneous
                     return configurationRoot.GetRequiredSection(typeof(T).Name).Get<T>();
                 });
         }
-        public static T CreateOrLoadLoadXMLConfigurationFile<T, TBase>(string configurationFile, T initialValue) where T : TBase, new()
+        public static T CreateOrLoadXMLConfigurationFile<T, TBase>(string configurationFile, T initialValue) where T : TBase, new()
         {
-            return CreateOrLoadLoadConfigurationFile<T, TBase>(configurationFile, initialValue,
+            return CreateOrLoadConfigurationFile<T, TBase>(configurationFile, initialValue,
                 (configurationFile, initialValue) =>
                 {
                     var simpleObjectPersistence = new SimpleObjectPersistence<T>
@@ -2712,7 +2712,7 @@ namespace GRYLibrary.Core.Miscellaneous
         /// <summary>
         /// This function loads a configuration from disk if possible and if not then the initial configuration will be saved to disk and returned.
         /// </summary>
-        public static T CreateOrLoadLoadConfigurationFile<T, TBase>(string configurationFile, T initialValue, Action<string, T> createInitialFile, Func<string, T> loadExistingFile) where T : TBase, new()
+        public static T CreateOrLoadConfigurationFile<T, TBase>(string configurationFile, T initialValue, Action<string, T> createInitialFile, Func<string, T> loadExistingFile) where T : TBase, new()
         {
             T configuration;
             if (File.Exists(configurationFile))

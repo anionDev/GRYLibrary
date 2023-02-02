@@ -130,7 +130,6 @@ namespace GRYLibrary.Core.ExecutePrograms
             if (this.LogObject == default)
             {
                 this.LogObject = GRYLog.Create();
-                this.LogObject.Configuration.ResetToDefaultValues();
                 if (this.Configuration.Verbosity == Verbosity.Verbose)
                 {
                     foreach (GRYLogTarget logtarget in this.LogObject.Configuration.LogTargets)
@@ -420,14 +419,8 @@ namespace GRYLibrary.Core.ExecutePrograms
         }
         public void Dispose()
         {
-            if (this._SubNamespace != null)
-            {
-                this._SubNamespace.Dispose();
-            }
-            if (this._Process != null)
-            {
-                this._Process.Dispose();
-            }
+            this._SubNamespace?.Dispose();
+            this._Process?.Dispose();
         }
 
         private void WaitForProcessEnd(Process process, Stopwatch stopwatch)

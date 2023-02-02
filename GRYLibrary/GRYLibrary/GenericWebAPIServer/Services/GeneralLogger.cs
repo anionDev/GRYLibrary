@@ -1,5 +1,7 @@
 ﻿using GRYLibrary.Core.Log;
+using GRYLibrary.Core.Log.ConcreteLogTargets;
 using System;
+using System.Dynamic;
 using System.IO;
 using System.Reflection;
 
@@ -8,14 +10,9 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Services
     public class GeneralLogger : IGeneralLogger
     {
         public Action<LogItem> AddLogEntry { get; set; }
-        public static GeneralLogger Create(string appName, string logFolder)
+        public static GeneralLogger Create(GRYLogConfiguration configuration)
         {
-            Miscellaneous.Utilities.EnsureDirectoryExists(logFolder);
-            var logObject = GRYLog.Create();
-            var initialConfiguration = new GRYLogConfiguration();
-            string logFile = Path.Combine(logFolder, $"{appName}.log");
-            initialConfiguration.ResetToDefaultValues(logFile);
-            logObject.Configuration = Miscellaneous.Utilities.CreateOrLoadLoadXMLConfigurationFile<GRYLogConfiguration, IGRYLogConfiguration>("LogSettings.xml", initialConfiguration);
+            var logObject =  GRYLog.Create(configuration);
             return new GeneralLogger()
             {
                 AddLogEntry = (logEntry) =>
@@ -24,6 +21,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Services
                 }
             };
         }
+
         public static GeneralLogger NoLog()
         {
             return new GeneralLogger() { AddLogEntry = (logItem) => { } };
