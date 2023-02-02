@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -36,14 +37,21 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 logger = executionMode.Accept(new GetLoggerVisitor<ConfigurationConstantsType, ConfigurationVariablesType>(configuration));
                 configuration.WebAPIConfigurationValues.Logger = logger;
                 IGeneralLogger.Log($"Start {configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", LogLevel.Information, logger);
-                var appAndLink = CreateAPIServer(configuration);
-                var app = appAndLink.Item1;
-                var link = appAndLink.Item2;
+                var appAndUrls = CreateAPIServer(configuration);
+                var app = appAndUrls.Item1;
+                var urls = appAndUrls.Item2;
                 try
                 {
                     IGeneralLogger.Log($"Run WebAPI-server", LogLevel.Debug, configuration.WebAPIConfigurationValues.Logger);
+                    if (0 < urls.Count)
+                    {
+                        IGeneralLogger.Log($"API is now available under the following URLs:", LogLevel.Debug, configuration.WebAPIConfigurationValues.Logger);
+                        foreach (var url in urls)
+                        {
+                            IGeneralLogger.Log(url, LogLevel.Debug, configuration.WebAPIConfigurationValues.Logger);
+                        }
+                    }
                     app.Run();
-                    IGeneralLogger.Log($"API is now under the URL \"{link}\".", LogLevel.Debug, configuration.WebAPIConfigurationValues.Logger);
                     exitCode = 0;
                 }
                 catch (Exception exception)
@@ -83,7 +91,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             return RunProgram.Instance;
         }
 
-        public static (WebApplication, string) CreateAPIServer<ConfigurationConstantsType, ConfigurationVariablesType>(WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType> configuration)
+        public static (WebApplication, ISet<string>) CreateAPIServer<ConfigurationConstantsType, ConfigurationVariablesType>(WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType> configuration)
             where ConfigurationConstantsType : IWebAPIConfigurationConstants
             where ConfigurationVariablesType : IWebAPIConfigurationVariables
         {
@@ -102,7 +110,8 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             builder.Services.AddSingleton<IWebAPIConfigurationConstants>((serviceProvider) => configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants);
             builder.Services.AddSingleton<IWebAPIConfigurationVariables>((serviceProvider) => configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables);
             string protocol = null;
-            string domain = "127.0.0.1";
+            string localAddress = "127.0.0.1";
+            string domain = localAddress;
             builder.WebHost.ConfigureKestrel(options =>
             {
                 options.AddServerHeader = false;
@@ -168,9 +177,19 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             configuration.ConfigureBuilder(builder, configuration.WebAPIConfigurationValues);
             WebApplication app = builder.Build();
             configuration.ConfigureApp(app, configuration.WebAPIConfigurationValues);
-            string url = $"{protocol}://{domain}/{configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.APIRoutePrefix}";
-            return (app, url);
+            var generalUrl = GetURL(protocol, domain, configuration);
+            var localUrl = GetURL(protocol, localAddress, configuration);
+            return (app, new HashSet<string>() { generalUrl, localUrl });
         }
+
+        private static string GetURL<ConfigurationConstantsType, ConfigurationVariablesType>(string protocol, string domain, WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType> configuration)
+            where ConfigurationConstantsType : IWebAPIConfigurationConstants
+            where ConfigurationVariablesType : IWebAPIConfigurationVariables
+
+        {
+            return $"{protocol}://{domain}:{configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.Port}/{configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.APIRoutePrefix}";
+        }
+
         private class GetLoggerVisitor<ConfigurationConstantsType, ConfigurationVariablesType> : IExecutionModeVisitor<IGeneralLogger>
         where ConfigurationConstantsType : IWebAPIConfigurationConstants
         where ConfigurationVariablesType : IWebAPIConfigurationVariables

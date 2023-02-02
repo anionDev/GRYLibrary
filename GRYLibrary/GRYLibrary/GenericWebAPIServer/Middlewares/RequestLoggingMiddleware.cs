@@ -25,7 +25,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
             //this._LogAction(logObject=>logObject.Log("Some log"));
 
             // TODO log request.route, request.sourceip, response.statuscode, duration of creating response
-            _Logger.AddLogEntry(new LogItem("some message"));
+           
             return _Next(context);
         }
         public virtual bool LogFullEntry(string route, ushort responseStatusCode)
