@@ -10,12 +10,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         where ConfigurationVariablesType : IWebAPIConfigurationVariables
     {
         internal IGeneralLogger Logger;
-        public IBlacklistProvider BlackListProvider { get; set; } = new BlacklistProvider();
-        public IDDOSProtectionSettings DDOSProtectionSettings { get; set; } = new DDOSProtectionSettings();
-        public IObfuscationSettings ObfuscationSettings { get; set; } = new ObfuscationSettings();
-        public IExceptionManagerSettings ExceptionManagerSettings { get; set; } = new ExceptionManagerSettings();
-        public IRequestCounterSettings RequestCounterSettings { get; set; } = new RequestCounterSettings();
-        public IWebApplicationFirewallSettings WebApplicationFirewallSettings { get; set; } = new WebApplicationFirewallSettings();
         public ConfigurationConstantsType WebAPIConfigurationConstants { get; set; }
         public ConfigurationVariablesType WebAPIConfigurationVariables { get; set; }
         public ExecutionMode ExecutionMode { get; set; } = GenericWebAPIServer.GetExecutionMode();

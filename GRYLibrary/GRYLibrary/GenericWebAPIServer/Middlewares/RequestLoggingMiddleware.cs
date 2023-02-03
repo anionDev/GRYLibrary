@@ -14,10 +14,12 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     public class RequestLoggingMiddleware : AbstractMiddleware
     {
         private readonly IGeneralLogger _Logger;
+        private readonly IWebApplicationFirewallSettings _WebApplicationFirewallSettings;
         /// <inheritdoc/>
-        public RequestLoggingMiddleware(RequestDelegate next, IGeneralLogger logger) : base(next)
+        public RequestLoggingMiddleware(RequestDelegate next, IWebApplicationFirewallSettings webApplicationFirewallSettings, IGeneralLogger logger) : base(next)
         {
             _Logger = logger;
+            _WebApplicationFirewallSettings = webApplicationFirewallSettings;
         }
         /// <inheritdoc/>
         public override Task Invoke(HttpContext context)

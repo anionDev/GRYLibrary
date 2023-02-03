@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Services
 {
-    public class RequestCounterSettings : IRequestCounterSettings
+    public class RequestLoggingSettings : IRequestLoggingSettings
     {
         public bool Enabled { get; set; } = false;
     }
