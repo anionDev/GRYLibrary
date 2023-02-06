@@ -14,10 +14,12 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     public class RequestLoggingMiddleware : AbstractMiddleware
     {
         private readonly IGeneralLogger _Logger;
+        private readonly IWebApplicationFirewallSettings _WebApplicationFirewallSettings;
         /// <inheritdoc/>
-        public RequestLoggingMiddleware(RequestDelegate next, IGeneralLogger logger) : base(next)
+        public RequestLoggingMiddleware(RequestDelegate next, IWebApplicationFirewallSettings webApplicationFirewallSettings, IGeneralLogger logger) : base(next)
         {
             _Logger = logger;
+            _WebApplicationFirewallSettings = webApplicationFirewallSettings;
         }
         /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
@@ -25,7 +27,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
             //this._LogAction(logObject=>logObject.Log("Some log"));
 
             // TODO log request.route, request.sourceip, response.statuscode, duration of creating response
-            _Logger.AddLogEntry(new LogItem("some message"));
+           
             return _Next(context);
         }
         public virtual bool LogFullEntry(string route, ushort responseStatusCode)

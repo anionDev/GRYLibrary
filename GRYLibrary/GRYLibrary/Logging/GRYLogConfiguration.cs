@@ -13,15 +13,9 @@ namespace GRYLibrary.Core.Log
 {
     public interface IGRYLogConfiguration : IDisposable
     {
-        /// <summary>
-        /// If this value is false then changing this value in the configuration-file has no effect.
-        /// </summary>
-        [Obsolete]
-        public bool ReloadConfigurationWhenConfigurationFileWillBeChanged { get; set; }
         public List<GRYLogTarget> LogTargets { get; set; }
         public bool WriteLogEntriesAsynchronous { get; set; }
         public bool Enabled { get; set; }
-        public string ConfigurationFile { get; set; }
         public bool PrintEmptyLines { get; set; }
 
         /// <summary>
@@ -35,22 +29,30 @@ namespace GRYLibrary.Core.Log
         public bool LogEveryLineOfLogEntryInNewLine { get; set; }
         public bool StoreProcessedLogItemsInternally { get; set; }
     }
-    public sealed class GRYLogConfiguration : IGRYLogConfiguration
+    public class GRYLogConfiguration : IGRYLogConfiguration
     {
-        public bool ReloadConfigurationWhenConfigurationFileWillBeChanged { get; set; }
-        public List<GRYLogTarget> LogTargets { get; set; }
-        public bool WriteLogEntriesAsynchronous { get; set; }
-        public bool Enabled { get; set; }
-        public string ConfigurationFile { get; set; }
-        public bool PrintEmptyLines { get; set; }
-        public bool PrintErrorsAsInformation { get; set; }
-        public string Name { get; set; }
-        public string DateFormat { get; set; }
-        public List<SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>> LoggedMessageTypesConfiguration { get; set; }
-        public bool ConvertTimeForLogentriesToUTCFormat { get; set; }
-        public bool LogEveryLineOfLogEntryInNewLine { get; set; }
-        public bool StoreProcessedLogItemsInternally { get; set; }
-
+        public List<GRYLogTarget> LogTargets { get; set; } = new List<GRYLogTarget> {
+            new Console() { Enabled = true, Format = GRYLogLogFormat.OnlyMessage },
+            new LogFile() { Enabled = false, Format = GRYLogLogFormat.GRYLogFormat }
+        };
+        public bool WriteLogEntriesAsynchronous { get; set; } = false;
+        public bool Enabled { get; set; } = true;
+        public bool PrintEmptyLines { get; set; } = false;
+        public bool PrintErrorsAsInformation { get; set; } = false;
+        public string Name { get; set; } = string.Empty;
+        public string DateFormat { get; set; } = "yyyy-MM-dd HH:mm:ss";
+        public List<SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>> LoggedMessageTypesConfiguration { get; set; } = new List<SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>>
+            {
+                new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Trace, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Trace), ConsoleColor = ConsoleColor.Gray }),
+                new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Debug, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Debug), ConsoleColor = ConsoleColor.Cyan }),
+                new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Information, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Information), ConsoleColor = ConsoleColor.DarkGreen }),
+                new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Warning, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Warning), ConsoleColor = ConsoleColor.DarkYellow }),
+                new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Error, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Error), ConsoleColor = ConsoleColor.Red }),
+                new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Critical, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Critical), ConsoleColor = ConsoleColor.DarkRed })
+            };
+        public bool ConvertTimeForLogentriesToUTCFormat { get; set; } = false;
+        public bool LogEveryLineOfLogEntryInNewLine { get; set; } = false;
+        public bool StoreProcessedLogItemsInternally { get; set; } = false;
         public GRYLogConfiguration() { }
         public LoggedMessageTypeConfiguration GetLoggedMessageTypesConfigurationByLogLevel(LogLevel logLevel)
         {
@@ -64,67 +66,8 @@ namespace GRYLibrary.Core.Log
             throw new KeyNotFoundException();
         }
 
-        public void SetLogFile(string file)
-        {
-            this.GetLogTarget<LogFile>().File = file;
-        }
-        public string GetLogFile()
-        {
-            return this.GetLogTarget<LogFile>().File;
-        }
-        public void SetFormat(GRYLogLogFormat format)
-        {
-            foreach (GRYLogTarget target in this.LogTargets)
-            {
-                target.Format = format;
-            }
-        }
-
-        public void ResetToDefaultValues()
-        {
-            this.ResetToDefaultValues(null);
-        }
-        public void ResetToDefaultValues(string logFile)
-        {
-            this.ReloadConfigurationWhenConfigurationFileWillBeChanged = true;
-            this.LogTargets = new List<GRYLogTarget>();
-            this.WriteLogEntriesAsynchronous = false;
-            this.Enabled = true;
-            this.ConfigurationFile = string.Empty;
-            this.PrintEmptyLines = false;
-            this.PrintErrorsAsInformation = false;
-            this.DateFormat = "yyyy-MM-dd HH:mm:ss";
-            this.ConvertTimeForLogentriesToUTCFormat = false;
-            this.LogEveryLineOfLogEntryInNewLine = false;
-            this.Name = string.Empty;
-            this.StoreProcessedLogItemsInternally = false;
-            this.LoggedMessageTypesConfiguration = new List<SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>>();
-            this.LoggedMessageTypesConfiguration = new List<SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>>
-            {
-                new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Trace, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Trace), ConsoleColor =  ConsoleColor.Gray }),
-                new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Debug, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Debug), ConsoleColor = ConsoleColor.Cyan }),
-                new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Information, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Information), ConsoleColor = ConsoleColor.DarkGreen }),
-                new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Warning, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Warning), ConsoleColor = ConsoleColor.DarkYellow }),
-                new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Error, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Error), ConsoleColor = ConsoleColor.Red }),
-                new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Critical, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Critical), ConsoleColor = ConsoleColor.DarkRed })
-            };
-            if (!string.IsNullOrWhiteSpace(logFile))
-            {
-                string logFolder = Path.GetDirectoryName(logFile);
-                if (!string.IsNullOrWhiteSpace(logFolder))
-                {
-                    Utilities.EnsureDirectoryExists(logFolder);
-                }
-            }
-            this.LogTargets = new List<GRYLogTarget>
-            {
-                new Console() { Enabled = true, Format = GRYLogLogFormat.OnlyMessage },
-                new LogFile() { Enabled = !string.IsNullOrWhiteSpace(logFile), Format = GRYLogLogFormat.GRYLogFormat, File = logFile }
-            };
-        }
         public void AddSystemLog()
         {
-
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 this.LogTargets.Add(new WindowsEventLog());
@@ -145,15 +88,6 @@ namespace GRYLibrary.Core.Log
             }
             throw new KeyNotFoundException($"No {typeof(Target).Name}-target available");
         }
-        public static void SaveConfiguration(string configurationFile, GRYLogConfiguration configuration)
-        {
-            Utilities.PersistToDisk(configuration, configurationFile).SaveObjectToFile();
-        }
-        public static GRYLogConfiguration LoadConfiguration(string configurationFile)
-        {
-            return Utilities.LoadFromDisk<GRYLogConfiguration>(configurationFile).Object;
-        }
-
         public void SetEnabledOfAllLogTargets(bool newEnabledValue)
         {
             foreach (GRYLogTarget item in this.LogTargets)
@@ -167,6 +101,24 @@ namespace GRYLibrary.Core.Log
             {
                 target.Dispose();
             }
+        }
+        public static GRYLogConfiguration GetCommonConfiguration(string logFile = null, bool verbose = false)
+        {
+            GRYLogConfiguration result = new GRYLogConfiguration();
+            if (logFile != null)
+            {
+                var filelog = result.GetLogTarget<LogFile>();
+                filelog.File = logFile;
+                filelog.Enabled = true;
+            }
+            if (verbose)
+            {
+                foreach (var logLevel in result.LogTargets)
+                {
+                    logLevel.LogLevels.Add(LogLevel.Debug);
+                }
+            }
+            return result;
         }
         #region Overhead
         public override bool Equals(object @object)
@@ -187,8 +139,7 @@ namespace GRYLibrary.Core.Log
         {
             return new HashSet<Type>();
         }
-
-        #endregion
+                #endregion
     }
 
 }

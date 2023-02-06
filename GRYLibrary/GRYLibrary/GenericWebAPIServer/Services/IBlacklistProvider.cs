@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Services
 {
-    public interface IBlacklistProvider
+    public interface IBlacklistProvider: IMiddlewareSettings
     {
     }
 }
