@@ -8,7 +8,7 @@
     <FileVersion>0.12.31</FileVersion>
     <IsPackable>false</IsPackable>
     <PreserveCompilationContext>false</PreserveCompilationContext>
-    <Copyright>Copyright © 2022 Marius Göcke</Copyright>
+    <Copyright>Copyright © 2023 Marius Göcke</Copyright>
     <Description>GRYLibraryTests is the testproject for the GRYLibrary.</Description>
     <OutputType>Library</OutputType>
     <PackageProjectUrl>https://github.com/anionDev/GRYLibrary</PackageProjectUrl>
@@ -20,7 +20,7 @@
     <Nullable>disable</Nullable>
     <Configurations>Development;QualityCheck;Productive</Configurations>
     <IsTestProject>true</IsTestProject>
-    <LangVersion>10.0</LangVersion>
+    <LangVersion>11.0</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Development'">

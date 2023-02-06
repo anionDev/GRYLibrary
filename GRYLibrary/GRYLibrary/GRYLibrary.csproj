@@ -9,7 +9,7 @@
 		<IsPackable>false</IsPackable>
 		<PreserveCompilationContext>false</PreserveCompilationContext>
 		<GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
-		<Copyright>Copyright © 2022 Marius Göcke</Copyright>
+		<Copyright>Copyright © 2023 Marius Göcke</Copyright>
 		<Description>The GRYLibrary is a collection with some useful .NET classes and functions which are very easy (re)usable.</Description>
 		<OutputType>Library</OutputType>
 		<PackageProjectUrl>https://github.com/anionDev/GRYLibrary</PackageProjectUrl>
@@ -20,7 +20,7 @@
 		<Nullable>disable</Nullable>
 		<Configurations>Development;QualityCheck;Productive</Configurations>
 		<IsTestProject>false</IsTestProject>
-		<LangVersion>10.0</LangVersion>
+		<LangVersion>11.0</LangVersion>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<ApplicationIcon>GRYLibraryIcon.ico</ApplicationIcon>
 		<GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
