@@ -11,7 +11,6 @@
 		<GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
 		<Copyright>Copyright © 2023 Marius Göcke</Copyright>
 		<Description>GRYLibraryTests is the test-project for GRYLibrary.</Description>
-		<OutputType>Library</OutputType>
 		<PackageProjectUrl>https://github.com/anionDev/GRYLibrary</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/anionDev/GRYLibrary</RepositoryUrl>
 		<PackageLicenseFile>License.txt</PackageLicenseFile>
@@ -23,7 +22,6 @@
 		<IsTestProject>false</IsTestProject>
 		<LangVersion>11.0</LangVersion>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-		<ApplicationIcon>GRYLibraryIcon.ico</ApplicationIcon>
 		<GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<OutputPath>..\Other\Artifacts\BuildResult_DotNet_win-x64</OutputPath>
@@ -60,30 +58,28 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
-		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-		<PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
-		<PackageReference Include="System.Collections.Immutable" Version="7.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Options" Version="7.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="7.0.1" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
+		<PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
 		<PackageReference Include="NJsonSchema" Version="10.8.0" />
 		<PackageReference Include="NSwag.AspNetCore" Version="13.18.2" />
+		<PackageReference Include="System.Collections.Immutable" Version="7.0.0" />
 		<PackageReference Include="System.Reactive" Version="5.0.0" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
 	    <ProjectReference Include="..\GRYLibrary\GRYLibrary.csproj" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
-        <PackageReference Include="MSTest.TestAdapter" Version="3.0.2" />
-        <PackageReference Include="MSTest.TestFramework" Version="3.0.2" />
-        <PackageReference Include="coverlet.collector" Version="3.2.0">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="coverlet.msbuild" Version="3.2.0">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Microsoft.CodeCoverage" Version="17.4.1" />
+		<PackageReference Include="Microsoft.CodeCoverage" Version="17.4.1" />
+		<PackageReference Include="MSTest.TestAdapter" Version="3.0.2" />
+		<PackageReference Include="MSTest.TestFramework" Version="3.0.2" />
+		<PackageReference Include="coverlet.collector" Version="3.2.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="coverlet.msbuild" Version="3.2.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
   </ItemGroup>
 
   <ItemGroup>

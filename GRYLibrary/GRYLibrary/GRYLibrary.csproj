@@ -23,7 +23,6 @@
 		<IsTestProject>false</IsTestProject>
 		<LangVersion>11.0</LangVersion>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-		<ApplicationIcon>GRYLibraryIcon.ico</ApplicationIcon>
 		<GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<OutputPath>..\Other\Artifacts\BuildResult_DotNet_win-x64</OutputPath>
@@ -32,6 +31,7 @@
 		<Prefer32Bit>false</Prefer32Bit>
 		<NoWarn>1701;1702;CA1822;CS1591;CS1573;IDE0054;IDE0074;IDE0090</NoWarn>
 		<WarningsAsErrors>NU1605</WarningsAsErrors>
+		<ApplicationIcon>GRYLibraryIcon.ico</ApplicationIcon>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Development'">
