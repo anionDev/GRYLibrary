@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net6.0</TargetFramework>
 		<Authors>Marius Göcke</Authors>
 		<Version>0.12.33</Version>
 		<AssemblyVersion>0.12.33</AssemblyVersion>
@@ -19,7 +19,7 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Nullable>disable</Nullable>
 		<Configurations>Development;QualityCheck;Productive</Configurations>
-		<IsTestProject>false</IsTestProject>
+		<IsTestProject>true</IsTestProject>
 		<LangVersion>11.0</LangVersion>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
