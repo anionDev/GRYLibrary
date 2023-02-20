@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<Authors>Marius Göcke</Authors>
 		<Version>0.12.33</Version>
 		<AssemblyVersion>0.12.33</AssemblyVersion>
