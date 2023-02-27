@@ -13,12 +13,9 @@
 		"version": "2.0.0",
 		"tasks": [
 			{
-				"label": "GRYLibrary: Build entire codeunit",
-				"command": "SCBuildCodeunit",
-				"args": [
-					"--codeunitfolder",
-					"${workspaceFolder}/GRYLibrary"
-				],
+				"label": "Build all codeunits",
+				"command": "SCBuildCodeunits",
+				"args": [ ],
 				"type": "shell",
 			}
 		]
