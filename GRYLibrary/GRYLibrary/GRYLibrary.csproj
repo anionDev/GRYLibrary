@@ -24,7 +24,7 @@
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<!--<OutputPath>..\Other\Artifacts\BuildResult_DotNet_win-x64</OutputPath>-->
+		<OutputPath>..\Other\Artifacts\BuildResult_DotNet_win-x64</OutputPath>
 		<PlatformTarget>AnyCPU</PlatformTarget>
 		<WarningLevel>4</WarningLevel>
 		<Prefer32Bit>false</Prefer32Bit>
