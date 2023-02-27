@@ -15,7 +15,6 @@
 		<RepositoryUrl>https://github.com/anionDev/GRYLibrary</RepositoryUrl>
 		<PackageLicenseFile>License.txt</PackageLicenseFile>
 		<RootNamespace>GRYLibrary.Tests</RootNamespace>
-		<DocumentationFile>..\Other\Artifacts\MetaInformation\GRYLibrary.xml</DocumentationFile>
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Nullable>disable</Nullable>
 		<Configurations>Development;QualityCheck;Productive</Configurations>

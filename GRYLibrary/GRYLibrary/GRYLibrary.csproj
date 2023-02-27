@@ -15,7 +15,6 @@
 		<RepositoryUrl>https://github.com/anionDev/GRYLibrary</RepositoryUrl>
 		<PackageLicenseFile>License.txt</PackageLicenseFile>
 		<RootNamespace>GRYLibrary.Core</RootNamespace>
-		<DocumentationFile>..\Other\Artifacts\MetaInformation\GRYLibrary.xml</DocumentationFile>
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Nullable>disable</Nullable>
 		<Configurations>Development;QualityCheck;Productive</Configurations>
@@ -30,6 +29,7 @@
 		<Prefer32Bit>false</Prefer32Bit>
 		<NoWarn>1701;1702;CA1822;CS1591;CS1573;IDE0054;IDE0074;IDE0090</NoWarn>
 		<WarningsAsErrors>NU1605</WarningsAsErrors>
+		<DocumentationFile>..\Other\Artifacts\MetaInformation\GRYLibrary.xml</DocumentationFile>
 		<OutputType>Library</OutputType>
 		<ApplicationIcon>..\Other\Resources\Logo\GRYLibraryIcon.ico</ApplicationIcon>
 	</PropertyGroup>
