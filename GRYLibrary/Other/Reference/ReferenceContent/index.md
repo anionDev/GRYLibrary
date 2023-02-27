@@ -4,4 +4,4 @@ TODO
 
 Example picture:
 
-![Image not available](images/Example.png "Example picture")
+![Image not available](Images/Example.png "Example picture")

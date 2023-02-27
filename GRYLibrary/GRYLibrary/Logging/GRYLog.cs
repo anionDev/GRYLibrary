@@ -23,7 +23,6 @@ namespace GRYLibrary.Core.Log
         public delegate void NewLogItemEventHandler(LogItem logItem);
         public event ErrorOccurredEventHandler ErrorOccurred;
         public delegate void ErrorOccurredEventHandler(Exception exception, LogItem logItem);
-        private FileSystemWatcher _Watcher;
         private bool AnyLogTargetEnabled
         {
             get
@@ -372,10 +371,6 @@ namespace GRYLibrary.Core.Log
 
         public void Dispose()
         {
-            if (this._Watcher != null)
-            {
-                this._Watcher.Dispose();
-            }
         }
         public IDisposable UseSubNamespace(string subnamespace)
         {
