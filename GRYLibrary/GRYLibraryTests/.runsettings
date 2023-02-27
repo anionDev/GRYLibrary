@@ -20,7 +20,7 @@
         <!-- Match assembly file paths: -->
         <ModulePaths>
             <Include>
-                <ModulePath>GRYLibrary.dll$</ModulePath>
+                <ModulePath>.*\.dll$</ModulePath>
             </Include>
             <Exclude>
                 <ModulePath>.*Test.*</ModulePath>
