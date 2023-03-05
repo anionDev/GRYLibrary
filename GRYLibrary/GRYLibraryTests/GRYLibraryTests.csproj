@@ -13,7 +13,6 @@
 		<Description>GRYLibraryTests is the test-project for GRYLibrary.</Description>
 		<PackageProjectUrl>https://github.com/anionDev/GRYLibrary</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/anionDev/GRYLibrary</RepositoryUrl>
-		<PackageLicenseFile>License.txt</PackageLicenseFile>
 		<RootNamespace>GRYLibrary.Tests</RootNamespace>
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Nullable>disable</Nullable>
