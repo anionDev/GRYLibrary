@@ -1,19 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace GRYLibrary.Core.Miscellaneous.TextTransformUtilities
 {
     public static class FunctionsForCommonProjectStructure
     {
-        public static string GenerateConstants()
+        public static string GenerateConstants(string repositoryFolder, string codeUnitName, bool addDebugInformation)
         {
-            string solutionDirectory = new System.IO.DirectoryInfo(System.IO.Directory.GetCurrentDirectory()).FullName;
-            string constantsFolder = System.IO.Path.Combine(solutionDirectory, "Other", "Resources", "Constants");
+            string constantsFolder = Path.Combine(repositoryFolder, codeUnitName, "Other", "Resources", "Constants");
             List<string> contentLines = new List<string>();
-            if (System.IO.Directory.Exists(constantsFolder))
+            bool constantsFolderExists = Directory.Exists(constantsFolder);
+            var constantsfiles = new List<string>();
+            if (constantsFolderExists)
             {
-                foreach (string file in System.IO.Directory.GetFiles(constantsFolder))
+                constantsfiles = Directory.GetFiles(constantsFolder).ToList();
+                foreach (string file in constantsfiles)
                 {
                     if (file.EndsWith(".constant.xml"))
                     {
@@ -43,6 +47,17 @@ namespace GRYLibrary.Core.Miscellaneous.TextTransformUtilities
                 }
             }
             string constants = string.Join(Environment.NewLine, contentLines);
+            if (addDebugInformation)
+            {
+                string debugInformation = $"Debug-information:" +
+                    $"{nameof(repositoryFolder)}: {repositoryFolder}," +
+                    $"{nameof(codeUnitName)}: {codeUnitName},\n" +
+                    $"{nameof(constantsFolderExists)}: {constantsFolderExists},\n" +
+                    $"{nameof(constantsfiles)}: [{string.Join(", ", constantsfiles)}]," +
+                    $"{nameof(contentLines)}: [{string.Join(", ", contentLines)}]," +
+                    string.Empty;
+                constants = $"{constants}{Environment.NewLine}/*{Environment.NewLine}{debugInformation}{Environment.NewLine}*/";
+            }
             return constants;
         }
         private static IDictionary<string, string> GetConstantProperties(string file)
@@ -50,15 +65,15 @@ namespace GRYLibrary.Core.Miscellaneous.TextTransformUtilities
             //TODO validate against xsd
             IDictionary<string, string> result = new Dictionary<string, string>();
             System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
-            var folder = System.IO.Path.GetDirectoryName(file);
+            var folder = Path.GetDirectoryName(file);
             doc.Load(file);
             var nsmgr = new System.Xml.XmlNamespaceManager(doc.NameTable);
             nsmgr.AddNamespace("cps", "https://projects.aniondev.de/PublicProjects/Common/ProjectTemplates/-/tree/main/Conventions/RepositoryStructure/CommonProjectStructure");
             result["name"] = doc.DocumentElement.SelectSingleNode("/cps:constant/cps:name", nsmgr).InnerText;
             result["documentationsummary"] = doc.DocumentElement.SelectSingleNode("/cps:constant/cps:documentationsummary", nsmgr).InnerText.Replace("\r", string.Empty);
             string path = doc.DocumentElement.SelectSingleNode("/cps:constant/cps:path", nsmgr).InnerText;
-            string absolutePath = System.IO.Path.GetFullPath(new Uri(System.IO.Path.Combine(folder, path)).LocalPath);
-            result["value"] = System.IO.File.ReadAllText(absolutePath, new UTF8Encoding(false));
+            string absolutePath = Path.GetFullPath(new Uri(Path.Combine(folder, path)).LocalPath);
+            result["value"] = File.ReadAllText(absolutePath, new UTF8Encoding(false));
             return result;
         }
     }
