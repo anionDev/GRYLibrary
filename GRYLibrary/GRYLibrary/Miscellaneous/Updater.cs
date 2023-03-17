@@ -50,7 +50,7 @@ namespace GRYLibrary.Core.Miscellaneous
             Version versionOfCurrentLocation = GetVersionOfLocation(_CurrentLocation);
             bool currentVersionIsOutdated = !latestVersion.Equals(versionOfCurrentLocation);
             string locationForRestart = null;
-            foreach (var location in _Locations)
+            foreach (string location in _Locations)
             {
                 if (location != _CurrentLocation)
                 {
@@ -92,8 +92,8 @@ namespace GRYLibrary.Core.Miscellaneous
 
         private void StartLocation(string location)
         {
-            var filename = Path.GetFileName(System.Reflection.Assembly.GetEntryAssembly().Location);
-            var externalProgramExecutor = new ExternalProgramExecutor(Path.Combine(location, filename), CommandlineArgumentsForNewInstance);
+            string filename = Path.GetFileName(System.Reflection.Assembly.GetEntryAssembly().Location);
+            ExternalProgramExecutor externalProgramExecutor = new ExternalProgramExecutor(Path.Combine(location, filename), CommandlineArgumentsForNewInstance);
             externalProgramExecutor.Configuration.WaitingState = new RunAsynchronously();
             externalProgramExecutor.Run();
         }

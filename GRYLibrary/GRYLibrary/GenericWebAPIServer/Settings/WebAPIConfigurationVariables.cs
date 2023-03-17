@@ -1,6 +1,4 @@
-﻿using GRYLibrary.Core.Log;
-
-namespace GRYLibrary.Core.GenericWebAPIServer.Settings
+﻿namespace GRYLibrary.Core.GenericWebAPIServer.Settings
 {
     public interface IWebAPIConfigurationVariables
     {

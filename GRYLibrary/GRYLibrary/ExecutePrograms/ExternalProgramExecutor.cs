@@ -11,7 +11,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using GRYLibrary.Core.Miscellaneous;
-using System.Reactive.Concurrency;
 
 namespace GRYLibrary.Core.ExecutePrograms
 {
@@ -116,7 +115,7 @@ namespace GRYLibrary.Core.ExecutePrograms
         /// </exception>
         private int StartSynchronously()
         {
-            var task = StartAsynchronously();
+            Task task = StartAsynchronously();
             task.Wait();
             return ExitCode;
         }

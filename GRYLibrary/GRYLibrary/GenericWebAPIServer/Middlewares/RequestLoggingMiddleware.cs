@@ -1,9 +1,6 @@
 using GRYLibrary.Core.GenericWebAPIServer.Services;
-using GRYLibrary.Core.Log;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System;
 using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares

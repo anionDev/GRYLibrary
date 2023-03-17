@@ -27,7 +27,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
             {
                 Objects = new HashSet<FlatObject>(dictionary.Values),
             };
-            foreach (var key in dictionary.Keys)
+            foreach (object key in dictionary.Keys)
             {
                 if (key == @object)
                 {

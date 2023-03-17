@@ -1,43 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
 {
-    public class PLSHandler : IPlaylistFileHandler
+    public class PLSHandler : PlaylistFileHandler
     {
-        public Encoding Encoding { get; set; } = new UTF8Encoding(false);
-        public void AddSongsToPlaylist(string playlistFile, IEnumerable<string> newSongs, Encoding encoding)
+        public override void AddItemsToPlaylist(string playlistFile, IEnumerable<string> newItems)
         {
             throw new NotImplementedException();
         }
 
-        public void AddSongsToPlaylist(string playlistFile, IEnumerable<string> newSongs)
+        public override void CreatePlaylist(string file)
         {
             throw new NotImplementedException();
         }
 
-        public void CreatePlaylist(string file)
+        public override void DeleteItemsFromPlaylist(string playlistFile, IEnumerable<string> itemsToDelete)
         {
             throw new NotImplementedException();
         }
 
-        public void DeleteSongsFromPlaylist(string playlistFile, IEnumerable<string> songsToDelete)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<string> GetSongs(string playlistFile)
-        {
-            return this.GetSongsAndExcludedSongs(playlistFile).Item1;
-        }
-
-        public Tuple<IEnumerable<string>, IEnumerable<string>> GetSongsAndExcludedSongs(string playlistFile)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void NormalizePlaylist(string playlistFile)
+        public override (ISet<string> included, ISet<string> excluded) GetItemsAndExcludedItems(string playlistFile)
         {
             throw new NotImplementedException();
         }

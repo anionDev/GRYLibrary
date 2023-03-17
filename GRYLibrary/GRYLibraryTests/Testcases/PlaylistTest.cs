@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using GRYLibrary.Core.Playlists;
 
 namespace GRYLibrary.Tests.Testcases
 {
@@ -19,17 +20,17 @@ namespace GRYLibrary.Tests.Testcases
             List<string> currentExpectedContent = new();
             try
             {
-                CombinedPlaylistHandler handler = new();
+                PlaylistLoader handler = new();
                 handler.CreatePlaylist(playlistFile);
                 Assert.IsTrue(File.Exists(playlistFile));
                 Assert.IsTrue(currentExpectedContent.EqualsIgnoringOrder(handler.GetSongs(playlistFile).ToList()));
                 this.CreateFile(currentExpectedContent, @"a.mp3");
                 this.CreateFile(currentExpectedContent, @"b.mp3");
-                handler.AddSongsToPlaylist(playlistFile, currentExpectedContent);
+                handler.AddItemsToPlaylist(playlistFile, currentExpectedContent);
                 List<string> actualContent = handler.GetSongs(playlistFile).ToList();
                 Assert.IsTrue(currentExpectedContent.EqualsIgnoringOrder(actualContent));
 
-                handler.DeleteSongsFromPlaylist(playlistFile, currentExpectedContent);
+                handler.DeleteItemsFromPlaylist(playlistFile, currentExpectedContent);
                 currentExpectedContent.Clear();
                 actualContent = handler.GetSongs(playlistFile).ToList();
                 Assert.AreEqual(0, actualContent.Count);
@@ -38,15 +39,15 @@ namespace GRYLibrary.Tests.Testcases
                 currentExpectedContent.Add(@"\\ComputerName\SharedFolder\Resource.mp3");
                 currentExpectedContent.Add(@"X:\a\d.wma");
                 currentExpectedContent.Add(@"http://player.example.com/stream.mp3");
-                handler.AddSongsToPlaylist(playlistFile, currentExpectedContent);
+                handler.AddItemsToPlaylist(playlistFile, currentExpectedContent);
                 actualContent = handler.GetSongs(playlistFile).ToList();
                 Assert.IsTrue(currentExpectedContent.EqualsIgnoringOrder(actualContent));
 
                 currentExpectedContent.Remove(@"X:/a/d.Ogg");
-                handler.DeleteSongsFromPlaylist(playlistFile, new string[] { @"X:/a/d.Ogg" });
+                handler.DeleteItemsFromPlaylist(playlistFile, new string[] { @"X:/a/d.Ogg" });
                 Assert.IsTrue(currentExpectedContent.EqualsIgnoringOrder(handler.GetSongs(playlistFile).ToList()));
 
-                handler.DeleteSongsFromPlaylist(playlistFile, currentExpectedContent);
+                handler.DeleteItemsFromPlaylist(playlistFile, currentExpectedContent);
                 currentExpectedContent.Clear();
                 actualContent = handler.GetSongs(playlistFile).ToList();
                 Assert.AreEqual(0, actualContent.Count);
@@ -80,6 +81,7 @@ namespace GRYLibrary.Tests.Testcases
         [TestProperty(nameof(TestKind), nameof(TestKind.UnitTest))]
         public void CommonTestM3UReferencedPlaylist()
         {
+            PlaylistLoader loader = new PlaylistLoader();
             string directoryName = @"test\test";
             string m3uFile = directoryName + "\\" + "test1.m3u";
             string nameOfm3ufile2 = "test2.m3u";
@@ -92,12 +94,12 @@ namespace GRYLibrary.Tests.Testcases
                 Core.Miscellaneous.Utilities.EnsureDirectoryDoesNotExist(directoryName);
 
                 Core.Miscellaneous.Utilities.EnsureDirectoryExists(directoryName);
-                new M3UHandler().CreatePlaylist(m3uFile);
-                new CombinedPlaylistHandler().CreatePlaylist(m3uFile2);
-                new CombinedPlaylistHandler().AddSongsToPlaylist(m3uFile, new string[] { "trackA.mp3", nameOfm3ufile2 });
-                new CombinedPlaylistHandler().AddSongsToPlaylist(m3uFile2, new string[] { "trackB.mp3" });
+                loader.CreatePlaylist(m3uFile);
+                loader.CreatePlaylist(m3uFile2);
+                loader.AddItemsToPlaylist(m3uFile, new string[] { "trackA.mp3", nameOfm3ufile2 });
+                loader.AddItemsToPlaylist(m3uFile2, new string[] { "trackB.mp3" });
 
-                HashSet<string> playlistItems = new(CombinedPlaylistHandler.DefaultInstance.GetSongs(m3uFile));
+                HashSet<string> playlistItems = new(loader.GetSongs(m3uFile));
                 Assert.IsTrue(playlistItems.SetEquals(new string[] { Path.Combine(currentDirectory, directoryName + @"\trackA.mp3"), Path.Combine(currentDirectory, directoryName + @"\trackB.mp3") }));
             }
             finally
