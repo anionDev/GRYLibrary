@@ -28,6 +28,7 @@
 		<Prefer32Bit>false</Prefer32Bit>
 		<NoWarn>1701;1702;CA1822;CS1591;CS1573;IDE0054;IDE0074;IDE0090</NoWarn>
 		<WarningsAsErrors>NU1605</WarningsAsErrors>
+		<OutputType>Library</OutputType>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Development'">

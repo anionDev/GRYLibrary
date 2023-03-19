@@ -1,6 +1,9 @@
-﻿using System;
+﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,5 +11,34 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Services
 {
     public interface IRequestLoggingSettings : IMiddlewareSettings
     {
+        public string WebServerAccessLogFile { get;set; }
+        public string FormatRequest(Request request, LogLevel logLevel, bool logEntireRequestContent);
+        public bool ShouldBeLogged(Request request);
+        public LogLevel GetLogLevel(Request request);
+        bool ShouldLogEntireRequestContent(Request request);
+    }
+    public class Request
+    {
+        public IPAddress ClientIPAddress { get; set; }
+        public string Route { get; set; }
+        public string[] RequestHeader { get; set; }
+        public string RequestBody { get; set; }
+#pragma warning disable CS8632
+        public IDictionary<object, object?> InformationFromController { get; set; }
+#pragma warning restore CS8632
+        public ushort ResponseStatusCode { get; set; }
+        public string[] ResponseHeader { get; set; }
+        public string ResponseBody { get; set; }
+        public Request(IPAddress clientIPAddress, string route, string[] requestHeader, string requestBody, IDictionary<object, object> informationFromController, ushort responseStatusCode, string[] responseHeader, string responseBody)
+        {
+            ClientIPAddress = clientIPAddress;
+            Route = route;
+            RequestHeader = requestHeader;
+            RequestBody = requestBody;
+            InformationFromController = informationFromController;
+            ResponseStatusCode = responseStatusCode;
+            ResponseHeader = responseHeader;
+            ResponseBody = responseBody;
+        }
     }
 }
