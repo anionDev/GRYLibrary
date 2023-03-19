@@ -53,7 +53,9 @@ namespace GRYLibrary.Core.Log
         public bool ConvertTimeForLogentriesToUTCFormat { get; set; } = false;
         public bool LogEveryLineOfLogEntryInNewLine { get; set; } = false;
         public bool StoreProcessedLogItemsInternally { get; set; } = false;
-        public GRYLogConfiguration() { }
+        public GRYLogConfiguration()
+        {
+        }
         public LoggedMessageTypeConfiguration GetLoggedMessageTypesConfigurationByLogLevel(LogLevel logLevel)
         {
             foreach (SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration> obj in this.LoggedMessageTypesConfiguration)
@@ -139,7 +141,7 @@ namespace GRYLibrary.Core.Log
         {
             return new HashSet<Type>();
         }
-                #endregion
+        #endregion
     }
 
 }

@@ -10,7 +10,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
     public class WebAPIConfigurationVariables: IWebAPIConfigurationVariables
     {
         public WebAPIConfigurationVariables() { }
-        public WebServerSettings WebServerSettings { get; set; } = new WebServerSettings();
-        public ApplicationSettings ApplicationSettings { get; set; } = new ApplicationSettings();
+        public WebServerSettings WebServerSettings { get; set; } 
+        public ApplicationSettings ApplicationSettings { get; set; } 
     }
 }

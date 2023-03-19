@@ -250,6 +250,17 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 return $"/{workspaceFolderName}";
             }
         }
+
+        public static GRYLogConfiguration GetDefaultLogConfiguration(string logFile, bool verbose, GRYEnvironment targetEnvironmentType)
+        {
+            GRYLogConfiguration result = GRYLogConfiguration.GetCommonConfiguration(logFile, verbose);
+            if (targetEnvironmentType is Development)
+            {
+                result.GetLogTarget<GRYLibrary.Core.Log.ConcreteLogTargets.Console>().Format = GRYLogLogFormat.GRYLogFormat;
+            }
+            return result;
+        }
+
         public class CreateFolderVisitor : IExecutionModeVisitor
         {
             private readonly string[] _Folder;

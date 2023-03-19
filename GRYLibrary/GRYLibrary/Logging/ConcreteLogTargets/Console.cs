@@ -31,14 +31,17 @@ namespace GRYLibrary.Core.Log.ConcreteLogTargets
         }
         private void WriteWithColorToConsole(string message, TextWriter output, LogLevel logLevel, GRYLog logObject)
         {
-            try
+            if (message.Length > 0)
             {
-                System.Console.ForegroundColor = logObject.Configuration.GetLoggedMessageTypesConfigurationByLogLevel(logLevel).ConsoleColor;
-                output.Write(message);
-            }
-            finally
-            {
-                System.Console.ForegroundColor = logObject._ConsoleDefaultColor;
+                try
+                {
+                    System.Console.ForegroundColor = logObject.Configuration.GetLoggedMessageTypesConfigurationByLogLevel(logLevel).ConsoleColor;
+                    output.Write(message);
+                }
+                finally
+                {
+                    System.Console.ForegroundColor = logObject._ConsoleDefaultColor;
+                }
             }
         }
 
