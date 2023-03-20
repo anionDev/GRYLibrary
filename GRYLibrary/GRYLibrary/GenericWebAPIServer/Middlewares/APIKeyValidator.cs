@@ -18,7 +18,15 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
 
         public override Task Invoke(HttpContext context)
         {
-            throw new System.NotImplementedException();
+            string apiKey = null;//TODO
+            string route= null;//TODO
+            if (_APIKeyValidatorSettings.APIKeyIsValid(apiKey, route))
+            {
+            return _Next(context);
+            }
+            else{
+                throw new NotImplementedException();//TODO return 401/403
+            }
         }
     }
 }

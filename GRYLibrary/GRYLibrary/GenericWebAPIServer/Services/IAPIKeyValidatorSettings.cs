@@ -8,5 +8,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Services
 {
     public interface IAPIKeyValidatorSettings : IMiddlewareSettings
     {
+        bool APIKeyIsValid(string apiKey, string route);
+        bool AnonymousAccessIsAllowed(string route);
     }
 }

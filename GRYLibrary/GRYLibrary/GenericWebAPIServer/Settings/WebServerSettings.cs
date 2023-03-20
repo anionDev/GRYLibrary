@@ -11,7 +11,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public string APIRoutePrefix { get; set; } = "API";
         public string TLSCertificatePasswordFile { get; set; } = null;
         public string TLSCertificatePFXFilePath { get; set; } = null;
-        public BlacklistProvider BlackListProvider { get; set; } 
+        public BlacklistProvider BlackListProvider { get; set; } //TODO use interface-type for middleware-propertys
         public DDOSProtectionSettings DDOSProtectionSettings { get; set; }
         public ObfuscationSettings ObfuscationSettings { get; set; } 
         public ExceptionManagerSettings ExceptionManagerSettings { get; set; } 
