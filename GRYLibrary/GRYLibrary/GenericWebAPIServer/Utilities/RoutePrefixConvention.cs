@@ -15,7 +15,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
 
         public void Apply(ApplicationModel application)
         {
-            foreach (var selector in application.Controllers.SelectMany(c => c.Selectors))
+            foreach (SelectorModel selector in application.Controllers.SelectMany(c => c.Selectors))
             {
                 if (selector.AttributeRouteModel != null)
                 {

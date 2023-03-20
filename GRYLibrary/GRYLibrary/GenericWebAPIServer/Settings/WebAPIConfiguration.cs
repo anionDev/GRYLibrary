@@ -1,7 +1,6 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using GRYLibrary.Core.GenericWebAPIServer.Middlewares;
 using GRYLibrary.Core.GenericWebAPIServer.Utilities;
-using GRYLibrary.Core.Log;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

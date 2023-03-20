@@ -1,26 +1,35 @@
-﻿using System;
+﻿using GRYLibrary.Core.Miscellaneous;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
 {
-    public class M3UHandler : IPlaylistFileHandler
+    public class M3UHandler : PlaylistFileHandler
     {
-        public Encoding Encoding { get; set; } = new UTF8Encoding(false);
-
-        public void CreatePlaylist(string file)
+        public override void AddItemsToPlaylist(string playlistFile, IEnumerable<string> newItems)
         {
-            File.Create(file).Close();
+            File.AppendAllLines(playlistFile, newItems, this.Encoding);
         }
 
-        public Tuple<IEnumerable<string>, IEnumerable<string>> GetSongsAndExcludedSongs(string playlistFile)
+        public override void CreatePlaylist(string file)
+        {
+            Utilities.EnsureFileExists(file);
+        }
+
+        public override void DeleteItemsFromPlaylist(string playlistFile, IEnumerable<string> itemsToDelete)
+        {
+            File.AppendAllLines(playlistFile, itemsToDelete.Select(song => "-" + song), this.Encoding);
+        }
+
+        public override (ISet<string> included, ISet<string> excluded) GetItemsAndExcludedItems(string playlistFile)
         {
             IEnumerable<string> lines = File.ReadAllLines(playlistFile, this.Encoding)
-                .Where(line => !string.IsNullOrWhiteSpace(line) && !line.StartsWith("#"));
-            List<string> includedItems = new();
-            List<string> excludedItems = new();
+                .Where(line => !string.IsNullOrWhiteSpace(line) && !line.StartsWith("#"))
+                .Select(line => line.Replace("\"", string.Empty));
+            HashSet<string> includedItems = new();
+            HashSet<string> excludedItems = new();
             foreach (string line in lines)
             {
                 if (line.StartsWith("-"))
@@ -32,27 +41,7 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
                     includedItems.Add(line);
                 }
             }
-            return new Tuple<IEnumerable<string>, IEnumerable<string>>(includedItems, excludedItems);
-        }
-
-        public void AddSongsToPlaylist(string playlistFile, IEnumerable<string> newSongs)
-        {
-            File.AppendAllLines(playlistFile, newSongs, this.Encoding);
-        }
-
-        public void DeleteSongsFromPlaylist(string playlistFile, IEnumerable<string> songsToDelete)
-        {
-            File.AppendAllLines(playlistFile, songsToDelete.Select(song => "-" + song), this.Encoding);
-        }
-
-        public void NormalizePlaylist(string playlistFile)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<string> GetSongs(string playlistFile)
-        {
-            return this.GetSongsAndExcludedSongs(playlistFile).Item1;
+            return (includedItems, excludedItems);
         }
     }
 }
