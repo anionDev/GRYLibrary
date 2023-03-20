@@ -10,8 +10,8 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
 {
     public class APIKeyValidator : AbstractMiddleware
     {
-        private readonly APIKeyValidatorSettings _APIKeyValidatorSettings;
-        public APIKeyValidator(RequestDelegate next, APIKeyValidatorSettings apiKeyValidatorSettings) : base(next)
+        private readonly IAPIKeyValidatorSettings _APIKeyValidatorSettings;
+        public APIKeyValidator(RequestDelegate next, IAPIKeyValidatorSettings apiKeyValidatorSettings) : base(next)
         {
             _APIKeyValidatorSettings = apiKeyValidatorSettings;
         }
@@ -19,14 +19,31 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
         public override Task Invoke(HttpContext context)
         {
             string apiKey = null;//TODO
-            string route= null;//TODO
-            if (_APIKeyValidatorSettings.APIKeyIsValid(apiKey, route))
+            string route = null;//TODO
+            if (!AnonymousAccessIsAllowed(_APIKeyValidatorSettings, apiKey, route) && !UserIsAuthenticated())
             {
+                throw new NotImplementedException();//return 401 Unauthorized
+            }
+            if (!APIKeyIsValid(_APIKeyValidatorSettings, apiKey, route))
+            {
+                throw new NotImplementedException();//return 403 Forbidden
+            }
             return _Next(context);
-            }
-            else{
-                throw new NotImplementedException();//TODO return 401/403
-            }
+        }
+
+        private bool UserIsAuthenticated()
+        {
+            return true;//TODO
+        }
+
+        private bool AnonymousAccessIsAllowed(IAPIKeyValidatorSettings aPIKeyValidatorSettings, string apiKey, string route)
+        {
+            return true;//TODO
+        }
+
+        private bool APIKeyIsValid(IAPIKeyValidatorSettings apiKeyValidatorSettings, string apiKey, string route)
+        {
+            return true;//TODO
         }
     }
 }

@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.OpenApi.Any;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,15 +13,5 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Services
     public class APIKeyValidatorSettings : IAPIKeyValidatorSettings
     {
         public bool Enabled { get; set; } = false;
-
-        public bool AnonymousAccessIsAllowed(string route)
-        {
-            return true;//TODO
-        }
-
-        public bool APIKeyIsValid(string apiKey, string route)
-        {
-            return true;//TODO
-        }
-    }
+    } 
 }

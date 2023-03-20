@@ -1,5 +1,6 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using GRYLibrary.Core.GenericWebAPIServer.ExecutionModes;
+using GRYLibrary.Core.GenericWebAPIServer.Filter;
 using GRYLibrary.Core.GenericWebAPIServer.Services;
 using GRYLibrary.Core.GenericWebAPIServer.Settings;
 using GRYLibrary.Core.Log;
@@ -167,9 +168,10 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             if (HostAPIDocumentation(configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType))
             {
                 builder.Services.AddEndpointsApiExplorer();
-                builder.Services.AddSwaggerGen(options =>
+                builder.Services.AddSwaggerGen(swaggerOptions =>
                 {
-                    options.SwaggerDoc(configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.SwaggerDocumentName, new OpenApiInfo
+                    swaggerOptions.OperationFilter<AuthorizationHeaderParameterOperationFilter>();
+                    swaggerOptions.SwaggerDoc(configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.SwaggerDocumentName, new OpenApiInfo
                     {
                         Version = appVersionString,
                         Title = configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName + " API",
@@ -187,7 +189,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                         }
                     });
                     string xmlFilename = $"{configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}.xml";
-                    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+                    swaggerOptions.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
                 });
             }
             configuration.ConfigureBuilder(builder, configuration.WebAPIConfigurationValues);
