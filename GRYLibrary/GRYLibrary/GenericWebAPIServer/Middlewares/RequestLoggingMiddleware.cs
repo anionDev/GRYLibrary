@@ -44,13 +44,17 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
         }  /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
         {
-            Request request = default;//TODO create real object
-            if (_RequestLoggingSettings.ShouldBeLogged(request))
+            bool implemented = false;
+            if (implemented)
             {
-                var logLevel = _RequestLoggingSettings.GetLogLevel(request);
-                string formatted = _RequestLoggingSettings.FormatRequest(request, logLevel, _RequestLoggingSettings.ShouldLogEntireRequestContent(request));
-                var logItem = new LogItem(formatted, logLevel);
-                _Logger.AddLogEntry(logItem);
+                Request request = default;//TODO create real object
+                if (_RequestLoggingSettings.ShouldBeLogged(request))
+                {
+                    var logLevel = _RequestLoggingSettings.GetLogLevel(request);
+                    string formatted = _RequestLoggingSettings.FormatRequest(request, logLevel, _RequestLoggingSettings.ShouldLogEntireRequestContent(request));
+                    var logItem = new LogItem(formatted, logLevel);
+                    _Logger.AddLogEntry(logItem);
+                }
             }
             return _Next(context);
         }
