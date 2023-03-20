@@ -124,6 +124,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             builder.Services.AddSingleton<IRequestLoggingSettings>((serviceProvider) => configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.RequestLoggingSettings);
             builder.Services.AddSingleton<IWebAPIConfigurationConstants>((serviceProvider) => configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants);
             builder.Services.AddSingleton<IWebAPIConfigurationVariables>((serviceProvider) => configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables);
+            configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.ConfigureServices(builder.Services);
             string protocol = null;
             string localAddress = "127.0.0.1";
             string domain = localAddress;
