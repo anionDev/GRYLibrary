@@ -1,11 +1,9 @@
 ﻿using GRYLibrary.Core.AdvancedObjectAnalysis;
 using GRYLibrary.Core.Log.ConcreteLogTargets;
-using GRYLibrary.Core.Miscellaneous;
 using GRYLibrary.Core.XMLSerializer;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Runtime.InteropServices;
 using Console = GRYLibrary.Core.Log.ConcreteLogTargets.Console;
 
@@ -132,13 +130,13 @@ namespace GRYLibrary.Core.Log
             GRYLogConfiguration result = new GRYLogConfiguration(true);
             if (logFile != null)
             {
-                var filelog = result.GetLogTarget<LogFile>();
+                LogFile filelog = result.GetLogTarget<LogFile>();
                 filelog.File = logFile;
                 filelog.Enabled = true;
             }
             if (verbose)
             {
-                foreach (var logLevel in result.LogTargets)
+                foreach (GRYLogTarget logLevel in result.LogTargets)
                 {
                     logLevel.LogLevels.Add(LogLevel.Debug);
                 }

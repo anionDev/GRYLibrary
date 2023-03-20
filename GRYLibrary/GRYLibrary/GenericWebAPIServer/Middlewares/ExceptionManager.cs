@@ -1,5 +1,4 @@
 using GRYLibrary.Core.GenericWebAPIServer.Services;
-using GRYLibrary.Core.Log;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Threading.Tasks;

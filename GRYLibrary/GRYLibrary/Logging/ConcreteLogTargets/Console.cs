@@ -8,11 +8,12 @@ namespace GRYLibrary.Core.Log.ConcreteLogTargets
 {
     public sealed class Console : GRYLogTarget
     {
+        public bool WriteWarningsToStdErr { get; set; } = true;
         public Console() { }
         protected override void ExecuteImplementation(LogItem logItem, GRYLog logObject)
         {
             TextWriter output;
-            if (logItem.IsErrorEntry())
+            if (logItem.IsErrorEntry() || (WriteWarningsToStdErr && logItem.LogLevel == LogLevel.Warning))
             {
                 output = System.Console.Error;
             }

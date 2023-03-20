@@ -8,7 +8,6 @@ using GRYLibrary.Core.Miscellaneous.MetaConfiguration;
 using GRYLibrary.Core.Miscellaneous.MetaConfiguration.ConfigurationFormats;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
@@ -17,7 +16,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.ConstrainedExecution;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
@@ -38,9 +36,9 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 logger = executionMode.Accept(new GetLoggerVisitor<ConfigurationConstantsType, ConfigurationVariablesType>(configuration));
                 configuration.WebAPIConfigurationValues.Logger = logger;
                 IGeneralLogger.Log($"Start {configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", LogLevel.Information, logger);
-                var appAndUrls = CreateAPIServer(configuration);
-                var app = appAndUrls.Item1;
-                var urls = appAndUrls.Item2;
+                (WebApplication, ISet<string>) appAndUrls = CreateAPIServer(configuration);
+                WebApplication app = appAndUrls.Item1;
+                ISet<string> urls = appAndUrls.Item2;
                 try
                 {
                     IGeneralLogger.Log($"Run WebAPI-server", LogLevel.Debug, configuration.WebAPIConfigurationValues.Logger);
@@ -156,7 +154,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
                         X509Certificate2Collection collection = new X509Certificate2Collection();
                         collection.Import(configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePFXFilePath, password, X509KeyStorageFlags.PersistKeySet);
-                        var certs = collection.ToList();
+                        List<X509Certificate2> certs = collection.ToList();
                         string dnsName = certs[0].GetNameInfo(X509NameType.DnsName, false);
                         domain = dnsName;
                     }
@@ -195,8 +193,8 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             configuration.ConfigureBuilder(builder, configuration.WebAPIConfigurationValues);
             WebApplication app = builder.Build();
             configuration.ConfigureApp(app, configuration.WebAPIConfigurationValues);
-            var generalUrl = GetURL(protocol, domain, configuration);
-            var localUrl = GetURL(protocol, localAddress, configuration);
+            string generalUrl = GetURL(protocol, domain, configuration);
+            string localUrl = GetURL(protocol, localAddress, configuration);
             return (app, new HashSet<string>() { generalUrl, localUrl });
         }
 
@@ -294,7 +292,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
             public void Handle(RunProgram runProgram)
             {
-                foreach (var folder in _Folder)
+                foreach (string folder in _Folder)
                 {
                     GRYLibrary.Core.Miscellaneous.Utilities.EnsureDirectoryExists(folder);
                 }

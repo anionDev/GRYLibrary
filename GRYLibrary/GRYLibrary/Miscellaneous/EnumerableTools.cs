@@ -58,7 +58,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public static void AddItemToEnumerable(object enumerable, object[] addMethodArguments)
         {
             List<object> castedArguments = new();
-            var addMethod = enumerable.GetType().GetMethod("Add");
+            System.Reflection.MethodInfo addMethod = enumerable.GetType().GetMethod("Add");
             AssertCondition(addMethod.GetParameters().Length == addMethodArguments.Length);
             for (int i = 0; i < addMethodArguments.Length; i++)
             {

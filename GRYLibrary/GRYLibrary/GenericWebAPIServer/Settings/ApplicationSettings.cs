@@ -1,6 +1,4 @@
 ﻿using GRYLibrary.Core.Log;
-using System.IO;
-using System.Runtime.InteropServices;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Settings
 {
