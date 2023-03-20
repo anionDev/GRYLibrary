@@ -28,8 +28,8 @@
 		<Prefer32Bit>false</Prefer32Bit>
 		<NoWarn>1701;1702;CA1822;CS1591;CS1573;IDE0054;IDE0074;IDE0090</NoWarn>
 		<WarningsAsErrors>NU1605</WarningsAsErrors>
-		<DocumentationFile>..\Other\Artifacts\MetaInformation\GRYLibrary.xml</DocumentationFile>
 		<OutputType>Library</OutputType>
+		<DocumentationFile>..\Other\Artifacts\MetaInformation\GRYLibrary.xml</DocumentationFile>
 		<ApplicationIcon>..\Other\Resources\Logo\GRYLibraryIcon.ico</ApplicationIcon>
 	</PropertyGroup>
 

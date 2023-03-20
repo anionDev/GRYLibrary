@@ -1,6 +1,14 @@
+using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using GRYLibrary.Core.GenericWebAPIServer.Services;
+using GRYLibrary.Core.GenericWebAPIServer.Settings;
+using GRYLibrary.Core.Log;
+using GRYLibrary.Core.Log.ConcreteLogTargets;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
@@ -11,26 +19,46 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     public class RequestLoggingMiddleware : AbstractMiddleware
     {
         private readonly IGeneralLogger _Logger;
-        private readonly IWebApplicationFirewallSettings _WebApplicationFirewallSettings;
+        private readonly IRequestLoggingSettings _RequestLoggingSettings;
         /// <inheritdoc/>
-        public RequestLoggingMiddleware(RequestDelegate next, IWebApplicationFirewallSettings webApplicationFirewallSettings, IGeneralLogger logger) : base(next)
+        public RequestLoggingMiddleware(RequestDelegate next, IRequestLoggingSettings requestLoggingSettings, IWebAPIConfigurationConstants webAPIConfigurationConstants) : base(next)
         {
-            _Logger = logger;
-            _WebApplicationFirewallSettings = webApplicationFirewallSettings;
+            _RequestLoggingSettings = requestLoggingSettings;
+            _Logger = GeneralLogger.Create(GetLogConfiguration(requestLoggingSettings.WebServerAccessLogFile, webAPIConfigurationConstants.TargetEnvironmentType));
         }
-        /// <inheritdoc/>
+        private static GRYLogConfiguration GetLogConfiguration(string webServerAccessLogFile, GRYEnvironment environment)
+        {
+            var logConfig = new GRYLogConfiguration(true);
+            LogFile filelog = new LogFile
+            {
+                Format = GRYLogLogFormat.DateOnly,
+                File = webServerAccessLogFile,
+                Enabled = true
+            };
+            logConfig.LogTargets = new List<GRYLogTarget> { filelog };
+            if (environment is not Productive)
+            {
+                logConfig.LogTargets.Add(new GRYLibrary.Core.Log.ConcreteLogTargets.Console());
+            }
+            return logConfig;
+        }  /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
         {
-            //this._LogAction(logObject=>logObject.Log("Some log"));
-
-            // TODO log request.route, request.sourceip, response.statuscode, duration of creating response
-           
+            bool implemented = false;
+            if (implemented)
+            {
+                Request request = default;//TODO create real object
+                if (_RequestLoggingSettings.ShouldBeLogged(request))
+                {
+                    var logLevel = _RequestLoggingSettings.GetLogLevel(request);
+                    string formatted = _RequestLoggingSettings.FormatRequest(request, logLevel, _RequestLoggingSettings.ShouldLogEntireRequestContent(request));
+                    var logItem = new LogItem(formatted, logLevel);
+                    _Logger.AddLogEntry(logItem);
+                }
+            }
             return _Next(context);
         }
-        public virtual bool LogFullEntry(string route, ushort responseStatusCode)
-        {
-            return responseStatusCode % 100 == 5;
-        }
+
         public virtual LogLevel GetLogLevelForRequestLogEntry(string route, ushort responseStatusCode)
         {
             if (responseStatusCode % 100 == 5)

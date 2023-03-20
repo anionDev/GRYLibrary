@@ -22,16 +22,12 @@ namespace GRYLibrary.Core.Log.ConcreteLogTargets
                 this.Flush();
             }
         }
-        public override void Dispose()
-        {
-            this.Flush();
-        }
 
         public void Flush()
         {
             if (string.IsNullOrWhiteSpace(this.File))
             {
-                throw new NullReferenceException($"LogFile is not defined");
+                throw new NullReferenceException($"LogFile is not defined.");
             }
             string file = Utilities.ResolveToFullPath(this.File);
             Utilities.EnsureFileExists(file, true);
@@ -60,6 +56,11 @@ namespace GRYLibrary.Core.Log.ConcreteLogTargets
         public override HashSet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization()
         {
             return new HashSet<Type>();
+        }
+
+        public override void Dispose()
+        {
+            this.Flush();
         }
     }
 }
