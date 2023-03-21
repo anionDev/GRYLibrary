@@ -51,7 +51,7 @@ namespace GRYLibrary.Core.Log
             }
         }
 
-        private void Initliaze()
+        public void Initliaze()
         {
             LogTargets = new List<GRYLogTarget> {
                 new Console() { Enabled = true, Format = GRYLogLogFormat.OnlyMessage },
