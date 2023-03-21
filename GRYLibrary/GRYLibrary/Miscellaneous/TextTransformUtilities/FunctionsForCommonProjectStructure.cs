@@ -42,7 +42,7 @@ namespace GRYLibrary.Core.Miscellaneous.TextTransformUtilities
                         string constantValue = constantProperties["value"];
                         string constantValueEscaped = constantValue.Replace("\\", "\\\\");
                         string constantName = constantProperties["name"];
-                        contentLines.Add($"        internal const string {constantName} = \"{constantValueEscaped}\";");
+                        contentLines.Add($"        internal const string {constantName} = @\"{constantValueEscaped}\";");
                     }
                 }
             }
