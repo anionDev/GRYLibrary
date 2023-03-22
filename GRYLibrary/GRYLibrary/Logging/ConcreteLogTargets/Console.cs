@@ -8,11 +8,12 @@ namespace GRYLibrary.Core.Log.ConcreteLogTargets
 {
     public sealed class Console : GRYLogTarget
     {
+        public bool WriteWarningsToStdErr { get; set; } = true;
         public Console() { }
         protected override void ExecuteImplementation(LogItem logItem, GRYLog logObject)
         {
             TextWriter output;
-            if (logItem.IsErrorEntry())
+            if (logItem.IsErrorEntry() || (WriteWarningsToStdErr && logItem.LogLevel == LogLevel.Warning))
             {
                 output = System.Console.Error;
             }
@@ -21,7 +22,7 @@ namespace GRYLibrary.Core.Log.ConcreteLogTargets
                 output = System.Console.Out;
             }
             logItem.Format(logObject.Configuration, out string formattedMessage, out int cb, out int ce, out ConsoleColor _, this.Format, logItem.MessageId);
-            output.Write(formattedMessage.Substring(0, cb));
+            output.Write(formattedMessage.AsSpan(0, cb));
             this.WriteWithColorToConsole(formattedMessage[cb..ce], output, logItem.LogLevel, logObject);
             output.Write(formattedMessage[ce..] + Environment.NewLine);
         }
@@ -31,14 +32,17 @@ namespace GRYLibrary.Core.Log.ConcreteLogTargets
         }
         private void WriteWithColorToConsole(string message, TextWriter output, LogLevel logLevel, GRYLog logObject)
         {
-            try
+            if (message.Length > 0)
             {
-                System.Console.ForegroundColor = logObject.Configuration.GetLoggedMessageTypesConfigurationByLogLevel(logLevel).ConsoleColor;
-                output.Write(message);
-            }
-            finally
-            {
-                System.Console.ForegroundColor = logObject._ConsoleDefaultColor;
+                try
+                {
+                    System.Console.ForegroundColor = logObject.Configuration.GetLoggedMessageTypesConfigurationByLogLevel(logLevel).ConsoleColor;
+                    output.Write(message);
+                }
+                finally
+                {
+                    System.Console.ForegroundColor = logObject._ConsoleDefaultColor;
+                }
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using GRYLibrary.Core.GenericWebAPIServer.ExecutionModes;
+using GRYLibrary.Core.GenericWebAPIServer.Filter;
 using GRYLibrary.Core.GenericWebAPIServer.Services;
 using GRYLibrary.Core.GenericWebAPIServer.Settings;
 using GRYLibrary.Core.Log;
@@ -7,7 +8,6 @@ using GRYLibrary.Core.Miscellaneous.MetaConfiguration;
 using GRYLibrary.Core.Miscellaneous.MetaConfiguration.ConfigurationFormats;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
@@ -16,7 +16,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.ConstrainedExecution;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
@@ -37,18 +36,27 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 logger = executionMode.Accept(new GetLoggerVisitor<ConfigurationConstantsType, ConfigurationVariablesType>(configuration));
                 configuration.WebAPIConfigurationValues.Logger = logger;
                 IGeneralLogger.Log($"Start {configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", LogLevel.Information, logger);
-                var appAndUrls = CreateAPIServer(configuration);
-                var app = appAndUrls.Item1;
-                var urls = appAndUrls.Item2;
+                (WebApplication, ISet<string>) appAndUrls = CreateAPIServer(configuration);
+                WebApplication app = appAndUrls.Item1;
+                ISet<string> urls = appAndUrls.Item2;
                 try
                 {
                     IGeneralLogger.Log($"Run WebAPI-server", LogLevel.Debug, configuration.WebAPIConfigurationValues.Logger);
                     if (0 < urls.Count)
                     {
-                        IGeneralLogger.Log($"API is now available under the following URLs:", LogLevel.Debug, configuration.WebAPIConfigurationValues.Logger);
+                        string urlSuffix;
+                        if (HostAPIDocumentation(configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType))
+                        {
+                            urlSuffix = "/index.html";
+                        }
+                        else
+                        {
+                            urlSuffix = string.Empty;
+                        }
+                        IGeneralLogger.Log($"The API is now available under the following URLs:", LogLevel.Debug, configuration.WebAPIConfigurationValues.Logger);
                         foreach (var url in urls)
                         {
-                            IGeneralLogger.Log(url, LogLevel.Debug, configuration.WebAPIConfigurationValues.Logger);
+                            IGeneralLogger.Log(url + urlSuffix, LogLevel.Debug, configuration.WebAPIConfigurationValues.Logger);
                         }
                     }
                     app.Run();
@@ -82,6 +90,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             return exitCode;
         }
 
+        private static bool HostAPIDocumentation(GRYEnvironment environment)
+        {
+            return environment is not Productive;
+        }
+
         public static ExecutionMode GetExecutionMode()
         {
             if (Assembly.GetEntryAssembly().GetName().Name == "dotnet-swagger")
@@ -106,17 +119,19 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             builder.Services.AddSingleton<IObfuscationSettings>((serviceProvider) => configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.ObfuscationSettings);
             builder.Services.AddSingleton<IWebApplicationFirewallSettings>((serviceProvider) => configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.WebApplicationFirewallSettings);
             builder.Services.AddSingleton<IExceptionManagerSettings>((serviceProvider) => configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.ExceptionManagerSettings);
+            builder.Services.AddSingleton<IAPIKeyValidatorSettings>((serviceProvider) => configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.APIKeyValidatorSettings);
             builder.Services.AddSingleton<IRequestCounterSettings>((serviceProvider) => configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.RequestCounterSettings);
             builder.Services.AddSingleton<IRequestLoggingSettings>((serviceProvider) => configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.RequestLoggingSettings);
             builder.Services.AddSingleton<IWebAPIConfigurationConstants>((serviceProvider) => configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants);
             builder.Services.AddSingleton<IWebAPIConfigurationVariables>((serviceProvider) => configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables);
+            configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.ConfigureServices(builder.Services);
             string protocol = null;
             string localAddress = "127.0.0.1";
             string domain = localAddress;
-            builder.WebHost.ConfigureKestrel(options =>
+            builder.WebHost.ConfigureKestrel(kestrelOptions =>
             {
-                options.AddServerHeader = false;
-                options.ListenAnyIP(configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.Port, listenOptions =>
+                kestrelOptions.AddServerHeader = false;
+                kestrelOptions.ListenAnyIP(configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.Port, listenOptions =>
                 {
                     if (configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePFXFilePath == null)
                     {
@@ -140,7 +155,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
                         X509Certificate2Collection collection = new X509Certificate2Collection();
                         collection.Import(configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePFXFilePath, password, X509KeyStorageFlags.PersistKeySet);
-                        var certs = collection.ToList();
+                        List<X509Certificate2> certs = collection.ToList();
                         string dnsName = certs[0].GetNameInfo(X509NameType.DnsName, false);
                         domain = dnsName;
                     }
@@ -149,12 +164,13 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             string appVersionString = "v" + configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppVersion;
 
             builder.Services.AddControllers();
-            if (configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is not Productive)
+            if (HostAPIDocumentation(configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType))
             {
                 builder.Services.AddEndpointsApiExplorer();
-                builder.Services.AddSwaggerGen(options =>
+                builder.Services.AddSwaggerGen(swaggerOptions =>
                 {
-                    options.SwaggerDoc(configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.SwaggerDocumentName, new OpenApiInfo
+                    swaggerOptions.OperationFilter<AuthorizationHeaderParameterOperationFilter>();
+                    swaggerOptions.SwaggerDoc(configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.SwaggerDocumentName, new OpenApiInfo
                     {
                         Version = appVersionString,
                         Title = configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName + " API",
@@ -172,14 +188,14 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                         }
                     });
                     string xmlFilename = $"{configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}.xml";
-                    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+                    swaggerOptions.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
                 });
             }
             configuration.ConfigureBuilder(builder, configuration.WebAPIConfigurationValues);
             WebApplication app = builder.Build();
             configuration.ConfigureApp(app, configuration.WebAPIConfigurationValues);
-            var generalUrl = GetURL(protocol, domain, configuration);
-            var localUrl = GetURL(protocol, localAddress, configuration);
+            string generalUrl = GetURL(protocol, domain, configuration);
+            string localUrl = GetURL(protocol, localAddress, configuration);
             return (app, new HashSet<string>() { generalUrl, localUrl });
         }
 
@@ -250,6 +266,17 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 return $"/{workspaceFolderName}";
             }
         }
+
+        public static GRYLogConfiguration GetDefaultLogConfiguration(string logFile, bool verbose, GRYEnvironment targetEnvironmentType)
+        {
+            GRYLogConfiguration result = GRYLogConfiguration.GetCommonConfiguration(logFile, verbose);
+            if (targetEnvironmentType is Development)
+            {
+                result.GetLogTarget<GRYLibrary.Core.Log.ConcreteLogTargets.Console>().Format = GRYLogLogFormat.GRYLogFormat;
+            }
+            return result;
+        }
+
         public class CreateFolderVisitor : IExecutionModeVisitor
         {
             private readonly string[] _Folder;
@@ -266,7 +293,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
             public void Handle(RunProgram runProgram)
             {
-                foreach (var folder in _Folder)
+                foreach (string folder in _Folder)
                 {
                     GRYLibrary.Core.Miscellaneous.Utilities.EnsureDirectoryExists(folder);
                 }

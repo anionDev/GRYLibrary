@@ -9,12 +9,12 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Services
         public Action<LogItem> AddLogEntry { get; set; }
         public static void Log(string message, LogLevel logLevel, IGeneralLogger logger)
         {
-            var logItem = new LogItem(message, logLevel);
+            LogItem logItem = new LogItem(message, logLevel);
             logger.AddLogEntry(logItem);
         }
         public static void LogException(Exception exception, string message, IGeneralLogger logger)
         {
-            var logItem = new LogItem(message, exception);
+            LogItem logItem = new LogItem(message, exception);
             logger.AddLogEntry(logItem);
         }
     }

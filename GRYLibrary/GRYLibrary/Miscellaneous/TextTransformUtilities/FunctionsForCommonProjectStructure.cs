@@ -13,7 +13,7 @@ namespace GRYLibrary.Core.Miscellaneous.TextTransformUtilities
             string constantsFolder = Path.Combine(repositoryFolder, codeUnitName, "Other", "Resources", "Constants");
             List<string> contentLines = new List<string>();
             bool constantsFolderExists = Directory.Exists(constantsFolder);
-            var constantsfiles = new List<string>();
+            List<string> constantsfiles = new List<string>();
             if (constantsFolderExists)
             {
                 constantsfiles = Directory.GetFiles(constantsFolder).ToList();
@@ -42,7 +42,7 @@ namespace GRYLibrary.Core.Miscellaneous.TextTransformUtilities
                         string constantValue = constantProperties["value"];
                         string constantValueEscaped = constantValue.Replace("\\", "\\\\");
                         string constantName = constantProperties["name"];
-                        contentLines.Add($"        internal const string {constantName} = \"{constantValueEscaped}\";");
+                        contentLines.Add($"        internal const string {constantName} = @\"{constantValueEscaped}\";");
                     }
                 }
             }
@@ -65,9 +65,9 @@ namespace GRYLibrary.Core.Miscellaneous.TextTransformUtilities
             //TODO validate against xsd
             IDictionary<string, string> result = new Dictionary<string, string>();
             System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
-            var folder = Path.GetDirectoryName(file);
+            string folder = Path.GetDirectoryName(file);
             doc.Load(file);
-            var nsmgr = new System.Xml.XmlNamespaceManager(doc.NameTable);
+            System.Xml.XmlNamespaceManager nsmgr = new System.Xml.XmlNamespaceManager(doc.NameTable);
             nsmgr.AddNamespace("cps", "https://projects.aniondev.de/PublicProjects/Common/ProjectTemplates/-/tree/main/Conventions/RepositoryStructure/CommonProjectStructure");
             result["name"] = doc.DocumentElement.SelectSingleNode("/cps:constant/cps:name", nsmgr).InnerText;
             result["documentationsummary"] = doc.DocumentElement.SelectSingleNode("/cps:constant/cps:documentationsummary", nsmgr).InnerText.Replace("\r", string.Empty);

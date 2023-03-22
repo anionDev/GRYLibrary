@@ -1,7 +1,6 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using GRYLibrary.Core.GenericWebAPIServer.Middlewares;
 using GRYLibrary.Core.GenericWebAPIServer.Utilities;
-using GRYLibrary.Core.Log;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -24,22 +23,36 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         };
         public Action<WebApplication, WebAPIConfigurationValues<ConfigurationConstantsType, ConfigurationVariablesType>> ConfigureApp { get; set; } = (app, webAPIConfigurationValues) =>
         {
+            #region General Threat-Protection
             if (webAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is Productive)
             {
                 app.UseMiddleware<DDOSProtection>();
+                app.UseMiddleware<BlackList>();
                 app.UseMiddleware<Obfuscation>();
             }
+            if (webAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is not Development)
+            {
+                app.UseMiddleware<ExceptionManager>();
+            }
+            #endregion
+
+            #region Diagnosis
+            app.UseMiddleware<RequestLoggingMiddleware>();
             if (webAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is Development)
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseMiddleware<RequestLoggingMiddleware>();
-            app.UseMiddleware<ExceptionManager>();
+            #endregion
+
+            #region Bussiness-implementation of access-restriction
+            app.UseMiddleware<WebApplicationFirewall>();
+            app.UseMiddleware<APIKeyValidator>();
             if (webAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is not Development)
             {
                 app.UseMiddleware<RequestCounter>();
             }
-            app.UseMiddleware<WebApplicationFirewall>();
+            #endregion
+
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {

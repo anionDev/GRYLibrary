@@ -18,6 +18,7 @@ namespace GRYLibrary.Tests.Testcases
         public void TestLogProgress()
         {
             GRYLog logObject = GRYLog.Create();
+            logObject.Configuration.Initliaze();
             logObject.Configuration.StoreProcessedLogItemsInternally = true;
             logObject.LogProgress(0, 4);
             logObject.LogProgress(3, 122);

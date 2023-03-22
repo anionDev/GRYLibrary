@@ -38,6 +38,8 @@ using System.Security.Principal;
 using GRYLibrary.Core.ExecutePrograms;
 using GRYLibrary.Core.ExecutePrograms.WaitingStates;
 using Microsoft.Extensions.Configuration;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography.Xml;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
@@ -1076,19 +1078,19 @@ namespace GRYLibrary.Core.Miscellaneous
         public static IList<object> DefaultConversions { get { return _DefaultConversions.ToList(); } }
         public static object Cast(object @object, Type targetType, IList<object> customConversions)
         {
-            var typeOfObject = @object.GetType();
+            Type typeOfObject = @object.GetType();
             if (typeOfObject.Equals(targetType))
             {
                 return @object;
             }
-            foreach (var customConversion in customConversions)
+            foreach (object customConversion in customConversions)
             {
                 if (TypeComparerIgnoringGenerics.Equals(typeOfObject, (Type)customConversion/*.GetTypeWhichIsApplicable()*/))
                 {
                     // return customConversion.Convert(@object,typeOfObject);
                 }
             }
-            var method = typeof(Utilities).GetMethod(nameof(CastHelper), BindingFlags.NonPublic | BindingFlags.Static);
+            MethodInfo method = typeof(Utilities).GetMethod(nameof(CastHelper), BindingFlags.NonPublic | BindingFlags.Static);
             method = method.MakeGenericMethod(new Type[] { targetType });
             return method.Invoke(null, new object[] { @object });
 
@@ -1173,13 +1175,85 @@ namespace GRYLibrary.Core.Miscellaneous
             stringToAppend = stringToAppend + content;
             File.AppendAllText(file, stringToAppend, encoding);
         }
-        public static bool IsRelativePath(string path)
+        private class IsAbsoluteLocalFilePathVisitor : IOperatingSystemVisitor<bool>
         {
-            if (string.IsNullOrWhiteSpace(path) || path.IndexOfAny(Path.GetInvalidPathChars()) != -1 || path.Length > 255)
+            private readonly string _Path;
+
+            public IsAbsoluteLocalFilePathVisitor(string path)
             {
-                return false;
+                this._Path = path;
             }
-            return Uri.TryCreate(path, UriKind.Relative, out _);
+
+            public bool Handle(OSX operatingSystem)
+            {
+                return _Path.StartsWith("/");
+            }
+
+            public bool Handle(Windows operatingSystem)
+            {
+                if (_Path.StartsWith("/") || _Path.StartsWith(@"\"))
+                {
+                    return true;
+                }
+                else
+                {
+                    int colonCount = _Path.Count(c => c == ':');
+                    var invalidFileNameChars = Path.GetInvalidFileNameChars().ToList();
+                    invalidFileNameChars.Remove(':'); 
+                    invalidFileNameChars.Remove('\\'); 
+                    invalidFileNameChars.Remove('/');
+
+                    bool c1 = colonCount > 1;
+                    bool c2 = (colonCount == 1 && (_Path.Length <= 1 || (_Path.Length > 1 && _Path[1] != ':')));
+                    bool c3 = _Path.Any(c =>
+                    {
+                        if (invalidFileNameChars.Contains(c))
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    });
+                    bool c4= _Path.Contains("//")|| _Path.Contains(@"\\");
+
+                    bool isInvalid = c1 || c2 || c3 || c4;
+
+                    if (isInvalid)
+                    {
+                        throw new ArgumentException($"'{_Path}' is invalid as path.");
+                    }
+                    else
+                    {
+                        return colonCount == 1;
+                    }
+                }
+            }
+
+            public bool Handle(Linux operatingSystem)
+            {
+                return _Path.StartsWith("/");
+            }
+        }
+        public static bool IsAbsoluteLocalFilePath(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                throw new ArgumentException("No path given.");
+            }
+            else
+            {
+                if (path.Length != path.TrimStart().Length)
+                {
+                    throw new NotSupportedException($"Leading whitespaces like in '{path}' are not supported");
+                }
+                return OperatingSystem.OperatingSystem.GetCurrentOperatingSystem().Accept(new IsAbsoluteLocalFilePathVisitor(path));
+            }
+        }
+        public static bool IsRelativeLocalFilePath(string path)
+        {
+            return !IsAbsoluteLocalFilePath(path);
         }
         public static string GetAbsolutePath(string basePath, string relativePath)
         {
@@ -2271,7 +2345,7 @@ namespace GRYLibrary.Core.Miscellaneous
             // resolve program
             if (HasPath(program))
             {
-                if (IsRelativePath(program))
+                if (IsRelativeLocalFilePath(program))
                 {
                     program = ResolveToFullPath(program, workingDirectory);
                 }
@@ -2693,7 +2767,7 @@ namespace GRYLibrary.Core.Miscellaneous
             return CreateOrLoadConfigurationFile<T, TBase>(configurationFile, initialValue,
                 (configurationFile, initialValue) =>
                 {
-                    var simpleObjectPersistence = new SimpleObjectPersistence<T>
+                    SimpleObjectPersistence<T> simpleObjectPersistence = new SimpleObjectPersistence<T>
                     {
                         File = configurationFile,
                         Object = initialValue
@@ -2701,7 +2775,7 @@ namespace GRYLibrary.Core.Miscellaneous
                     simpleObjectPersistence.SaveObjectToFile();
                 }, (configurationFile) =>
                 {
-                    var simpleObjectPersistence = new SimpleObjectPersistence<T>
+                    SimpleObjectPersistence<T> simpleObjectPersistence = new SimpleObjectPersistence<T>
                     {
                         File = configurationFile
                     };
