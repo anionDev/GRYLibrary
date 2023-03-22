@@ -1,4 +1,7 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Settings
 {
@@ -8,6 +11,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public string AppName { get; }
         public string AppVersion { get; }
         public string ConfigurationFile { get; }
+        public Action<IServiceCollection> ConfigureServices { get; }
     }
     public class WebAPIConfigurationConstants : IWebAPIConfigurationConstants
     {
@@ -15,12 +19,14 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public string AppName { get; private set; }
         public string AppVersion { get; private set; }
         public string ConfigurationFile { get; private set; }
-        public WebAPIConfigurationConstants(ConcreteEnvironments.GRYEnvironment targetEnvironmentType, string appName, string appVersion, string configurationFile)
+        public Action<IServiceCollection> ConfigureServices { get; }
+        public WebAPIConfigurationConstants(GRYEnvironment targetEnvironmentType, string appName, string appVersion, string configurationFile, Action<IServiceCollection> configureServices)
         {
             this.TargetEnvironmentType = targetEnvironmentType;
             this.AppName = appName;
             this.AppVersion = appVersion;
             this.ConfigurationFile = configurationFile;
+            this.ConfigureServices = configureServices;
         }
     }
 }
