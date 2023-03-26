@@ -51,7 +51,7 @@ namespace GRYLibrary.Core.Log
         }
         public static GRYLog Create()
         {
-            return Create(new GRYLogConfiguration());
+            return Create(new GRYLogConfiguration(true));
         }
         public static GRYLog Create(string logFile)
         {
