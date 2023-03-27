@@ -1199,8 +1199,8 @@ namespace GRYLibrary.Core.Miscellaneous
                 {
                     int colonCount = _Path.Count(c => c == ':');
                     var invalidFileNameChars = Path.GetInvalidFileNameChars().ToList();
-                    invalidFileNameChars.Remove(':'); 
-                    invalidFileNameChars.Remove('\\'); 
+                    invalidFileNameChars.Remove(':');
+                    invalidFileNameChars.Remove('\\');
                     invalidFileNameChars.Remove('/');
 
                     bool c1 = colonCount > 1;
@@ -1216,7 +1216,7 @@ namespace GRYLibrary.Core.Miscellaneous
                             return false;
                         }
                     });
-                    bool c4= _Path.Contains("//")|| _Path.Contains(@"\\");
+                    bool c4 = _Path.Contains("//") || _Path.Contains(@"\\");
 
                     bool isInvalid = c1 || c2 || c3 || c4;
 
