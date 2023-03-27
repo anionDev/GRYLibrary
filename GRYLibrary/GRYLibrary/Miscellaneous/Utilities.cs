@@ -38,8 +38,6 @@ using System.Security.Principal;
 using GRYLibrary.Core.ExecutePrograms;
 using GRYLibrary.Core.ExecutePrograms.WaitingStates;
 using Microsoft.Extensions.Configuration;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.Xml;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
@@ -1198,7 +1196,7 @@ namespace GRYLibrary.Core.Miscellaneous
                 else
                 {
                     int colonCount = _Path.Count(c => c == ':');
-                    var invalidFileNameChars = Path.GetInvalidFileNameChars().ToList();
+                    List<char> invalidFileNameChars = Path.GetInvalidFileNameChars().ToList();
                     invalidFileNameChars.Remove(':');
                     invalidFileNameChars.Remove('\\');
                     invalidFileNameChars.Remove('/');

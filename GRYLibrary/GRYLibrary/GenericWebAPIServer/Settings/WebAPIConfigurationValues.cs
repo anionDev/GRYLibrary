@@ -1,6 +1,5 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.ExecutionModes;
 using GRYLibrary.Core.GenericWebAPIServer.Services;
-using System;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Settings
 {
@@ -11,7 +10,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         internal IGeneralLogger Logger;
         public ConfigurationConstantsType WebAPIConfigurationConstants { get; set; }
         public ConfigurationVariablesType WebAPIConfigurationVariables { get; set; }
-        public ExecutionMode ExecutionMode { get; set; } = RunProgram.Instance;
+        public ExecutionMode ExecutionMode { get; set; }
         public bool RethrowInitializationExceptions { get; set; } 
         public string[] CommandlineArguments { get; set; } 
     }

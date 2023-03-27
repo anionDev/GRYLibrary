@@ -1,6 +1,4 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.Services;
-using System;
-using System.Xml.Serialization;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Settings
 {

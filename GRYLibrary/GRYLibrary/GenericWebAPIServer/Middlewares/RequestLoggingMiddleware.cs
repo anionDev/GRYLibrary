@@ -4,10 +4,7 @@ using GRYLibrary.Core.GenericWebAPIServer.Settings;
 using GRYLibrary.Core.Log;
 using GRYLibrary.Core.Log.ConcreteLogTargets;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -28,7 +25,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
         }
         private static GRYLogConfiguration GetLogConfiguration(string webServerAccessLogFile, GRYEnvironment environment)
         {
-            var logConfig = new GRYLogConfiguration(true);
+            GRYLogConfiguration logConfig = new GRYLogConfiguration(true);
             LogFile filelog = new LogFile
             {
                 Format = GRYLogLogFormat.DateOnly,
@@ -50,9 +47,9 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
                 Request request = default;//TODO create real object
                 if (_RequestLoggingSettings.ShouldBeLogged(request))
                 {
-                    var logLevel = _RequestLoggingSettings.GetLogLevel(request);
+                    LogLevel logLevel = _RequestLoggingSettings.GetLogLevel(request);
                     string formatted = _RequestLoggingSettings.FormatRequest(request, logLevel, _RequestLoggingSettings.ShouldLogEntireRequestContent(request));
-                    var logItem = new LogItem(formatted, logLevel);
+                    LogItem logItem = new LogItem(formatted, logLevel);
                     _Logger.AddLogEntry(logItem);
                 }
             }

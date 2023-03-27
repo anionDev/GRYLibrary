@@ -11,10 +11,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Services
             GRYLog logObject =  GRYLog.Create(configuration);
             return new GeneralLogger()
             {
-                AddLogEntry = (logEntry) =>
-                {
-                    logObject.Log(logEntry);
-                }
+                AddLogEntry = logObject.Log
             };
         }
 
