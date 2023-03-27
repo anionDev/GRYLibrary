@@ -1,5 +1,4 @@
 ﻿using GRYLibrary.Core.Miscellaneous;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,6 +10,7 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
         public IDictionary<string, string> Replacements { get; set; } = new Dictionary<string, string>();
         public M3UHandler M3UHandler { get; set; } = new M3UHandler();
         public PLSHandler PLSHandler { get; set; } = new PLSHandler();
+        public bool TreatEqualMetadataAsSameTrack { get; set; } = false;
         public PlaylistLoader() { }
 
         public override void AddItemsToPlaylist(string playlistFile, IEnumerable<string> newItems)
@@ -31,7 +31,7 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
         {
             ISet<string> notExistingItems = new HashSet<string>();
             (ISet<string> included, ISet<string> excluded) = GetHandlerForFile(playlistFile).GetItemsAndExcludedItems(playlistFile);
-            var folderOfPlaylistFile = Path.GetDirectoryName(playlistFile);
+            string folderOfPlaylistFile = Path.GetDirectoryName(playlistFile);
             included = LoadItems(included, notExistingItems, folderOfPlaylistFile);
             excluded = LoadItems(excluded, notExistingItems, folderOfPlaylistFile);
             return (included, excluded);
@@ -40,8 +40,8 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
         {
             (ISet<string> included, ISet<string> excluded) = GetItemsAndExcludedItems(playlistFile);
             included = included.Except(excluded).ToHashSet();
-            var existingItems = new HashSet<string>();
-            var notExistingItems = new HashSet<string>();
+            ISet<string> existingItems = new HashSet<string>();
+            ISet<string> notExistingItems = new HashSet<string>();
             foreach (string file in included)
             {
                 if (Exists(file))
@@ -53,15 +53,46 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
                     notExistingItems.Add(file);
                 }
             }
+            if (TreatEqualMetadataAsSameTrack)
+            {
+                existingItems = RemoveDuplicatesByMetadataCeck(existingItems);
+            }
             return (existingItems, notExistingItems);
         }
+
+        private ISet<string> RemoveDuplicatesByMetadataCeck(ISet<string> items)
+        {
+            return new HashSet<string>(items.GroupBy(item =>
+            {
+                try
+                {
+                    if (IsLink(item))
+                    {
+                        return item;
+                    }
+                    else
+                    {
+                        using TagLib.File tagFile = TagLib.File.Create(item);
+                        string title = tagFile.Tag.Title;
+                        ISet<string> artists = tagFile.Tag.Performers.ToHashSet();
+                        string artistsList = string.Join(';', artists.OrderBy(artist => $"\"{artist}\""));
+                        return $"\"{title}\":{artistsList}".ToLower();
+                    }
+                }
+                catch
+                {
+                    return item;
+                }
+            }).Select(group => group.First()));
+        }
+
         public override ISet<string> GetSongs(string playlistFile)
         {
             return GetItemsAndNotExistingItems(playlistFile).songs;
         }
         private bool Exists(string file)
         {
-            if (file.StartsWith("https://"))
+            if (IsLink(file))
             {
                 return true;//TODO
             }

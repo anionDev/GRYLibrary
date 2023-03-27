@@ -1,10 +1,6 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.ExecutionModes.Visitors
 {
@@ -19,7 +15,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.ExecutionModes.Visitors
         }
         public string Handle(Analysis analysis)
         {
-            var result=Path.Join(System.IO.Path.GetTempPath(), Guid.NewGuid().ToString());
+            string result =Path.Join(System.IO.Path.GetTempPath(), Guid.NewGuid().ToString());
             GRYLibrary.Core.Miscellaneous.Utilities.EnsureDirectoryExists(result);
             return result;
         }

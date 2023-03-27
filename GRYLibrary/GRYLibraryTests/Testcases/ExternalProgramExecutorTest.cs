@@ -1,10 +1,7 @@
-﻿using System.Threading;
-using Semaphore = GRYLibrary.Core.Miscellaneous.Semaphore;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using GRYLibrary.Core.Miscellaneous.CustomDisposables;
 using System.IO;
 using GRYLibrary.Core.ExecutePrograms;
-using GRYLibrary.Core.ExecutePrograms.WaitingStates;
 
 namespace GRYLibrary.Tests.Testcases
 {
@@ -28,10 +25,10 @@ namespace GRYLibrary.Tests.Testcases
             using TemporaryDirectory temporaryDirectory = new();
             //arrange
             string file1name = "File 1.txt";
-            var file1 = Path.Combine(temporaryDirectory.TemporaryDirectoryPath, file1name);
+            string file1 = Path.Combine(temporaryDirectory.TemporaryDirectoryPath, file1name);
             Core.Miscellaneous.Utilities.EnsureFileExists(file1);
             string file2name = "File 2.txt";
-            var file2 = Path.Combine(temporaryDirectory.TemporaryDirectoryPath, file2name);
+            string file2 = Path.Combine(temporaryDirectory.TemporaryDirectoryPath, file2name);
             Core.Miscellaneous.Utilities.AssertCondition(!File.Exists(file2));
             ExternalProgramExecutor externalProgramExecutor = new("cp", $"\"{file1name}\" \"{file2name}\"", temporaryDirectory.TemporaryDirectoryPath);
 
@@ -47,10 +44,10 @@ namespace GRYLibrary.Tests.Testcases
             using TemporaryDirectory temporaryDirectory = new();
             //arrange
             string file1name = "Sourcefile.txt";
-            var file1 = Path.Combine(temporaryDirectory.TemporaryDirectoryPath, file1name);
+            string file1 = Path.Combine(temporaryDirectory.TemporaryDirectoryPath, file1name);
             Core.Miscellaneous.Utilities.EnsureFileExists(file1);
             string file2name = "[SpecialCharacterTest]äöüßÄÖ'ÜÆÑçéý[_SpecialCharacterTest].txt";
-            var file2 = Path.Combine(temporaryDirectory.TemporaryDirectoryPath, file2name);
+            string file2 = Path.Combine(temporaryDirectory.TemporaryDirectoryPath, file2name);
             Core.Miscellaneous.Utilities.AssertCondition(!File.Exists(file2));
             ExternalProgramExecutor externalProgramExecutor = new("cp", $"\"{file1name}\" \"{file2name}\"", temporaryDirectory.TemporaryDirectoryPath);
 

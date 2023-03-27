@@ -54,7 +54,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                             urlSuffix = string.Empty;
                         }
                         IGeneralLogger.Log($"The API is now available under the following URLs:", LogLevel.Debug, configuration.WebAPIConfigurationValues.Logger);
-                        foreach (var url in urls)
+                        foreach (string url in urls)
                         {
                             IGeneralLogger.Log(url + urlSuffix, LogLevel.Debug, configuration.WebAPIConfigurationValues.Logger);
                         }

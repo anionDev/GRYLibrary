@@ -2,11 +2,8 @@
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Filter
 {
@@ -14,9 +11,9 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Filter
     {
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            var filterPipeline = context.ApiDescription.ActionDescriptor.FilterDescriptors;
-            var isAuthorized = filterPipeline.Select(filterInfo => filterInfo.Filter).Any(filter => filter is AuthorizeFilter);
-            var allowAnonymous = filterPipeline.Select(filterInfo => filterInfo.Filter).Any(filter => filter is IAllowAnonymousFilter);
+            IList<Microsoft.AspNetCore.Mvc.Filters.FilterDescriptor> filterPipeline = context.ApiDescription.ActionDescriptor.FilterDescriptors;
+            bool isAuthorized = filterPipeline.Select(filterInfo => filterInfo.Filter).Any(filter => filter is AuthorizeFilter);
+            bool allowAnonymous = filterPipeline.Select(filterInfo => filterInfo.Filter).Any(filter => filter is IAllowAnonymousFilter);
 
             isAuthorized = true;//TODO
             allowAnonymous = false;//TODO
