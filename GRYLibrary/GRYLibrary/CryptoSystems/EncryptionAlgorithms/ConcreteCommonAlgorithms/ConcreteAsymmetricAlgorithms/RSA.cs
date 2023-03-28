@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 
 namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteCommonAlgorithms.ConcreteAsymmetricAlgorithms
 {
-    public class RSA : AsymmetricEncryptionAlgorithm
+    public class RSA :AsymmetricEncryptionAlgorithm
     {
         public int KeyLengthForNewGeneratedKeys { get; set; } = 4096;
         /// <inheritdoc/>

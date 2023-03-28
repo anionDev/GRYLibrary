@@ -5,7 +5,7 @@ using System.Xml.Serialization;
 
 namespace GRYLibrary.Tests.TestData.TestTypes.XMLSerializableType
 {
-    public class TypeWithEnumerable : IXmlSerializable
+    public class TypeWithEnumerable :IXmlSerializable
     {
         public System.Collections.IEnumerable Enumerable { get; set; }
 

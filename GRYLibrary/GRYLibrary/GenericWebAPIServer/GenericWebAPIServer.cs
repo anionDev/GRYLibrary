@@ -42,10 +42,10 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 try
                 {
                     IGeneralLogger.Log($"Run WebAPI-server", LogLevel.Debug, configuration.WebAPIConfigurationValues.Logger);
-                    if (0 < urls.Count)
+                    if(0 < urls.Count)
                     {
                         string urlSuffix;
-                        if (HostAPIDocumentation(configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType))
+                        if(HostAPIDocumentation(configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType))
                         {
                             urlSuffix = "/index.html";
                         }
@@ -54,7 +54,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                             urlSuffix = string.Empty;
                         }
                         IGeneralLogger.Log($"The API is now available under the following URLs:", LogLevel.Debug, configuration.WebAPIConfigurationValues.Logger);
-                        foreach (string url in urls)
+                        foreach(string url in urls)
                         {
                             IGeneralLogger.Log(url + urlSuffix, LogLevel.Debug, configuration.WebAPIConfigurationValues.Logger);
                         }
@@ -62,17 +62,17 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                     app.Run();
                     exitCode = 0;
                 }
-                catch (Exception exception)
+                catch(Exception exception)
                 {
                     IGeneralLogger.LogException(exception, $"Fatal error in {configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", configuration.WebAPIConfigurationValues.Logger);
                     exitCode = 2;
                 }
                 IGeneralLogger.Log($"Finished {configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", LogLevel.Information, configuration.WebAPIConfigurationValues.Logger);
             }
-            catch (Exception exception)
+            catch(Exception exception)
             {
                 string message = "Initialization-exception";
-                if (logger == null)
+                if(logger == null)
                 {
                     Console.WriteLine(message);
                     Console.WriteLine(exception.Message);
@@ -82,7 +82,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 {
                     logger.AddLogEntry(new LogItem(message, exception));
                 }
-                if (configuration.WebAPIConfigurationValues.RethrowInitializationExceptions)
+                if(configuration.WebAPIConfigurationValues.RethrowInitializationExceptions)
                 {
                     throw;
                 }
@@ -97,7 +97,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
         public static ExecutionMode GetExecutionMode()
         {
-            if (Assembly.GetEntryAssembly().GetName().Name == "dotnet-swagger")
+            if(Assembly.GetEntryAssembly().GetName().Name == "dotnet-swagger")
             {
                 return Analysis.Instance;
             }
@@ -133,7 +133,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 kestrelOptions.AddServerHeader = false;
                 kestrelOptions.ListenAnyIP(configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.Port, listenOptions =>
                 {
-                    if (configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePFXFilePath == null)
+                    if(configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePFXFilePath == null)
                     {
                         protocol = "http";
                     }
@@ -142,12 +142,12 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                         protocol = "https";
                         string pfxFilePath = configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePFXFilePath;
                         string password = null;
-                        if (configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePasswordFile != null)
+                        if(configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePasswordFile != null)
                         {
                             password = File.ReadAllText(configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePasswordFile, new UTF8Encoding(false));
                         }
                         X509Certificate2 certificate = new(pfxFilePath, password);
-                        if (configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is Productive && Core.Miscellaneous.Utilities.IsSelfSIgned(certificate))
+                        if(configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is Productive && Core.Miscellaneous.Utilities.IsSelfSIgned(certificate))
                         {
                             IGeneralLogger.Log($"The used certificate '{configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePFXFilePath}' is self-signed. Using self-signed certificates is not recommended in a productive environment.", LogLevel.Warning, configuration.WebAPIConfigurationValues.Logger);
                         }
@@ -164,7 +164,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             string appVersionString = "v" + configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppVersion;
 
             builder.Services.AddControllers();
-            if (HostAPIDocumentation(configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType))
+            if(HostAPIDocumentation(configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType))
             {
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen(swaggerOptions =>
@@ -207,7 +207,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             return $"{protocol}://{domain}:{configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.Port}/{configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.APIRoutePrefix}";
         }
 
-        private class GetLoggerVisitor<ConfigurationConstantsType, ConfigurationVariablesType> : IExecutionModeVisitor<IGeneralLogger>
+        private class GetLoggerVisitor<ConfigurationConstantsType, ConfigurationVariablesType> :IExecutionModeVisitor<IGeneralLogger>
         where ConfigurationConstantsType : IWebAPIConfigurationConstants
         where ConfigurationVariablesType : IWebAPIConfigurationVariables
         {
@@ -229,7 +229,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         /// <summary>
         /// This visitor loads a configuration from disk if possible and if not then the initial configuration will be saved to disk and returned.
         /// </summary>
-        private class GetWebAPIConfigurationVariablesVisitor<ConfigurationConstantsType, ConfigurationVariablesType> : IExecutionModeVisitor<ConfigurationVariablesType>
+        private class GetWebAPIConfigurationVariablesVisitor<ConfigurationConstantsType, ConfigurationVariablesType> :IExecutionModeVisitor<ConfigurationVariablesType>
             where ConfigurationConstantsType : IWebAPIConfigurationConstants
             where ConfigurationVariablesType : IWebAPIConfigurationVariables, new()
         {
@@ -257,7 +257,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         public static string GetBaseFolderForProjectInCommonProjectStructure(GRYEnvironment environment, string programFolder)
         {
             string workspaceFolderName = "Workspace";
-            if (environment is Development)
+            if(environment is Development)
             {
                 return Miscellaneous.Utilities.ResolveToFullPath($"../../{workspaceFolderName}", programFolder);
             }
@@ -270,14 +270,14 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         public static GRYLogConfiguration GetDefaultLogConfiguration(string logFile, bool verbose, GRYEnvironment targetEnvironmentType)
         {
             GRYLogConfiguration result = GRYLogConfiguration.GetCommonConfiguration(logFile, verbose);
-            if (targetEnvironmentType is Development)
+            if(targetEnvironmentType is Development)
             {
                 result.GetLogTarget<GRYLibrary.Core.Log.ConcreteLogTargets.Console>().Format = GRYLogLogFormat.GRYLogFormat;
             }
             return result;
         }
 
-        public class CreateFolderVisitor : IExecutionModeVisitor
+        public class CreateFolderVisitor :IExecutionModeVisitor
         {
             private readonly string[] _Folder;
 
@@ -293,7 +293,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
             public void Handle(RunProgram runProgram)
             {
-                foreach (string folder in this._Folder)
+                foreach(string folder in this._Folder)
                 {
                     GRYLibrary.Core.Miscellaneous.Utilities.EnsureDirectoryExists(folder);
                 }

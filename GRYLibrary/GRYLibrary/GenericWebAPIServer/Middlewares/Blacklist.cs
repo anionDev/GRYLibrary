@@ -7,7 +7,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     /// <summary>
     /// Represents a blacklist which blocks all requests from blacklisted sources.
     /// </summary>
-    public class BlackList : AbstractMiddleware
+    public class BlackList :AbstractMiddleware
     {
         private readonly IBlacklistProvider _BlacklistProvider;
         /// <inheritdoc/>

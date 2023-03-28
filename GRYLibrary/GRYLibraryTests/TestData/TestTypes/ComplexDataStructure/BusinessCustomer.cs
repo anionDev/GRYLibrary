@@ -2,7 +2,7 @@
 
 namespace GRYLibrary.Tests.TestData.TestTypes.ComplexDataStructure
 {
-    public class BusinessCustomer : ICustomer
+    public class BusinessCustomer :ICustomer
     {
         public string CompanyName { get; set; }
         public string ContactPhoneNumber { get; set; }

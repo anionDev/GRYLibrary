@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper.CustomComparer
 {
-    public class SetComparer : AbstractCustomComparer
+    public class SetComparer :AbstractCustomComparer
     {
         internal SetComparer(PropertyEqualsCalculatorConfiguration cacheAndConfiguration) : base(cacheAndConfiguration)
         {
@@ -18,13 +18,13 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper.
         }
         internal bool EqualsTyped<T>(ISet<T> set1, ISet<T> set2)
         {
-            if (set1.Count != set2.Count)
+            if(set1.Count != set2.Count)
             {
                 return false;
             }
-            foreach (T obj in set1)
+            foreach(T obj in set1)
             {
-                if (!this.Contains(set2, obj))
+                if(!this.Contains(set2, obj))
                 {
                     return false;
                 }
@@ -34,9 +34,9 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper.
 
         private bool Contains<T>(ISet<T> set, T obj)
         {
-            foreach (T item in set)
+            foreach(T item in set)
             {
-                if (this._PropertyEqualsCalculator.Equals(item, obj))
+                if(this._PropertyEqualsCalculator.Equals(item, obj))
                 {
                     return true;
                 }

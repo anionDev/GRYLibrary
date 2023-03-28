@@ -3,7 +3,7 @@ using System;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
-    public class WriteableTuple<T1, T2> : Tuple<T1, T2>
+    public class WriteableTuple<T1, T2> :Tuple<T1, T2>
     {
         public WriteableTuple() : base(default, default)
         {
@@ -22,15 +22,15 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public override bool Equals(object obj)
         {
-            if (obj is not WriteableTuple<T1, T2> typedObject)
+            if(obj is not WriteableTuple<T1, T2> typedObject)
             {
                 return false;
             }
-            if (!this.Item1.NullSafeEquals(typedObject.Item1))
+            if(!this.Item1.NullSafeEquals(typedObject.Item1))
             {
                 return false;
             }
-            if (!this.Item2.NullSafeEquals(typedObject.Item2))
+            if(!this.Item2.NullSafeEquals(typedObject.Item2))
             {
                 return false;
             }

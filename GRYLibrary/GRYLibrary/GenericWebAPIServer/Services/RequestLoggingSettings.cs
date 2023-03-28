@@ -3,7 +3,7 @@ using System;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Services
 {
-    public class RequestLoggingSettings : IRequestLoggingSettings
+    public class RequestLoggingSettings :IRequestLoggingSettings
     {
         public string WebServerAccessLogFile { get; set; }
         public bool Enabled { get; set; } = false;

@@ -3,7 +3,7 @@ using System;
 
 namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper.CustomComparer
 {
-    public class PrimitiveComparer : AbstractCustomComparer
+    public class PrimitiveComparer :AbstractCustomComparer
     {
         internal PrimitiveComparer(PropertyEqualsCalculatorConfiguration cacheAndConfiguration) : base(cacheAndConfiguration)
         {

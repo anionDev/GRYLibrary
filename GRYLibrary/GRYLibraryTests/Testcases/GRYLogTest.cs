@@ -1,5 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using GRYLibrary.Core.Log;
+﻿using GRYLibrary.Core.Log;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GRYLibrary.Tests.Testcases
 {

@@ -26,37 +26,37 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis
         }
         private void IterateOverObjectTransitively(object @object, IList<(object, Type)> visitedObjects)
         {
-            if (this.Contains(visitedObjects, @object))
+            if(this.Contains(visitedObjects, @object))
             {
                 return;
             }
             bool objectIsNull = @object == null;
-            if (objectIsNull)
+            if(objectIsNull)
             {
                 visitedObjects.Add((@object, typeof(object)));
                 return;
             }
             Type type = @object.GetType();
             visitedObjects.Add((@object, type));
-            if (EnumerableTools.TypeIsEnumerable(type))
+            if(EnumerableTools.TypeIsEnumerable(type))
             {
-                foreach (object item in EnumerableTools.ObjectToEnumerable(@object))
+                foreach(object item in EnumerableTools.ObjectToEnumerable(@object))
                 {
                     this.IterateOverObjectTransitively(item, visitedObjects);
                 }
             }
-            else if (PrimitiveComparer.TypeIsTreatedAsPrimitive(type))
+            else if(PrimitiveComparer.TypeIsTreatedAsPrimitive(type))
             {
                 // TODO
             }
             else
             {
 
-                foreach (FieldInfo field in type.GetFields().Where((field) => this.Configuration.FieldSelector(field)))
+                foreach(FieldInfo field in type.GetFields().Where((field) => this.Configuration.FieldSelector(field)))
                 {
                     this.IterateOverObjectTransitively(field.GetValue(@object), visitedObjects);
                 }
-                foreach (PropertyInfo property in type.GetProperties().Where((property) => this.Configuration.PropertySelector(property)))
+                foreach(PropertyInfo property in type.GetProperties().Where((property) => this.Configuration.PropertySelector(property)))
                 {
                     this.IterateOverObjectTransitively(property.GetValue(@object), visitedObjects);
                 }
@@ -65,9 +65,9 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis
 
         private bool Contains(IList<(object, Type)> visitedObjects, object @object)
         {
-            foreach ((object, Type) currentItem in visitedObjects)
+            foreach((object, Type) currentItem in visitedObjects)
             {
-                if (Utilities.ImprovedReferenceEquals(currentItem.Item1, @object))
+                if(Utilities.ImprovedReferenceEquals(currentItem.Item1, @object))
                 {
                     return true;
                 }

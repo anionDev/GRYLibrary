@@ -5,7 +5,7 @@ using System.Text;
 
 namespace GRYLibrary.Core.CryptoSystems.ConcreteHashAlgorithms
 {
-    public class SHA256PureCSharp : HashAlgorithm
+    public class SHA256PureCSharp :HashAlgorithm
     {
         public override byte[] GetIdentifier()
         {
@@ -47,7 +47,7 @@ namespace GRYLibrary.Core.CryptoSystems.ConcreteHashAlgorithms
             int chunkSizeInBits = 512;
             int chunkSizeInBytes = chunkSizeInBits / 8;
             int amountOfChunks = message.Length / chunkSizeInBytes;
-            for (int chunkIndex = 0; chunkIndex < amountOfChunks; chunkIndex++)
+            for(int chunkIndex = 0; chunkIndex < amountOfChunks; chunkIndex++)
             {
                 byte[] currentChunk = message.Skip(chunkIndex * chunkSizeInBytes).Take(chunkSizeInBytes).ToArray();
                 Utilities.AssertCondition(currentChunk.Length == chunkSizeInBytes);
@@ -55,7 +55,7 @@ namespace GRYLibrary.Core.CryptoSystems.ConcreteHashAlgorithms
                 uint[] currentChunkAsUnsignedIntegerArray = Utilities.ByteArrayToUnsignedInteger32BitArray(currentChunk);
                 Utilities.AssertCondition(currentChunkAsUnsignedIntegerArray.Length == chunkSizeInBytes / 4);
                 Array.Copy(currentChunkAsUnsignedIntegerArray, W, currentChunkAsUnsignedIntegerArray.Length);
-                for (int i = 16; i < 64; i++)
+                for(int i = 16; i < 64; i++)
                 {
                     uint s0 = XOr(XOr(RightRotate(W[i - 15], 7), RightRotate(W[i - 15], 18)), RightShift(W[i - 15], 3));
                     uint s1 = XOr(XOr(RightRotate(W[i - 2], 17), RightRotate(W[i - 2], 19)), RightShift(W[i - 2], 10));
@@ -70,7 +70,7 @@ namespace GRYLibrary.Core.CryptoSystems.ConcreteHashAlgorithms
                 uint f = H[5];
                 uint g = H[6];
                 uint h = H[7];
-                for (int i = 0; i < 64; i++)
+                for(int i = 0; i < 64; i++)
                 {
                     uint S1 = CalculateS1(e);
                     uint ch = CalculateCh(e, f, g);//choose
@@ -140,7 +140,7 @@ namespace GRYLibrary.Core.CryptoSystems.ConcreteHashAlgorithms
         public static uint Add(params uint[] summands)
         {
             uint result = 0;
-            for (int i = 0; i < summands.Length; i++)
+            for(int i = 0; i < summands.Length; i++)
             {
                 result += summands[i];
             }

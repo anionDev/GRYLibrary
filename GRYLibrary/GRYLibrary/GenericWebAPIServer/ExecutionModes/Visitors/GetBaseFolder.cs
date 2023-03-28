@@ -4,7 +4,7 @@ using System.IO;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.ExecutionModes.Visitors
 {
-    public class GetBaseFolder : IExecutionModeVisitor<string>
+    public class GetBaseFolder :IExecutionModeVisitor<string>
     {
         private readonly GRYEnvironment _TargetEnvironmentType;
         private readonly string _ProgramFolder;
@@ -15,7 +15,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.ExecutionModes.Visitors
         }
         public string Handle(Analysis analysis)
         {
-            string result =Path.Join(System.IO.Path.GetTempPath(), Guid.NewGuid().ToString());
+            string result = Path.Join(System.IO.Path.GetTempPath(), Guid.NewGuid().ToString());
             GRYLibrary.Core.Miscellaneous.Utilities.EnsureDirectoryExists(result);
             return result;
         }

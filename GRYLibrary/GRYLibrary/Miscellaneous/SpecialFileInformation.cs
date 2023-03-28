@@ -18,7 +18,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static ExternalProgramExecutor ExecuteFile(string file)
         {
-            if (FileIsExecutable(file))
+            if(FileIsExecutable(file))
             {
                 using ExternalProgramExecutor result = new(file, string.Empty);
                 result.Run();
@@ -34,7 +34,7 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             new ExternalProgramExecutor(new ExternalProgramExecutorConfiguration { Program = file, WaitingState = new RunAsynchronously() }).Run();
         }
-        private class FileIsExecutableVisitor : IOperatingSystemVisitor<bool>
+        private class FileIsExecutableVisitor :IOperatingSystemVisitor<bool>
         {
             private readonly string _File;
 

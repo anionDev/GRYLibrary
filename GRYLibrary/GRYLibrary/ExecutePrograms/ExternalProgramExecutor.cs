@@ -1,6 +1,7 @@
 ﻿using GRYLibrary.Core.Exceptions;
-using GRYLibrary.Core.Log;
 using GRYLibrary.Core.ExecutePrograms.WaitingStates;
+using GRYLibrary.Core.Log;
+using GRYLibrary.Core.Miscellaneous;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
@@ -10,11 +11,10 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using GRYLibrary.Core.Miscellaneous;
 
 namespace GRYLibrary.Core.ExecutePrograms
 {
-    public sealed class ExternalProgramExecutor : IDisposable
+    public sealed class ExternalProgramExecutor :IDisposable
     {
         public ExternalProgramExecutor(string programPathAndFile) : this(programPathAndFile, Utilities.EmptyString, null)
         {
@@ -46,7 +46,7 @@ namespace GRYLibrary.Core.ExecutePrograms
         {
             get
             {
-                if (this.CurrentExecutionState == ExecutionState.Terminated)
+                if(this.CurrentExecutionState == ExecutionState.Terminated)
                 {
                     return this._ExecutionDuration;
                 }
@@ -65,7 +65,7 @@ namespace GRYLibrary.Core.ExecutePrograms
 
             this.Configuration.WaitingState.Accept(new WaitingStateRunVisitor(this));
         }
-        private class WaitingStateRunVisitor : IWaitingStateVisitor
+        private class WaitingStateRunVisitor :IWaitingStateVisitor
         {
             private readonly ExternalProgramExecutor _ExternalProgramExecutor;
 
@@ -116,16 +116,16 @@ namespace GRYLibrary.Core.ExecutePrograms
         private void Prepare()
         {
             this.CheckIfStartOperationWasAlreadyCalled();
-            if (string.IsNullOrWhiteSpace(this.Configuration.LogNamespace))
+            if(string.IsNullOrWhiteSpace(this.Configuration.LogNamespace))
             {
                 this.Configuration.LogNamespace = string.Empty;
             }
-            if (this.LogObject == default)
+            if(this.LogObject == default)
             {
                 this.LogObject = GRYLog.Create();
-                if (this.Configuration.Verbosity == Verbosity.Verbose)
+                if(this.Configuration.Verbosity == Verbosity.Verbose)
                 {
-                    foreach (GRYLogTarget logtarget in this.LogObject.Configuration.LogTargets)
+                    foreach(GRYLogTarget logtarget in this.LogObject.Configuration.LogTargets)
                     {
                         logtarget.LogLevels.Add(LogLevel.Debug);
                     }
@@ -133,7 +133,7 @@ namespace GRYLibrary.Core.ExecutePrograms
             }
             this.ResolvePaths();
             this.CMD = $"{this.Configuration.WorkingDirectory}>{this.Configuration.Program} {this.Configuration.Argument}";
-            if (this.Configuration.Title == null)
+            if(this.Configuration.Title == null)
             {
                 this.Configuration.Title = string.Empty;
             }
@@ -143,42 +143,42 @@ namespace GRYLibrary.Core.ExecutePrograms
         public static string CreateEpewArgumentString(string programPathAndFile, string arguments, string workingDirectory, bool printErrorsAsInformation, int? timeoutInMilliseconds, Verbosity verbosity, bool addLogOverhead, string logFile, string title, WaitingState waitingState, string logNamespace, string user, string password)
         {
             string result = $"--Program \"{programPathAndFile}\"";
-            if (arguments != null)
+            if(arguments != null)
             {
                 result = $"{result} --Argument {Convert.ToBase64String(new System.Text.UTF8Encoding(false).GetBytes(arguments))} ";
                 result = $"{result} --ArgumentIsBase64Encoded";
             }
-            if (workingDirectory != null)
+            if(workingDirectory != null)
             {
                 result = $"{result} --Workingdirectory \"{workingDirectory}\"";
             }
-            if (timeoutInMilliseconds.HasValue)
+            if(timeoutInMilliseconds.HasValue)
             {
                 result = $"{result} --TimeoutInMilliseconds \"{timeoutInMilliseconds}\"";
             }
             result = $"{result} --Verbosity {(int)verbosity}";
-            if (printErrorsAsInformation)
+            if(printErrorsAsInformation)
             {
                 result = $"{result} --PrintErrorsAsInformation";
             }
-            if (addLogOverhead)
+            if(addLogOverhead)
             {
                 result = $"{result} --AddLogOverhead";
             }
-            if (logFile != null)
+            if(logFile != null)
             {
                 result = $"{result} --Logfile \"{logFile}\"";
             }
-            if (title != null)
+            if(title != null)
             {
                 result = $"{result} --Title \"{title}\"";
             }
             //TODO handle waiting-state
-            if (logNamespace != null)
+            if(logNamespace != null)
             {
                 result = $"{result} --LogNamespace \"{logNamespace}\"";
             }
-            if (user != null)
+            if(user != null)
             {
                 result = $"{result} --User \"{user}\" --Password \"{password}\"";
             }
@@ -187,7 +187,7 @@ namespace GRYLibrary.Core.ExecutePrograms
             return result;
         }
         private static readonly IWaitingStateVisitor<string> _GetWaitingStateCreateEpewArgumentStringVisitor = new GetWaitingStateCreateEpewArgumentStringVisitor();
-        private class GetWaitingStateCreateEpewArgumentStringVisitor : IWaitingStateVisitor<string>
+        private class GetWaitingStateCreateEpewArgumentStringVisitor :IWaitingStateVisitor<string>
         {
             public string Handle(RunAsynchronously runAsynchronously)
             {
@@ -196,7 +196,7 @@ namespace GRYLibrary.Core.ExecutePrograms
 
             public string Handle(RunSynchronously runSynchronously)
             {
-                if (runSynchronously.ThrowErrorIfExitCodeIsNotZero)
+                if(runSynchronously.ThrowErrorIfExitCodeIsNotZero)
                 {
                     return "--ThrowErrorIfExitCodeIsNotZero";
                 }
@@ -218,7 +218,7 @@ namespace GRYLibrary.Core.ExecutePrograms
         /// </exception>
         public string GetSummaryOfExecutedProgram(bool includeStdOutAndStdErr = false)
         {
-            if (this.CurrentExecutionState == ExecutionState.Terminated)
+            if(this.CurrentExecutionState == ExecutionState.Terminated)
             {
                 string result = $"{nameof(ExternalProgramExecutor)}-summary:";
                 result = result + Environment.NewLine + $"Title: {this.Configuration.Title}";
@@ -226,7 +226,7 @@ namespace GRYLibrary.Core.ExecutePrograms
                 result = result + Environment.NewLine + $"Process-Id: {this.ProcessId}";
                 result = result + Environment.NewLine + $"Exit-code: {this.ExitCode}";
                 result = result + Environment.NewLine + $"Execution-duration: {this.ExecutionDuration:d'd 'h'h 'm'm 's's'}";
-                if (includeStdOutAndStdErr)
+                if(includeStdOutAndStdErr)
                 {
                     result = result + Environment.NewLine + $"StdOut:" + Environment.NewLine + string.Join(Environment.NewLine + "    ", this.AllStdOutLines);
                     result = result + Environment.NewLine + $"StdErr:" + Environment.NewLine + string.Join(Environment.NewLine + "    ", this.AllStdErrLines);
@@ -241,7 +241,7 @@ namespace GRYLibrary.Core.ExecutePrograms
 
         private void LogStart()
         {
-            if (string.IsNullOrWhiteSpace(this.Configuration.Title))
+            if(string.IsNullOrWhiteSpace(this.Configuration.Title))
             {
                 this.LogObject.Log($"Start executing program", LogLevel.Debug);
             }
@@ -262,7 +262,7 @@ namespace GRYLibrary.Core.ExecutePrograms
         private void LogEnd()
         {
             this.LogObject.Log($"Finished executing program", LogLevel.Debug);
-            foreach (string line in Utilities.SplitOnNewLineCharacter(this.GetSummaryOfExecutedProgram()))
+            foreach(string line in Utilities.SplitOnNewLineCharacter(this.GetSummaryOfExecutedProgram()))
             {
                 this.LogObject.Log(line, LogLevel.Debug);
             }
@@ -278,7 +278,7 @@ namespace GRYLibrary.Core.ExecutePrograms
             try
             {
                 this.ProcessWasAbortedDueToTimeout = false;
-                if (!Directory.Exists(this.Configuration.WorkingDirectory))
+                if(!Directory.Exists(this.Configuration.WorkingDirectory))
                 {
                     throw new ArgumentException($"The specified working-directory '{this.Configuration.WorkingDirectory}' does not exist.");
                 }
@@ -293,18 +293,18 @@ namespace GRYLibrary.Core.ExecutePrograms
                     CreateNoWindow = !this.Configuration.CreateWindow,
                 };
 
-                if (this.Configuration.User != null)
+                if(this.Configuration.User != null)
                 {
 
                     System.Security.SecureString password = new System.Security.SecureString();
                     StartInfo.UserName = this.Configuration.User;
-                    for (int x = 0; x < this.Configuration.Password.Length; x++)
+                    for(int x = 0; x < this.Configuration.Password.Length; x++)
                     {
                         password.AppendChar(this.Configuration.Password[x]);
                     }
                     StartInfo.Password = password;
                 }
-                if (this.Configuration.DelegateToEpew)
+                if(this.Configuration.DelegateToEpew)
                 {
                     StartInfo.Arguments = ExternalProgramExecutor.CreateEpewArgumentString(
                         this.Configuration.Program, this.Configuration.Argument, this.Configuration.WorkingDirectory, this.Configuration.PrintErrorsAsInformation, this.Configuration.TimeoutInMilliseconds, this.Configuration.Verbosity,
@@ -315,7 +315,7 @@ namespace GRYLibrary.Core.ExecutePrograms
                 this._Process.OutputDataReceived += (object sender, DataReceivedEventArgs dataReceivedEventArgs) => this.EnqueueInformation(dataReceivedEventArgs.Data);
                 this._Process.ErrorDataReceived += (object sender, DataReceivedEventArgs dataReceivedEventArgs) =>
                 {
-                    if (this.Configuration.PrintErrorsAsInformation)
+                    if(this.Configuration.PrintErrorsAsInformation)
                     {
                         this.EnqueueInformation(dataReceivedEventArgs.Data);
                     }
@@ -330,7 +330,7 @@ namespace GRYLibrary.Core.ExecutePrograms
                 this.ProcessId = this._Process.Id;
                 this._Running = true;
                 this.LogImmediatelyAfterStart(this._ProcessId);
-                if (this.Configuration.WaitingState is RunSynchronously)
+                if(this.Configuration.WaitingState is RunSynchronously)
                 {
                     this._Process.BeginOutputReadLine();
                     this._Process.BeginErrorReadLine();
@@ -340,7 +340,7 @@ namespace GRYLibrary.Core.ExecutePrograms
                     readLogItemsThread.Start();
                 }
             }
-            catch (Exception exception)
+            catch(Exception exception)
             {
                 this.Dispose();
                 Exception processStartException = new ProcessStartException($"Exception occurred while start execution '{this.Configuration.Title}'", exception);
@@ -351,7 +351,7 @@ namespace GRYLibrary.Core.ExecutePrograms
             task.Start();
             return task;
         }
-        private class RunningHandler : IWaitingStateVisitor
+        private class RunningHandler :IWaitingStateVisitor
         {
             private readonly ExternalProgramExecutor _ExternalProgramExecutor;
             private readonly Stopwatch _StopWatch;
@@ -374,7 +374,7 @@ namespace GRYLibrary.Core.ExecutePrograms
                     this._ExternalProgramExecutor.WaitForProcessEnd(this._ExternalProgramExecutor._Process, this._StopWatch);
                     this._ExternalProgramExecutor.ExecutionDuration = this._StopWatch.Elapsed;
                     this._ExternalProgramExecutor.ExitCode = this._ExternalProgramExecutor._Process.ExitCode;
-                    while (!this._ExternalProgramExecutor._NotLoggedOutputLines.IsEmpty)
+                    while(!this._ExternalProgramExecutor._NotLoggedOutputLines.IsEmpty)
                     {
                         Thread.Sleep(60);
                     }
@@ -389,12 +389,12 @@ namespace GRYLibrary.Core.ExecutePrograms
                     {
                         Utilities.NoOperation();
                     }
-                    if (runSynchronously.ThrowErrorIfExitCodeIsNotZero && this._ExternalProgramExecutor.ExitCode != 0)
+                    if(runSynchronously.ThrowErrorIfExitCodeIsNotZero && this._ExternalProgramExecutor.ExitCode != 0)
                     {
                         throw new UnexpectedExitCodeException(this._ExternalProgramExecutor);
                     }
                 }
-                catch (Exception exception)
+                catch(Exception exception)
                 {
                     this._ExternalProgramExecutor.LogObject.Log("Error while finishing program-execution", exception);
                 }
@@ -412,9 +412,9 @@ namespace GRYLibrary.Core.ExecutePrograms
 
         private void WaitForProcessEnd(Process process, Stopwatch stopwatch)
         {
-            if (this.Configuration.TimeoutInMilliseconds.HasValue)
+            if(this.Configuration.TimeoutInMilliseconds.HasValue)
             {
-                if (!process.WaitForExit(this.Configuration.TimeoutInMilliseconds.Value))
+                if(!process.WaitForExit(this.Configuration.TimeoutInMilliseconds.Value))
                 {
                     process.Kill();
                     process.WaitForExit();
@@ -428,13 +428,13 @@ namespace GRYLibrary.Core.ExecutePrograms
                 process.WaitForExit();
                 stopwatch.Stop();
             }
-            if (process.ExitCode != 0 && this.Configuration.Verbosity == Verbosity.Normal)
+            if(process.ExitCode != 0 && this.Configuration.Verbosity == Verbosity.Normal)
             {
-                foreach (string stdOutLine in this._AllStdOutLines)
+                foreach(string stdOutLine in this._AllStdOutLines)
                 {
                     this._NotLoggedOutputLines.Enqueue((LogLevel.Information, stdOutLine));
                 }
-                foreach (string stdErrLine in this._AllStdErrLines)
+                foreach(string stdErrLine in this._AllStdErrLines)
                 {
                     this._NotLoggedOutputLines.Enqueue((LogLevel.Error, stdErrLine));
                 }
@@ -448,9 +448,9 @@ namespace GRYLibrary.Core.ExecutePrograms
         }
         private void CheckIfStartOperationWasAlreadyCalled()
         {
-            lock (this._LockObject)
+            lock(this._LockObject)
             {
-                if (this.CurrentExecutionState != ExecutionState.NotStarted)
+                if(this.CurrentExecutionState != ExecutionState.NotStarted)
                 {
                     throw new InvalidOperationException("The process was already started.");
                 }
@@ -466,7 +466,7 @@ namespace GRYLibrary.Core.ExecutePrograms
             this.Configuration.WorkingDirectory = temp.Item3;
             this.LogObject.Log($"Program to execute with full path: {this.Configuration.Program}", LogLevel.Debug);
             this.LogObject.Log($"Program will be executed " + this.Configuration.WaitingState.Accept(GetWaitingStateLabelVisitor.GetWaitingStateLabelVisitorInstance), LogLevel.Debug);
-            if (string.IsNullOrWhiteSpace(this.Configuration.WorkingDirectory))
+            if(string.IsNullOrWhiteSpace(this.Configuration.WorkingDirectory))
             {
                 this.Configuration.WorkingDirectory = Directory.GetCurrentDirectory();
             }
@@ -484,7 +484,7 @@ namespace GRYLibrary.Core.ExecutePrograms
         {
             get
             {
-                if (this.CurrentExecutionState == ExecutionState.Terminated)
+                if(this.CurrentExecutionState == ExecutionState.Terminated)
                 {
                     return this._AllStdErrLinesAsArray;
                 }
@@ -509,7 +509,7 @@ namespace GRYLibrary.Core.ExecutePrograms
         {
             get
             {
-                if (this.CurrentExecutionState == ExecutionState.Terminated)
+                if(this.CurrentExecutionState == ExecutionState.Terminated)
                 {
                     return this._processWasAbortedDueToTimeout;
                 }
@@ -531,7 +531,7 @@ namespace GRYLibrary.Core.ExecutePrograms
         {
             get
             {
-                if (this.CurrentExecutionState == ExecutionState.Terminated)
+                if(this.CurrentExecutionState == ExecutionState.Terminated)
                 {
                     return this._ExitCode;
                 }
@@ -550,7 +550,7 @@ namespace GRYLibrary.Core.ExecutePrograms
         {
             get
             {
-                if (this.CurrentExecutionState != ExecutionState.NotStarted)
+                if(this.CurrentExecutionState != ExecutionState.NotStarted)
                 {
                     return this._ProcessId;
                 }
@@ -574,7 +574,7 @@ namespace GRYLibrary.Core.ExecutePrograms
         {
             get
             {
-                if (this.CurrentExecutionState == ExecutionState.Terminated)
+                if(this.CurrentExecutionState == ExecutionState.Terminated)
                 {
                     return this._AllStdOutLinesAsArray;
                 }
@@ -588,10 +588,10 @@ namespace GRYLibrary.Core.ExecutePrograms
 
         private void EnqueueInformation(string rawLine)
         {
-            if (this.NormalizeLine(rawLine, out string line))
+            if(this.NormalizeLine(rawLine, out string line))
             {
                 this._AllStdOutLines.Add(line);
-                if (this.Configuration.Verbosity is Verbosity.Full or Verbosity.Verbose)
+                if(this.Configuration.Verbosity is Verbosity.Full or Verbosity.Verbose)
                 {
                     this._NotLoggedOutputLines.Enqueue((LogLevel.Information, line));
                 }
@@ -600,10 +600,10 @@ namespace GRYLibrary.Core.ExecutePrograms
 
         private void EnqueueError(string rawLine)
         {
-            if (this.NormalizeLine(rawLine, out string line))
+            if(this.NormalizeLine(rawLine, out string line))
             {
                 this._AllStdErrLines.Add(line);
-                if (this.Configuration.Verbosity is Verbosity.Full or Verbosity.Verbose)
+                if(this.Configuration.Verbosity is Verbosity.Full or Verbosity.Verbose)
                 {
                     this._NotLoggedOutputLines.Enqueue((LogLevel.Error, line));
                 }
@@ -612,7 +612,7 @@ namespace GRYLibrary.Core.ExecutePrograms
 
         private bool NormalizeLine(string line, out string data)
         {
-            if (line == null)
+            if(line == null)
             {
                 data = null;
                 return false;
@@ -620,7 +620,7 @@ namespace GRYLibrary.Core.ExecutePrograms
             else
             {
                 line = line.Trim();
-                if (string.IsNullOrEmpty(line))
+                if(string.IsNullOrEmpty(line))
                 {
                     data = null;
                     return false;
@@ -634,9 +634,9 @@ namespace GRYLibrary.Core.ExecutePrograms
         }
         private void LogOutputImplementation()
         {
-            while (this.IsRunning || !this._NotLoggedOutputLines.IsEmpty)
+            while(this.IsRunning || !this._NotLoggedOutputLines.IsEmpty)
             {
-                if (this._NotLoggedOutputLines.TryDequeue(out (LogLevel, string) logItem))
+                if(this._NotLoggedOutputLines.TryDequeue(out (LogLevel, string) logItem))
                 {
                     this.LogObject.Log(logItem.Item2, logItem.Item1);
                 }

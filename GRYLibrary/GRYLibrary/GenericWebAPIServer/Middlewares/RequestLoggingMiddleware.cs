@@ -13,7 +13,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     /// <summary>
     /// Represents a middleware which logs the requests.
     /// </summary>
-    public class RequestLoggingMiddleware : AbstractMiddleware
+    public class RequestLoggingMiddleware :AbstractMiddleware
     {
         private readonly IGeneralLogger _Logger;
         private readonly IRequestLoggingSettings _RequestLoggingSettings;
@@ -33,7 +33,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
                 Enabled = true
             };
             logConfig.LogTargets = new List<GRYLogTarget> { filelog };
-            if (environment is not Productive)
+            if(environment is not Productive)
             {
                 logConfig.LogTargets.Add(new GRYLibrary.Core.Log.ConcreteLogTargets.Console());
             }
@@ -42,10 +42,10 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
         public override Task Invoke(HttpContext context)
         {
             bool implemented = false;
-            if (implemented)
+            if(implemented)
             {
                 Request request = default;//TODO create real object
-                if (this._RequestLoggingSettings.ShouldBeLogged(request))
+                if(this._RequestLoggingSettings.ShouldBeLogged(request))
                 {
                     LogLevel logLevel = this._RequestLoggingSettings.GetLogLevel(request);
                     string formatted = this._RequestLoggingSettings.FormatRequest(request, logLevel, this._RequestLoggingSettings.ShouldLogEntireRequestContent(request));
@@ -58,7 +58,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
 
         public virtual LogLevel GetLogLevelForRequestLogEntry(string route, ushort responseStatusCode)
         {
-            if (responseStatusCode % 100 == 5)
+            if(responseStatusCode % 100 == 5)
             {
                 return LogLevel.Error;
             }

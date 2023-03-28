@@ -11,7 +11,7 @@ namespace GRYLibrary.Core.Miscellaneous
         private void Initialize(object[] words)
         {
             this.S = new SortedSet<State>[words.Length + 1];
-            for (int k = 0; k <= words.Length; k++)
+            for(int k = 0; k <= words.Length; k++)
             {
                 this.S[k] = new SortedSet<State>();
             }
@@ -20,13 +20,13 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             this.Initialize(words);
             // S[0].Add(new State() { Rule = new ProductionRuleWithExpection() { Identifier = new NonTerminalSymbol() { Value = string.Empty }, Substituted = new List<Symbol>(), Expected  = S }, J = 0 });
-            for (int k = 0; k <= words.Length; k++)
+            for(int k = 0; k <= words.Length; k++)
             {
-                foreach (State state in this.S[k]) // S[k] can expand during this loop
+                foreach(State state in this.S[k]) // S[k] can expand during this loop
                 {
-                    if (this.Finished(state))
+                    if(this.Finished(state))
                     {
-                        if (this.NextElementOfState(state) is TerminalSymbol)
+                        if(this.NextElementOfState(state) is TerminalSymbol)
                         {
                             this.Scanner(state, k, words);
                         }
@@ -56,7 +56,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         private void Predictor(State state, int k, Grammar grammar)
         {
-            foreach (ProductionRule rule in this.GrammarRules(state.Rule.Expected, grammar))
+            foreach(ProductionRule rule in this.GrammarRules(state.Rule.Expected, grammar))
             {
                 this.S[k].Add(new State()
                 {
@@ -78,7 +78,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         private void Scanner(State state, int k, object[] words)
         {
-            if (this.PartsOfSpeech(words[k]).Contains(state.Rule.Expected.First()))
+            if(this.PartsOfSpeech(words[k]).Contains(state.Rule.Expected.First()))
             {
                 this.S[k + 1].Add(new State()
                 {
@@ -100,7 +100,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         private void Completer(State state, int k)
         {
-            foreach (State state2 in this.S[state.J])
+            foreach(State state2 in this.S[state.J])
             {
                 this.S[k].Add(new State()
                 {
@@ -122,11 +122,11 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             public string Value;
         }
-        public class TerminalSymbol : Symbol
+        public class TerminalSymbol :Symbol
         {
 
         }
-        public class NonTerminalSymbol : Symbol
+        public class NonTerminalSymbol :Symbol
         {
 
         }

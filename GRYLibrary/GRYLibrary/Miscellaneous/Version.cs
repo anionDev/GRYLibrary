@@ -8,7 +8,7 @@ namespace GRYLibrary.Core.Miscellaneous
     /// Serializable version of the System.Version class.
     /// </summary>
     [Serializable]
-    public class Version : ICloneable, IComparable
+    public class Version :ICloneable, IComparable
     {
         private int major;
         private int minor;
@@ -92,40 +92,40 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             this.build = -1;
             this.revision = -1;
-            if (version == null)
+            if(version == null)
             {
                 throw new ArgumentNullException("version");
             }
             char[] chArray1 = new char[1] { '.' };
             string[] textArray1 = version.Split(chArray1);
             int num1 = textArray1.Length;
-            if (num1 is < 2 or > 4)
+            if(num1 is < 2 or > 4)
             {
                 throw new ArgumentException("Arg_VersionString");
             }
             this.major = int.Parse(textArray1[0], CultureInfo.InvariantCulture);
-            if (this.major < 0)
+            if(this.major < 0)
             {
                 throw new ArgumentOutOfRangeException("version", "ArgumentOutOfRange_Version");
             }
             this.minor = int.Parse(textArray1[1], CultureInfo.InvariantCulture);
-            if (this.minor < 0)
+            if(this.minor < 0)
             {
                 throw new ArgumentOutOfRangeException("version", "ArgumentOutOfRange_Version");
             }
             num1 -= 2;
-            if (num1 > 0)
+            if(num1 > 0)
             {
                 this.build = int.Parse(textArray1[2], CultureInfo.InvariantCulture);
-                if (this.build < 0)
+                if(this.build < 0)
                 {
                     throw new ArgumentOutOfRangeException("build", "ArgumentOutOfRange_Version");
                 }
                 num1--;
-                if (num1 > 0)
+                if(num1 > 0)
                 {
                     this.revision = int.Parse(textArray1[3], CultureInfo.InvariantCulture);
-                    if (this.revision < 0)
+                    if(this.revision < 0)
                     {
                         throw new ArgumentOutOfRangeException("revision", "ArgumentOutOfRange_Version");
                     }
@@ -141,11 +141,11 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             this.build = -1;
             this.revision = -1;
-            if (major < 0)
+            if(major < 0)
             {
                 throw new ArgumentOutOfRangeException("major", "ArgumentOutOfRange_Version");
             }
-            if (minor < 0)
+            if(minor < 0)
             {
                 throw new ArgumentOutOfRangeException("minor", "ArgumentOutOfRange_Version");
             }
@@ -163,15 +163,15 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             this.build = -1;
             this.revision = -1;
-            if (major < 0)
+            if(major < 0)
             {
                 throw new ArgumentOutOfRangeException("major", "ArgumentOutOfRange_Version");
             }
-            if (minor < 0)
+            if(minor < 0)
             {
                 throw new ArgumentOutOfRangeException("minor", "ArgumentOutOfRange_Version");
             }
-            if (build < 0)
+            if(build < 0)
             {
                 throw new ArgumentOutOfRangeException("build", "ArgumentOutOfRange_Version");
             }
@@ -193,19 +193,19 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             this.build = -1;
             this.revision = -1;
-            if (major < 0)
+            if(major < 0)
             {
                 throw new ArgumentOutOfRangeException("major", "ArgumentOutOfRange_Version");
             }
-            if (minor < 0)
+            if(minor < 0)
             {
                 throw new ArgumentOutOfRangeException("minor", "ArgumentOutOfRange_Version");
             }
-            if (build < 0)
+            if(build < 0)
             {
                 throw new ArgumentOutOfRangeException("build", "ArgumentOutOfRange_Version");
             }
-            if (revision < 0)
+            if(revision < 0)
             {
                 throw new ArgumentOutOfRangeException("revision", "ArgumentOutOfRange_Version");
             }
@@ -232,44 +232,44 @@ namespace GRYLibrary.Core.Miscellaneous
         #region IComparable Members
         public int CompareTo(object version)
         {
-            if (version == null)
+            if(version == null)
             {
                 return 1;
             }
-            if (version is not Version)
+            if(version is not Version)
             {
                 throw new ArgumentException("Arg_MustBeVersion");
             }
             Version version1 = (Version)version;
-            if (this.major != version1.Major)
+            if(this.major != version1.Major)
             {
-                if (this.major > version1.Major)
+                if(this.major > version1.Major)
                 {
                     return 1;
                 }
                 return -1;
             }
-            if (this.minor != version1.Minor)
+            if(this.minor != version1.Minor)
             {
-                if (this.minor > version1.Minor)
+                if(this.minor > version1.Minor)
                 {
                     return 1;
                 }
                 return -1;
             }
-            if (this.build != version1.Build)
+            if(this.build != version1.Build)
             {
-                if (this.build > version1.Build)
+                if(this.build > version1.Build)
                 {
                     return 1;
                 }
                 return -1;
             }
-            if (this.revision == version1.Revision)
+            if(this.revision == version1.Revision)
             {
                 return 0;
             }
-            if (this.revision > version1.Revision)
+            if(this.revision > version1.Revision)
             {
                 return 1;
             }
@@ -283,12 +283,12 @@ namespace GRYLibrary.Core.Miscellaneous
         /// <returns></returns>
         public override bool Equals(object obj)
         {
-            if (obj is null or not Version)
+            if(obj is null or not Version)
             {
                 return false;
             }
             Version version1 = (Version)obj;
-            if ((this.major == version1.Major) && (this.minor == version1.Minor) && (this.build == version1.Build) && (this.revision == version1.Revision))
+            if((this.major == version1.Major) && (this.minor == version1.Minor) && (this.build == version1.Build) && (this.revision == version1.Revision))
             {
                 return true;
             }
@@ -354,7 +354,7 @@ namespace GRYLibrary.Core.Miscellaneous
         /// <returns></returns>
         public static bool operator <(Version v1, Version v2)
         {
-            if (v1 == null)
+            if(v1 == null)
             {
                 throw new ArgumentNullException("v1");
             }
@@ -368,7 +368,7 @@ namespace GRYLibrary.Core.Miscellaneous
         /// <returns></returns>
         public static bool operator <=(Version v1, Version v2)
         {
-            if (v1 == null)
+            if(v1 == null)
             {
                 throw new ArgumentNullException("v1");
             }
@@ -384,11 +384,11 @@ namespace GRYLibrary.Core.Miscellaneous
         /// <returns></returns>
         public override string ToString()
         {
-            if (this.build == -1)
+            if(this.build == -1)
             {
                 return this.ToString(2);
             }
-            if (this.revision == -1)
+            if(this.revision == -1)
             {
                 return this.ToString(3);
             }
@@ -402,7 +402,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public string ToString(int fieldCount)
         {
             object[] objArray1;
-            switch (fieldCount)
+            switch(fieldCount)
             {
                 case 0:
                     {
@@ -417,20 +417,20 @@ namespace GRYLibrary.Core.Miscellaneous
                         return this.major.ToString() + "." + this.minor.ToString();
                     }
             }
-            if (this.build == -1)
+            if(this.build == -1)
             {
                 throw new ArgumentException(string.Format("ArgumentOutOfRange_Bounds_Lower_Upper {0},{1}", "0", "2"), "fieldCount");
             }
-            if (fieldCount == 3)
+            if(fieldCount == 3)
             {
                 objArray1 = new object[5] { this.major, ".", this.minor, ".", this.build };
                 return string.Concat(objArray1);
             }
-            if (this.revision == -1)
+            if(this.revision == -1)
             {
                 throw new ArgumentException(string.Format("ArgumentOutOfRange_Bounds_Lower_Upper {0},{1}", "0", "3"), "fieldCount");
             }
-            if (fieldCount == 4)
+            if(fieldCount == 4)
             {
                 objArray1 = new object[7] { this.major, ".", this.minor, ".", this.build, ".", this.revision };
                 return string.Concat(objArray1);

@@ -1,9 +1,9 @@
-﻿using System;
-using GRYLibrary.Core.ExecutePrograms;
+﻿using GRYLibrary.Core.ExecutePrograms;
+using System;
 
 namespace GRYLibrary.Core.Exceptions
 {
-    public class UnexpectedExitCodeException : Exception
+    public class UnexpectedExitCodeException :Exception
     {
         public ExternalProgramExecutor ExecutedProgram { get; }
         public UnexpectedExitCodeException(ExternalProgramExecutor externalProgramExecutor) : base(GetMessage(externalProgramExecutor))

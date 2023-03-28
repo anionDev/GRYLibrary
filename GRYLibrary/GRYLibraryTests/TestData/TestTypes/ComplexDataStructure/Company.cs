@@ -1,15 +1,15 @@
-﻿using System;
+﻿using GRYLibrary.Core.AdvancedObjectAnalysis;
+using GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper;
+using GRYLibrary.Core.Miscellaneous;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
-using GRYLibrary.Core.AdvancedObjectAnalysis;
-using GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper;
-using GRYLibrary.Core.Miscellaneous;
 
 namespace GRYLibrary.Tests.TestData.TestTypes.ComplexDataStructure
 {
-    public class Company : IGRYSerializable
+    public class Company :IGRYSerializable
     {
         public Employee Manager { get; set; }
 

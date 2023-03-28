@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 
 namespace GRYLibrary.Tests.TestData.TestTypes.ComplexDataStructure2
 {
-    public abstract class ModelType : IXmlSerializable
+    public abstract class ModelType :IXmlSerializable
     {
         public string Name { get; set; }
         public Guid Id { get; set; }

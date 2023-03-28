@@ -34,10 +34,10 @@ namespace GRYLibrary.Core.Log
         {
             get
             {
-                if (!this._MessageLoaded)
+                if(!this._MessageLoaded)
                 {
                     string plainMessage = this._GetMessageFunction();
-                    if (this.Exception != null)
+                    if(this.Exception != null)
                     {
                         plainMessage = this.GetExceptionMessage(this.Exception, plainMessage);
                     }
@@ -114,7 +114,7 @@ namespace GRYLibrary.Core.Log
         #endregion 
         internal void Format(GRYLogConfiguration configuration, out string formattedMessage, out int colorBegin, out int colorEnd, out ConsoleColor consoleColor, GRYLogLogFormat format, string messageIdValue)
         {
-            if (!this._FormatingLoaded)
+            if(!this._FormatingLoaded)
             {
                 this.FormatMessage(configuration, this.PlainMessage, this.MomentOfLogEntry, this.LogLevel, format, out string fm, out int cb, out int ce, out ConsoleColor cc, messageIdValue);
                 this._FormattedMessage = fm;
@@ -135,15 +135,15 @@ namespace GRYLibrary.Core.Log
         private void FormatMessage(GRYLogConfiguration configuration, string message, DateTime momentOfLogEntry, LogLevel loglevel, GRYLogLogFormat format, out string formattedMessage, out int colorBegin, out int colorEnd, out ConsoleColor consoleColor, string messageIdValue)
         {
             consoleColor = configuration.GetLoggedMessageTypesConfigurationByLogLevel(loglevel).ConsoleColor;
-            if (!string.IsNullOrEmpty(configuration.Name))
+            if(!string.IsNullOrEmpty(configuration.Name))
             {
                 message = $"[{configuration.Name.Trim()}] {message}";
             }
-            if (configuration.ConvertTimeForLogentriesToUTCFormat)
+            if(configuration.ConvertTimeForLogentriesToUTCFormat)
             {
                 momentOfLogEntry = momentOfLogEntry.ToUniversalTime();
             }
-            switch (format)
+            switch(format)
             {
                 case GRYLogLogFormat.OnlyMessage:
                     formattedMessage = message;
@@ -152,7 +152,7 @@ namespace GRYLibrary.Core.Log
                     break;
                 case GRYLogLogFormat.GRYLogFormat:
                     string messageId;
-                    if (string.IsNullOrWhiteSpace(messageIdValue))
+                    if(string.IsNullOrWhiteSpace(messageIdValue))
                     {
                         messageId = string.Empty;
                     }
@@ -204,23 +204,23 @@ namespace GRYLibrary.Core.Log
         }
         private string GetExceptionMessage(Exception exception, string message = null, uint indentationLevel = 1, string exceptionTitle = "Exception-information")
         {
-            if (string.IsNullOrWhiteSpace(message))
+            if(string.IsNullOrWhiteSpace(message))
             {
                 message = "An exception occurred.";
             }
-            if (!(message.EndsWith(".") | message.EndsWith("?") | message.EndsWith(":") | message.EndsWith("!")))
+            if(!(message.EndsWith(".") | message.EndsWith("?") | message.EndsWith(":") | message.EndsWith("!")))
             {
                 message += ".";
             }
             string result = $"{exceptionTitle}: ";
-            if (exception == null)
+            if(exception == null)
             {
                 result += "null";
             }
             else
             {
                 result += $"'{message}', Exception-type: {exception.GetType().FullName}, Exception-message: '{exception.Message}'";
-                if (true)
+                if(true)
                 {
                     result += @$"
 (Exception-details:
@@ -240,7 +240,7 @@ namespace GRYLibrary.Core.Log
         private IList<string> FormatStackTrace(Exception exception)
         {
             List<string> result = new();
-            if (exception.StackTrace == null)
+            if(exception.StackTrace == null)
             {
                 result.Add("Stack-trace: null");
             }

@@ -1,7 +1,7 @@
 ﻿using GRYLibrary.Core.Graph;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GRYLibrary.Tests.Testcases.GraphTests
 {
@@ -43,9 +43,9 @@ namespace GRYLibrary.Tests.Testcases.GraphTests
 
         private int GetIndexOfTupleWithSpeicficFirstvalue(IList<Tuple<int, IList<Edge>>> l, int index)
         {
-            for (int i = 0; i < l.Count; i++)
+            for(int i = 0; i < l.Count; i++)
             {
-                if (l[i].Item1.Equals(index))
+                if(l[i].Item1.Equals(index))
                 {
                     return i;
                 }

@@ -7,7 +7,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     /// <summary>
     /// Represents a webapplicationfirewall
     /// </summary>
-    public class WebApplicationFirewall : AbstractMiddleware
+    public class WebApplicationFirewall :AbstractMiddleware
     {
         private readonly IWebApplicationFirewallSettings _WebApplicationFirewallSettings;
         /// <inheritdoc/>

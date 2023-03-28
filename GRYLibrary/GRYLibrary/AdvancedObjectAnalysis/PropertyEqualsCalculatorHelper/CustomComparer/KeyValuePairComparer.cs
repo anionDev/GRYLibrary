@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper.CustomComparer
 {
-    public class KeyValuePairComparer : AbstractCustomComparer
+    public class KeyValuePairComparer :AbstractCustomComparer
     {
         internal KeyValuePairComparer(PropertyEqualsCalculatorConfiguration cacheAndConfiguration) : base(cacheAndConfiguration)
         {

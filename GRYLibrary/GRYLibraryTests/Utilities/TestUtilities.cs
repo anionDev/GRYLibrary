@@ -2,9 +2,9 @@
 using GRYLibrary.Core.CryptoSystems.ConcreteHashAlgorithms;
 using GRYLibrary.Core.OperatingSystem;
 using GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GRYLibrary.Tests.Utilities
 {
@@ -14,34 +14,34 @@ namespace GRYLibrary.Tests.Utilities
         {
             bool expectedObjectIsNull = expectedObject == null;
             bool actualObjectIsNull = actualObject == null;
-            if (expectedObjectIsNull && actualObjectIsNull)
+            if(expectedObjectIsNull && actualObjectIsNull)
             {
                 Core.Miscellaneous.Utilities.NoOperation();
             }
-            if (expectedObjectIsNull && !actualObjectIsNull)
+            if(expectedObjectIsNull && !actualObjectIsNull)
             {
                 Assert.Fail("actual object is not null");
             }
-            if (!expectedObjectIsNull && actualObjectIsNull)
+            if(!expectedObjectIsNull && actualObjectIsNull)
             {
                 Assert.Fail("actual object is null");
             }
-            if (!expectedObjectIsNull && !actualObjectIsNull)
+            if(!expectedObjectIsNull && !actualObjectIsNull)
             {
                 Assert.IsTrue(Generic.GenericEquals(expectedObject, actualObject), Core.Miscellaneous.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
                 Assert.AreEqual(Generic.GenericGetHashCode(expectedObject), Generic.GenericGetHashCode(actualObject));
 
-                if (addDefaultEqualAssertion)
+                if(addDefaultEqualAssertion)
                 {
-                    if (Core.Miscellaneous.EnumerableTools.ObjectIsSet(expectedObject))
+                    if(Core.Miscellaneous.EnumerableTools.ObjectIsSet(expectedObject))
                     {
                         Assert.IsTrue(Core.Miscellaneous.EnumerableTools.ObjectToSet<object>(expectedObject).SetEquals(Core.Miscellaneous.EnumerableTools.ObjectToSet<object>(actualObject)), Core.Miscellaneous.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
                     }
-                    else if (Core.Miscellaneous.EnumerableTools.ObjectIsList(expectedObject))
+                    else if(Core.Miscellaneous.EnumerableTools.ObjectIsList(expectedObject))
                     {
                         Assert.IsTrue(Core.Miscellaneous.EnumerableTools.ObjectToList<object>(expectedObject).SequenceEqual(Core.Miscellaneous.EnumerableTools.ObjectToList<object>(actualObject)), Core.Miscellaneous.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
                     }
-                    else if (!Core.Miscellaneous.EnumerableTools.ObjectIsEnumerable(expectedObject))
+                    else if(!Core.Miscellaneous.EnumerableTools.ObjectIsEnumerable(expectedObject))
                     {
                         Assert.AreEqual(expectedObject, actualObject, Core.Miscellaneous.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
                         Assert.AreEqual(expectedObject.GetHashCode(), actualObject.GetHashCode());
@@ -53,19 +53,19 @@ namespace GRYLibrary.Tests.Utilities
         {
             bool expectedObjectIsNull = expectedObject == null;
             bool actualObjectIsNull = actualObject == null;
-            if (expectedObjectIsNull && actualObjectIsNull)
+            if(expectedObjectIsNull && actualObjectIsNull)
             {
                 Assert.Fail("Both objects are equal");
             }
-            if (expectedObjectIsNull && !actualObjectIsNull)
+            if(expectedObjectIsNull && !actualObjectIsNull)
             {
                 Core.Miscellaneous.Utilities.NoOperation();
             }
-            if (!expectedObjectIsNull && actualObjectIsNull)
+            if(!expectedObjectIsNull && actualObjectIsNull)
             {
                 Core.Miscellaneous.Utilities.NoOperation();
             }
-            if (!expectedObjectIsNull && !actualObjectIsNull)
+            if(!expectedObjectIsNull && !actualObjectIsNull)
             {
                 Assert.IsFalse(Generic.GenericEquals(expectedObject, actualObject), Core.Miscellaneous.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
                 Assert.AreNotEqual(expectedObject, actualObject, Core.Miscellaneous.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
@@ -95,7 +95,7 @@ namespace GRYLibrary.Tests.Utilities
         {
             return Core.OperatingSystem.OperatingSystem.GetCurrentOperatingSystem().Accept(GetTimeoutToolVisitor.Instance);
         }
-        private class GetTimeoutToolVisitor : IOperatingSystemVisitor<string>
+        private class GetTimeoutToolVisitor :IOperatingSystemVisitor<string>
         {
             public static IOperatingSystemVisitor<string> Instance { get; set; } = new GetTimeoutToolVisitor();
 

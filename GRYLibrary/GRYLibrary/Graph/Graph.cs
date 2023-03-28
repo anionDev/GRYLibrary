@@ -35,7 +35,7 @@ namespace GRYLibrary.Core.Graph
             }
             set
             {
-                if (!value && this.ContainsOneOrMoreSelfLoops())
+                if(!value && this.ContainsOneOrMoreSelfLoops())
                 {
                     throw new Exception("Setting ContainsSelfLoops to false is not possible while the graph contains self-loops");
                 }
@@ -45,9 +45,9 @@ namespace GRYLibrary.Core.Graph
         private bool _SelfLoopIsAllowed = true;
         public Vertex GetVertex(string vertexName)
         {
-            foreach (Vertex vertex in this._Vertices)
+            foreach(Vertex vertex in this._Vertices)
             {
-                if (vertex.Name.Equals(vertexName))
+                if(vertex.Name.Equals(vertexName))
                 {
                     return vertex;
                 }
@@ -61,7 +61,7 @@ namespace GRYLibrary.Core.Graph
         public abstract void RemoveEdge(Edge edge);
         public void AddVertex(Vertex vertex)
         {
-            if (this.Vertices.Contains(vertex))
+            if(this.Vertices.Contains(vertex))
             {
                 throw new Exception($"This {nameof(Graph)} does already have a {nameof(Vertex)} with the name '{vertex.Name}'.");
             }
@@ -69,9 +69,9 @@ namespace GRYLibrary.Core.Graph
         }
         public void RemoveAllEdgesWithoutWeight()
         {
-            foreach (Edge edge in this.Edges)
+            foreach(Edge edge in this.Edges)
             {
-                if (edge.Weight == 0)
+                if(edge.Weight == 0)
                 {
                     this.RemoveEdge(edge);
                 }
@@ -82,7 +82,7 @@ namespace GRYLibrary.Core.Graph
         /// </remarks>
         public void RemoveVertex(Vertex vertex)
         {
-            foreach (Edge edge in vertex.GetConnectedEdges())
+            foreach(Edge edge in vertex.GetConnectedEdges())
             {
                 this.RemoveEdge(edge);
             }
@@ -90,7 +90,7 @@ namespace GRYLibrary.Core.Graph
         }
         protected void OnEdgeAdded(Edge edge)
         {
-            foreach (Vertex vertex in edge.GetConnectedVertices())
+            foreach(Vertex vertex in edge.GetConnectedVertices())
             {
                 this._Vertices.Add(vertex);
                 vertex.ConnectedEdges.Add(edge);
@@ -98,32 +98,32 @@ namespace GRYLibrary.Core.Graph
         }
         protected void OnEdgeRemoved(Edge edge)
         {
-            foreach (Vertex vertex in edge.GetConnectedVertices())
+            foreach(Vertex vertex in edge.GetConnectedVertices())
             {
                 vertex.ConnectedEdges.Remove(edge);
             }
         }
         protected void AddCheck(Edge edge, Vertex connectedVertex1, Vertex connectedVertex2)
         {
-            if (!this.SelfLoopIsAllowed && connectedVertex1.Equals(connectedVertex2))
+            if(!this.SelfLoopIsAllowed && connectedVertex1.Equals(connectedVertex2))
             {
                 throw new InvalidGraphStructureException($"Self-loops are not allowed. Change the value of the {nameof(this.SelfLoopIsAllowed)}-property to allow this.");
             }
-            if (this.Edges.Where(existingEdge => existingEdge.Name.Equals(edge.Name)).Count() > 0)
+            if(this.Edges.Where(existingEdge => existingEdge.Name.Equals(edge.Name)).Count() > 0)
             {
                 throw new InvalidGraphStructureException($"This graph does already have an edge with the name {edge.Name}.");
             }
-            if (this.TryGetEdge(connectedVertex1, connectedVertex2, out _))
+            if(this.TryGetEdge(connectedVertex1, connectedVertex2, out _))
             {
                 throw new InvalidGraphStructureException($"This graph does already have an edge which connects {connectedVertex1.Name} and {connectedVertex2.Name}.");
             }
         }
         public bool ContainsOneOrMoreSelfLoops()
         {
-            foreach (Edge edge in this.Edges)
+            foreach(Edge edge in this.Edges)
             {
                 IEnumerable<Vertex> connectedVertices = edge.GetConnectedVertices();
-                if (connectedVertices.Count() != new HashSet<Vertex>(connectedVertices).Count)
+                if(connectedVertices.Count() != new HashSet<Vertex>(connectedVertices).Count)
                 {
                     return true;
                 }
@@ -132,14 +132,14 @@ namespace GRYLibrary.Core.Graph
         }
         public bool ContainsOneOrMoreCycles()
         {
-            foreach (Vertex vertex in this.Vertices)
+            foreach(Vertex vertex in this.Vertices)
             {
                 bool containsCycle = false;
                 this.DepthFirstSearch((currentVertex, edges) =>
                 {
-                    foreach (Vertex successor in currentVertex.GetSuccessorVertices())
+                    foreach(Vertex successor in currentVertex.GetSuccessorVertices())
                     {
-                        if (successor.Equals(vertex))
+                        if(successor.Equals(vertex))
                         {
                             containsCycle = true;
                             return false;
@@ -147,7 +147,7 @@ namespace GRYLibrary.Core.Graph
                     }
                     return true;
                 }, vertex);
-                if (containsCycle)
+                if(containsCycle)
                 {
                     return true;
                 }
@@ -156,17 +156,17 @@ namespace GRYLibrary.Core.Graph
         }
         public bool IsConnected()
         {
-            if (this._Vertices.Count == 0)
+            if(this._Vertices.Count == 0)
             {
                 throw new InvalidOperationException("No vertices available.");
             }
-            if (this._Vertices.Count == 1)
+            if(this._Vertices.Count == 1)
             {
                 return true;
             }
             Vertex startVertex = this._Vertices.First();
             Dictionary<Vertex, bool> visited = new();
-            foreach (Vertex vertex in this._Vertices)
+            foreach(Vertex vertex in this._Vertices)
             {
                 visited.Add(vertex, false);
             }
@@ -179,11 +179,11 @@ namespace GRYLibrary.Core.Graph
             IList<Vertex> vertices = this.GetOrderedVertices();
             int verticesCount = vertices.Count;
             double[,] result = new double[verticesCount, verticesCount];
-            for (int i = 0; i < result.GetLength(0); i++)
+            for(int i = 0; i < result.GetLength(0); i++)
             {
-                for (int j = 0; j < result.GetLength(1); j++)
+                for(int j = 0; j < result.GetLength(1); j++)
                 {
-                    if (this.TryGetEdge(vertices[i], vertices[j], out Edge connection))
+                    if(this.TryGetEdge(vertices[i], vertices[j], out Edge connection))
                     {
                         result[i, j] = connection.Weight;
                     }
@@ -205,7 +205,7 @@ namespace GRYLibrary.Core.Graph
         public ISet<Cycle> GetAllCycles()
         {
             ISet<Cycle> result = new HashSet<Cycle>();
-            foreach (Vertex vertex in this.Vertices)
+            foreach(Vertex vertex in this.Vertices)
             {
                 result.UnionWith(this.GetAllCyclesThroughASpecificVertex(vertex));
             }
@@ -238,21 +238,21 @@ namespace GRYLibrary.Core.Graph
             Queue<Tuple<Vertex, IList<Edge>>> queue = new();
             visitedMap[startVertex] = true;
             List<Edge> initialList = new();
-            if (!customAction(startVertex, initialList))
+            if(!customAction(startVertex, initialList))
             {
                 return;
             }
             queue.Enqueue(new Tuple<Vertex, IList<Edge>>(startVertex, initialList));
-            while (queue.Count != 0)
+            while(queue.Count != 0)
             {
                 Tuple<Vertex, IList<Edge>> currentVertex = queue.Dequeue();
-                foreach (Vertex successor in this.GetDirectSuccessors(currentVertex.Item1))
+                foreach(Vertex successor in this.GetDirectSuccessors(currentVertex.Item1))
                 {
-                    if (!visitedMap[successor])
+                    if(!visitedMap[successor])
                     {
                         visitedMap[successor] = true;
                         List<Edge> successorPath = currentVertex.Item2.ToList();
-                        if (this.TryGetEdge(currentVertex.Item1, successor, out Edge edge))
+                        if(this.TryGetEdge(currentVertex.Item1, successor, out Edge edge))
                         {
                             successorPath.Add(edge);
                         }
@@ -260,7 +260,7 @@ namespace GRYLibrary.Core.Graph
                         {
                             successorPath.Add(this.GetNewEdgeBetween(currentVertex.Item1, successor));
                         }
-                        if (!customAction(successor, successorPath))
+                        if(!customAction(successor, successorPath))
                         {
                             return;
                         }
@@ -279,20 +279,20 @@ namespace GRYLibrary.Core.Graph
             this.InitializeSearchAndDoSomeChecks(startVertex, out Dictionary<Vertex, bool> visitedMap);
             Stack<Tuple<Vertex, IList<Edge>>> stack = new();
             stack.Push(new Tuple<Vertex, IList<Edge>>(startVertex, new List<Edge>()));
-            while (stack.Count > 0)
+            while(stack.Count > 0)
             {
                 Tuple<Vertex, IList<Edge>> currentVertex = stack.Pop();
-                if (!visitedMap[currentVertex.Item1])
+                if(!visitedMap[currentVertex.Item1])
                 {
                     visitedMap[currentVertex.Item1] = true;
-                    if (!customAction(currentVertex.Item1, currentVertex.Item2))
+                    if(!customAction(currentVertex.Item1, currentVertex.Item2))
                     {
                         return;
                     }
-                    foreach (Vertex successor in this.GetDirectSuccessors(currentVertex.Item1, doNotWalkAgainstDirectedEdges))
+                    foreach(Vertex successor in this.GetDirectSuccessors(currentVertex.Item1, doNotWalkAgainstDirectedEdges))
                     {
                         List<Edge> successorPath = currentVertex.Item2.ToList();
-                        if (this.TryGetEdge(currentVertex.Item1, successor, out Edge edge))
+                        if(this.TryGetEdge(currentVertex.Item1, successor, out Edge edge))
                         {
                             successorPath.Add(edge);
                         }
@@ -310,12 +310,12 @@ namespace GRYLibrary.Core.Graph
 
         private void InitializeSearchAndDoSomeChecks(Vertex startVertex, out Dictionary<Vertex, bool> visitedMap)
         {
-            if (!this.Vertices.Contains(startVertex))
+            if(!this.Vertices.Contains(startVertex))
             {
                 throw new InternalAlgorithmException($"Vertex '{startVertex}' is not contained in this graph.");
             }
             visitedMap = new Dictionary<Vertex, bool>();
-            foreach (Vertex vertex in this.Vertices)
+            foreach(Vertex vertex in this.Vertices)
             {
                 visitedMap.Add(vertex, false);
             }
@@ -323,9 +323,9 @@ namespace GRYLibrary.Core.Graph
 
         public bool TryGetEdge(Vertex source, Vertex target, out Edge result)
         {
-            foreach (Edge edge in this.Edges)
+            foreach(Edge edge in this.Edges)
             {
-                if (edge.Connects(source, target))
+                if(edge.Connects(source, target))
                 {
                     result = edge;
                     return true;
@@ -343,7 +343,7 @@ namespace GRYLibrary.Core.Graph
         /// </remarks>
         public override bool Equals(object obj)
         {
-            if (!this.GetType().Equals(obj.GetType()))
+            if(!this.GetType().Equals(obj.GetType()))
             {
                 return false;
             }
@@ -367,7 +367,7 @@ namespace GRYLibrary.Core.Graph
         public bool IsSubgraphOf(Graph graph, out IDictionary<Vertex, Vertex> mappingFromgraphToThisGraph)
         {
             bool result = graph.IsSubgraph(this, out IDictionary<Vertex, Vertex> mappingFromSubgraphToThisGraph);
-            if (result)
+            if(result)
             {
                 mappingFromgraphToThisGraph = mappingFromSubgraphToThisGraph.ToDictionary(keyValuePair => keyValuePair.Value, keyValuePair => keyValuePair.Key);
             }
@@ -380,16 +380,16 @@ namespace GRYLibrary.Core.Graph
         /// <remarks>This operations does not work yet due to missing implementation of <see cref="IsSubgraph"/>.</remarks>
         public bool IsIsomorphic(Graph otherGraph, out IDictionary<Vertex, Vertex> bijectionFromOtherGraphToThisGraph)
         {
-            if (!this.GetType().Equals(otherGraph.GetType()))
+            if(!this.GetType().Equals(otherGraph.GetType()))
             {
                 throw new UnallowedOperationException($"Graphs of types {this.GetType().FullName} and {otherGraph.GetType().FullName} are not comparable.");
             }
-            if (this._Vertices.Count != otherGraph._Vertices.Count || this.Edges.Count != otherGraph.Edges.Count)
+            if(this._Vertices.Count != otherGraph._Vertices.Count || this.Edges.Count != otherGraph.Edges.Count)
             {
                 bijectionFromOtherGraphToThisGraph = null;
                 return false;
             }
-            if (this.IsSubgraphOf(otherGraph, out IDictionary<Vertex, Vertex> mappingFromgraphToThisGraph))
+            if(this.IsSubgraphOf(otherGraph, out IDictionary<Vertex, Vertex> mappingFromgraphToThisGraph))
             {
                 bijectionFromOtherGraphToThisGraph = mappingFromgraphToThisGraph;
                 return true;
@@ -403,9 +403,9 @@ namespace GRYLibrary.Core.Graph
         /// <remarks>This operations does not work yet due to missing implementation of <see cref="GetAllCyclesThroughASpecificVertex"/>.</remarks>
         public bool HasHamiltonianCycle(out Cycle result)
         {
-            foreach (Cycle cycle in this.GetAllCycles())
+            foreach(Cycle cycle in this.GetAllCycles())
             {
-                if (cycle.Edges.Count == this._Vertices.Count)
+                if(cycle.Edges.Count == this._Vertices.Count)
                 {
                     result = cycle;
                     return true;

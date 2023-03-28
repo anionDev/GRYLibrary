@@ -1,7 +1,7 @@
 ﻿using GRYLibrary.Core.Graph;
 using GRYLibrary.Core.Graph.Exceptions;
-using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace GRYLibrary.Tests.Testcases.GraphTests
 {
@@ -17,7 +17,7 @@ namespace GRYLibrary.Tests.Testcases.GraphTests
                 graph.IsConnected();
                 Assert.Fail();
             }
-            catch (InvalidOperationException)
+            catch(InvalidOperationException)
             {
                 //test passed
             }

@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper.CustomComparer
 {
-    public class EnumerableComparer : AbstractCustomComparer
+    public class EnumerableComparer :AbstractCustomComparer
     {
         internal EnumerableComparer(PropertyEqualsCalculatorConfiguration cacheAndConfiguration) : base(cacheAndConfiguration)
         {
@@ -18,13 +18,13 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper.
         }
         internal bool EqualsTyped(IEnumerable enumerable1, IEnumerable enumerable2)
         {
-            if (enumerable1.Count() != enumerable2.Count())
+            if(enumerable1.Count() != enumerable2.Count())
             {
                 return false;
             }
-            foreach (object item in enumerable1)
+            foreach(object item in enumerable1)
             {
-                if (this.GetCountOfItemInEnumerable(enumerable1, item) != this.GetCountOfItemInEnumerable(enumerable2, item))
+                if(this.GetCountOfItemInEnumerable(enumerable1, item) != this.GetCountOfItemInEnumerable(enumerable2, item))
                 {
                     return false;
                 }
@@ -35,9 +35,9 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper.
         private int GetCountOfItemInEnumerable(IEnumerable enumerable, object item)
         {
             int result = 0;
-            foreach (object enumerableEntry in enumerable)
+            foreach(object enumerableEntry in enumerable)
             {
-                if (this._PropertyEqualsCalculator.Equals(item))
+                if(this._PropertyEqualsCalculator.Equals(item))
                 {
                     result += 1;
                 }

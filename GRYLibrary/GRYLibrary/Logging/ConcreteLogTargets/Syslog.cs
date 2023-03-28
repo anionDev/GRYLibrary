@@ -1,17 +1,17 @@
-﻿using GRYLibrary.Core.Miscellaneous;
-using GRYLibrary.Core.ExecutePrograms;
+﻿using GRYLibrary.Core.ExecutePrograms;
+using GRYLibrary.Core.Miscellaneous;
 using System;
 using System.Collections.Generic;
 
 namespace GRYLibrary.Core.Log.ConcreteLogTargets
 {
-    public sealed class Syslog : GRYLogTarget
+    public sealed class Syslog :GRYLogTarget
     {
 
         protected override void ExecuteImplementation(LogItem logItem, GRYLog logObject)
         {
             string messageId;
-            if (string.IsNullOrWhiteSpace(logItem.MessageId))
+            if(string.IsNullOrWhiteSpace(logItem.MessageId))
             {
                 messageId = string.Empty;
             }

@@ -3,7 +3,7 @@ using System.IO;
 
 namespace GRYLibrary.Core.Miscellaneous.CustomDisposables
 {
-    public class TemporaryDirectory : CustomDisposable
+    public class TemporaryDirectory :CustomDisposable
     {
         public string TemporaryDirectoryPath { get; private set; } = null;
         public TemporaryDirectory()

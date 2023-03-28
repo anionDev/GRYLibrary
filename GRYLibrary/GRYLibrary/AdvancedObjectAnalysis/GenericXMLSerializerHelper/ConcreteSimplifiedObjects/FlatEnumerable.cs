@@ -8,7 +8,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper.Conc
     /// Represents a SimplifiedEnumerable for <see cref="GRYSObject"/>
     /// </summary>
     [XmlRoot(ElementName = "FE")]
-    public class FlatEnumerable : FlatObject
+    public class FlatEnumerable :FlatObject
     {
         public List<Guid> Items { get; set; }
 

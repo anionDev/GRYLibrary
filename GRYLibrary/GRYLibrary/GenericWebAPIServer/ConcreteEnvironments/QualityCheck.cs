@@ -1,6 +1,6 @@
 ﻿namespace GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments
 {
-    public class QualityCheck : GRYEnvironment
+    public class QualityCheck :GRYEnvironment
     {
         public static QualityCheck Instance { get; } = new QualityCheck();
         private QualityCheck()

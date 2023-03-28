@@ -1,6 +1,6 @@
 ﻿namespace GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems
 {
-    public class Linux : OperatingSystem
+    public class Linux :OperatingSystem
     {
         private Linux() { }
         public static OperatingSystem Instance { get; } = new Linux();

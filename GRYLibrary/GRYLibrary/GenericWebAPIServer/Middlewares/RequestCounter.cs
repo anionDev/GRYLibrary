@@ -7,7 +7,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     /// <summary>
     /// Represents a middleware which counts requests for paid Web-APIs.
     /// </summary>
-    public class RequestCounter : AbstractMiddleware
+    public class RequestCounter :AbstractMiddleware
     {
         private readonly IRequestCounterSettings _RequestCounterSettings;
         /// <inheritdoc/>

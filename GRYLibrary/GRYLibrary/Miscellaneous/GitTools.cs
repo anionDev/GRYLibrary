@@ -1,6 +1,6 @@
-﻿using GRYLibrary.Core.Log;
-using GRYLibrary.Core.ExecutePrograms;
+﻿using GRYLibrary.Core.ExecutePrograms;
 using GRYLibrary.Core.ExecutePrograms.WaitingStates;
+using GRYLibrary.Core.Log;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -29,17 +29,17 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             GitCommandResult commandresult = ExecuteGitCommand(repositoryFolder, "submodule status" + (recursive ? " --recursive" : string.Empty), true);
             List<string> result = new();
-            foreach (string rawLine in commandresult.StdOutLines)
+            foreach(string rawLine in commandresult.StdOutLines)
             {
                 string line = rawLine.Trim();
-                if (line.Contains(' '))
+                if(line.Contains(' '))
                 {
                     string[] splitted = line.Split(' ');
                     int amountOfWhitespaces = splitted.Length - 1;
-                    if (0 < amountOfWhitespaces)
+                    if(0 < amountOfWhitespaces)
                     {
                         string rawPath = splitted[1];
-                        if (rawPath.Contains("..") || rawPath == "./")
+                        if(rawPath.Contains("..") || rawPath == "./")
                         {
                             continue;
                         }
@@ -92,7 +92,7 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             ExecuteGitCommand(repositoryFolder, $"reflog expire --expire-unreachable=now --all", true, writeOutputToConsole: writeOutputToConsole);
             ExecuteGitCommand(repositoryFolder, $"gc --prune=now", true, writeOutputToConsole: writeOutputToConsole);
-            if (repack)
+            if(repack)
             {
                 ExecuteGitCommand(repositoryFolder, $"repack -a -d -n --max-pack-size=10m", true, writeOutputToConsole: writeOutputToConsole);
             }
@@ -100,9 +100,9 @@ namespace GRYLibrary.Core.Miscellaneous
         public static bool GitRepositoryContainsFiles(string repositoryFolder, out ISet<string> missingFiles, IEnumerable<Tuple<string/*file*/, ISet<string>/*aliase*/>> fileLists)
         {
             missingFiles = new HashSet<string>();
-            foreach (Tuple<string, ISet<string>> file in fileLists)
+            foreach(Tuple<string, ISet<string>> file in fileLists)
             {
-                if (!(File.Exists(Path.Combine(repositoryFolder, file.Item1)) || AtLeastOneFileExistsInFolder(repositoryFolder, file.Item2, out string _)))
+                if(!(File.Exists(Path.Combine(repositoryFolder, file.Item1)) || AtLeastOneFileExistsInFolder(repositoryFolder, file.Item2, out string _)))
                 {
                     missingFiles.Add(file.Item1);
                 }
@@ -121,9 +121,9 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static bool AtLeastOneFileExistsInFolder(string repositoryFolder, IEnumerable<string> files, out string foundFile)
         {
-            foreach (string file in files)
+            foreach(string file in files)
             {
-                if (File.Exists(Path.Combine(repositoryFolder, file)))
+                if(File.Exists(Path.Combine(repositoryFolder, file)))
                 {
                     foundFile = file;
                     return true;
@@ -141,7 +141,7 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             return ExecuteGitCommand(repository, "branch -r", true).StdOutLines.Where(line => !string.IsNullOrWhiteSpace(line)).Select(line =>
             {
-                if (line.Contains('/'))
+                if(line.Contains('/'))
                 {
                     string[] splitted = line.Split(new[] { '/' }, 2);
                     return new Tuple<string, string>(splitted[0].Trim(), splitted[1].Trim());
@@ -168,7 +168,7 @@ namespace GRYLibrary.Core.Miscellaneous
         /// <returns>Returns the toplevel of the <paramref name="repositoryFolder"/>.</returns>
         public static string GetTopLevelOfGitRepositoryPath(string repositoryFolder)
         {
-            if (IsInGitRepository(repositoryFolder))
+            if(IsInGitRepository(repositoryFolder))
             {
                 return ExtractTextFromOutput(ExecuteGitCommand(repositoryFolder, "rev-parse --show-toplevel", true).StdOutLines);
             }
@@ -184,7 +184,7 @@ namespace GRYLibrary.Core.Miscellaneous
         /// <returns>Returns true if and only if <paramref name="repositoryFolder"/> is in a repository which is used as submodule.</returns>
         public static bool IsInGitSubmodule(string repositoryFolder)
         {
-            if (IsInGitRepository(repositoryFolder))
+            if(IsInGitRepository(repositoryFolder))
             {
                 return !GetParentGitRepositoryPathHelper(repositoryFolder).Equals(string.Empty);
             }
@@ -199,10 +199,10 @@ namespace GRYLibrary.Core.Miscellaneous
         /// </returns>
         public static string GetParentGitRepositoryPath(string repositoryFolder)
         {
-            if (IsInGitRepository(repositoryFolder))
+            if(IsInGitRepository(repositoryFolder))
             {
                 string content = GetParentGitRepositoryPathHelper(repositoryFolder);
-                if (string.IsNullOrEmpty(content))
+                if(string.IsNullOrEmpty(content))
                 {
                     throw new ArgumentException($"The given folder '{repositoryFolder}' is not used as submodule so a parent-repository-path can not be calculated.");
                 }
@@ -234,11 +234,11 @@ namespace GRYLibrary.Core.Miscellaneous
         public static bool IsInGitRepository(string folder)
         {
             DirectoryInfo directoryInfo = new(folder);
-            if (IsGitRepository(directoryInfo.FullName))
+            if(IsGitRepository(directoryInfo.FullName))
             {
                 return true;
             }
-            else if (directoryInfo.Parent == null)
+            else if(directoryInfo.Parent == null)
             {
                 return false;
             }
@@ -258,7 +258,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public static string GitCommit(string repositoryFolder, string commitMessage, out bool commitWasCreated, bool writeOutputToConsole = false)
         {
             commitWasCreated = false;
-            if (GitRepositoryHasUncommittedChanges(repositoryFolder))
+            if(GitRepositoryHasUncommittedChanges(repositoryFolder))
             {
                 ExecuteGitCommand(repositoryFolder, $"add -A", true, writeOutputToConsole: writeOutputToConsole);
                 ExecuteGitCommand(repositoryFolder, $"commit -m \"{commitMessage}\"", true, writeOutputToConsole: writeOutputToConsole);
@@ -282,11 +282,11 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static bool GitRepositoryHasUnstagedChanges(string repositoryFolder)
         {
-            if (GitRepositoryHasUnstagedChangesOfTrackedFiles(repositoryFolder))
+            if(GitRepositoryHasUnstagedChangesOfTrackedFiles(repositoryFolder))
             {
                 return true;
             }
-            if (GitRepositoryHasNewUntrackedFiles(repositoryFolder))
+            if(GitRepositoryHasNewUntrackedFiles(repositoryFolder))
             {
                 return true;
             }
@@ -320,9 +320,9 @@ namespace GRYLibrary.Core.Miscellaneous
         private static bool GitChangesHelper(string repositoryFolder, string argument)
         {
             GitCommandResult result = ExecuteGitCommand(repositoryFolder, argument, true);
-            foreach (string line in result.StdOutLines)
+            foreach(string line in result.StdOutLines)
             {
-                if (!string.IsNullOrWhiteSpace(line))
+                if(!string.IsNullOrWhiteSpace(line))
                 {
                     return true;
                 }
@@ -332,11 +332,11 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public static bool GitRepositoryHasUncommittedChanges(string repositoryFolder)
         {
-            if (GitRepositoryHasUnstagedChanges(repositoryFolder))
+            if(GitRepositoryHasUnstagedChanges(repositoryFolder))
             {
                 return true;
             }
-            if (GitRepositoryHasStagedChanges(repositoryFolder))
+            if(GitRepositoryHasStagedChanges(repositoryFolder))
             {
                 return true;
             }

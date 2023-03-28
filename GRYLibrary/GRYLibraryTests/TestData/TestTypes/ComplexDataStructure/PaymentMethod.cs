@@ -1,6 +1,6 @@
-﻿using System;
-using GRYLibrary.Core.AdvancedObjectAnalysis;
+﻿using GRYLibrary.Core.AdvancedObjectAnalysis;
 using GRYLibrary.Tests.TestData.TestTypes.ComplexDataStructure.PaymentMethods;
+using System;
 
 namespace GRYLibrary.Tests.TestData.TestTypes.ComplexDataStructure
 {
@@ -10,11 +10,11 @@ namespace GRYLibrary.Tests.TestData.TestTypes.ComplexDataStructure
         {
             Random random = new();
             double randomValue = random.NextDouble();
-            if (randomValue < 0.3)
+            if(randomValue < 0.3)
             {
                 return new DebitCard();
             }
-            if (randomValue < 0.6)
+            if(randomValue < 0.6)
             {
                 return new CreditCard();
             }

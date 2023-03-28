@@ -1,11 +1,11 @@
-﻿using System;
+﻿using GRYLibrary.Core.GenericWebAPIServer.Services;
 using Microsoft.AspNetCore.Http;
+using System;
 using System.Threading.Tasks;
-using GRYLibrary.Core.GenericWebAPIServer.Services;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
 {
-    public class APIKeyValidator : AbstractMiddleware
+    public class APIKeyValidator :AbstractMiddleware
     {
         private readonly IAPIKeyValidatorSettings _APIKeyValidatorSettings;
         public APIKeyValidator(RequestDelegate next, IAPIKeyValidatorSettings apiKeyValidatorSettings) : base(next)
@@ -17,11 +17,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
         {
             string apiKey = null;//TODO
             string route = null;//TODO
-            if (!this.AnonymousAccessIsAllowed(this._APIKeyValidatorSettings, apiKey, route) && !this.UserIsAuthenticated())
+            if(!this.AnonymousAccessIsAllowed(this._APIKeyValidatorSettings, apiKey, route) && !this.UserIsAuthenticated())
             {
                 throw new NotImplementedException();//return 401 Unauthorized
             }
-            if (!this.APIKeyIsValid(this._APIKeyValidatorSettings, apiKey, route))
+            if(!this.APIKeyIsValid(this._APIKeyValidatorSettings, apiKey, route))
             {
                 throw new NotImplementedException();//return 403 Forbidden
             }

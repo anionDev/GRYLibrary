@@ -1,6 +1,6 @@
 ﻿namespace GRYLibrary.Core.ExecutePrograms.WaitingStates
 {
-    public class GetWaitingStateLabelVisitor : IWaitingStateVisitor<string>
+    public class GetWaitingStateLabelVisitor :IWaitingStateVisitor<string>
     {
         public static IWaitingStateVisitor<string> GetWaitingStateLabelVisitorInstance { get; } = new GetWaitingStateLabelVisitor();
         private GetWaitingStateLabelVisitor() { }

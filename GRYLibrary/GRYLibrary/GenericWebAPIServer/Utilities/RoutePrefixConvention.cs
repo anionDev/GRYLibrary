@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
 {
-    public class RoutePrefixConvention : IApplicationModelConvention
+    public class RoutePrefixConvention :IApplicationModelConvention
     {
         private readonly AttributeRouteModel _routePrefix;
 
@@ -15,9 +15,9 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
 
         public void Apply(ApplicationModel application)
         {
-            foreach (SelectorModel selector in application.Controllers.SelectMany(c => c.Selectors))
+            foreach(SelectorModel selector in application.Controllers.SelectMany(c => c.Selectors))
             {
-                if (selector.AttributeRouteModel != null)
+                if(selector.AttributeRouteModel != null)
                 {
                     selector.AttributeRouteModel = AttributeRouteModel.CombineAttributeRouteModel(this._routePrefix, selector.AttributeRouteModel);
                 }

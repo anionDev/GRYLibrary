@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace GRYLibrary.Core.Log.ConcreteLogTargets
 {
-    public sealed class Observer : GRYLogTarget
+    public sealed class Observer :GRYLogTarget
     {
         public Observer() { }
 

@@ -10,7 +10,8 @@ namespace GRYLibrary.Core.Playlists
         public Encoding Encoding { get; set; } = new UTF8Encoding(false);
         public abstract void CreatePlaylist(string file);
         public abstract (ISet<string> included, ISet<string> excluded) GetItemsAndExcludedItems(string playlistFile);
-        public virtual ISet<string> GetSongs(string playlistFile) {
+        public virtual ISet<string> GetSongs(string playlistFile)
+        {
             (ISet<string> included, ISet<string> excluded) = this.GetItemsAndExcludedItems(playlistFile);
             return included.Except(excluded).ToHashSet();
         }

@@ -13,7 +13,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
         public string TypeName { get; set; }
         public override bool Equals(object obj)
         {
-            if (obj is FlatComplexObject typedObject)
+            if(obj is FlatComplexObject typedObject)
             {
                 return this.ObjectId.Equals(typedObject.ObjectId);
             }

@@ -5,7 +5,7 @@ namespace GRYLibrary.Core.Miscellaneous
     /// <summary>
     /// Represents a threadsafe semaphore
     /// </summary>
-    public sealed class Semaphore : Property<long>
+    public sealed class Semaphore :Property<long>
     {
         public string Name { get; set; }
         public Semaphore(string propertyName = "") : base(0, propertyName, false)
@@ -19,7 +19,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public void Decrement()
         {
-            if (this.Value == 0)
+            if(this.Value == 0)
             {
                 throw new InvalidOperationException($"The value of the {nameof(Semaphore)} can not be decremented if the {nameof(this.Value)} is 0.");
             }
@@ -27,7 +27,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public override bool Equals(object @object)
         {
-            if (@object is not Semaphore typedObject)
+            if(@object is not Semaphore typedObject)
             {
                 return false;
             }

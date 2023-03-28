@@ -27,7 +27,7 @@ namespace GRYLibrary.Core.Graph
         public override bool Equals(object obj)
         {
             Vertex typedObject = obj as Vertex;
-            if (typedObject == null)
+            if(typedObject == null)
             {
                 return false;
             }
@@ -51,9 +51,9 @@ namespace GRYLibrary.Core.Graph
         internal IEnumerable<Vertex> GetSuccessorVertices()
         {
             List<Vertex> result = new();
-            foreach (Edge edge in this.ConnectedEdges)
+            foreach(Edge edge in this.ConnectedEdges)
             {
-                if (edge.GetInputs().Contains(this))
+                if(edge.GetInputs().Contains(this))
                 {
                     result.AddRange(edge.GetOutputs());
                 }

@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Filter
 {
-    public class AuthorizationHeaderParameterOperationFilter : IOperationFilter
+    public class AuthorizationHeaderParameterOperationFilter :IOperationFilter
     {
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
@@ -17,9 +17,9 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Filter
 
             isAuthorized = true;//TODO
             allowAnonymous = false;//TODO
-            if (isAuthorized && !allowAnonymous)
+            if(isAuthorized && !allowAnonymous)
             {
-                if (operation.Parameters == null)
+                if(operation.Parameters == null)
                 {
                     operation.Parameters = new List<OpenApiParameter>();
                 }

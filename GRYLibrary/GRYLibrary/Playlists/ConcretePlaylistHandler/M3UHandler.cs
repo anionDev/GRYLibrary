@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
 {
-    public class M3UHandler : PlaylistFileHandler
+    public class M3UHandler :PlaylistFileHandler
     {
         public override void AddItemsToPlaylist(string playlistFile, IEnumerable<string> newItems)
         {
@@ -29,9 +29,9 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
                 .Select(line => line.Replace("\"", string.Empty));
             HashSet<string> includedItems = new();
             HashSet<string> excludedItems = new();
-            foreach (string line in lines)
+            foreach(string line in lines)
             {
-                if (line.StartsWith("-"))
+                if(line.StartsWith("-"))
                 {
                     excludedItems.Add(line.Substring(1));
                 }

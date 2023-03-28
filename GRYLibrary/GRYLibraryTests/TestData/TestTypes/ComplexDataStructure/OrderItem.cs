@@ -1,5 +1,5 @@
-﻿using System;
-using GRYLibrary.Core.AdvancedObjectAnalysis;
+﻿using GRYLibrary.Core.AdvancedObjectAnalysis;
+using System;
 
 namespace GRYLibrary.Tests.TestData.TestTypes.ComplexDataStructure
 {
@@ -19,7 +19,7 @@ namespace GRYLibrary.Tests.TestData.TestTypes.ComplexDataStructure
                 Price = MoneyAmount.GetRandom(),
                 NotesFromCustomer = ComplexDataStructureUtilities.GetRandomNotes()
             };
-            if (new Random().NextDouble() < 0)
+            if(new Random().NextDouble() < 0)
             {
                 result.UsedVoucherCode = ComplexDataStructureUtilities.GetRandomName();
             }

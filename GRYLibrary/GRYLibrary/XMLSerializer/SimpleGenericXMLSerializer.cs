@@ -38,7 +38,7 @@ namespace GRYLibrary.Core.XMLSerializer
         public string Serialize(T @object)
         {
             using Stream stream = new MemoryStream();
-            using (XmlWriter xmlWriter = XmlWriter.Create(stream, this.XMLWriterSettings))
+            using(XmlWriter xmlWriter = XmlWriter.Create(stream, this.XMLWriterSettings))
             {
                 XmlSerializer serializer = this.GetSerializer();
                 serializer.Serialize(xmlWriter, @object);

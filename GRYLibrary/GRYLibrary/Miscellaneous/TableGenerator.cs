@@ -10,9 +10,9 @@ namespace GRYLibrary.Core.Miscellaneous
         public static string[] Generate<T>(T[,] array, TableOutputType outputType, Func<T, string> toString, object[] headlines = null)
         {
             string[,] convertedArray = new string[array.GetLength(0), array.GetLength(1)];
-            for (int i = 0; i < array.GetLength(0); i++)
+            for(int i = 0; i < array.GetLength(0); i++)
             {
-                for (int j = 0; j < array.GetLength(1); j++)
+                for(int j = 0; j < array.GetLength(1); j++)
                 {
                     convertedArray[i, j] = toString(array[i, j]);
                 }
@@ -21,16 +21,16 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static string[] Generate(string[,] array, TableOutputType outputType, object[] headlines = null)
         {
-            if (headlines != null)
+            if(headlines != null)
             {
                 string[,] newArray = new string[array.GetLength(0) + 1, array.GetLength(1)];
-                for (int i = 0; i < headlines.Length; i++)
+                for(int i = 0; i < headlines.Length; i++)
                 {
                     newArray[0, i] = headlines[i].ToString();
                 }
-                for (int i = 0; i < array.GetLength(0); i++)
+                for(int i = 0; i < array.GetLength(0); i++)
                 {
-                    for (int j = 0; j < array.GetLength(1); j++)
+                    for(int j = 0; j < array.GetLength(1); j++)
                     {
                         newArray[i + 1, j] = array[i, j];
                     }
@@ -40,7 +40,7 @@ namespace GRYLibrary.Core.Miscellaneous
             }
             return outputType.Accept(new TableOutputTypeVisitor(array));
         }
-        private class TableOutputTypeVisitor : ITableOutputTypeVisitor<string[]>
+        private class TableOutputTypeVisitor :ITableOutputTypeVisitor<string[]>
         {
             public string[,] Array { get; set; }
 
@@ -52,18 +52,18 @@ namespace GRYLibrary.Core.Miscellaneous
             public string[] Handle(ASCIITable tableOutputType)
             {
                 List<string> result = new();
-                if (!string.IsNullOrEmpty(tableOutputType.Title))
+                if(!string.IsNullOrEmpty(tableOutputType.Title))
                 {
                     result.Add(tableOutputType.Title);
                 }
                 int[] columnLengths = this.GetColumnLengths(this.Array, tableOutputType.MaximalWidth);
                 result.Add(this.GetFirstLineForASCIITable(tableOutputType, columnLengths));
                 result.Add(this.GetHeadlineLineForASCIITable(tableOutputType, columnLengths));
-                if (tableOutputType.TableHasTitles)
+                if(tableOutputType.TableHasTitles)
                 {
                     result.Add(this.GetHeadlineDividerLineForASCIITable(tableOutputType, columnLengths));
                 }
-                for (int lineNumber = 1; lineNumber < this.Array.GetLength(0); lineNumber++)
+                for(int lineNumber = 1; lineNumber < this.Array.GetLength(0); lineNumber++)
                 {
                     result.Add(this.GetLineForASCIITable(tableOutputType, columnLengths, lineNumber));
                 }
@@ -79,10 +79,10 @@ namespace GRYLibrary.Core.Miscellaneous
             public string[] Handle(CSV csv)
             {
                 List<string> result = new();
-                for (int i = 0; i < this.Array.GetLength(0); i++)
+                for(int i = 0; i < this.Array.GetLength(0); i++)
                 {
                     List<string> lineItems = new();
-                    for (int j = 0; j < this.Array.GetLength(1); j++)
+                    for(int j = 0; j < this.Array.GetLength(1); j++)
                     {
                         lineItems.Add(this.Array[i, j]);
                     }
@@ -94,7 +94,7 @@ namespace GRYLibrary.Core.Miscellaneous
             private string GetLineForASCIITable(ASCIITable tableOutputType, int[] columnLengths, int lineNumber)
             {
                 string[] content = new string[columnLengths.Length];
-                for (int column = 0; column < this.Array.GetLength(1); column++)
+                for(int column = 0; column < this.Array.GetLength(1); column++)
                 {
                     content[column] = this.Array[lineNumber, column];
                 }
@@ -127,7 +127,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
             private string GetContentOfLine(string[] content, char fillCharForContent, char separator, int[] columnLengths)
             {
-                for (int i = 0; i < content.Length; i++)
+                for(int i = 0; i < content.Length; i++)
                 {
                     content[i] = this.AdjustLength(content[i], columnLengths[i]).PadRight(columnLengths[i], fillCharForContent);
                 }
@@ -137,14 +137,14 @@ namespace GRYLibrary.Core.Miscellaneous
             private string AdjustLength(string value, int maximalLength)
             {
                 int valueLength = value.Length;
-                if (valueLength <= maximalLength)
+                if(valueLength <= maximalLength)
                 {
                     return value;
                 }
                 else
                 {
                     int minimumLengthForCut = 8;
-                    if (maximalLength < minimumLengthForCut)
+                    if(maximalLength < minimumLengthForCut)
                     {
                         return value.Substring(0, maximalLength);
                     }
@@ -162,17 +162,17 @@ namespace GRYLibrary.Core.Miscellaneous
             private int[] GetColumnLengths(string[,] array, int maximalWidth)
             {
                 int[] result = this.NTimes(0, array.GetLength(1));
-                for (int line = 0; line < array.GetLength(0); line++)
+                for(int line = 0; line < array.GetLength(0); line++)
                 {
-                    for (int column = 0; column < array.GetLength(1); column++)
+                    for(int column = 0; column < array.GetLength(1); column++)
                     {
                         string currentCellValue = array[line, column];
                         int currentCellValueLength = currentCellValue.Length;
-                        if (result[column] == 0 || result[column] < currentCellValueLength)
+                        if(result[column] == 0 || result[column] < currentCellValueLength)
                         {
                             result[column] = currentCellValueLength;
                         }
-                        if (result[column] > maximalWidth)
+                        if(result[column] > maximalWidth)
                         {
                             result[column] = maximalWidth;
                         }
@@ -198,7 +198,7 @@ namespace GRYLibrary.Core.Miscellaneous
             char TLeftCharacter { get; }
             char TUpCharacter { get; }
         }
-        public class OneLineTableCharacter : ITableCharacter
+        public class OneLineTableCharacter :ITableCharacter
         {
             public char HorizontalLineCharacter => '─';
             public char VerticalLineCharacter => '│';
@@ -212,7 +212,7 @@ namespace GRYLibrary.Core.Miscellaneous
             public char TLeftCharacter => '┤';
             public char TUpCharacter => '┴';
         }
-        public class DoubleLineTableCharacter : ITableCharacter
+        public class DoubleLineTableCharacter :ITableCharacter
         {
             public char HorizontalLineCharacter => '═';
             public char VerticalLineCharacter => '║';
@@ -226,7 +226,7 @@ namespace GRYLibrary.Core.Miscellaneous
             public char TLeftCharacter => '╣';
             public char TUpCharacter => '╩';
         }
-        public class RoundLineTableCharacter : ITableCharacter
+        public class RoundLineTableCharacter :ITableCharacter
         {
             public char HorizontalLineCharacter => '─';
             public char VerticalLineCharacter => '│';
@@ -260,7 +260,7 @@ namespace GRYLibrary.Core.Miscellaneous
             T Handle(CSV tableOutputType);
             T Handle(HTMLTable tableOutputType);
         }
-        public sealed class ASCIITable : TableOutputType
+        public sealed class ASCIITable :TableOutputType
         {
             public ITableCharacter Characters { get; set; } = new OneLineTableCharacter();
 
@@ -276,7 +276,7 @@ namespace GRYLibrary.Core.Miscellaneous
                 return visitor.Handle(this);
             }
         }
-        public sealed class HTMLTable : TableOutputType
+        public sealed class HTMLTable :TableOutputType
         {
             public override void Accept(ITableOutputTypeVisitor visitor)
             {
@@ -288,7 +288,7 @@ namespace GRYLibrary.Core.Miscellaneous
                 return visitor.Handle(this);
             }
         }
-        public sealed class CSV : TableOutputType
+        public sealed class CSV :TableOutputType
         {
             public override void Accept(ITableOutputTypeVisitor visitor)
             {

@@ -14,16 +14,16 @@ namespace GRYLibrary.Core.Miscellaneous.TextTransformUtilities
             List<string> contentLines = new List<string>();
             bool constantsFolderExists = Directory.Exists(constantsFolder);
             List<string> constantsfiles = new List<string>();
-            if (constantsFolderExists)
+            if(constantsFolderExists)
             {
                 constantsfiles = Directory.GetFiles(constantsFolder).ToList();
-                foreach (string file in constantsfiles)
+                foreach(string file in constantsfiles)
                 {
-                    if (file.EndsWith(".constant.xml"))
+                    if(file.EndsWith(".constant.xml"))
                     {
                         IDictionary<string, string> constantProperties = GetConstantProperties(file);
                         List<string> constantDocumentationSummaryLines = new List<string>();
-                        if (constantProperties["documentationsummary"].Contains('\n'))
+                        if(constantProperties["documentationsummary"].Contains('\n'))
                         {
                             constantDocumentationSummaryLines.AddRange(constantProperties["documentationsummary"].Split('\n'));
                         }
@@ -32,9 +32,9 @@ namespace GRYLibrary.Core.Miscellaneous.TextTransformUtilities
                             constantDocumentationSummaryLines.Add(constantProperties["documentationsummary"]);
                         }
                         contentLines.Add(string.Empty);
-                        foreach (string line in constantDocumentationSummaryLines)
+                        foreach(string line in constantDocumentationSummaryLines)
                         {
-                            if (!string.IsNullOrEmpty(line))
+                            if(!string.IsNullOrEmpty(line))
                             {
                                 contentLines.Add($"        /// {line}");
                             }
@@ -47,7 +47,7 @@ namespace GRYLibrary.Core.Miscellaneous.TextTransformUtilities
                 }
             }
             string constants = string.Join(Environment.NewLine, contentLines);
-            if (addDebugInformation)
+            if(addDebugInformation)
             {
                 string debugInformation = $"Debug-information:" +
                     $"{nameof(repositoryFolder)}: {repositoryFolder}," +

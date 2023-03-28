@@ -32,17 +32,17 @@ namespace GRYLibrary.Core.Miscellaneous
 
         private string GetCurrentLocation()
         {
-           return Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+            return Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
         }
 
         public void Update()
         {
-            if (!this._Locations.Contains(this._CurrentLocation))
+            if(!this._Locations.Contains(this._CurrentLocation))
             {
                 throw new ArgumentException("The current location must be contained in the list of all locations.");
             }
             int minimumRequiredAmount = 2;
-            if (this._Locations.Count < minimumRequiredAmount)
+            if(this._Locations.Count < minimumRequiredAmount)
             {
                 throw new ArgumentException($"At least {minimumRequiredAmount} locations are required.");
             }
@@ -50,19 +50,19 @@ namespace GRYLibrary.Core.Miscellaneous
             Version versionOfCurrentLocation = this.GetVersionOfLocation(this._CurrentLocation);
             bool currentVersionIsOutdated = !latestVersion.Equals(versionOfCurrentLocation);
             string locationForRestart = null;
-            foreach (string location in this._Locations)
+            foreach(string location in this._Locations)
             {
-                if (location != this._CurrentLocation)
+                if(location != this._CurrentLocation)
                 {
                     Version versionOfLocation = this.GetVersionOfLocation(location);
-                    if (latestVersion.Equals(location))
+                    if(latestVersion.Equals(location))
                     {
                         this.UpdateLocation(location);
                     }
                 }
                 locationForRestart = location;
             }
-            if (currentVersionIsOutdated)
+            if(currentVersionIsOutdated)
             {
                 this.StartLocation(locationForRestart);
                 this.StopCurrentLocation();
@@ -106,7 +106,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         private void DownloadLatestVersionIfRequired()
         {
-            if (this._ArchiveOfLatestVersion == null)
+            if(this._ArchiveOfLatestVersion == null)
             {
                 this._ArchiveOfLatestVersion = this._GetArchiveOfLatestVersion();
             }
