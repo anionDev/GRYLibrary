@@ -289,7 +289,6 @@ namespace GRYLibrary.Core.Log
                     {
                         this.LogProgress(currentIndex + 1, amountOfItems);
                     }
-
                 }
             }, nameOfEntireLoopAction, preventThrowingExceptions, logLevelForOverhead, subNamespaceOfEntireLoopAction);
         }
@@ -411,5 +410,4 @@ namespace GRYLibrary.Core.Log
         #endregion
 
     }
-
 }

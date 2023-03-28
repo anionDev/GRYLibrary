@@ -66,7 +66,7 @@ namespace GRYLibrary.Core.XMLSerializer
         }
         private Type[] GetExtraTypes()
         {
-            return this.KnownTypes.Where(type => this._T.IsAssignableFrom(type)).ToArray();
+            return this.KnownTypes.Where(this._T.IsAssignableFrom).ToArray();
         }
         private XmlSerializer GetSerializer()
         {

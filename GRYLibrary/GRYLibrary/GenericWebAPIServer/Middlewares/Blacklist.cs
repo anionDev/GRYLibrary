@@ -19,7 +19,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
         public override Task Invoke(HttpContext context)
         {
             //TODO
-            return _Next(context);
+            return this._Next(context);
         }
     }
 }

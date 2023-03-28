@@ -10,22 +10,22 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
         private readonly IAPIKeyValidatorSettings _APIKeyValidatorSettings;
         public APIKeyValidator(RequestDelegate next, IAPIKeyValidatorSettings apiKeyValidatorSettings) : base(next)
         {
-            _APIKeyValidatorSettings = apiKeyValidatorSettings;
+            this._APIKeyValidatorSettings = apiKeyValidatorSettings;
         }
 
         public override Task Invoke(HttpContext context)
         {
             string apiKey = null;//TODO
             string route = null;//TODO
-            if (!AnonymousAccessIsAllowed(_APIKeyValidatorSettings, apiKey, route) && !UserIsAuthenticated())
+            if (!this.AnonymousAccessIsAllowed(this._APIKeyValidatorSettings, apiKey, route) && !this.UserIsAuthenticated())
             {
                 throw new NotImplementedException();//return 401 Unauthorized
             }
-            if (!APIKeyIsValid(_APIKeyValidatorSettings, apiKey, route))
+            if (!this.APIKeyIsValid(this._APIKeyValidatorSettings, apiKey, route))
             {
                 throw new NotImplementedException();//return 403 Forbidden
             }
-            return _Next(context);
+            return this._Next(context);
         }
 
         private bool UserIsAuthenticated()

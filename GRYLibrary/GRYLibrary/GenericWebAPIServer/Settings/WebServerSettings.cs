@@ -17,6 +17,5 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public RequestLoggingSettings RequestLoggingSettings { get; set; }
         public WebApplicationFirewallSettings WebApplicationFirewallSettings { get; set; }
         public APIKeyValidatorSettings APIKeyValidatorSettings { get; set; }
-
     }
 }

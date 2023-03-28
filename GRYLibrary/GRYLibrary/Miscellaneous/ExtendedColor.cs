@@ -100,13 +100,13 @@ namespace GRYLibrary.Core.Miscellaneous
             double dSaturation = decimal.ToDouble(saturation.Value);
             double dValue = decimal.ToDouble(value.Value);
             int hi = Convert.ToInt32(Math.Floor(hue / 60)) % 6;
-            double f = hue / 60 - Math.Floor(hue / 60);
+            double f = (hue / 60) - Math.Floor(hue / 60);
 
             dValue = dValue * 255;
             int v = Convert.ToInt32(dValue);
             int p = Convert.ToInt32(dValue * (1 - dSaturation));
-            int q = Convert.ToInt32(dValue * (1 - f * dSaturation));
-            int t = Convert.ToInt32(dValue * (1 - (1 - f) * dSaturation));
+            int q = Convert.ToInt32(dValue * (1 - (f * dSaturation)));
+            int t = Convert.ToInt32(dValue * (1 - ((1 - f) * dSaturation)));
 
             if (hi == 0)
                 return Color.FromArgb(255, v, t, p);

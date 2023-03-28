@@ -20,7 +20,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
         {
             // TODO if response is 200 then add it to database or else return "429 Too Many Requests"
 
-            return _Next(context);
+            return this._Next(context);
         }
     }
 }

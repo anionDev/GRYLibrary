@@ -37,11 +37,11 @@ namespace GRYLibrary.Core.Log
                 if (!this._MessageLoaded)
                 {
                     string plainMessage = this._GetMessageFunction();
-                    if (Exception != null)
+                    if (this.Exception != null)
                     {
-                        plainMessage = GetExceptionMessage(Exception, plainMessage);
+                        plainMessage = this.GetExceptionMessage(this.Exception, plainMessage);
                     }
-                    _PlainMessage = plainMessage;
+                    this._PlainMessage = plainMessage;
                     this._MessageLoaded = true;
                 }
 
@@ -130,7 +130,7 @@ namespace GRYLibrary.Core.Log
         }
         public bool IsErrorEntry()
         {
-            return this.LogLevel == LogLevel.Critical || this.LogLevel == LogLevel.Error;
+            return this.LogLevel is LogLevel.Critical or LogLevel.Error;
         }
         private void FormatMessage(GRYLogConfiguration configuration, string message, DateTime momentOfLogEntry, LogLevel loglevel, GRYLogLogFormat format, out string formattedMessage, out int colorBegin, out int colorEnd, out ConsoleColor consoleColor, string messageIdValue)
         {
@@ -257,6 +257,4 @@ namespace GRYLibrary.Core.Log
             return Utilities.SplitOnNewLineCharacter(this.GetExceptionMessage(exception.InnerException, null, indentationLevel + 1, "Inner exception")).ToList();
         }
     }
-
-
 }

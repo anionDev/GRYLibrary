@@ -14,7 +14,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
         /// </summary>
         public AbstractMiddleware(RequestDelegate next)
         {
-            _Next = next;
+            this._Next = next;
         }
         public abstract Task Invoke(HttpContext context);
     }

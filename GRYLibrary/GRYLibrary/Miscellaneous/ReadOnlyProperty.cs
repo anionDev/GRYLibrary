@@ -51,12 +51,6 @@ namespace GRYLibrary.Core.Miscellaneous
             return this.Value;
         }
 
-        public T Value
-        {
-            get
-            {
-                return this._Property.Value;
-            }
-        }
+        public T Value => this._Property.Value;
     }
 }

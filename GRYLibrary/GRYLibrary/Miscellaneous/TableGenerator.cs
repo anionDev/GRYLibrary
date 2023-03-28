@@ -300,6 +300,5 @@ namespace GRYLibrary.Core.Miscellaneous
                 return visitor.Handle(this);
             }
         }
-
     }
 }

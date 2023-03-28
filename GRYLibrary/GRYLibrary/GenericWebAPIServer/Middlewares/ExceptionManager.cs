@@ -22,7 +22,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
             try
             {
                 // TODO if response.statuscode is 500 then log requestbody
-                return _Next(context);
+                return this._Next(context);
             }
             catch (Exception)
             {

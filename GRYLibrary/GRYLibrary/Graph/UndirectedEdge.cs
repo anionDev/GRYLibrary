@@ -37,7 +37,7 @@ namespace GRYLibrary.Core.Graph
             bool x2 = vertices[1].Equals(toVertex);
             bool x3 = vertices[1].Equals(fromVertex);
             bool x4 = vertices[0].Equals(toVertex);
-            return x1 && x2 || x3 && x4;
+            return (x1 && x2) || (x3 && x4);
         }
         public override bool Equals(object obj)
         {

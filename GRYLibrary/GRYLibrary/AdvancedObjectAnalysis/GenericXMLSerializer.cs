@@ -28,8 +28,8 @@ namespace GRYLibrary.Core.AdvancedXMLSerialysis
             this._T = type;
             this.SerializationConfiguration = new SerializationConfiguration
             {
-                PropertySelector = (PropertyInfo propertyInfo) => { return propertyInfo.CanWrite && propertyInfo.CanRead && propertyInfo.GetMethod.IsPublic; },
-                FieldSelector = (FieldInfo fieldInfo) => { return false; },
+                PropertySelector = (PropertyInfo propertyInfo) => propertyInfo.CanWrite && propertyInfo.CanRead && propertyInfo.GetMethod.IsPublic,
+                FieldSelector = (FieldInfo fieldInfo) => false,
                 Encoding = new UTF8Encoding(false)
             };
         }
@@ -76,7 +76,7 @@ namespace GRYLibrary.Core.AdvancedXMLSerialysis
             HashSet<Type> extraTypes = new();
             foreach ((object, Type) referencedObject in allReferencedObjects)
             {
-                if (referencedObject.Item1 != null && referencedObject.Item1 is IGRYSerializable extraTypesProvider)
+                if (referencedObject.Item1 is not null and IGRYSerializable extraTypesProvider)
                 {
                     extraTypes.UnionWith(extraTypesProvider.GetExtraTypesWhichAreRequiredForSerialization());
                 }

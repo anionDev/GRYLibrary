@@ -11,14 +11,8 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis
     public class GenericToString
     {
         public PropertyEqualsCalculator PropertyEqualsCalculator { get; set; } = new PropertyEqualsCalculator();
-        public Func<PropertyInfo, bool> PropertySelector { get; set; } = (PropertyInfo propertyInfo) =>
-        {
-            return propertyInfo.CanWrite && propertyInfo.GetMethod.IsPublic;
-        };
-        public Func<FieldInfo, bool> FieldSelector { get; set; } = (FieldInfo propertyInfo) =>
-        {
-            return false;
-        };
+        public Func<PropertyInfo, bool> PropertySelector { get; set; } = (PropertyInfo propertyInfo) => propertyInfo.CanWrite && propertyInfo.GetMethod.IsPublic;
+        public Func<FieldInfo, bool> FieldSelector { get; set; } = (FieldInfo propertyInfo) => false;
         public static GenericToString Instance { get; } = new GenericToString();
         private GenericToString() { }
         /// <summary>

@@ -23,9 +23,9 @@ namespace GRYLibrary.Core.Miscellaneous
                     byte amountOfAlgorithms = 3;
                     decimal factor = 1 / (decimal)amountOfAlgorithms;
                     return new PercentValue(
-                        CalculateCosineSimilarity(string1, string2).Value * factor
-                      + CalculateJaccardSimilarity(string1, string2).Value * factor
-                      + CalculateLevenshteinSimilarity(string1, string2).Value * factor
+                        (CalculateCosineSimilarity(string1, string2).Value * factor)
+                      + (CalculateJaccardSimilarity(string1, string2).Value * factor)
+                      + (CalculateLevenshteinSimilarity(string1, string2).Value * factor)
                     );
                 }
             }
@@ -47,8 +47,10 @@ namespace GRYLibrary.Core.Miscellaneous
             int lengthA = string1.Length;
             int lengthB = string2.Length;
             int[,] distance = new int[lengthA + 1, lengthB + 1];
-            for (int i = 0; i <= lengthA; distance[i, 0] = i++) ;
-            for (int j = 0; j <= lengthB; distance[0, j] = j++) ;
+            for (int i = 0; i <= lengthA; distance[i, 0] = i++)
+                ;
+            for (int j = 0; j <= lengthB; distance[0, j] = j++)
+                ;
 
             for (int i = 1; i <= lengthA; i++)
             {
@@ -75,7 +77,7 @@ namespace GRYLibrary.Core.Miscellaneous
             }
             else
             {
-                return new PercentValue(1 - ((double)levenshteinDistance) / maxLength);
+                return new PercentValue(1 - (((double)levenshteinDistance) / maxLength));
             }
         }
         public static PercentValue CalculateCosineSimilarity(string string1, string string2)

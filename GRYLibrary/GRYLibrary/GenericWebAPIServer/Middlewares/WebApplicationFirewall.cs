@@ -25,7 +25,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
             // - the response is much longer than expected/allowed (must be configured by the application which is using this middleware)
             // and make this configurable
 
-            return _Next(context);
+            return this._Next(context);
         }
     }
 }

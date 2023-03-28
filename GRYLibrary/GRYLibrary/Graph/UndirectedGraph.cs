@@ -6,8 +6,8 @@ namespace GRYLibrary.Core.Graph
 {
     public sealed class UndirectedGraph : Graph
     {
-        public override ISet<Edge> Edges { get { return new HashSet<Edge>(this._UndirectedEdges); } }
-        public ISet<Edge> UndirectedEdges { get { return new HashSet<Edge>(this._UndirectedEdges); } }
+        public override ISet<Edge> Edges => new HashSet<Edge>(this._UndirectedEdges);
+        public ISet<Edge> UndirectedEdges => new HashSet<Edge>(this._UndirectedEdges);
         private readonly ISet<UndirectedEdge> _UndirectedEdges = new HashSet<UndirectedEdge>();
         public UndirectedGraph() { }
         public override void Accept(IGraphVisitor visitor)
@@ -80,7 +80,7 @@ namespace GRYLibrary.Core.Graph
         /// <inheritdoc/>
         public override void AddEdge(Edge edge)
         {
-            if (!(edge is UndirectedEdge))
+            if (edge is not UndirectedEdge)
             {
                 throw new InvalidEdgeTypeException($"{nameof(UndirectedGraph)}-objects can only have edges of type {nameof(UndirectedEdge)}");
             }

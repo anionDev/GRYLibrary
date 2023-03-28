@@ -16,10 +16,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public Action<WebApplicationBuilder, WebAPIConfigurationValues<ConfigurationConstantsType, ConfigurationVariablesType>> ConfigureBuilder { get; set; } = (builder, webAPIConfigurationValues) =>
         {
             builder.Services.AddLogging(c => c.ClearProviders());
-            builder.Services.AddControllers(mvcOptions =>
-            {
-                mvcOptions.UseGeneralRoutePrefix(webAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.APIRoutePrefix);
-            });
+            builder.Services.AddControllers(mvcOptions => mvcOptions.UseGeneralRoutePrefix(webAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.APIRoutePrefix));
         };
         public Action<WebApplication, WebAPIConfigurationValues<ConfigurationConstantsType, ConfigurationVariablesType>> ConfigureApp { get; set; } = (app, webAPIConfigurationValues) =>
         {
@@ -54,16 +51,10 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
             #endregion
 
             app.UseRouting();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
             if (webAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is not Productive)
             {
-                app.UseSwagger(options =>
-                {
-                    options.RouteTemplate = $"{webAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.APIRoutePrefix}/Other/Resources/{{documentName}}/{webAPIConfigurationValues.WebAPIConfigurationConstants.AppName}.api.json";
-                });
+                app.UseSwagger(options => options.RouteTemplate = $"{webAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.APIRoutePrefix}/Other/Resources/{{documentName}}/{webAPIConfigurationValues.WebAPIConfigurationConstants.AppName}.api.json");
                 app.UseSwaggerUI(options =>
                 {
                     string appVersionString = "v" + webAPIConfigurationValues.WebAPIConfigurationConstants.AppVersion;

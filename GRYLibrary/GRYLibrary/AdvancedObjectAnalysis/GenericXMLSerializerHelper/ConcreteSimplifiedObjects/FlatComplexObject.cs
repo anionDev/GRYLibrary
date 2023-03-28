@@ -21,5 +21,4 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper.Conc
             return visitor.Handle(this);
         }
     }
-
 }

@@ -25,5 +25,4 @@ namespace GRYLibrary.Core.Log
         }
         #endregion
     }
-
 }

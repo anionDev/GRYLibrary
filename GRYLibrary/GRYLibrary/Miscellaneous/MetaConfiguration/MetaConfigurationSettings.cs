@@ -7,6 +7,5 @@ namespace GRYLibrary.Core.Miscellaneous.MetaConfiguration
         public IConfigurationFormat ConfigurationFormat{ get; set; }
         public T InitialValue { get; set; }
         public string File { get; set; }
-
     }
 }

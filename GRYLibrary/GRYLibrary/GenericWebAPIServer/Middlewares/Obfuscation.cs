@@ -24,7 +24,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
         /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
         {
-            if (_WebAPIConfigurationConstants.TargetEnvironmentType is Productive)
+            if (this._WebAPIConfigurationConstants.TargetEnvironmentType is Productive)
             {
                 bool clearResponseBody;
                 int responseStatusCode;
@@ -54,7 +54,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
                     //TODO
                 }
             }
-            return _Next(context);
+            return this._Next(context);
         }
     }
 }

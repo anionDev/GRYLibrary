@@ -360,6 +360,5 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             return ExecuteGitCommand(repositoryFolder, $"merge-base --is-ancestor {ancestor} {descendant}", false).ExitCode == 0;
         }
-
     }
 }

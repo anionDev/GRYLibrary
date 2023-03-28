@@ -146,6 +146,5 @@ namespace GRYLibrary.Core.Miscellaneous
             public NonTerminalSymbol Identifier;
             public List<Symbol> Subsitution;
         }
-
     }
 }

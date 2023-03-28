@@ -214,7 +214,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             private readonly GRYLogConfiguration _LogConfiguration;
             public GetLoggerVisitor(WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType> webAPIConfiguration)
             {
-                _LogConfiguration = webAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables.ApplicationSettings.LogConfiguration;
+                this._LogConfiguration = webAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables.ApplicationSettings.LogConfiguration;
             }
             public IGeneralLogger Handle(Analysis analysis)
             {
@@ -223,7 +223,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
             public IGeneralLogger Handle(RunProgram runProgram)
             {
-                return GeneralLogger.Create(_LogConfiguration);
+                return GeneralLogger.Create(this._LogConfiguration);
             }
         }
         /// <summary>
@@ -236,7 +236,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             private readonly MetaConfigurationSettings<ConfigurationVariablesType, IWebAPIConfigurationVariables> _MetaConfiguration;
             public GetWebAPIConfigurationVariablesVisitor(WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType> webAPIConfiguration)
             {
-                _MetaConfiguration = new MetaConfigurationSettings<ConfigurationVariablesType, IWebAPIConfigurationVariables>()
+                this._MetaConfiguration = new MetaConfigurationSettings<ConfigurationVariablesType, IWebAPIConfigurationVariables>()
                 {
                     ConfigurationFormat = XML.Instance,
                     File = webAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.ConfigurationFile,
@@ -246,12 +246,12 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
             public ConfigurationVariablesType Handle(Analysis analysis)
             {
-                return _MetaConfiguration.InitialValue;
+                return this._MetaConfiguration.InitialValue;
             }
 
             public ConfigurationVariablesType Handle(RunProgram runProgram)
             {
-                return MetaConfigurationManager.GetConfiguration(_MetaConfiguration);
+                return MetaConfigurationManager.GetConfiguration(this._MetaConfiguration);
             }
         }
         public static string GetBaseFolderForProjectInCommonProjectStructure(GRYEnvironment environment, string programFolder)
@@ -293,7 +293,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
             public void Handle(RunProgram runProgram)
             {
-                foreach (string folder in _Folder)
+                foreach (string folder in this._Folder)
                 {
                     GRYLibrary.Core.Miscellaneous.Utilities.EnsureDirectoryExists(folder);
                 }

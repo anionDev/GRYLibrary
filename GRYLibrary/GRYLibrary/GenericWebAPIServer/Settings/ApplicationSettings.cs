@@ -11,7 +11,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public GRYLogConfiguration LogConfiguration { get; set; } 
         public ApplicationSettings()
         {
-            LogConfiguration = new GRYLogConfiguration();
+            this.LogConfiguration = new GRYLogConfiguration();
         }
     }
 }

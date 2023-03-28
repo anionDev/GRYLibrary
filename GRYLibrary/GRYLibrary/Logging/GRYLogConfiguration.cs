@@ -47,23 +47,23 @@ namespace GRYLibrary.Core.Log
         {
             if (initializeWithDefaultValues)
             {
-                Initliaze();
+                this.Initliaze();
             }
         }
 
         public void Initliaze()
         {
-            LogTargets = new List<GRYLogTarget> {
+            this.LogTargets = new List<GRYLogTarget> {
                 new Console() { Enabled = true, Format = GRYLogLogFormat.OnlyMessage },
                 new LogFile() { Enabled = false, Format = GRYLogLogFormat.GRYLogFormat }
             };
-            WriteLogEntriesAsynchronous = false;
-            Enabled = true;
-            PrintEmptyLines = false;
-            PrintErrorsAsInformation = false;
-            Name = string.Empty;
-            DateFormat = "yyyy-MM-dd HH:mm:ss";
-            LoggedMessageTypesConfiguration = new List<SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>>
+            this.WriteLogEntriesAsynchronous = false;
+            this.Enabled = true;
+            this.PrintEmptyLines = false;
+            this.PrintErrorsAsInformation = false;
+            this.Name = string.Empty;
+            this.DateFormat = "yyyy-MM-dd HH:mm:ss";
+            this.LoggedMessageTypesConfiguration = new List<SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>>
             {
                 new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Trace, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Trace), ConsoleColor = ConsoleColor.Gray }),
                 new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Debug, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Debug), ConsoleColor = ConsoleColor.Cyan }),
@@ -72,9 +72,9 @@ namespace GRYLibrary.Core.Log
                 new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Error, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Error), ConsoleColor = ConsoleColor.Red }),
                 new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Critical, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Critical), ConsoleColor = ConsoleColor.DarkRed })
             };
-            ConvertTimeForLogentriesToUTCFormat = false;
-            LogEveryLineOfLogEntryInNewLine = false;
-            StoreProcessedLogItemsInternally = false;
+            this.ConvertTimeForLogentriesToUTCFormat = false;
+            this.LogEveryLineOfLogEntryInNewLine = false;
+            this.StoreProcessedLogItemsInternally = false;
         }
 
         public LoggedMessageTypeConfiguration GetLoggedMessageTypesConfigurationByLogLevel(LogLevel logLevel)
@@ -164,5 +164,4 @@ namespace GRYLibrary.Core.Log
         }
         #endregion
     }
-
 }

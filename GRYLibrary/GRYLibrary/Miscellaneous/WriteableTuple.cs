@@ -22,7 +22,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public override bool Equals(object obj)
         {
-            if (!(obj is WriteableTuple<T1, T2> typedObject))
+            if (obj is not WriteableTuple<T1, T2> typedObject)
             {
                 return false;
             }

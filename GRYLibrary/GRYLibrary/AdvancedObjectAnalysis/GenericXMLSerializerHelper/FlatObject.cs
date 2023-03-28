@@ -41,5 +41,4 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
             T Handle(FlatPrimitive simplifiedPrimitive);
         }
     }
-
 }

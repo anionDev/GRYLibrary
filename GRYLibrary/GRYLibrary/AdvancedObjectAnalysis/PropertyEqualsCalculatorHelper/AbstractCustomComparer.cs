@@ -10,5 +10,4 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper
         {
         }
     }
-
 }

@@ -145,17 +145,17 @@ namespace GRYLibrary.Core.Miscellaneous
 
             public string Handle(OSX operatingSystem)
             {
-                return _Path.Replace(WindowsPathSeparatorChar, LinuxAndOSXPathSeparatorChar);
+                return this._Path.Replace(this.WindowsPathSeparatorChar, this.LinuxAndOSXPathSeparatorChar);
             }
 
             public string Handle(Windows operatingSystem)
             {
-                return _Path.Replace(LinuxAndOSXPathSeparatorChar, WindowsPathSeparatorChar);
+                return this._Path.Replace(this.LinuxAndOSXPathSeparatorChar, this.WindowsPathSeparatorChar);
             }
 
             public string Handle(Linux operatingSystem)
             {
-                return _Path.Replace(WindowsPathSeparatorChar, LinuxAndOSXPathSeparatorChar);
+                return this._Path.Replace(this.WindowsPathSeparatorChar, this.LinuxAndOSXPathSeparatorChar);
             }
         }
 
@@ -350,8 +350,15 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static void ReplaceUnderscoresInFolderTransitively(string folder, IDictionary<string, string> replacements)
         {
-            void replaceInFile(string file, object obj) { string newFileWithPath = RenameFileIfRequired(file, replacements); ReplaceUnderscoresInFile(newFileWithPath, replacements); }
-            void replaceInDirectory(string directory, object obj) { RenameFolderIfRequired(directory, replacements); }
+            void replaceInFile(string file, object obj)
+            {
+                string newFileWithPath = RenameFileIfRequired(file, replacements);
+                ReplaceUnderscoresInFile(newFileWithPath, replacements);
+            }
+            void replaceInDirectory(string directory, object obj)
+            {
+                RenameFolderIfRequired(directory, replacements);
+            }
             ForEachFileAndDirectoryTransitively(folder, replaceInDirectory, replaceInFile);
         }
 
@@ -429,12 +436,12 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public static bool TypeRepresentsType(Type type)
         {
-            return type.FullName == "System.Reflection.Emit.EnumBuilder"
-                || type.FullName == "System.Reflection.Emit.GenericTypeParameterBuilder"
-                || type.FullName == "System.Reflection.Emit.TypeBuilder"
-                || type.FullName == "System.Reflection.TypeInfo"
-                || type.FullName == "System.RuntimeType"
-                || type.FullName == "System.Type";
+            return type.FullName is "System.Reflection.Emit.EnumBuilder"
+                or "System.Reflection.Emit.GenericTypeParameterBuilder"
+                or "System.Reflection.Emit.TypeBuilder"
+                or "System.Reflection.TypeInfo"
+                or "System.RuntimeType"
+                or "System.Type";
         }
 
         public static bool IsAssignableFrom(object @object, Type genericTypeToCompare)
@@ -682,7 +689,12 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public static void DeleteAllEmptyFolderTransitively(string folder, bool deleteFolderItselfIfAlsoEmpty = false)
         {
-            ForEachFileAndDirectoryTransitively(folder, (string directory, object argument) => { if (DirectoryIsEmpty(directory)) { Directory.Delete(directory); } }, (string file, object argument) => { }, false, null, null);
+            ForEachFileAndDirectoryTransitively(folder, (string directory, object argument) =>
+            {
+                if(DirectoryIsEmpty(directory))
+                {
+                    Directory.Delete(directory); }
+            }, (string file, object argument) => { }, false, null, null);
             if (deleteFolderItselfIfAlsoEmpty && DirectoryIsEmpty(folder))
             {
                 Directory.Delete(folder);
@@ -866,7 +878,7 @@ namespace GRYLibrary.Core.Miscellaneous
                     errorHandler(exception);
                 }
             }
-            ForEachFileAndDirectoryTransitively(sourceFolder, (directory, obj) => { /*TODO ensure directory exists in target-folder*/}, (sourceFile, @object) => fileAction(sourceFile, @object), false, null, null);
+            ForEachFileAndDirectoryTransitively(sourceFolder, (directory, obj) => { /*TODO ensure directory exists in target-folder*/}, fileAction, false, null, null);
             if (deleteAlreadyExistingFilesWithoutCopy)
             {
                 RemoveContentOfFolder(sourceFolder);
@@ -1073,7 +1085,7 @@ namespace GRYLibrary.Core.Miscellaneous
             return Cast(@object, targetType, DefaultConversions);
         }
         private static readonly IList<object> _DefaultConversions = new List<object>() { /*TODO*/};
-        public static IList<object> DefaultConversions { get { return _DefaultConversions.ToList(); } }
+        public static IList<object> DefaultConversions => _DefaultConversions.ToList();
         public static object Cast(object @object, Type targetType, IList<object> customConversions)
         {
             Type typeOfObject = @object.GetType();
@@ -1184,26 +1196,26 @@ namespace GRYLibrary.Core.Miscellaneous
 
             public bool Handle(OSX operatingSystem)
             {
-                return _Path.StartsWith("/");
+                return this._Path.StartsWith("/");
             }
 
             public bool Handle(Windows operatingSystem)
             {
-                if (_Path.StartsWith("/") || _Path.StartsWith(@"\"))
+                if (this._Path.StartsWith("/") || this._Path.StartsWith(@"\"))
                 {
                     return true;
                 }
                 else
                 {
-                    int colonCount = _Path.Count(c => c == ':');
+                    int colonCount = this._Path.Count(c => c == ':');
                     List<char> invalidFileNameChars = Path.GetInvalidFileNameChars().ToList();
                     invalidFileNameChars.Remove(':'); 
                     invalidFileNameChars.Remove('\\'); 
                     invalidFileNameChars.Remove('/');
 
                     bool c1 = colonCount > 1;
-                    bool c2 = (colonCount == 1 && (_Path.Length <= 1 || (_Path.Length > 1 && _Path[1] != ':')));
-                    bool c3 = _Path.Any(c =>
+                    bool c2 = colonCount == 1 && (this._Path.Length <= 1 || (this._Path.Length > 1 && this._Path[1] != ':'));
+                    bool c3 = this._Path.Any(c =>
                     {
                         if (invalidFileNameChars.Contains(c))
                         {
@@ -1214,13 +1226,13 @@ namespace GRYLibrary.Core.Miscellaneous
                             return false;
                         }
                     });
-                    bool c4= _Path.Contains("//")|| _Path.Contains(@"\\");
+                    bool c4= this._Path.Contains("//")|| this._Path.Contains(@"\\");
 
                     bool isInvalid = c1 || c2 || c3 || c4;
 
                     if (isInvalid)
                     {
-                        throw new ArgumentException($"'{_Path}' is invalid as path.");
+                        throw new ArgumentException($"'{this._Path}' is invalid as path.");
                     }
                     else
                     {
@@ -1231,7 +1243,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
             public bool Handle(Linux operatingSystem)
             {
-                return _Path.StartsWith("/");
+                return this._Path.StartsWith("/");
             }
         }
         public static bool IsAbsoluteLocalFilePath(string path)
@@ -1511,10 +1523,10 @@ namespace GRYLibrary.Core.Miscellaneous
                 return false;
             }
             value = value.Trim().ToLower();
-            return value == "1"
-                || value == "y"
-                || value == "yes"
-                || value == "true";
+            return value is "1"
+                or "y"
+                or "yes"
+                or "true";
         }
         public static string[] SplitOnNewLineCharacter(string input)
         {
@@ -1734,10 +1746,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
                 List<object> events = new();
                 XDocument xDocument = xmlDocument.XMLDocumentToXDocument();
-                xDocument.Validate(schemaSet, (o, eventArgument) =>
-                {
-                    events.Add(eventArgument);
-                });
+                xDocument.Validate(schemaSet, (o, eventArgument) => events.Add(eventArgument));
                 foreach (object @event in events)
                 {
                     errorMessages.Add(@event);
@@ -2588,26 +2597,20 @@ namespace GRYLibrary.Core.Miscellaneous
             return char.ToLowerInvariant(pascalCase[0]) + pascalCase[1..];
         }
 
-        private static readonly Regex _OneOrMoreHexSigns = new(@"^[0-9a-f]+$");
+        private static readonly Regex _OneOrMoreHexSigns = new Regex(@"^[0-9a-f]+$");
         public static bool IsHexString(string result)
         {
             return _OneOrMoreHexSigns.Match(result.ToLower()).Success;
         }
         public static bool IsHexDigit(this char @char)
         {
-            return (@char >= '0' && @char <= '9') || (@char >= 'a' && @char <= 'f') || (@char >= 'A' && @char <= 'F');
+            return @char is (>= '0' and <= '9') or (>= 'a' and <= 'f') or (>= 'A' and <= 'F');
         }
 
         public static bool DarkModeEnabled
         {
-            get
-            {
-                return OperatingSystem.OperatingSystem.GetCurrentOperatingSystem().Accept(_DarkModeEnabledVisitor);
-            }
-            set
-            {
-                OperatingSystem.OperatingSystem.GetCurrentOperatingSystem().Accept(new SetDarkModeEnabledVisitor(value));
-            }
+            get => OperatingSystem.OperatingSystem.GetCurrentOperatingSystem().Accept(_DarkModeEnabledVisitor);
+            set => OperatingSystem.OperatingSystem.GetCurrentOperatingSystem().Accept(new SetDarkModeEnabledVisitor(value));
         }
         public static (IObservable<T>, Action) FuncToObservable<T>(Func<T> valueFunction, TimeSpan updateInterval)
         {
@@ -2751,7 +2754,7 @@ namespace GRYLibrary.Core.Miscellaneous
                 (configurationFile, initialValue) =>
                 {
                     dynamic expando = new ExpandoObject();
-                    ((IDictionary<String, object>)expando)[typeof(T).Name] = initialValue;
+                    ((IDictionary<string, object>)expando)[typeof(T).Name] = initialValue;
                     string serialized = Newtonsoft.Json.JsonConvert.SerializeObject(expando, Newtonsoft.Json.Formatting.Indented);
                     File.WriteAllText(configurationFile, serialized, new UTF8Encoding(false));
                 }, (configurationFile) =>

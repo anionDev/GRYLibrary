@@ -10,7 +10,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
 
         public RoutePrefixConvention(IRouteTemplateProvider route)
         {
-            _routePrefix = new AttributeRouteModel(route);
+            this._routePrefix = new AttributeRouteModel(route);
         }
 
         public void Apply(ApplicationModel application)
@@ -19,11 +19,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
             {
                 if (selector.AttributeRouteModel != null)
                 {
-                    selector.AttributeRouteModel = AttributeRouteModel.CombineAttributeRouteModel(_routePrefix, selector.AttributeRouteModel);
+                    selector.AttributeRouteModel = AttributeRouteModel.CombineAttributeRouteModel(this._routePrefix, selector.AttributeRouteModel);
                 }
                 else
                 {
-                    selector.AttributeRouteModel = _routePrefix;
+                    selector.AttributeRouteModel = this._routePrefix;
                 }
             }
         }

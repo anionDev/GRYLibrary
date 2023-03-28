@@ -7,8 +7,8 @@ namespace GRYLibrary.Core.Graph
 {
     public sealed class DirectedGraph : Graph
     {
-        public override ISet<Edge> Edges { get { return new HashSet<Edge>(this._DirectedEdges); } }
-        public ISet<Edge> DirectedEdges { get { return new HashSet<Edge>(this._DirectedEdges); } }
+        public override ISet<Edge> Edges => new HashSet<Edge>(this._DirectedEdges);
+        public ISet<Edge> DirectedEdges => new HashSet<Edge>(this._DirectedEdges);
         private readonly ISet<DirectedEdge> _DirectedEdges = new HashSet<DirectedEdge>();
         public DirectedGraph() { }
 
@@ -160,7 +160,7 @@ namespace GRYLibrary.Core.Graph
         /// <inheritdoc/>
         public override void AddEdge(Edge edge)
         {
-            if (!(edge is DirectedEdge))
+            if (edge is not DirectedEdge)
             {
                 throw new InvalidEdgeTypeException($"{nameof(DirectedGraph)}-objects can only have edges of type {nameof(DirectedEdge)}");
             }

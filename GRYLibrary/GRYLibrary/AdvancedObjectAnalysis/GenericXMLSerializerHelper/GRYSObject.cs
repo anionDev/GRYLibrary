@@ -107,7 +107,6 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
                             {
                                 property.SetValue(@object, this._DeserializedObjects[attribute.ObjectId]);
                             }
-
                         }
                         continue;
                     }
@@ -346,7 +345,6 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
                 {
                     this._DeserializedSets.Add(createdObject);
                 }
-
             }
             foreach (FlatObject simplified in sorted)
             {

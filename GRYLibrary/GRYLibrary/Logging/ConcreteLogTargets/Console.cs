@@ -13,7 +13,7 @@ namespace GRYLibrary.Core.Log.ConcreteLogTargets
         protected override void ExecuteImplementation(LogItem logItem, GRYLog logObject)
         {
             TextWriter output;
-            if (logItem.IsErrorEntry() || (WriteWarningsToStdErr && logItem.LogLevel == LogLevel.Warning))
+            if (logItem.IsErrorEntry() || (this.WriteWarningsToStdErr && logItem.LogLevel == LogLevel.Warning))
             {
                 output = System.Console.Error;
             }

@@ -20,8 +20,8 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
         /// <inheritdoc/>
         public RequestLoggingMiddleware(RequestDelegate next, IRequestLoggingSettings requestLoggingSettings, IWebAPIConfigurationConstants webAPIConfigurationConstants) : base(next)
         {
-            _RequestLoggingSettings = requestLoggingSettings;
-            _Logger = GeneralLogger.Create(GetLogConfiguration(requestLoggingSettings.WebServerAccessLogFile, webAPIConfigurationConstants.TargetEnvironmentType));
+            this._RequestLoggingSettings = requestLoggingSettings;
+            this._Logger = GeneralLogger.Create(GetLogConfiguration(requestLoggingSettings.WebServerAccessLogFile, webAPIConfigurationConstants.TargetEnvironmentType));
         }
         private static GRYLogConfiguration GetLogConfiguration(string webServerAccessLogFile, GRYEnvironment environment)
         {
@@ -45,15 +45,15 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
             if (implemented)
             {
                 Request request = default;//TODO create real object
-                if (_RequestLoggingSettings.ShouldBeLogged(request))
+                if (this._RequestLoggingSettings.ShouldBeLogged(request))
                 {
-                    LogLevel logLevel = _RequestLoggingSettings.GetLogLevel(request);
-                    string formatted = _RequestLoggingSettings.FormatRequest(request, logLevel, _RequestLoggingSettings.ShouldLogEntireRequestContent(request));
+                    LogLevel logLevel = this._RequestLoggingSettings.GetLogLevel(request);
+                    string formatted = this._RequestLoggingSettings.FormatRequest(request, logLevel, this._RequestLoggingSettings.ShouldLogEntireRequestContent(request));
                     LogItem logItem = new LogItem(formatted, logLevel);
-                    _Logger.AddLogEntry(logItem);
+                    this._Logger.AddLogEntry(logItem);
                 }
             }
-            return _Next(context);
+            return this._Next(context);
         }
 
         public virtual LogLevel GetLogLevelForRequestLogEntry(string route, ushort responseStatusCode)

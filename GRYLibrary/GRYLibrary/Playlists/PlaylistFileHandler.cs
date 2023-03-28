@@ -11,7 +11,7 @@ namespace GRYLibrary.Core.Playlists
         public abstract void CreatePlaylist(string file);
         public abstract (ISet<string> included, ISet<string> excluded) GetItemsAndExcludedItems(string playlistFile);
         public virtual ISet<string> GetSongs(string playlistFile) {
-            (ISet<string> included, ISet<string> excluded) = GetItemsAndExcludedItems(playlistFile);
+            (ISet<string> included, ISet<string> excluded) = this.GetItemsAndExcludedItems(playlistFile);
             return included.Except(excluded).ToHashSet();
         }
         public abstract void AddItemsToPlaylist(string playlistFile, IEnumerable<string> newItems);

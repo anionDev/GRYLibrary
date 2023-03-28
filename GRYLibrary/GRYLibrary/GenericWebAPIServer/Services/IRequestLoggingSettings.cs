@@ -26,14 +26,14 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Services
         public string ResponseBody { get; set; }
         public Request(IPAddress clientIPAddress, string route, string[] requestHeader, string requestBody, IDictionary<object, object> informationFromController, ushort responseStatusCode, string[] responseHeader, string responseBody)
         {
-            ClientIPAddress = clientIPAddress;
-            Route = route;
-            RequestHeader = requestHeader;
-            RequestBody = requestBody;
-            InformationFromController = informationFromController;
-            ResponseStatusCode = responseStatusCode;
-            ResponseHeader = responseHeader;
-            ResponseBody = responseBody;
+            this.ClientIPAddress = clientIPAddress;
+            this.Route = route;
+            this.RequestHeader = requestHeader;
+            this.RequestBody = requestBody;
+            this.InformationFromController = informationFromController;
+            this.ResponseStatusCode = responseStatusCode;
+            this.ResponseHeader = responseHeader;
+            this.ResponseBody = responseBody;
         }
     }
 }

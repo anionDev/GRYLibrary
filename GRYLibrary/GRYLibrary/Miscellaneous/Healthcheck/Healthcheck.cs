@@ -14,9 +14,9 @@ namespace GRYLibrary.Core.Miscellaneous.Healthcheck
         }
         public void SetState(HealthcheckValue value, string message = "")
         {
-            Utilities.EnsureFileExists(File);
+            Utilities.EnsureFileExists(this.File);
             string text;
-            if (AddTimestamp)
+            if (this.AddTimestamp)
             {
                 text = Utilities.DateTimeToISO8601String(DateTime.Now) + ": ";
             }
@@ -29,11 +29,11 @@ namespace GRYLibrary.Core.Miscellaneous.Healthcheck
             {
                 text = $"{text} ({message})";
             }
-            Utilities.AppendLineToFile(File, text, Encoding);
+            Utilities.AppendLineToFile(this.File, text, this.Encoding);
         }
         public void Dispose()
         {
-            SetState(HealthcheckValue.NotRunning, "Disposed");
+            this.SetState(HealthcheckValue.NotRunning, "Disposed");
         }
     }
 }

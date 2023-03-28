@@ -41,10 +41,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper
                 return false;
             }
         };
-        public Func<FieldInfo, bool> FieldSelector { get; set; } = (FieldInfo fieldInfo) =>
-        {
-            return false;
-        };
+        public Func<FieldInfo, bool> FieldSelector { get; set; } = (FieldInfo fieldInfo) => false;
         public List<AbstractCustomComparer> CustomComparer { get; set; }
         public PropertyEqualsCalculatorConfiguration()
         {

@@ -46,6 +46,5 @@ namespace GRYLibrary.Tests.Testcases.AdvancedObjectAnalysisTests.ToString
             // assert
             Assert.AreEqual(expectedString, actualString);
         }
-
     }
 }

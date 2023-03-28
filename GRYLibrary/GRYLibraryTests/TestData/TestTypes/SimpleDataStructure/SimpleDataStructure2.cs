@@ -49,5 +49,4 @@ namespace GRYLibrary.Tests.TestData.TestTypes.SimpleDataStructure
         }
         #endregion
     }
-
 }

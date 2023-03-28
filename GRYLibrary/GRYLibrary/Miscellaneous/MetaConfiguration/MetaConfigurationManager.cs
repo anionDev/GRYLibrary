@@ -19,12 +19,12 @@ namespace GRYLibrary.Core.Miscellaneous.MetaConfiguration
 
             public T Handle(XML xML)
             {
-                return Utilities.CreateOrLoadXMLConfigurationFile<T, TBase>(_Configuration.File, _Configuration.InitialValue);
+                return Utilities.CreateOrLoadXMLConfigurationFile<T, TBase>(this._Configuration.File, this._Configuration.InitialValue);
             }
 
             public T Handle(JSON jSON)
             {
-                return Utilities.CreateOrLoadJSONConfigurationFile<T, TBase>(_Configuration.File, _Configuration.InitialValue);
+                return Utilities.CreateOrLoadJSONConfigurationFile<T, TBase>(this._Configuration.File, this._Configuration.InitialValue);
             }
         }
     }

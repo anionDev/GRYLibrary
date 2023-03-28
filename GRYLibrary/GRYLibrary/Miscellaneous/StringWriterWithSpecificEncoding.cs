@@ -26,6 +26,5 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             this._Encoding = encoding;
         }
-
     }
 }

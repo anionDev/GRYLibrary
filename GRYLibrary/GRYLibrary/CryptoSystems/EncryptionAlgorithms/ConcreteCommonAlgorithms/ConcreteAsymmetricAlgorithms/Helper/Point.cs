@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteCommonAlgorithms.ConcreteAsymmetricAlgorithms.Helper
 {
-    public struct Point : IEquatable<Point>
+    public readonly struct Point : IEquatable<Point>
     {
         public static Point Infinity { get; } = new Point(default, default, default);
         public Curve UsedCurve { get; }

@@ -22,11 +22,11 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             get
             {
-                return major;
+                return this.major;
             }
             set
             {
-                major = value;
+                this.major = value;
             }
         }
         /// <summary>
@@ -37,11 +37,11 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             get
             {
-                return minor;
+                return this.minor;
             }
             set
             {
-                minor = value;
+                this.minor = value;
             }
         }
         /// <summary>
@@ -52,11 +52,11 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             get
             {
-                return build;
+                return this.build;
             }
             set
             {
-                build = value;
+                this.build = value;
             }
         }
         /// <summary>
@@ -67,11 +67,11 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             get
             {
-                return revision;
+                return this.revision;
             }
             set
             {
-                revision = value;
+                this.revision = value;
             }
         }
         /// <summary>
@@ -99,7 +99,7 @@ namespace GRYLibrary.Core.Miscellaneous
             char[] chArray1 = new char[1] { '.' };
             string[] textArray1 = version.Split(chArray1);
             int num1 = textArray1.Length;
-            if ((num1 < 2) || (num1 > 4))
+            if (num1 is < 2 or > 4)
             {
                 throw new ArgumentException("Arg_VersionString");
             }
@@ -236,7 +236,7 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 return 1;
             }
-            if (!(version is Version))
+            if (version is not Version)
             {
                 throw new ArgumentException("Arg_MustBeVersion");
             }
@@ -283,12 +283,12 @@ namespace GRYLibrary.Core.Miscellaneous
         /// <returns></returns>
         public override bool Equals(object obj)
         {
-            if ((obj == null) || !(obj is Version))
+            if (obj is null or not Version)
             {
                 return false;
             }
             Version version1 = (Version)obj;
-            if (((this.major == version1.Major) && (this.minor == version1.Minor)) && (this.build == version1.Build) && (this.revision == version1.Revision))
+            if ((this.major == version1.Major) && (this.minor == version1.Minor) && (this.build == version1.Build) && (this.revision == version1.Revision))
             {
                 return true;
             }
@@ -301,10 +301,10 @@ namespace GRYLibrary.Core.Miscellaneous
         public override int GetHashCode()
         {
             int num1 = 0;
-            num1 |= ((this.major & 15) << 0x1c);
-            num1 |= ((this.minor & 0xff) << 20);
-            num1 |= ((this.build & 0xff) << 12);
-            return (num1 | this.revision & 0xfff);
+            num1 |= (this.major & 15) << 0x1c;
+            num1 |= (this.minor & 0xff) << 20;
+            num1 |= (this.build & 0xff) << 12;
+            return num1 | (this.revision & 0xfff);
         }
         /// <summary>
         /// Operator ==s the specified v1.
@@ -324,7 +324,7 @@ namespace GRYLibrary.Core.Miscellaneous
         /// <returns></returns>
         public static bool operator >(Version v1, Version v2)
         {
-            return (v2 < v1);
+            return v2 < v1;
         }
         /// <summary>
         /// Operator &gt;=s the specified v1.
@@ -334,7 +334,7 @@ namespace GRYLibrary.Core.Miscellaneous
         /// <returns></returns>
         public static bool operator >=(Version v1, Version v2)
         {
-            return (v2 <= v1);
+            return v2 <= v1;
         }
         /// <summary>
         /// Operator !=s the specified v1.
@@ -344,7 +344,7 @@ namespace GRYLibrary.Core.Miscellaneous
         /// <returns></returns>
         public static bool operator !=(Version v1, Version v2)
         {
-            return (v1 != v2);
+            return v1 != v2;
         }
         /// <summary>
         /// Operator &lt;s the specified v1.
@@ -358,7 +358,7 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 throw new ArgumentNullException("v1");
             }
-            return (v1.CompareTo(v2) < 0);
+            return v1.CompareTo(v2) < 0;
         }
         /// <summary>
         /// Operator &lt;=s the specified v1.
@@ -372,7 +372,7 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 throw new ArgumentNullException("v1");
             }
-            return (v1.CompareTo(v2) <= 0);
+            return v1.CompareTo(v2) <= 0;
         }
         public System.Version ToSystemVersion()
         {
@@ -410,11 +410,11 @@ namespace GRYLibrary.Core.Miscellaneous
                     }
                 case 1:
                     {
-                        return (this.major.ToString());
+                        return this.major.ToString();
                     }
                 case 2:
                     {
-                        return (this.major.ToString() + "." + this.minor.ToString());
+                        return this.major.ToString() + "." + this.minor.ToString();
                     }
             }
             if (this.build == -1)

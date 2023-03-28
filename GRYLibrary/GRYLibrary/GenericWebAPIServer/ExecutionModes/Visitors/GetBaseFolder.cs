@@ -22,7 +22,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.ExecutionModes.Visitors
 
         public string Handle(RunProgram runProgram)
         {
-            return GenericWebAPIServer.GetBaseFolderForProjectInCommonProjectStructure(_TargetEnvironmentType, _ProgramFolder);
+            return GenericWebAPIServer.GetBaseFolderForProjectInCommonProjectStructure(this._TargetEnvironmentType, this._ProgramFolder);
         }
     }
 }

@@ -274,5 +274,4 @@ namespace GRYLibrary.Tests.Testcases.GraphTests
             return graph;
         }
     }
-
 }

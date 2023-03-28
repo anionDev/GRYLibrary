@@ -15,16 +15,16 @@ namespace GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments
             }
             else
             {
-                return GetType().Equals(obj.GetType());
+                return this.GetType().Equals(obj.GetType());
             }
         }
         public override int GetHashCode()
         {
-            return GetType().GetHashCode();
+            return this.GetType().GetHashCode();
         }
         public override string ToString()
         {
-            return GetType().Name;
+            return this.GetType().Name;
         }
         public static GRYEnvironment Parse(string environment)
         {

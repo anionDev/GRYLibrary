@@ -17,7 +17,7 @@ namespace GRYLibrary.Core.Graph
     [XmlInclude(typeof(DirectedGraph))]
     public abstract class Graph
     {
-        public ISet<Vertex> Vertices { get { return new HashSet<Vertex>(this._Vertices); } }
+        public ISet<Vertex> Vertices => new HashSet<Vertex>(this._Vertices);
         protected ISet<Vertex> _Vertices = new HashSet<Vertex>();
         public abstract ISet<Edge> Edges { get; }
 
@@ -170,10 +170,7 @@ namespace GRYLibrary.Core.Graph
             {
                 visited.Add(vertex, false);
             }
-            this.DepthFirstSearch((v, l) =>
-            {
-                return visited[v] = true;
-            }, false);
+            this.DepthFirstSearch((v, l) => visited[v] = true, false);
             return !visited.ContainsValue(false);
         }
 
@@ -271,7 +268,6 @@ namespace GRYLibrary.Core.Graph
                     }
                 }
             }
-
         }
 
         public void DepthFirstSearch(Func<Vertex/*current vertex*/, IList<Edge>/*path*/, bool/*continue search*/> customAction, bool doNotWalkAgainstDirectedEdges = true)
@@ -437,5 +433,4 @@ namespace GRYLibrary.Core.Graph
         T Handle(UndirectedGraph graph);
         T Handle(DirectedGraph graph);
     }
-
 }
