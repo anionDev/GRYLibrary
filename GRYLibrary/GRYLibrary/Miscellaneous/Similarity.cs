@@ -48,9 +48,12 @@ namespace GRYLibrary.Core.Miscellaneous
             int lengthB = string2.Length;
             int[,] distance = new int[lengthA + 1, lengthB + 1];
             for(int i = 0; i <= lengthA; distance[i, 0] = i++)
-                ;
+            {                
+            }
+
             for(int j = 0; j <= lengthB; distance[0, j] = j++)
-                ;
+            {                
+            }
 
             for(int i = 1; i <= lengthA; i++)
             {

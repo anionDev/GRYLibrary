@@ -109,17 +109,29 @@ namespace GRYLibrary.Core.Miscellaneous
             int t = Convert.ToInt32(dValue * (1 - ((1 - f) * dSaturation)));
 
             if(hi == 0)
+            {
                 return Color.FromArgb(255, v, t, p);
+            }
             else if(hi == 1)
+            {
                 return Color.FromArgb(255, q, v, p);
+            }
             else if(hi == 2)
+            {
                 return Color.FromArgb(255, p, v, t);
+            }
             else if(hi == 3)
+            {
                 return Color.FromArgb(255, p, q, v);
+            }
             else if(hi == 4)
+            {
                 return Color.FromArgb(255, t, p, v);
+            }
             else
+            {
                 return Color.FromArgb(255, v, p, q);
+            }
         }
     }
 }
