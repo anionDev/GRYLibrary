@@ -8,5 +8,5 @@ Resources/Constants/CodeUnitName.*
 Resources/Constants/CodeUnitVersion.*
 Resources/Constants/CommitDate.*
 Resources/Constants/CommitId.*
-GRYLibrary.sarif
-GRYLibraryTests.sarif
+Resources/GRYLibrary.sarif
+Resources/GRYLibraryTests.sarif
