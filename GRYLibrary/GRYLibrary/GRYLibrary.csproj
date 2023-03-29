@@ -6,6 +6,7 @@
 		<Version>0.12.38</Version>
 		<AssemblyVersion>0.12.38</AssemblyVersion>
 		<FileVersion>0.12.38</FileVersion>
+		<SelfContained>False</SelfContained>
 		<IsPackable>false</IsPackable>
 		<PreserveCompilationContext>false</PreserveCompilationContext>
 		<GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
@@ -28,7 +29,7 @@
 		<Prefer32Bit>false</Prefer32Bit>
 		<NoWarn>1701;1702;CA1822;CS1591;CS1573;IDE0045;IDE0046;IDE0054;IDE0058;IDE0074;IDE0090</NoWarn>
 		<WarningsAsErrors>NU1605</WarningsAsErrors>
-		<ErrorLog>..\Other\Artifacts\CodeAnalysisResult\GRYLibrary.sarif</ErrorLog>
+		<ErrorLog>..\Other\GRYLibrary.sarif</ErrorLog>
 		<OutputType>Library</OutputType>
 		<DocumentationFile>..\Other\Artifacts\MetaInformation\GRYLibrary.xml</DocumentationFile>
 		<ApplicationIcon>..\Other\Resources\Logo\GRYLibraryIcon.ico</ApplicationIcon>
