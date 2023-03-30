@@ -1,17 +1,10 @@
 ﻿using CommandLine;
 using CommandLine.Text;
-using GRYLibrary.Core.ExecutePrograms;
-using GRYLibrary.Core.ExecutePrograms.WaitingStates;
 using GRYLibrary.Core.Log;
-using GRYLibrary.Core.Log.ConcreteLogTargets;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using YamlDotNet.Core;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
@@ -23,95 +16,91 @@ namespace GRYLibrary.Core.Miscellaneous
         private readonly string _ProgramDescription;
         private readonly GRYLog _Log;
         private readonly SentenceBuilder _SentenceBuilder;
-        public GRYConsoleApplication(Func<T, int> main, string programName, string programVersion, string programDescription)
+        private readonly bool _ProgramCanRunWithoutArguments;
+        public GRYConsoleApplication(Func<T, int> main, string programName, string programVersion, string programDescription, bool programCanRunWithoutArguments)
         {
             this._Main = main;
             this._ProgramName = programName;
             this._ProgramVersion = programVersion;
             this._ProgramDescription = programDescription;
             this._Log = GRYLog.Create();
-            _SentenceBuilder = SentenceBuilder.Create();
+            this._SentenceBuilder = SentenceBuilder.Create();
+            this._ProgramCanRunWithoutArguments = programCanRunWithoutArguments;
         }
 
         public int Main(string[] arguments)
         {
-            int result = 2;
+            int result = 1;
             try
             {
                 if(arguments == null)
                 {
                     throw Utilities.CreateNullReferenceExceptionDueToParameter(nameof(arguments));
                 }
-                string argumentsAsString = String.Join(' ', arguments);
+                string argumentsAsString = string.Join(' ', arguments);
                 string workingDirectory = Directory.GetCurrentDirectory();
                 try
                 {
-                    if(arguments.Length == 0)
+                    if(arguments.Length == 0 && !_ProgramCanRunWithoutArguments)
                     {
-                        _Log.Log($"{_ProgramName} v{_ProgramVersion}");
-                        _Log.Log($"Run '{_ProgramName} --help' to get help about the usage.");
+                        this._Log.Log($"{this._ProgramName} v{this._ProgramVersion}");
+                        this._Log.Log($"Run '{this._ProgramName} --help' to get help about the usage.");
                     }
                     else
                     {
-                        ParserResult<T> parserResult = new CommandLine.Parser(settings => settings.CaseInsensitiveEnumValues = true).ParseArguments<T>(arguments);
+                        ParserResult<T> parserResult = new Parser(settings => settings.CaseInsensitiveEnumValues = true).ParseArguments<T>(arguments);
                         if(ShowHelp(arguments))
                         {
-                            WriteHelp(parserResult);
+                            this.WriteHelp(parserResult);
                         }
                         else
                         {
-                            parserResult.WithParsed(options =>
-                            {
-                                result = HandleSuccessfullyParsedArguments(options);
-                            })
-                            .WithNotParsed(errors =>
-                            {
-                                HandleParsingErrors(argumentsAsString, errors);
-                            });
+                            parserResult
+                                .WithParsed(options => result = this.HandleSuccessfullyParsedArguments(options))
+                                .WithNotParsed(errors => this.HandleParsingErrors(argumentsAsString, errors));
                         }
                     }
                 }
                 catch(Exception exception)
                 {
-                    _Log.Log($"Fatal error occurred while processing argument '{workingDirectory}> epew {argumentsAsString}", exception);
+                    this._Log.Log($"Fatal error occurred while processing argument.", exception);
                 }
             }
             catch(Exception exception)
             {
-                _Log.Log($"Fatal error occurred", exception);
+                this._Log.Log($"Fatal error occurred", exception);
                 result = 1;
             }
-            _Log.Log($"Finished Epew", LogLevel.Debug);
+            this._Log.Log($"Finished program", LogLevel.Debug);
             return result;
         }
 
-
         private void HandleParsingErrors(string argumentsAsString, IEnumerable<Error> errors)
         {
-            var amountOfErrors = errors.Count();
-            _Log.Log($"Argument '{argumentsAsString}' could not be parsed successfully.", Microsoft.Extensions.Logging.LogLevel.Error);
+            int amountOfErrors = errors.Count();
+            this._Log.Log($"Argument '{argumentsAsString}' could not be parsed successfully.", Microsoft.Extensions.Logging.LogLevel.Error);
             if(0 < amountOfErrors)
             {
-                _Log.Log($"The following error{(amountOfErrors == 1 ? string.Empty : "s")} occurred:", Microsoft.Extensions.Logging.LogLevel.Error);
-                foreach(var error in errors)
+                this._Log.Log($"The following error{(amountOfErrors == 1 ? string.Empty : "s")} occurred:", Microsoft.Extensions.Logging.LogLevel.Error);
+                foreach(Error error in errors)
                 {
-                    _Log.Log($"{error.Tag}: {_SentenceBuilder.FormatError(error)}", Microsoft.Extensions.Logging.LogLevel.Error);
+                    this._Log.Log($"{error.Tag}: {this._SentenceBuilder.FormatError(error)}", Microsoft.Extensions.Logging.LogLevel.Error);
                 }
             }
         }
 
         private int HandleSuccessfullyParsedArguments(T options)
         {
-            return _Main(options);
+            return this._Main(options);
         }
 
         public void WriteHelp(ParserResult<T> argumentParserResult)
         {
-            _Log.Log(HelpText.AutoBuild(argumentParserResult).ToString());
-            if(_ProgramDescription is not null)
+            this._Log.Log(HelpText.AutoBuild(argumentParserResult).ToString());
+            if(this._ProgramDescription is not null)
             {
-                _Log.Log(string.Empty);
-                _Log.Log(_ProgramDescription);
+                this._Log.Log(string.Empty);
+                this._Log.Log(this._ProgramDescription);
             }
         }
 

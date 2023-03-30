@@ -113,7 +113,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 ApplicationName = configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName
             });
             builder.Services.AddControllers();
-            builder.Services.AddSingleton<IGeneralLogger>((serviceProvider) => configuration.WebAPIConfigurationValues.Logger);
+            builder.Services.AddSingleton((serviceProvider) => configuration.WebAPIConfigurationValues.Logger);
             builder.Services.AddSingleton<IBlacklistProvider>((serviceProvider) => configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.BlackListProvider);
             builder.Services.AddSingleton<IDDOSProtectionSettings>((serviceProvider) => configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.DDOSProtectionSettings);
             builder.Services.AddSingleton<IObfuscationSettings>((serviceProvider) => configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.ObfuscationSettings);
@@ -272,7 +272,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             GRYLogConfiguration result = GRYLogConfiguration.GetCommonConfiguration(logFile, verbose);
             if(targetEnvironmentType is Development)
             {
-                result.GetLogTarget<GRYLibrary.Core.Log.ConcreteLogTargets.Console>().Format = GRYLogLogFormat.GRYLogFormat;
+                result.GetLogTarget<Log.ConcreteLogTargets.Console>().Format = GRYLogLogFormat.GRYLogFormat;
             }
             return result;
         }

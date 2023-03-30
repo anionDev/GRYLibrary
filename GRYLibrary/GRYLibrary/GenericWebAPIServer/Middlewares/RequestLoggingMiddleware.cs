@@ -35,7 +35,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
             logConfig.LogTargets = new List<GRYLogTarget> { filelog };
             if(environment is not Productive)
             {
-                logConfig.LogTargets.Add(new GRYLibrary.Core.Log.ConcreteLogTargets.Console());
+                logConfig.LogTargets.Add(new Console());
             }
             return logConfig;
         }  /// <inheritdoc/>

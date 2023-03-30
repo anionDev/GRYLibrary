@@ -160,7 +160,7 @@ namespace GRYLibrary.Core.Miscellaneous
         private static IDictionary<string, int> CalculateSimilarityHelperConvert(IDictionary<char, int> dictionary)
         {
             IDictionary<string, int> result = new Dictionary<string, int>();
-            foreach(System.Collections.Generic.KeyValuePair<char, int> obj in dictionary)
+            foreach(KeyValuePair<char, int> obj in dictionary)
             {
                 result.Add(obj.Key.ToString(), obj.Value);
             }

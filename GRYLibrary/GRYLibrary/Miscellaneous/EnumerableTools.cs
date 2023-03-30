@@ -89,7 +89,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static bool TypeIsKeyValuePair(this Type type)
         {
-            return TypeIsAssignableFrom(type, typeof(System.Collections.Generic.KeyValuePair<,>)) || TypeIsAssignableFrom(type, typeof(XMLSerializer.KeyValuePair<object, object>));
+            return TypeIsAssignableFrom(type, typeof(KeyValuePair<,>)) || TypeIsAssignableFrom(type, typeof(XMLSerializer.KeyValuePair<object, object>));
         }
         public static bool ObjectIsDictionaryEntry(this object @object)
         {
@@ -201,7 +201,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public static IDictionary ObjectToDictionary(this object @object)
         {
             IDictionary result = new Hashtable();
-            foreach(System.Collections.Generic.KeyValuePair<object, object> item in ObjectToDictionary<object, object>(@object))
+            foreach(KeyValuePair<object, object> item in ObjectToDictionary<object, object>(@object))
             {
                 result.Add(item.Key, item.Value);
             }
@@ -217,12 +217,12 @@ namespace GRYLibrary.Core.Miscellaneous
             Dictionary<TKey, TValue> result = new();
             foreach(object obj in objects)
             {
-                System.Collections.Generic.KeyValuePair<TKey, TValue> kvp = ObjectToKeyValuePair<TKey, TValue>(obj);
+                KeyValuePair<TKey, TValue> kvp = ObjectToKeyValuePair<TKey, TValue>(obj);
                 result.Add(kvp.Key, kvp.Value);
             }
             return result;
         }
-        public static System.Collections.Generic.KeyValuePair<TKey, TValue> ObjectToKeyValuePair<TKey, TValue>(this object @object)
+        public static KeyValuePair<TKey, TValue> ObjectToKeyValuePair<TKey, TValue>(this object @object)
         {
             if(!ObjectIsKeyValuePair(@object))
             {
@@ -231,7 +231,7 @@ namespace GRYLibrary.Core.Miscellaneous
             return ObjectToKeyValuePairUnsafe<TKey, TValue>(@object);
         }
 
-        internal static System.Collections.Generic.KeyValuePair<TKey, TValue> ObjectToKeyValuePairUnsafe<TKey, TValue>(object @object)
+        internal static KeyValuePair<TKey, TValue> ObjectToKeyValuePairUnsafe<TKey, TValue>(object @object)
         {
             object key = ((dynamic)@object).Key;
             object value = ((dynamic)@object).Value;
@@ -262,7 +262,7 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 throw new InvalidCastException();
             }
-            return new System.Collections.Generic.KeyValuePair<TKey, TValue>(tKey, tValue);
+            return new KeyValuePair<TKey, TValue>(tKey, tValue);
         }
 
         public static DictionaryEntry ObjectToDictionaryEntry(object @object)
@@ -321,7 +321,7 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             return new DictionaryComparer(new PropertyEqualsCalculatorConfiguration()).DefaultEquals(dictionary1, dictionary2);
         }
-        public static bool KeyValuePairEquals<TKey, TValue>(this System.Collections.Generic.KeyValuePair<TKey, TValue> keyValuePair1, System.Collections.Generic.KeyValuePair<TKey, TValue> keyValuePair2)
+        public static bool KeyValuePairEquals<TKey, TValue>(this KeyValuePair<TKey, TValue> keyValuePair1, KeyValuePair<TKey, TValue> keyValuePair2)
         {
             return new KeyValuePairComparer(new PropertyEqualsCalculatorConfiguration()).Equals(keyValuePair1, keyValuePair2);
         }

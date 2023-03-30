@@ -585,7 +585,6 @@ namespace GRYLibrary.Core.ExecutePrograms
             }
         }
 
-
         private void EnqueueInformation(string rawLine)
         {
             if(this.NormalizeLine(rawLine, out string line))
@@ -665,7 +664,7 @@ namespace GRYLibrary.Core.ExecutePrograms
         /// </summary>
         Full = 2,
         /// <summary>
-        /// Same as <see cref="Verbosity.Full"/> but with some more information added by <see cref="ExternalProgramExecutor"/>.
+        /// Same as <see cref="Full"/> but with some more information added by <see cref="ExternalProgramExecutor"/>.
         /// </summary>
         Verbose = 3,
     }
