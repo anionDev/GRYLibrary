@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper.CustomComparer
 {
-    public class AttributeValueComparer : AbstractCustomComparer
+    public class AttributeValueComparer :AbstractCustomComparer
     {
         internal AttributeValueComparer(PropertyEqualsCalculatorConfiguration cacheAndConfiguration) : base(cacheAndConfiguration)
         {
@@ -21,17 +21,17 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper.
         {
             Type type = object1.GetType();
             List<WriteableTuple<object, object>> attributeValues = new();
-            foreach (FieldInfo field in type.GetFields().Where((field) => this.Configuration.FieldSelector(field)))
+            foreach(FieldInfo field in type.GetFields().Where((field) => this.Configuration.FieldSelector(field)))
             {
                 attributeValues.Add(new WriteableTuple<object, object>(field.GetValue(object1), field.GetValue(object2)));
             }
-            foreach (PropertyInfo property in type.GetProperties().Where((property) => this.Configuration.PropertySelector(property)))
+            foreach(PropertyInfo property in type.GetProperties().Where((property) => this.Configuration.PropertySelector(property)))
             {
                 attributeValues.Add(new WriteableTuple<object, object>(property.GetValue(object1), property.GetValue(object2)));
             }
-            foreach (WriteableTuple<object, object> entry in attributeValues)
+            foreach(WriteableTuple<object, object> entry in attributeValues)
             {
-                if (!this._PropertyEqualsCalculator.Equals(entry.Item1, entry.Item2))
+                if(!this._PropertyEqualsCalculator.Equals(entry.Item1, entry.Item2))
                 {
                     return false;
                 }

@@ -7,7 +7,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     /// <summary>
     /// Represents a middleware which counts requests for paid Web-APIs.
     /// </summary>
-    public class RequestCounter : AbstractMiddleware
+    public class RequestCounter :AbstractMiddleware
     {
         private readonly IRequestCounterSettings _RequestCounterSettings;
         /// <inheritdoc/>
@@ -20,7 +20,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
         {
             // TODO if response is 200 then add it to database or else return "429 Too Many Requests"
 
-            return _Next(context);
+            return this._Next(context);
         }
     }
 }

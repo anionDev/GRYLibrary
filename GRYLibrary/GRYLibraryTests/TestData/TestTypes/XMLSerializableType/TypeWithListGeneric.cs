@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 
 namespace GRYLibrary.Tests.TestData.TestTypes.XMLSerializableType
 {
-    public class TypeWithListGeneric<T> : IXmlSerializable
+    public class TypeWithListGeneric<T> :IXmlSerializable
     {
         public IList<T> List { get; set; }
 

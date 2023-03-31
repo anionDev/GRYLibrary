@@ -29,7 +29,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public static int? ProcessIdOfBackupProcess { get; private set; } = null;
         public static void WaitUntilExecutionIsRequired()
         {
-            if (ThisProgramIsTheOnlyInstance())
+            if(ThisProgramIsTheOnlyInstance())
             {
                 StartBackupInstance();
             }
@@ -42,7 +42,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         private static void WaitUntilOtherProgramFinished()
         {
-            while (!ThisProgramIsTheOnlyInstance())
+            while(!ThisProgramIsTheOnlyInstance())
             {
                 System.Threading.Thread.Sleep(25);
             }
@@ -72,7 +72,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public static void TerminateSecondInstance()
         {
-            if (ProcessIdOfBackupProcess.HasValue && Process.GetProcessById(ProcessIdOfBackupProcess.Value) != null)
+            if(ProcessIdOfBackupProcess.HasValue && Process.GetProcessById(ProcessIdOfBackupProcess.Value) != null)
             {
                 Process.GetProcessById(ProcessIdOfBackupProcess.Value).Kill();
             }

@@ -26,7 +26,7 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             return new FileSelector
             {
-                Files = files.Select((file) => Normalize(file))
+                Files = files.Select(Normalize)
             };
         }
 
@@ -47,21 +47,27 @@ namespace GRYLibrary.Core.Miscellaneous
         public static FileSelector RegexOfFileWithFullPath(string folder, string regexAsString, bool deepSearch = true)
         {
             Regex regex = new(regexAsString);
-            return FilesInFolder(folder, (string file) => regex.IsMatch(file), deepSearch);
+            return FilesInFolder(folder, regex.IsMatch, deepSearch);
         }
         public static FileSelector FilesInFolder(string folder, Func<string, bool> filter, bool deepSearch = true)
         {
             FileSelector result = new();
             List<string> list = new();
-            if (deepSearch)
+            if(deepSearch)
             {
-                Utilities.ForEachFileAndDirectoryTransitively(folder, null, (string file, object argument) => { if (filter(file)) { list.Add(file); } }, false, null, null);
+                Utilities.ForEachFileAndDirectoryTransitively(folder, null, (string file, object argument) =>
+                {
+                    if(filter(file))
+                    {
+                        list.Add(file);
+                    }
+                }, false, null, null);
             }
             else
             {
-                foreach (string file in Directory.GetFiles(folder))
+                foreach(string file in Directory.GetFiles(folder))
                 {
-                    if (filter(file))
+                    if(filter(file))
                     {
                         list.Add(Normalize(file));
                     }

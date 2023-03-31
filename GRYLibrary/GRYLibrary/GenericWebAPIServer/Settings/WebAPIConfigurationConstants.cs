@@ -1,7 +1,6 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Settings
 {
@@ -13,7 +12,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public string ConfigurationFile { get; }
         public Action<IServiceCollection> ConfigureServices { get; }
     }
-    public class WebAPIConfigurationConstants : IWebAPIConfigurationConstants
+    public class WebAPIConfigurationConstants :IWebAPIConfigurationConstants
     {
         public GRYEnvironment TargetEnvironmentType { get; private set; }
         public string AppName { get; private set; }

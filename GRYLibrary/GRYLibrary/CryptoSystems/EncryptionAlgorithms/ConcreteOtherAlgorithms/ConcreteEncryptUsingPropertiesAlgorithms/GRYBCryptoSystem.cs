@@ -27,7 +27,7 @@ namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteOtherAlgori
     /// The encrypted data can be decrypted either with the password used when calling <see cref="CommonEncryptionAlgorithm.Encrypt(byte[], byte[])"/> or (by s) using mp as password.
     /// (In General: The data can be decrypted with all keys which are contained in <see cref="PasswordEncryptionKeys"/> when <see cref="CommonEncryptionAlgorithm.Encrypt(byte[], byte[])"/> is called.)
     /// </example>
-    public class GRYBCryptoSystem : EncryptUsingPropertiesAlgorithm
+    public class GRYBCryptoSystem :EncryptUsingPropertiesAlgorithm
     {
         public const string GRYBCryptoSystemDatasetMagicHeader = "GRYBC";
         public static readonly byte[] GRYBCryptoSystemDatasetMagicHeaderBytes = System.Text.Encoding.ASCII.GetBytes(GRYBCryptoSystemDatasetMagicHeader);
@@ -55,7 +55,7 @@ namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteOtherAlgori
             (byte[], AsymmetricEncryptionAlgorithm)[] encryptedKeysForDecryption = unencryptedPublicPasswordEncryptionKeys.Select(unencryptedPublicPasswordEncryptionKey => (unencryptedPublicPasswordEncryptionKey.Item2.Encrypt(internalKey, unencryptedPublicPasswordEncryptionKey.Item1), unencryptedPublicPasswordEncryptionKey.Item2)).ToArray();
             byte[] content = internalEncryptionAlgorithmForKeys.Encrypt(unencryptedData, internalKey);
             byte[] header = Utilities.Concat(hashAlgorithm.GetIdentifier(), internalEncryptionAlgorithmForKeys.GetIdentifier(), Utilities.UnsignedInteger32BitToByteArray((uint)encryptedKeysForDecryption.Length), Utilities.UnsignedInteger32BitToByteArray((uint)content.Length));
-            foreach ((byte[], AsymmetricEncryptionAlgorithm) encryptedKeyForDecryption in encryptedKeysForDecryption)
+            foreach((byte[], AsymmetricEncryptionAlgorithm) encryptedKeyForDecryption in encryptedKeysForDecryption)
             {
                 header = Utilities.Concat(header, encryptedKeyForDecryption.Item2.GetIdentifier(), Utilities.UnsignedInteger32BitToByteArray((uint)encryptedKeyForDecryption.Item1.Length), encryptedKeyForDecryption.Item1);
             }
@@ -66,7 +66,7 @@ namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteOtherAlgori
 
         public static byte[] DeserializeAndDecrypt(byte[] encryptedData, byte[] password)
         {
-            if (!IsValidDataset(encryptedData))
+            if(!IsValidDataset(encryptedData))
             {
                 throw new ArgumentException($"The provided data does not represent a valid {nameof(GRYBCryptoSystem)}-dataset");
             }
@@ -76,7 +76,7 @@ namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteOtherAlgori
         {
             try
             {
-                if (!Utilities.StartsWith(encryptedData, GRYBCryptoSystemDatasetMagicHeaderBytes))
+                if(!Utilities.StartsWith(encryptedData, GRYBCryptoSystemDatasetMagicHeaderBytes))
                 {
                     return false;
                 }

@@ -9,7 +9,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     /// <summary>
     /// Represents a middleware which removes some not required information of responses for security purposes.
     /// </summary>
-    public class Obfuscation : AbstractMiddleware
+    public class Obfuscation :AbstractMiddleware
     {
         private readonly IObfuscationSettings _ObfuscationSettings;
         private readonly IWebAPIConfigurationVariables _WebAPIConfigurationVariables;
@@ -24,21 +24,21 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
         /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
         {
-            if (_WebAPIConfigurationConstants.TargetEnvironmentType is Productive)
+            if(this._WebAPIConfigurationConstants.TargetEnvironmentType is Productive)
             {
                 bool clearResponseBody;
                 int responseStatusCode;
-                if (context.Response.StatusCode == 401)
+                if(context.Response.StatusCode == 401)
                 {
                     clearResponseBody = true;
                     responseStatusCode = context.Response.StatusCode;
                 }
-                else if (context.Response.StatusCode == 403)
+                else if(context.Response.StatusCode == 403)
                 {
                     clearResponseBody = true;
                     responseStatusCode = context.Response.StatusCode;
                 }
-                else if (context.Response.StatusCode % 100 == 2)
+                else if(context.Response.StatusCode % 100 == 2)
                 {
                     responseStatusCode = 200;
                     clearResponseBody = false;
@@ -49,12 +49,12 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
                     responseStatusCode = 400;
                 }
                 context.Response.StatusCode = responseStatusCode; //TODO check why this does not work properly
-                if (clearResponseBody)
+                if(clearResponseBody)
                 {
                     //TODO
                 }
             }
-            return _Next(context);
+            return this._Next(context);
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Text;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
-    public class StringWriterWithEncoding : StringWriter
+    public class StringWriterWithEncoding :StringWriter
     {
         private readonly Encoding _Encoding;
 
@@ -11,7 +11,7 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             get
             {
-                if (this._Encoding == default)
+                if(this._Encoding == default)
                 {
                     return base.Encoding;
                 }
@@ -26,6 +26,5 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             this._Encoding = encoding;
         }
-
     }
 }

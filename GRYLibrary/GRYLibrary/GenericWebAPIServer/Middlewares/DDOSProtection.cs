@@ -7,7 +7,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     /// <summary>
     /// Represents a DDOS-proection.
     /// </summary>
-    public class DDOSProtection : AbstractMiddleware
+    public class DDOSProtection :AbstractMiddleware
     {
         private IDDOSProtectionSettings _DDOSProtectionSettings;
         /// <inheritdoc/>
@@ -30,7 +30,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
             // - the source-ip has already done this request with the same route/payload in the last 2 seconds
 
 
-            return _Next(context);
+            return this._Next(context);
         }
     }
 }

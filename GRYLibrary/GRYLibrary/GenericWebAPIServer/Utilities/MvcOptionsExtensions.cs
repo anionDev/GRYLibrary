@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
 {

@@ -13,6 +13,5 @@ namespace GRYLibrary.Tests.TestData.TestTypes.GenericType
         public IEnumerable<T> TEnumerable { get; set; }
         public System.Collections.IEnumerable Enumerable { get; set; }
         public T TObject { get; set; }
-
     }
 }

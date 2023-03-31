@@ -1,6 +1,6 @@
 ﻿namespace GRYLibrary.Core.ExecutePrograms.WaitingStates
 {
-    public class RunSynchronously : WaitingState
+    public class RunSynchronously :WaitingState
     {
         public bool ThrowErrorIfExitCodeIsNotZero { get; set; } = true;
         public override void Accept(IWaitingStateVisitor visitor)

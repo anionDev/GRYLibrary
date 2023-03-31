@@ -16,21 +16,18 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public Action<WebApplicationBuilder, WebAPIConfigurationValues<ConfigurationConstantsType, ConfigurationVariablesType>> ConfigureBuilder { get; set; } = (builder, webAPIConfigurationValues) =>
         {
             builder.Services.AddLogging(c => c.ClearProviders());
-            builder.Services.AddControllers(mvcOptions =>
-            {
-                mvcOptions.UseGeneralRoutePrefix(webAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.APIRoutePrefix);
-            });
+            builder.Services.AddControllers(mvcOptions => mvcOptions.UseGeneralRoutePrefix(webAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.APIRoutePrefix));
         };
         public Action<WebApplication, WebAPIConfigurationValues<ConfigurationConstantsType, ConfigurationVariablesType>> ConfigureApp { get; set; } = (app, webAPIConfigurationValues) =>
         {
             #region General Threat-Protection
-            if (webAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is Productive)
+            if(webAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is Productive)
             {
                 app.UseMiddleware<DDOSProtection>();
                 app.UseMiddleware<BlackList>();
                 app.UseMiddleware<Obfuscation>();
             }
-            if (webAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is not Development)
+            if(webAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is not Development)
             {
                 app.UseMiddleware<ExceptionManager>();
             }
@@ -38,7 +35,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
 
             #region Diagnosis
             app.UseMiddleware<RequestLoggingMiddleware>();
-            if (webAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is Development)
+            if(webAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is Development)
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -47,23 +44,17 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
             #region Bussiness-implementation of access-restriction
             app.UseMiddleware<WebApplicationFirewall>();
             app.UseMiddleware<APIKeyValidator>();
-            if (webAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is not Development)
+            if(webAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is not Development)
             {
                 app.UseMiddleware<RequestCounter>();
             }
             #endregion
 
             app.UseRouting();
-            app.UseEndpoints(endpoints =>
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
+            if(webAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is not Productive)
             {
-                endpoints.MapControllers();
-            });
-            if (webAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is not Productive)
-            {
-                app.UseSwagger(options =>
-                {
-                    options.RouteTemplate = $"{webAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.APIRoutePrefix}/Other/Resources/{{documentName}}/{webAPIConfigurationValues.WebAPIConfigurationConstants.AppName}.api.json";
-                });
+                app.UseSwagger(options => options.RouteTemplate = $"{webAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.APIRoutePrefix}/Other/Resources/{{documentName}}/{webAPIConfigurationValues.WebAPIConfigurationConstants.AppName}.api.json");
                 app.UseSwaggerUI(options =>
                 {
                     string appVersionString = "v" + webAPIConfigurationValues.WebAPIConfigurationConstants.AppVersion;

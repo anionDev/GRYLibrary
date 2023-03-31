@@ -5,7 +5,7 @@ using System.Xml.Serialization;
 
 namespace GRYLibrary.Tests.TestData.TestTypes.XMLSerializableType
 {
-    public class TypeWithDictionary : IXmlSerializable
+    public class TypeWithDictionary :IXmlSerializable
     {
         public System.Collections.IDictionary Dictionary { get; set; }
         #region Overhead

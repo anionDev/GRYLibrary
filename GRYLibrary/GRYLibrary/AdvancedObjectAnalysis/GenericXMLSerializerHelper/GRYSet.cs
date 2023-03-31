@@ -3,14 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
 {
-    internal class GRYSet<T> : ISet<T>
+    internal class GRYSet<T> :ISet<T>
     {
         private bool _AllowDuplicatedElements = true;
         private ISet<T> _ItemsAsSet = null;
         private readonly IList<T> _ItemsAsList = new List<T>();
         internal void DisallowDuplicatedElements()
         {
-            if (this._AllowDuplicatedElements)
+            if(this._AllowDuplicatedElements)
             {
                 this._AllowDuplicatedElements = false;
                 this._ItemsAsSet = new HashSet<T>(this._ItemsAsList);
@@ -21,7 +21,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
         {
             get
             {
-                if (this._AllowDuplicatedElements)
+                if(this._AllowDuplicatedElements)
                 {
                     return this._ItemsAsList.Count;
                 }
@@ -36,7 +36,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
         {
             get
             {
-                if (this._AllowDuplicatedElements)
+                if(this._AllowDuplicatedElements)
                 {
                     return this._ItemsAsList.IsReadOnly;
                 }
@@ -49,7 +49,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
 
         public bool Add(T item)
         {
-            if (this._AllowDuplicatedElements)
+            if(this._AllowDuplicatedElements)
             {
                 this._ItemsAsList.Add(item);
                 return true;
@@ -62,7 +62,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
 
         public void Clear()
         {
-            if (this._AllowDuplicatedElements)
+            if(this._AllowDuplicatedElements)
             {
                 this._ItemsAsList.Clear();
             }
@@ -74,7 +74,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
 
         public bool Contains(T item)
         {
-            if (this._AllowDuplicatedElements)
+            if(this._AllowDuplicatedElements)
             {
                 return this._ItemsAsList.Contains(item);
             }
@@ -86,7 +86,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            if (this._AllowDuplicatedElements)
+            if(this._AllowDuplicatedElements)
             {
                 this._ItemsAsList.CopyTo(array, arrayIndex);
             }
@@ -98,7 +98,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
 
         public void ExceptWith(IEnumerable<T> other)
         {
-            if (this._AllowDuplicatedElements)
+            if(this._AllowDuplicatedElements)
             {
                 throw new NotSupportedException();
             }
@@ -110,7 +110,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
 
         public IEnumerator<T> GetEnumerator()
         {
-            if (this._AllowDuplicatedElements)
+            if(this._AllowDuplicatedElements)
             {
                 return this._ItemsAsList.GetEnumerator();
             }
@@ -122,7 +122,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
 
         public void IntersectWith(IEnumerable<T> other)
         {
-            if (this._AllowDuplicatedElements)
+            if(this._AllowDuplicatedElements)
             {
                 throw new NotSupportedException();
             }
@@ -134,7 +134,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
 
         public bool IsProperSubsetOf(IEnumerable<T> other)
         {
-            if (this._AllowDuplicatedElements)
+            if(this._AllowDuplicatedElements)
             {
                 throw new NotSupportedException();
             }
@@ -146,7 +146,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
 
         public bool IsProperSupersetOf(IEnumerable<T> other)
         {
-            if (this._AllowDuplicatedElements)
+            if(this._AllowDuplicatedElements)
             {
                 throw new NotSupportedException();
             }
@@ -158,7 +158,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
 
         public bool IsSubsetOf(IEnumerable<T> other)
         {
-            if (this._AllowDuplicatedElements)
+            if(this._AllowDuplicatedElements)
             {
                 throw new NotSupportedException();
             }
@@ -170,7 +170,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
 
         public bool IsSupersetOf(IEnumerable<T> other)
         {
-            if (this._AllowDuplicatedElements)
+            if(this._AllowDuplicatedElements)
             {
                 throw new NotSupportedException();
             }
@@ -182,7 +182,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
 
         public bool Overlaps(IEnumerable<T> other)
         {
-            if (this._AllowDuplicatedElements)
+            if(this._AllowDuplicatedElements)
             {
                 throw new NotSupportedException();
             }
@@ -194,7 +194,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
 
         public bool Remove(T item)
         {
-            if (this._AllowDuplicatedElements)
+            if(this._AllowDuplicatedElements)
             {
                 throw new NotImplementedException();
             }
@@ -206,7 +206,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
 
         public bool SetEquals(IEnumerable<T> other)
         {
-            if (this._AllowDuplicatedElements)
+            if(this._AllowDuplicatedElements)
             {
                 throw new NotSupportedException();
             }
@@ -218,7 +218,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
 
         public void SymmetricExceptWith(IEnumerable<T> other)
         {
-            if (this._AllowDuplicatedElements)
+            if(this._AllowDuplicatedElements)
             {
                 throw new NotSupportedException();
             }
@@ -230,7 +230,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
 
         public void UnionWith(IEnumerable<T> other)
         {
-            if (this._AllowDuplicatedElements)
+            if(this._AllowDuplicatedElements)
             {
                 throw new NotSupportedException();
             }
@@ -242,7 +242,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
 
         void ICollection<T>.Add(T item)
         {
-            if (this._AllowDuplicatedElements)
+            if(this._AllowDuplicatedElements)
             {
                 this._ItemsAsList.Add(item);
             }
@@ -254,7 +254,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            if (this._AllowDuplicatedElements)
+            if(this._AllowDuplicatedElements)
             {
                 return this._ItemsAsList.GetEnumerator();
             }

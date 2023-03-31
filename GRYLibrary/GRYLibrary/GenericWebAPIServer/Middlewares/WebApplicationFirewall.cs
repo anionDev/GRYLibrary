@@ -7,7 +7,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     /// <summary>
     /// Represents a webapplicationfirewall
     /// </summary>
-    public class WebApplicationFirewall : AbstractMiddleware
+    public class WebApplicationFirewall :AbstractMiddleware
     {
         private readonly IWebApplicationFirewallSettings _WebApplicationFirewallSettings;
         /// <inheritdoc/>
@@ -25,7 +25,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
             // - the response is much longer than expected/allowed (must be configured by the application which is using this middleware)
             // and make this configurable
 
-            return _Next(context);
+            return this._Next(context);
         }
     }
 }

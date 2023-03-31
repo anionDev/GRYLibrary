@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 
 namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteCommonAlgorithms.ConcreteSymmetricAlgorithms
 {
-    public class AES256 : SymmetricEncryptionAlgorithm
+    public class AES256 :SymmetricEncryptionAlgorithm
     {
 #pragma warning disable SYSLIB0022 // Typ oder Element ist veraltet
         private const int _AESBlockLength = 16;
@@ -15,7 +15,7 @@ namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteCommonAlgor
             byte[] iv = splitted.Item1;
             encryptedData = splitted.Item2;
             using MemoryStream result = new();
-            using (RijndaelManaged algorithmImplementation = new())
+            using(RijndaelManaged algorithmImplementation = new())
             {
                 algorithmImplementation.Key = password;
                 algorithmImplementation.IV = iv;
@@ -26,7 +26,7 @@ namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteCommonAlgor
                 using CryptoStream cryptoStream = new(memoryStream, decryptor, CryptoStreamMode.Read);
                 byte[] buffer = new byte[_AESBlockLength];
                 int read = cryptoStream.Read(buffer, 0, buffer.Length);
-                while (0 < read)
+                while(0 < read)
                 {
                     result.Write(buffer, 0, read);
                     read = cryptoStream.Read(buffer, 0, buffer.Length);
@@ -41,7 +41,7 @@ namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteCommonAlgor
         {
             byte[] iv = this.GetIV();
             byte[] encrypted;
-            using (RijndaelManaged algorithmImplementation = new())
+            using(RijndaelManaged algorithmImplementation = new())
             {
                 algorithmImplementation.Key = password;
                 algorithmImplementation.IV = iv;
@@ -50,7 +50,7 @@ namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteCommonAlgor
                 ICryptoTransform encryptor = algorithmImplementation.CreateEncryptor(algorithmImplementation.Key, algorithmImplementation.IV);
                 using MemoryStream memoryStream = new();
                 using CryptoStream csEncrypt = new(memoryStream, encryptor, CryptoStreamMode.Write);
-                using (StreamWriter streamWriter = new(csEncrypt))
+                using(StreamWriter streamWriter = new(csEncrypt))
                 {
                     streamWriter.Write(unencryptedData);
                 }
@@ -63,9 +63,9 @@ namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteCommonAlgor
         {
             using RijndaelManaged algorithmImplementation = new();
             algorithmImplementation.GenerateIV();
-            if (algorithmImplementation.IV.Length != _AESBlockLength)
+            if(algorithmImplementation.IV.Length != _AESBlockLength)
             {
-                throw new InvalidDataException($"Expected length of IV to be {_AESBlockLength} but was {algorithmImplementation.IV.Length }");
+                throw new InvalidDataException($"Expected length of IV to be {_AESBlockLength} but was {algorithmImplementation.IV.Length}");
             }
             return algorithmImplementation.IV;
         }

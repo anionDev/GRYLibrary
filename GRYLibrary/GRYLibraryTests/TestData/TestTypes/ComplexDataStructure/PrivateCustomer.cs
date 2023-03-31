@@ -1,9 +1,9 @@
-﻿using System;
-using GRYLibrary.Core.AdvancedObjectAnalysis;
+﻿using GRYLibrary.Core.AdvancedObjectAnalysis;
+using System;
 
 namespace GRYLibrary.Tests.TestData.TestTypes.ComplexDataStructure
 {
-    public class PrivateCustomer : ICustomer, IPerson
+    public class PrivateCustomer :ICustomer, IPerson
     {
         public string Forename { get; set; }
         public string Surname { get; set; }

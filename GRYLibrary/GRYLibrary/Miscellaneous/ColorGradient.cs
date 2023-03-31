@@ -27,7 +27,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         private byte GetGradient(byte startValue, byte destinationValue, PercentValue gradient)
         {
-            return (byte)Math.Round(startValue + (destinationValue - startValue) * gradient.Value, 0);
+            return (byte)Math.Round(startValue + ((destinationValue - startValue) * gradient.Value), 0);
         }
     }
 }

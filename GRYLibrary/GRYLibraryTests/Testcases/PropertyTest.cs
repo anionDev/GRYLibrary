@@ -1,6 +1,6 @@
 ﻿using GRYLibrary.Core.Miscellaneous;
-using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace GRYLibrary.Tests.Testcases
 {
@@ -26,7 +26,7 @@ namespace GRYLibrary.Tests.Testcases
             {
                 property.Value = null;
             }
-            catch (ArgumentException)
+            catch(ArgumentException)
             {
                 //expected
             }

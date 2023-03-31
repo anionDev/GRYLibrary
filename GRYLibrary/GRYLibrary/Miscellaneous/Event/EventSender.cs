@@ -28,7 +28,7 @@ namespace GRYLibrary.Core.Miscellaneous.Event
         [OnDeserializing()]
         public void Initialize(StreamingContext context)
         {
-            if (this._Observer == null)
+            if(this._Observer == null)
             {
                 this._Observer = new HashSet<IObserver<SenderType, EventArgumentType>>();
             }
@@ -37,15 +37,15 @@ namespace GRYLibrary.Core.Miscellaneous.Event
         public GRYLog LogObject { get; set; }
         protected void Notify(Argument<SenderType, EventArgumentType> argument)
         {
-            foreach (IObserver<SenderType, EventArgumentType> observer in this._Observer)
+            foreach(IObserver<SenderType, EventArgumentType> observer in this._Observer)
             {
                 try
                 {
                     observer.Update(this, argument);
                 }
-                catch (Exception exception)
+                catch(Exception exception)
                 {
-                    if (this.LogObject != null)
+                    if(this.LogObject != null)
                     {
                         this.LogObject.Log("Error occurred in observer.Update", exception);
                     }

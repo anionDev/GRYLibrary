@@ -38,7 +38,7 @@ namespace GRYLibrary.Core.XMLSerializer
         public string Serialize(T @object)
         {
             using Stream stream = new MemoryStream();
-            using (XmlWriter xmlWriter = XmlWriter.Create(stream, this.XMLWriterSettings))
+            using(XmlWriter xmlWriter = XmlWriter.Create(stream, this.XMLWriterSettings))
             {
                 XmlSerializer serializer = this.GetSerializer();
                 serializer.Serialize(xmlWriter, @object);
@@ -66,7 +66,7 @@ namespace GRYLibrary.Core.XMLSerializer
         }
         private Type[] GetExtraTypes()
         {
-            return this.KnownTypes.Where(type => this._T.IsAssignableFrom(type)).ToArray();
+            return this.KnownTypes.Where(this._T.IsAssignableFrom).ToArray();
         }
         private XmlSerializer GetSerializer()
         {

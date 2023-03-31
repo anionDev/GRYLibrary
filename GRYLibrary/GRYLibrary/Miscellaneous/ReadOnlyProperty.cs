@@ -10,7 +10,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public abstract void UpdateValue();
         public abstract object GetValue();
     }
-    public class ReadOnlyProperty<T> : ReadOnlyProperty
+    public class ReadOnlyProperty<T> :ReadOnlyProperty
     {
         private readonly Property<T> _Property;
         private readonly Func<Tuple<bool/*calculateValueWasSuccessful*/, T/*value*/>> _SetValueFunction;
@@ -31,7 +31,7 @@ namespace GRYLibrary.Core.Miscellaneous
             try
             {
                 Tuple<bool, T> result = this._SetValueFunction();
-                if (result.Item1)
+                if(result.Item1)
                 {
                     this._Property.Value = result.Item2;
                 }
@@ -51,12 +51,6 @@ namespace GRYLibrary.Core.Miscellaneous
             return this.Value;
         }
 
-        public T Value
-        {
-            get
-            {
-                return this._Property.Value;
-            }
-        }
+        public T Value => this._Property.Value;
     }
 }

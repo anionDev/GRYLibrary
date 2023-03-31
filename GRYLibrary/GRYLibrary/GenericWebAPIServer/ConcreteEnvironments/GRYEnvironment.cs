@@ -9,38 +9,38 @@ namespace GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments
         public abstract T Accept<T>(IEnvironmentVisitor<T> visitor);
         public override bool Equals(object obj)
         {
-            if (obj == null)
+            if(obj == null)
             {
                 return false;
             }
             else
             {
-                return GetType().Equals(obj.GetType());
+                return this.GetType().Equals(obj.GetType());
             }
         }
         public override int GetHashCode()
         {
-            return GetType().GetHashCode();
+            return this.GetType().GetHashCode();
         }
         public override string ToString()
         {
-            return GetType().Name;
+            return this.GetType().Name;
         }
         public static GRYEnvironment Parse(string environment)
         {
-            if (environment == null)
+            if(environment == null)
             {
                 throw new ArgumentException($"Value for parameter {nameof(environment)} is null.");
             }
-            else if (nameof(Development) == environment)
+            else if(nameof(Development) == environment)
             {
                 return Development.Instance;
             }
-            else if (nameof(QualityCheck) == environment)
+            else if(nameof(QualityCheck) == environment)
             {
                 return QualityCheck.Instance;
             }
-            else if (nameof(Productive) == environment)
+            else if(nameof(Productive) == environment)
             {
                 return Productive.Instance;
             }

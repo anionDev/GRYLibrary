@@ -7,7 +7,7 @@ using System.Xml.Schema;
 
 namespace GRYLibrary.Tests.TestData.TestTypes.SimpleDataStructure
 {
-    public class SimpleDataStructure2 : IGRYSerializable
+    public class SimpleDataStructure2 :IGRYSerializable
     {
         public Guid Guid { get; set; }
 
@@ -49,5 +49,4 @@ namespace GRYLibrary.Tests.TestData.TestTypes.SimpleDataStructure
         }
         #endregion
     }
-
 }

@@ -5,17 +5,11 @@ namespace GRYLibrary.Core.Miscellaneous
     /// <summary>
     /// Represents a <see cref="decimal"/>-number between 0 and 1.
     /// </summary>
-    public struct PercentValue
+    public readonly struct PercentValue
     {
         public static PercentValue ZeroPercent { get; } = new PercentValue((decimal)0);
         public static PercentValue HundredPercent { get; } = new PercentValue((decimal)1);
-        public int ValueInPercent
-        {
-            get
-            {
-                return (int)Math.Round(this.Value * 100);
-            }
-        }
+        public int ValueInPercent => (int)Math.Round(this.Value * 100);
         public decimal Value { get; }
 
         public PercentValue(double value) : this((decimal)value)
@@ -23,11 +17,11 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public PercentValue(decimal value)
         {
-            if (value < 0)
+            if(value < 0)
             {
                 this.Value = 0;
             }
-            else if (value > 1)
+            else if(value > 1)
             {
                 this.Value = 1;
             }
@@ -38,11 +32,11 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static PercentValue CreateByPercentValue(int percentValue)
         {
-            if (percentValue < 0)
+            if(percentValue < 0)
             {
                 return ZeroPercent;
             }
-            else if (percentValue > 100)
+            else if(percentValue > 100)
             {
                 return HundredPercent;
             }

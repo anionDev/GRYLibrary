@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper.CustomComparer
 {
-    public class ListComparer : AbstractCustomComparer
+    public class ListComparer :AbstractCustomComparer
     {
         internal ListComparer(PropertyEqualsCalculatorConfiguration cacheAndConfiguration) : base(cacheAndConfiguration)
         {
@@ -19,13 +19,13 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper.
 
         internal bool EqualsTyped<T>(IList<T> list1, IList<T> list2)
         {
-            if (list1.Count != list2.Count)
+            if(list1.Count != list2.Count)
             {
                 return false;
             }
-            for (int i = 0; i < list1.Count; i++)
+            for(int i = 0; i < list1.Count; i++)
             {
-                if (!this._PropertyEqualsCalculator.Equals(list1[i], list2[i]))
+                if(!this._PropertyEqualsCalculator.Equals(list1[i], list2[i]))
                 {
                     return false;
                 }

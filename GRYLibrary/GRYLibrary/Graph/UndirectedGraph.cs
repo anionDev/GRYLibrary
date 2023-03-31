@@ -4,10 +4,10 @@ using System.Linq;
 
 namespace GRYLibrary.Core.Graph
 {
-    public sealed class UndirectedGraph : Graph
+    public sealed class UndirectedGraph :Graph
     {
-        public override ISet<Edge> Edges { get { return new HashSet<Edge>(this._UndirectedEdges); } }
-        public ISet<Edge> UndirectedEdges { get { return new HashSet<Edge>(this._UndirectedEdges); } }
+        public override ISet<Edge> Edges => new HashSet<Edge>(this._UndirectedEdges);
+        public ISet<Edge> UndirectedEdges => new HashSet<Edge>(this._UndirectedEdges);
         private readonly ISet<UndirectedEdge> _UndirectedEdges = new HashSet<UndirectedEdge>();
         public UndirectedGraph() { }
         public override void Accept(IGraphVisitor visitor)
@@ -28,20 +28,20 @@ namespace GRYLibrary.Core.Graph
         public override ISet<Vertex> GetDirectSuccessors(Vertex vertex, bool doNotWalkAgainstDirectedEdges = true)
         {
             HashSet<Vertex> result = new();
-            foreach (UndirectedEdge edge in vertex.GetConnectedEdges())
+            foreach(UndirectedEdge edge in vertex.GetConnectedEdges())
             {
                 List<Vertex> vertices = edge.ConnectedVertices.ToList();
-                if (vertices[0].Equals(vertices[1]) && vertices[0].Equals(vertex))
+                if(vertices[0].Equals(vertices[1]) && vertices[0].Equals(vertex))
                 {
                     result.Add(vertex);
                 }
                 else
                 {
-                    if (vertices[0].Equals(vertex))
+                    if(vertices[0].Equals(vertex))
                     {
                         result.Add(vertices[1]);
                     }
-                    if (vertices[1].Equals(vertex))
+                    if(vertices[1].Equals(vertex))
                     {
                         result.Add(vertices[0]);
                     }
@@ -52,23 +52,23 @@ namespace GRYLibrary.Core.Graph
         public override ISet<Edge> GetDirectSuccessorEdges(Vertex vertex)
         {
             HashSet<Edge> result = new();
-            foreach (Edge edge in vertex.GetConnectedEdges())
+            foreach(Edge edge in vertex.GetConnectedEdges())
             {
                 UndirectedEdge undirectedEdge = (UndirectedEdge)edge;
                 IList<Vertex> connectedVertices = undirectedEdge.ConnectedVertices;
                 bool sourceIsThis = connectedVertices[0].Equals(vertex);
                 bool targetIsThis = connectedVertices[1].Equals(vertex);
-                if (sourceIsThis && targetIsThis)
+                if(sourceIsThis && targetIsThis)
                 {
                     result.Add(edge);
                 }
                 else
                 {
-                    if (sourceIsThis)
+                    if(sourceIsThis)
                     {
                         result.Add(edge);
                     }
-                    if (targetIsThis)
+                    if(targetIsThis)
                     {
                         result.Add(edge);
                     }
@@ -80,7 +80,7 @@ namespace GRYLibrary.Core.Graph
         /// <inheritdoc/>
         public override void AddEdge(Edge edge)
         {
-            if (!(edge is UndirectedEdge))
+            if(edge is not UndirectedEdge)
             {
                 throw new InvalidEdgeTypeException($"{nameof(UndirectedGraph)}-objects can only have edges of type {nameof(UndirectedEdge)}");
             }
@@ -94,7 +94,7 @@ namespace GRYLibrary.Core.Graph
         /// <inheritdoc/>
         public override void RemoveEdge(Edge edge)
         {
-            if (edge is UndirectedEdge)
+            if(edge is UndirectedEdge)
             {
                 this._UndirectedEdges.Remove((UndirectedEdge)edge);
                 this.OnEdgeRemoved(edge);

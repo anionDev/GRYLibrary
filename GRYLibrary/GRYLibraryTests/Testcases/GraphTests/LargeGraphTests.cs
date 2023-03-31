@@ -1,7 +1,7 @@
 ﻿using GRYLibrary.Core.Graph;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GRYLibrary.Tests.Testcases.GraphTests
 {
@@ -20,7 +20,7 @@ namespace GRYLibrary.Tests.Testcases.GraphTests
         private static UndirectedGraph CreateUndirectedGraph(IEnumerable<DirectedEdge> bigStructure)
         {
             UndirectedGraph result = new();
-            foreach (DirectedEdge edge in bigStructure)
+            foreach(DirectedEdge edge in bigStructure)
             {
                 result.AddEdge(edge);
             }
@@ -29,7 +29,7 @@ namespace GRYLibrary.Tests.Testcases.GraphTests
 
         private static void MakeUnconnected(IList<DirectedEdge> existingStructure)
         {
-            foreach (DirectedEdge item in CreateRandomConnectedNotCyclicEdgesWithNewVertices())
+            foreach(DirectedEdge item in CreateRandomConnectedNotCyclicEdgesWithNewVertices())
             {
                 existingStructure.Add(item);
             }
@@ -52,7 +52,7 @@ namespace GRYLibrary.Tests.Testcases.GraphTests
         private static DirectedGraph CreateDirectedGraph(IEnumerable<DirectedEdge> bigStructure)
         {
             DirectedGraph result = new();
-            foreach (DirectedEdge edge in bigStructure)
+            foreach(DirectedEdge edge in bigStructure)
             {
                 result.AddEdge(edge);
             }

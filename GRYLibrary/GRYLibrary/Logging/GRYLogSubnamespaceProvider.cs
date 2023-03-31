@@ -2,7 +2,7 @@
 
 namespace GRYLibrary.Core.Log
 {
-    public class GRYLogSubNamespaceProvider : CustomDisposable
+    public class GRYLogSubNamespaceProvider :CustomDisposable
     {
         private readonly GRYLog _LogObject;
         private readonly string _SubNamespace;
@@ -14,10 +14,10 @@ namespace GRYLibrary.Core.Log
             subnamespace = subnamespace.Trim();
             this._SubNamespace = subnamespace;
             this._OriginalNamespace = this._LogObject.Configuration.Name;
-            if (!string.IsNullOrEmpty(subnamespace))
+            if(!string.IsNullOrEmpty(subnamespace))
             {
                 string prefix;
-                if (string.IsNullOrEmpty(this._LogObject.Configuration.Name))
+                if(string.IsNullOrEmpty(this._LogObject.Configuration.Name))
                 {
                     prefix = string.Empty;
                 }

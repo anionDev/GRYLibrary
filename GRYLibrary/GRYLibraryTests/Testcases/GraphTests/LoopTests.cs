@@ -1,6 +1,6 @@
 ﻿using GRYLibrary.Core.Graph;
-using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 
 namespace GRYLibrary.Tests.Testcases.GraphTests
 {

@@ -5,10 +5,10 @@ using System.Numerics;
 
 namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteCommonAlgorithms.ConcreteAsymmetricAlgorithms.Helper
 {
-    public struct Curve
+    public readonly struct Curve
     {
         public static Curve Curve25519 { get; } = new Curve(
-            (x) => BigInteger.Pow(x, 3) + 486662 * x * x + x,
+            (x) => BigInteger.Pow(x, 3) + (486662 * x * x) + x,
             BigInteger.Pow(2, 255) - 19,
             BigInteger.Parse("15112221349535400772501151409588531511454012693041857206046113283949847762202")
         );
@@ -28,5 +28,4 @@ namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteCommonAlgor
             this.BasePointX = basePointX;
         }
     }
-
 }

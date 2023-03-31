@@ -5,7 +5,7 @@ using System.Text;
 
 namespace GRYLibrary.Core.Log.ConcreteLogTargets
 {
-    public sealed class LogFile : GRYLogTarget
+    public sealed class LogFile :GRYLogTarget
     {
         public LogFile() { }
         public string File { get; set; }
@@ -17,7 +17,7 @@ namespace GRYLibrary.Core.Log.ConcreteLogTargets
         {
             logItem.Format(logObject.Configuration, out string formattedMessage, out int _, out int _, out ConsoleColor _, this.Format, logItem.MessageId);
             this._Pool.Add(formattedMessage);
-            if (this.PreFlushPoolSize <= this._Pool.Count)
+            if(this.PreFlushPoolSize <= this._Pool.Count)
             {
                 this.Flush();
             }
@@ -25,23 +25,23 @@ namespace GRYLibrary.Core.Log.ConcreteLogTargets
 
         public void Flush()
         {
-            if (string.IsNullOrWhiteSpace(this.File))
+            if(string.IsNullOrWhiteSpace(this.File))
             {
                 throw new NullReferenceException($"LogFile is not defined.");
             }
             string file = Utilities.ResolveToFullPath(this.File);
             Utilities.EnsureFileExists(file, true);
             string result = string.Empty;
-            for (int i = 0; i < this._Pool.Count; i++)
+            for(int i = 0; i < this._Pool.Count; i++)
             {
-                if (!(i == 0 && Utilities.FileIsEmpty(file)))
+                if(!(i == 0 && Utilities.FileIsEmpty(file)))
                 {
                     result += Environment.NewLine;
                 }
                 result += this._Pool[i];
             }
             Encoding encoding;
-            if (this.Encoding.Equals(_UTF8Identifier))
+            if(this.Encoding.Equals(_UTF8Identifier))
             {
                 encoding = new UTF8Encoding(false);
             }

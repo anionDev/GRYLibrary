@@ -13,5 +13,4 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper.Conc
         public string TypeName { get; set; }
         public Guid ObjectId { get; set; }
     }
-
 }

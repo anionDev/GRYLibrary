@@ -1,6 +1,4 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.Services;
-using System;
-using System.Xml.Serialization;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Settings
 {
@@ -13,12 +11,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public string TLSCertificatePFXFilePath { get; set; } = null;
         public BlacklistProvider BlackListProvider { get; set; } //TODO use interface-type for middleware-propertys
         public DDOSProtectionSettings DDOSProtectionSettings { get; set; }
-        public ObfuscationSettings ObfuscationSettings { get; set; } 
-        public ExceptionManagerSettings ExceptionManagerSettings { get; set; } 
+        public ObfuscationSettings ObfuscationSettings { get; set; }
+        public ExceptionManagerSettings ExceptionManagerSettings { get; set; }
         public RequestCounterSettings RequestCounterSettings { get; set; }
         public RequestLoggingSettings RequestLoggingSettings { get; set; }
         public WebApplicationFirewallSettings WebApplicationFirewallSettings { get; set; }
         public APIKeyValidatorSettings APIKeyValidatorSettings { get; set; }
-
     }
 }

@@ -14,8 +14,8 @@ namespace GRYLibrary.Core.XMLSerializer
         }
         public SerializableKeyValuePair(TKey key, TValue value)
         {
-            Key = key;
-            Value = value;
+            this.Key = key;
+            this.Value = value;
         }
 
         public TKey Key { get; set; }

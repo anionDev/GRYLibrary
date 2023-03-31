@@ -10,7 +10,7 @@ namespace GRYLibrary.Core.XMLSerializer
     /// <summary>
     /// Represents a key-value-pair which is serializable by implementing <see cref="IGRYSerializable"/>.
     /// </summary>
-    public class KeyValuePair<TKey, TValue> : IGRYSerializable
+    public class KeyValuePair<TKey, TValue> :IGRYSerializable
     {
         public KeyValuePair()
         {

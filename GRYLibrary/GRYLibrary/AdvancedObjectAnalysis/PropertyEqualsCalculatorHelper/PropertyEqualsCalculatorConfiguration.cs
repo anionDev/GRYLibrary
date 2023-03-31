@@ -16,20 +16,20 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper
         {
             try
             {
-                if (propertyInfo.GetMethod != null)
+                if(propertyInfo.GetMethod != null)
                 {
-                    if (!propertyInfo.GetMethod.IsPublic)
+                    if(!propertyInfo.GetMethod.IsPublic)
                     {
                         return false;
                     }
-                    if (propertyInfo.GetMethod.IsStatic)
+                    if(propertyInfo.GetMethod.IsStatic)
                     {
                         return false;
                     }
                 }
-                if (propertyInfo.SetMethod != null)
+                if(propertyInfo.SetMethod != null)
                 {
-                    if (!propertyInfo.SetMethod.IsPublic)
+                    if(!propertyInfo.SetMethod.IsPublic)
                     {
                         return false;
                     }
@@ -41,10 +41,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper
                 return false;
             }
         };
-        public Func<FieldInfo, bool> FieldSelector { get; set; } = (FieldInfo fieldInfo) =>
-        {
-            return false;
-        };
+        public Func<FieldInfo, bool> FieldSelector { get; set; } = (FieldInfo fieldInfo) => false;
         public List<AbstractCustomComparer> CustomComparer { get; set; }
         public PropertyEqualsCalculatorConfiguration()
         {
@@ -79,9 +76,9 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper
         /// <remarks>This function requires that <paramref name="object"/> was already assigned to an <see cref="EquivalenceClass"/>.</remarks>
         private EquivalenceClass GetEquivalenceClassOfObject(object @object)
         {
-            foreach (EquivalenceClass equivalenceClass in this.EquivalenceClasses)
+            foreach(EquivalenceClass equivalenceClass in this.EquivalenceClasses)
             {
-                if (this.BelongsToEquivalenceClass(equivalenceClass, @object))
+                if(this.BelongsToEquivalenceClass(equivalenceClass, @object))
                 {
                     equivalenceClass.Add(@object);
                     return equivalenceClass;
@@ -107,11 +104,11 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper
 
         public bool AreInSameEquivalenceClass(object object1, object object2)
         {
-            if (!this.HasEquivalenceClass(object1))
+            if(!this.HasEquivalenceClass(object1))
             {
                 return false;
             }
-            if (!this.HasEquivalenceClass(object2))
+            if(!this.HasEquivalenceClass(object2))
             {
                 return false;
             }
@@ -120,9 +117,9 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper
 
         private bool HasEquivalenceClass(object @object)
         {
-            foreach (EquivalenceClass equivalenceClass in this.EquivalenceClasses)
+            foreach(EquivalenceClass equivalenceClass in this.EquivalenceClasses)
             {
-                if (this.BelongsToEquivalenceClass(equivalenceClass, @object))
+                if(this.BelongsToEquivalenceClass(equivalenceClass, @object))
                 {
                     return true;
                 }
@@ -133,18 +130,18 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper
         internal void AddEqualObjectsToEquivalenceClasses(object object1, object object2)
         {
             this.RemovePending(object1, object2);
-            foreach (EquivalenceClass loopEquivalenceClass in this.EquivalenceClasses)
+            foreach(EquivalenceClass loopEquivalenceClass in this.EquivalenceClasses)
             {
-                if (this.BelongsToEquivalenceClass(loopEquivalenceClass, object1))
+                if(this.BelongsToEquivalenceClass(loopEquivalenceClass, object1))
                 {
                     loopEquivalenceClass.Add(object2);
                     return;
                 }
             }
 
-            foreach (EquivalenceClass loopEquivalenceClass in this.EquivalenceClasses)
+            foreach(EquivalenceClass loopEquivalenceClass in this.EquivalenceClasses)
             {
-                if (this.BelongsToEquivalenceClass(loopEquivalenceClass, object2))
+                if(this.BelongsToEquivalenceClass(loopEquivalenceClass, object2))
                 {
                     loopEquivalenceClass.Add(object1);
                     return;

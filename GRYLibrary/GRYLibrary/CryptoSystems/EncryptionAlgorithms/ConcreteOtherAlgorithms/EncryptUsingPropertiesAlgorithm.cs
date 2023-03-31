@@ -2,7 +2,7 @@
 
 namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteOtherAlgorithms
 {
-    public abstract class EncryptUsingPropertiesAlgorithm : OtherEncryptionAlgorithm
+    public abstract class EncryptUsingPropertiesAlgorithm :OtherEncryptionAlgorithm
     {
         /// <summary>
         /// Use this function to encrypt data.

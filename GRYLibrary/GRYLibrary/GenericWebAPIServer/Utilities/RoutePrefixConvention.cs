@@ -4,26 +4,26 @@ using System.Linq;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
 {
-    public class RoutePrefixConvention : IApplicationModelConvention
+    public class RoutePrefixConvention :IApplicationModelConvention
     {
         private readonly AttributeRouteModel _routePrefix;
 
         public RoutePrefixConvention(IRouteTemplateProvider route)
         {
-            _routePrefix = new AttributeRouteModel(route);
+            this._routePrefix = new AttributeRouteModel(route);
         }
 
         public void Apply(ApplicationModel application)
         {
-            foreach (SelectorModel selector in application.Controllers.SelectMany(c => c.Selectors))
+            foreach(SelectorModel selector in application.Controllers.SelectMany(c => c.Selectors))
             {
-                if (selector.AttributeRouteModel != null)
+                if(selector.AttributeRouteModel != null)
                 {
-                    selector.AttributeRouteModel = AttributeRouteModel.CombineAttributeRouteModel(_routePrefix, selector.AttributeRouteModel);
+                    selector.AttributeRouteModel = AttributeRouteModel.CombineAttributeRouteModel(this._routePrefix, selector.AttributeRouteModel);
                 }
                 else
                 {
-                    selector.AttributeRouteModel = _routePrefix;
+                    selector.AttributeRouteModel = this._routePrefix;
                 }
             }
         }

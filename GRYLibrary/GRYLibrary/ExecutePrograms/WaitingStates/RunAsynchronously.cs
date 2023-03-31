@@ -1,6 +1,6 @@
 ﻿namespace GRYLibrary.Core.ExecutePrograms.WaitingStates
 {
-    public class RunAsynchronously : WaitingState
+    public class RunAsynchronously :WaitingState
     {
         public override void Accept(IWaitingStateVisitor visitor)
         {

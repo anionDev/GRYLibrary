@@ -5,7 +5,7 @@ using System.Xml.Serialization;
 
 namespace GRYLibrary.Tests.TestData.TestTypes.AdvancedObjectAnalysisUsageFull
 {
-    public class TestType : IXmlSerializable
+    public class TestType :IXmlSerializable
     {
         public TestType()
         {

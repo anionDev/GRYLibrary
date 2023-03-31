@@ -31,19 +31,19 @@ namespace GRYLibrary.Core.Graph
         public override bool Equals(object obj)
         {
             Edge typedObject = obj as Edge;
-            if (typedObject is null)
+            if(typedObject is null)
             {
                 return false;
             }
-            if (!this.GetType().Equals(obj.GetType()))
+            if(!this.GetType().Equals(obj.GetType()))
             {
                 return false;
             }
-            if (!this.Name.Equals(typedObject.Name))
+            if(!this.Name.Equals(typedObject.Name))
             {
                 return false;
             }
-            if (!this.Weight.NullSafeEquals(typedObject.Weight))
+            if(!this.Weight.NullSafeEquals(typedObject.Weight))
             {
                 return false;
             }

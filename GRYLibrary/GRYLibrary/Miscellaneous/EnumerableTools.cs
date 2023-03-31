@@ -60,10 +60,10 @@ namespace GRYLibrary.Core.Miscellaneous
             List<object> castedArguments = new();
             System.Reflection.MethodInfo addMethod = enumerable.GetType().GetMethod("Add");
             AssertCondition(addMethod.GetParameters().Length == addMethodArguments.Length);
-            for (int i = 0; i < addMethodArguments.Length; i++)
+            for(int i = 0; i < addMethodArguments.Length; i++)
             {
                 object argument = addMethodArguments[i];
-                if (argument != null)
+                if(argument != null)
                 {
                     argument = Cast(addMethodArguments[i], addMethod.GetParameters()[i].ParameterType);
                 }
@@ -89,7 +89,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static bool TypeIsKeyValuePair(this Type type)
         {
-            return TypeIsAssignableFrom(type, typeof(System.Collections.Generic.KeyValuePair<,>)) || TypeIsAssignableFrom(type, typeof(XMLSerializer.KeyValuePair<object, object>));
+            return TypeIsAssignableFrom(type, typeof(KeyValuePair<,>)) || TypeIsAssignableFrom(type, typeof(XMLSerializer.KeyValuePair<object, object>));
         }
         public static bool ObjectIsDictionaryEntry(this object @object)
         {
@@ -112,7 +112,7 @@ namespace GRYLibrary.Core.Miscellaneous
         #region ToEnumerable
         public static IEnumerable ObjectToEnumerable(this object @object)
         {
-            if (!ObjectIsEnumerable(@object))
+            if(!ObjectIsEnumerable(@object))
             {
                 throw new InvalidCastException();
             }
@@ -120,19 +120,19 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static IEnumerable<T> ObjectToEnumerable<T>(this object @object)
         {
-            if (!ObjectIsEnumerable(@object))
+            if(!ObjectIsEnumerable(@object))
             {
                 throw new InvalidCastException();
             }
             IEnumerable objects = ObjectToEnumerable(@object);
             List<T> result = new();
-            foreach (object obj in objects)
+            foreach(object obj in objects)
             {
-                if (obj is T t)
+                if(obj is T t)
                 {
                     result.Add(t);
                 }
-                else if (IsDefault(obj))
+                else if(IsDefault(obj))
                 {
                     result.Add(default);
                 }
@@ -145,19 +145,19 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static ISet<T> ObjectToSet<T>(this object @object)
         {
-            if (!ObjectIsSet(@object))
+            if(!ObjectIsSet(@object))
             {
                 throw new InvalidCastException();
             }
             IEnumerable objects = ObjectToEnumerable(@object);
             HashSet<T> result = new();
-            foreach (object obj in objects)
+            foreach(object obj in objects)
             {
-                if (obj is T t)
+                if(obj is T t)
                 {
                     result.Add(t);
                 }
-                else if (IsDefault(obj))
+                else if(IsDefault(obj))
                 {
                     result.Add(default);
                 }
@@ -175,19 +175,19 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static IList<T> ObjectToList<T>(this object @object)
         {
-            if (!ObjectIsList(@object))
+            if(!ObjectIsList(@object))
             {
                 throw new InvalidCastException();
             }
             IEnumerable objects = ObjectToEnumerable(@object);
             List<T> result = new();
-            foreach (object obj in objects)
+            foreach(object obj in objects)
             {
-                if (obj is T t)
+                if(obj is T t)
                 {
                     result.Add(t);
                 }
-                else if (IsDefault(obj))
+                else if(IsDefault(obj))
                 {
                     result.Add(default);
                 }
@@ -201,7 +201,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public static IDictionary ObjectToDictionary(this object @object)
         {
             IDictionary result = new Hashtable();
-            foreach (System.Collections.Generic.KeyValuePair<object, object> item in ObjectToDictionary<object, object>(@object))
+            foreach(KeyValuePair<object, object> item in ObjectToDictionary<object, object>(@object))
             {
                 result.Add(item.Key, item.Value);
             }
@@ -209,40 +209,40 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static IDictionary<TKey, TValue> ObjectToDictionary<TKey, TValue>(this object @object)
         {
-            if (!ObjectIsDictionary(@object))
+            if(!ObjectIsDictionary(@object))
             {
                 throw new InvalidCastException();
             }
             IEnumerable<object> objects = ObjectToEnumerable<object>(@object);
             Dictionary<TKey, TValue> result = new();
-            foreach (object obj in objects)
+            foreach(object obj in objects)
             {
-                System.Collections.Generic.KeyValuePair<TKey, TValue> kvp = ObjectToKeyValuePair<TKey, TValue>(obj);
+                KeyValuePair<TKey, TValue> kvp = ObjectToKeyValuePair<TKey, TValue>(obj);
                 result.Add(kvp.Key, kvp.Value);
             }
             return result;
         }
-        public static System.Collections.Generic.KeyValuePair<TKey, TValue> ObjectToKeyValuePair<TKey, TValue>(this object @object)
+        public static KeyValuePair<TKey, TValue> ObjectToKeyValuePair<TKey, TValue>(this object @object)
         {
-            if (!ObjectIsKeyValuePair(@object))
+            if(!ObjectIsKeyValuePair(@object))
             {
                 throw new InvalidCastException();
             }
             return ObjectToKeyValuePairUnsafe<TKey, TValue>(@object);
         }
 
-        internal static System.Collections.Generic.KeyValuePair<TKey, TValue> ObjectToKeyValuePairUnsafe<TKey, TValue>(object @object)
+        internal static KeyValuePair<TKey, TValue> ObjectToKeyValuePairUnsafe<TKey, TValue>(object @object)
         {
             object key = ((dynamic)@object).Key;
             object value = ((dynamic)@object).Value;
             TKey tKey;
             TValue tValue;
 
-            if (key is TKey key1)
+            if(key is TKey key1)
             {
                 tKey = key1;
             }
-            else if (IsDefault(key))
+            else if(IsDefault(key))
             {
                 tKey = default;
             }
@@ -250,11 +250,11 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 throw new InvalidCastException();
             }
-            if (value is TValue value1)
+            if(value is TValue value1)
             {
                 tValue = value1;
             }
-            else if (IsDefault(value))
+            else if(IsDefault(value))
             {
                 tValue = default;
             }
@@ -262,12 +262,12 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 throw new InvalidCastException();
             }
-            return new System.Collections.Generic.KeyValuePair<TKey, TValue>(tKey, tValue);
+            return new KeyValuePair<TKey, TValue>(tKey, tValue);
         }
 
         public static DictionaryEntry ObjectToDictionaryEntry(object @object)
         {
-            if (!ObjectIsDictionaryEntry(@object))
+            if(!ObjectIsDictionaryEntry(@object))
             {
                 throw new InvalidCastException();
             }
@@ -277,13 +277,13 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static Tuple<T1, T2> ObjectToTuple<T1, T2>(this object @object)
         {
-            if (!ObjectIsTuple(@object))
+            if(!ObjectIsTuple(@object))
             {
                 throw new InvalidCastException();
             }
             object item1 = ((dynamic)@object).Item1;
             object item2 = ((dynamic)@object).Item2;
-            if (item1 is T1 t1 && item2 is T2 t2)
+            if(item1 is T1 t1 && item2 is T2 t2)
             {
                 return new Tuple<T1, T2>(t1, t2);
             }
@@ -321,7 +321,7 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             return new DictionaryComparer(new PropertyEqualsCalculatorConfiguration()).DefaultEquals(dictionary1, dictionary2);
         }
-        public static bool KeyValuePairEquals<TKey, TValue>(this System.Collections.Generic.KeyValuePair<TKey, TValue> keyValuePair1, System.Collections.Generic.KeyValuePair<TKey, TValue> keyValuePair2)
+        public static bool KeyValuePairEquals<TKey, TValue>(this KeyValuePair<TKey, TValue> keyValuePair1, KeyValuePair<TKey, TValue> keyValuePair2)
         {
             return new KeyValuePairComparer(new PropertyEqualsCalculatorConfiguration()).Equals(keyValuePair1, keyValuePair2);
         }

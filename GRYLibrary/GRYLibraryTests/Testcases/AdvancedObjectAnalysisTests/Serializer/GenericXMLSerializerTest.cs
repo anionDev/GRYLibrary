@@ -7,6 +7,7 @@ using GRYLibrary.Tests.TestData.TestTypes.SimpleDataStructure;
 using GRYLibrary.Tests.TestData.TestTypes.XMLSerializableType;
 using GRYLibrary.Tests.TestData.TypeWithCommonInterfaces;
 using GRYLibrary.Tests.Utilities;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,7 +15,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GRYLibrary.Tests.Testcases.AdvancedObjectAnalysisTests.Serializer
 {

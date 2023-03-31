@@ -7,7 +7,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper.Conc
     /// Represents a SimplifiedObject for <see cref="GRYSObject"/>
     /// </summary>
     [XmlRoot(ElementName = "FO")]
-    public class FlatComplexObject : FlatObject
+    public class FlatComplexObject :FlatObject
     {
         public List<FlatAttribute> Attributes { get; set; } = new List<FlatAttribute>();
 
@@ -21,5 +21,4 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper.Conc
             return visitor.Handle(this);
         }
     }
-
 }

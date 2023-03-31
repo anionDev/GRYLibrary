@@ -3,7 +3,7 @@ using System.Text;
 
 namespace GRYLibrary.Core.Miscellaneous.Healthcheck
 {
-    public sealed class Healthcheck : IDisposable
+    public sealed class Healthcheck :IDisposable
     {
         public string File { get; }
         public bool AddTimestamp { get; set; } = true;
@@ -14,9 +14,9 @@ namespace GRYLibrary.Core.Miscellaneous.Healthcheck
         }
         public void SetState(HealthcheckValue value, string message = "")
         {
-            Utilities.EnsureFileExists(File);
+            Utilities.EnsureFileExists(this.File);
             string text;
-            if (AddTimestamp)
+            if(this.AddTimestamp)
             {
                 text = Utilities.DateTimeToISO8601String(DateTime.Now) + ": ";
             }
@@ -25,15 +25,15 @@ namespace GRYLibrary.Core.Miscellaneous.Healthcheck
                 text = string.Empty;
             }
             text = text + Enum.GetName(typeof(HealthcheckValue), value);
-            if (!string.IsNullOrWhiteSpace(message))
+            if(!string.IsNullOrWhiteSpace(message))
             {
                 text = $"{text} ({message})";
             }
-            Utilities.AppendLineToFile(File, text, Encoding);
+            Utilities.AppendLineToFile(this.File, text, this.Encoding);
         }
         public void Dispose()
         {
-            SetState(HealthcheckValue.NotRunning, "Disposed");
+            this.SetState(HealthcheckValue.NotRunning, "Disposed");
         }
     }
 }
