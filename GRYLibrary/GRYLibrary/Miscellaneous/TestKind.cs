@@ -19,7 +19,7 @@
         /// </summary>
         RegressionTest = 3,
         /// <summary>
-        /// Tests that other systems/services used by the function under test are still available and work like specified so that the function under test is able to be working correctly.
+        /// Tests that other required systems/services used by the function under test are still available and work like specified so that the function under test is able to be working correctly.
         /// </summary>
         SystemTest = 4,
         /// <summary>
