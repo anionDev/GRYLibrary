@@ -52,12 +52,17 @@ namespace GRYLibrary.Core.Miscellaneous
                         if(ShowHelp(arguments))
                         {
                             this.WriteHelp(parserResult);
+                            result = 0;
                         }
                         else
                         {
                             parserResult
                                 .WithParsed(options => result = this.HandleSuccessfullyParsedArguments(options))
-                                .WithNotParsed(errors => this.HandleParsingErrors(argumentsAsString, errors));
+                                .WithNotParsed(errors =>
+                                {
+                                    result = 3;
+                                    this.HandleParsingErrors(argumentsAsString, errors);
+                                });
                         }
                     }
                 }
@@ -69,7 +74,7 @@ namespace GRYLibrary.Core.Miscellaneous
             catch(Exception exception)
             {
                 this._Log.Log($"Fatal error occurred", exception);
-                result = 1;
+                result = 2;
             }
             this._Log.Log($"Finished program", LogLevel.Debug);
             return result;

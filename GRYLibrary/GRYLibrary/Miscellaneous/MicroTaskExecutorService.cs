@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
-    public class MicroTaskExecutorService<T>
+    public sealed class MicroTaskExecutorService<T> :IDisposable
     {
         public bool IsRunning { get; private set; }
         private bool _Enabled;
@@ -98,6 +98,10 @@ namespace GRYLibrary.Core.Miscellaneous
                 }
                 this._Thread = null;
             }
+        }
+        public void Dispose()
+        {
+            this.Stop();
         }
     }
 }
