@@ -41,7 +41,7 @@ namespace GRYLibrary.Core.Miscellaneous
                 string workingDirectory = Directory.GetCurrentDirectory();
                 try
                 {
-                    if(arguments.Length == 0 && !_ProgramCanRunWithoutArguments)
+                    if(arguments.Length == 0 && !this._ProgramCanRunWithoutArguments)
                     {
                         this._Log.Log($"{this._ProgramName} v{this._ProgramVersion}");
                         this._Log.Log($"Run '{this._ProgramName} --help' to get help about the usage.");
