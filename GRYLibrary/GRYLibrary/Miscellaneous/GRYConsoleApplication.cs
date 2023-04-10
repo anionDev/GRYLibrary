@@ -1,5 +1,7 @@
 ﻿using CommandLine;
 using CommandLine.Text;
+using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
+using GRYLibrary.Core.GenericWebAPIServer.ExecutionModes;
 using GRYLibrary.Core.Log;
 using Microsoft.Extensions.Logging;
 using System;
@@ -10,19 +12,21 @@ namespace GRYLibrary.Core.Miscellaneous
 {
     public class GRYConsoleApplication<T>
     {
-        private readonly Func<T, int> _Main;
+        private readonly Func<T, ExecutionMode, int> _Main;
         private readonly string _ProgramName;
         private readonly string _ProgramVersion;
         private readonly string _ProgramDescription;
         private readonly GRYLog _Log;
+        private readonly ExecutionMode _ExecutionMode;
         private readonly SentenceBuilder _SentenceBuilder;
         private readonly bool _ProgramCanRunWithoutArguments;
-        public GRYConsoleApplication(Func<T, int> main, string programName, string programVersion, string programDescription, bool programCanRunWithoutArguments)
+        public GRYConsoleApplication(Func<T, ExecutionMode, int> main, string programName, string programVersion, string programDescription, bool programCanRunWithoutArguments, ExecutionMode executionMode)
         {
             this._Main = main;
             this._ProgramName = programName;
             this._ProgramVersion = programVersion;
             this._ProgramDescription = programDescription;
+            this._ExecutionMode = executionMode;
             this._Log = GRYLog.Create();
             this._SentenceBuilder = SentenceBuilder.Create();
             this._ProgramCanRunWithoutArguments = programCanRunWithoutArguments;
@@ -41,6 +45,10 @@ namespace GRYLibrary.Core.Miscellaneous
                 string workingDirectory = Directory.GetCurrentDirectory();
                 try
                 {
+                    if(_ExecutionMode is Analysis)
+                    {
+                        arguments = Array.Empty<string>();
+                    }
                     if(arguments.Length == 0 && !this._ProgramCanRunWithoutArguments)
                     {
                         this._Log.Log($"{this._ProgramName} v{this._ProgramVersion}");
@@ -96,7 +104,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         private int HandleSuccessfullyParsedArguments(T options)
         {
-            return this._Main(options);
+            return this._Main(options, _ExecutionMode);
         }
 
         public void WriteHelp(ParserResult<T> argumentParserResult)
