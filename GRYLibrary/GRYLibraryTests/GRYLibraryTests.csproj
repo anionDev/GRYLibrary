@@ -1,62 +1,57 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
-		<Authors>Marius Göcke</Authors>
-		<Version>0.12.38</Version>
-		<AssemblyVersion>0.12.38</AssemblyVersion>
-		<FileVersion>0.12.38</FileVersion>
-		<SelfContained>false</SelfContained>
-		<IsPackable>false</IsPackable>
-		<PreserveCompilationContext>false</PreserveCompilationContext>
-		<GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
-		<Copyright>Copyright © 2023 Marius Göcke</Copyright>
-		<Description>GRYLibraryTests is the test-project for GRYLibrary.</Description>
-		<PackageProjectUrl>https://github.com/anionDev/GRYLibrary</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/anionDev/GRYLibrary</RepositoryUrl>
-		<RootNamespace>GRYLibrary.Tests</RootNamespace>
-		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
-		<Nullable>disable</Nullable>
-		<Configurations>Development;QualityCheck;Productive</Configurations>
-		<IsTestProject>true</IsTestProject>
-		<LangVersion>11.0</LangVersion>
-		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-		<GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
-		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<OutputPath>..\Other\Artifacts\BuildResultTests_DotNet_win-x64</OutputPath>
-		<PlatformTarget>AnyCPU</PlatformTarget>
-		<WarningLevel>4</WarningLevel>
-		<Prefer32Bit>false</Prefer32Bit>
-		<NoWarn>1701;1702;CA1822;CS1591;CS1573;IDE0045;IDE0046;IDE0054;IDE0058;IDE0074;IDE0090</NoWarn>
-		<WarningsAsErrors>NU1605</WarningsAsErrors>
-		<ErrorLog>..\Other\Resources\GRYLibraryTests.sarif</ErrorLog>
-		<OutputType>Library</OutputType>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='Development'">
-		<DebugType>full</DebugType>
-		<DebugSymbols>true</DebugSymbols>
-		<Optimize>false</Optimize>
-		<DefineConstants>TRACE;DEBUG;Development</DefineConstants>
-		<ErrorReport>prompt</ErrorReport>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='QualityCheck'">
-		<DebugType>portable</DebugType>
-		<DebugSymbols>true</DebugSymbols>
-		<Optimize>false</Optimize>
-		<DefineConstants>TRACE;QualityCheck</DefineConstants>
-		<ErrorReport>none</ErrorReport>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='Productive'">
-		<DebugType>none</DebugType>
-		<DebugSymbols>false</DebugSymbols>
-		<Optimize>true</Optimize>
-		<DefineConstants>Productive</DefineConstants>
-		<ErrorReport>none</ErrorReport>
-	</PropertyGroup>
-
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Authors>Marius Göcke</Authors>
+        <Version>0.12.39</Version>
+        <AssemblyVersion>0.12.39</AssemblyVersion>
+        <FileVersion>0.12.39</FileVersion>
+        <SelfContained>false</SelfContained>
+        <IsPackable>false</IsPackable>
+        <PreserveCompilationContext>false</PreserveCompilationContext>
+        <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+        <Copyright>Copyright © 2023 Marius Göcke</Copyright>
+        <Description>GRYLibraryTests is the test-project for GRYLibrary.</Description>
+        <PackageProjectUrl>https://github.com/anionDev/GRYLibrary</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/anionDev/GRYLibrary.git</RepositoryUrl>
+        <RootNamespace>GRYLibrary.Tests</RootNamespace>
+        <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+        <Nullable>disable</Nullable>
+        <Configurations>Development;QualityCheck;Productive</Configurations>
+        <IsTestProject>true</IsTestProject>
+        <LangVersion>11.0</LangVersion>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <OutputPath>..\Other\Artifacts\BuildResultTests_DotNet_win-x64</OutputPath>
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <WarningLevel>4</WarningLevel>
+        <Prefer32Bit>false</Prefer32Bit>
+        <NoWarn>1701;1702;CA1822;CS1591;CS1573;IDE0045;IDE0046;IDE0054;IDE0058;IDE0074;IDE0090</NoWarn>
+        <WarningsAsErrors>NU1605</WarningsAsErrors>
+        <ErrorLog>..\Other\Resources\GRYLibraryTests.sarif</ErrorLog>
+        <OutputType>Library</OutputType>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Development'">
+        <DebugType>full</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+        <Optimize>false</Optimize>
+        <DefineConstants>TRACE;DEBUG;Development</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='QualityCheck'">
+        <DebugType>portable</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+        <Optimize>false</Optimize>
+        <DefineConstants>TRACE;QualityCheck</DefineConstants>
+        <ErrorReport>none</ErrorReport>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Productive'">
+        <DebugType>none</DebugType>
+        <DebugSymbols>false</DebugSymbols>
+        <Optimize>true</Optimize>
+        <DefineConstants>Productive</DefineConstants>
+        <ErrorReport>none</ErrorReport>
+    </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\GRYLibrary\GRYLibrary.csproj" />
     <PackageReference Include="coverlet.collector" Version="3.2.0">
@@ -82,7 +77,6 @@
     <PackageReference Include="System.Collections.Immutable" Version="7.0.0" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
   </ItemGroup>
-
   <ItemGroup>
     <None Update="TestData\XSDValidator\Test1\TestXML1_MatchsXSD1.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -103,5 +97,4 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
 </Project>
