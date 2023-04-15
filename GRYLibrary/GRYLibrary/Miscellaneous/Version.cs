@@ -20,14 +20,8 @@ namespace GRYLibrary.Core.Miscellaneous
         /// <value></value>
         public int Major
         {
-            get
-            {
-                return this.major;
-            }
-            set
-            {
-                this.major = value;
-            }
+            get => this.major;
+            set => this.major = value;
         }
         /// <summary>
         /// Gets the minor.
@@ -35,14 +29,8 @@ namespace GRYLibrary.Core.Miscellaneous
         /// <value></value>
         public int Minor
         {
-            get
-            {
-                return this.minor;
-            }
-            set
-            {
-                this.minor = value;
-            }
+            get => this.minor;
+            set => this.minor = value;
         }
         /// <summary>
         /// Gets the build.
@@ -50,14 +38,8 @@ namespace GRYLibrary.Core.Miscellaneous
         /// <value></value>
         public int Build
         {
-            get
-            {
-                return this.build;
-            }
-            set
-            {
-                this.build = value;
-            }
+            get => this.build;
+            set => this.build = value;
         }
         /// <summary>
         /// Gets the revision.
@@ -65,14 +47,8 @@ namespace GRYLibrary.Core.Miscellaneous
         /// <value></value>
         public int Revision
         {
-            get
-            {
-                return this.revision;
-            }
-            set
-            {
-                this.revision = value;
-            }
+            get => this.revision;
+            set => this.revision = value;
         }
         /// <summary>
         /// Creates a new <see cref="Version"/> instance.
@@ -94,7 +70,7 @@ namespace GRYLibrary.Core.Miscellaneous
             this.revision = -1;
             if(version == null)
             {
-                throw new ArgumentNullException("version");
+                throw Utilities.CreateNullReferenceExceptionDueToParameter(nameof(version));
             }
             char[] chArray1 = new char[1] { '.' };
             string[] textArray1 = version.Split(chArray1);

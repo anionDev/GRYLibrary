@@ -2797,8 +2797,8 @@ namespace GRYLibrary.Core.Miscellaneous
             }
             else
             {
-                configurationFile = Utilities.ResolveToFullPath(configurationFile);
-                Utilities.EnsureDirectoryExists(Path.GetDirectoryName(configurationFile));
+                configurationFile = ResolveToFullPath(configurationFile);
+                EnsureDirectoryExists(Path.GetDirectoryName(configurationFile));
                 configuration = initialValue;
                 createInitialFile(configurationFile, initialValue);
             }

@@ -147,7 +147,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                             password = File.ReadAllText(configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePasswordFile, new UTF8Encoding(false));
                         }
                         X509Certificate2 certificate = new(pfxFilePath, password);
-                        if(configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is Productive && Core.Miscellaneous.Utilities.IsSelfSIgned(certificate))
+                        if(configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is Productive && Miscellaneous.Utilities.IsSelfSIgned(certificate))
                         {
                             IGeneralLogger.Log($"The used certificate '{configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePFXFilePath}' is self-signed. Using self-signed certificates is not recommended in a productive environment.", LogLevel.Warning, configuration.WebAPIConfigurationValues.Logger);
                         }
@@ -288,14 +288,14 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
             public void Handle(Analysis analysis)
             {
-                GRYLibrary.Core.Miscellaneous.Utilities.NoOperation();
+                Miscellaneous.Utilities.NoOperation();
             }
 
             public void Handle(RunProgram runProgram)
             {
                 foreach(string folder in this._Folder)
                 {
-                    GRYLibrary.Core.Miscellaneous.Utilities.EnsureDirectoryExists(folder);
+                    Miscellaneous.Utilities.EnsureDirectoryExists(folder);
                 }
             }
         }

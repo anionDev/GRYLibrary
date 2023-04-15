@@ -1,6 +1,5 @@
 ﻿using CommandLine;
 using CommandLine.Text;
-using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using GRYLibrary.Core.GenericWebAPIServer.ExecutionModes;
 using GRYLibrary.Core.Log;
 using Microsoft.Extensions.Logging;
@@ -45,7 +44,7 @@ namespace GRYLibrary.Core.Miscellaneous
                 string workingDirectory = Directory.GetCurrentDirectory();
                 try
                 {
-                    if(_ExecutionMode is Analysis)
+                    if(this._ExecutionMode is Analysis)
                     {
                         arguments = Array.Empty<string>();
                     }
@@ -91,20 +90,20 @@ namespace GRYLibrary.Core.Miscellaneous
         private void HandleParsingErrors(string argumentsAsString, IEnumerable<Error> errors)
         {
             int amountOfErrors = errors.Count();
-            this._Log.Log($"Argument '{argumentsAsString}' could not be parsed successfully.", Microsoft.Extensions.Logging.LogLevel.Error);
+            this._Log.Log($"Argument '{argumentsAsString}' could not be parsed successfully.", LogLevel.Error);
             if(0 < amountOfErrors)
             {
-                this._Log.Log($"The following error{(amountOfErrors == 1 ? string.Empty : "s")} occurred:", Microsoft.Extensions.Logging.LogLevel.Error);
+                this._Log.Log($"The following error{(amountOfErrors == 1 ? string.Empty : "s")} occurred:", LogLevel.Error);
                 foreach(Error error in errors)
                 {
-                    this._Log.Log($"{error.Tag}: {this._SentenceBuilder.FormatError(error)}", Microsoft.Extensions.Logging.LogLevel.Error);
+                    this._Log.Log($"{error.Tag}: {this._SentenceBuilder.FormatError(error)}", LogLevel.Error);
                 }
             }
         }
 
         private int HandleSuccessfullyParsedArguments(T options)
         {
-            return this._Main(options, _ExecutionMode);
+            return this._Main(options, this._ExecutionMode);
         }
 
         public void WriteHelp(ParserResult<T> argumentParserResult)

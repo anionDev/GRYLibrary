@@ -43,7 +43,7 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             this.Unset = true;
         }
-        public string PropertyName { get { return this._PropertyName; } set { this._PropertyName = value; } }
+        public string PropertyName { get => this._PropertyName; set => this._PropertyName = value; }
 
         public Type PropertyValueType => typeof(T);
         public virtual T Value

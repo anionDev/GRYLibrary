@@ -55,7 +55,7 @@ namespace GRYLibrary.Core.ExecutePrograms
                     throw new InvalidOperationException(this.GetInvalidOperationDueToNotTerminatedMessageByMembername(nameof(this.ExecutionDuration), ExecutionState.Terminated, true));
                 }
             }
-            private set { this._ExecutionDuration = value; }
+            private set => this._ExecutionDuration = value;
         }
         public bool IsRunning => this._Running;
         private readonly object _LockObject = new();
@@ -306,7 +306,7 @@ namespace GRYLibrary.Core.ExecutePrograms
                 }
                 if(this.Configuration.DelegateToEpew)
                 {
-                    StartInfo.Arguments = ExternalProgramExecutor.CreateEpewArgumentString(
+                    StartInfo.Arguments = CreateEpewArgumentString(
                         this.Configuration.Program, this.Configuration.Argument, this.Configuration.WorkingDirectory, this.Configuration.PrintErrorsAsInformation, this.Configuration.TimeoutInMilliseconds, this.Configuration.Verbosity,
                         this.Configuration.AddLogOverhead, this.Configuration.LogFile, this.Configuration.Title, this.Configuration.WaitingState, this.Configuration.LogNamespace, this.Configuration.User, this.Configuration.Password);
                     StartInfo.FileName = "epew";
@@ -518,10 +518,7 @@ namespace GRYLibrary.Core.ExecutePrograms
                     throw new InvalidOperationException(this.GetInvalidOperationDueToNotTerminatedMessageByMembername(nameof(this.ProcessWasAbortedDueToTimeout), ExecutionState.Terminated, true));
                 }
             }
-            private set
-            {
-                this._processWasAbortedDueToTimeout = value;
-            }
+            private set => this._processWasAbortedDueToTimeout = value;
         }
         private int _ExitCode;
         /// <exception cref="InvalidOperationException">
@@ -540,10 +537,7 @@ namespace GRYLibrary.Core.ExecutePrograms
                     throw new InvalidOperationException(this.GetInvalidOperationDueToNotTerminatedMessageByMembername(nameof(this.ExitCode), ExecutionState.Terminated, true));
                 }
             }
-            private set
-            {
-                this._ExitCode = value;
-            }
+            private set => this._ExitCode = value;
         }
         private int _ProcessId;
         public int ProcessId
@@ -559,10 +553,7 @@ namespace GRYLibrary.Core.ExecutePrograms
                     throw new InvalidOperationException(this.GetInvalidOperationDueToNotTerminatedMessageByMembername(nameof(this.ProcessId), ExecutionState.NotStarted, false));
                 }
             }
-            private set
-            {
-                this._ProcessId = value;
-            }
+            private set => this._ProcessId = value;
         }
 
         private readonly IList<string> _AllStdOutLines = new List<string>();

@@ -701,34 +701,34 @@ namespace GRYLibrary.Tests.Testcases
         public void TestIsAbsolutePath()
         {
             //TODO run this testcases with all available operating-system-types
-            Assert.IsTrue(GRYLibrary.Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"X:\"));
-            Assert.IsTrue(GRYLibrary.Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"X:\Y\"));
-            Assert.IsTrue(GRYLibrary.Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"X:\Y\Z"));
-            Assert.IsTrue(GRYLibrary.Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"X:\Y\Z.mp3"));
-            Assert.IsTrue(GRYLibrary.Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"X:/Y/Z"));
-            Assert.IsTrue(GRYLibrary.Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"X:/Y/Z.mp3"));
-            Assert.IsTrue(GRYLibrary.Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"/X"));
-            Assert.IsTrue(GRYLibrary.Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"/X/Y.mp3"));
+            Assert.IsTrue(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"X:\"));
+            Assert.IsTrue(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"X:\Y\"));
+            Assert.IsTrue(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"X:\Y\Z"));
+            Assert.IsTrue(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"X:\Y\Z.mp3"));
+            Assert.IsTrue(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"X:/Y/Z"));
+            Assert.IsTrue(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"X:/Y/Z.mp3"));
+            Assert.IsTrue(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"/X"));
+            Assert.IsTrue(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"/X/Y.mp3"));
 
-            Assert.IsFalse(GRYLibrary.Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"example/test"));
-            Assert.IsFalse(GRYLibrary.Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@".git"));
-            Assert.IsFalse(GRYLibrary.Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@".x/y.txt"));
-            Assert.IsFalse(GRYLibrary.Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"x/y.txt"));
-            Assert.IsFalse(GRYLibrary.Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"x"));
-            Assert.IsFalse(GRYLibrary.Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"."));
-            Assert.IsFalse(GRYLibrary.Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@".."));
-            Assert.IsFalse(GRYLibrary.Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"./"));
-            Assert.IsFalse(GRYLibrary.Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"../"));
-            Assert.IsFalse(GRYLibrary.Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@".\"));
-            Assert.IsFalse(GRYLibrary.Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"..\"));
-            Assert.IsFalse(GRYLibrary.Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"./X"));
-            Assert.IsFalse(GRYLibrary.Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"../X"));
-            Assert.IsFalse(GRYLibrary.Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@".\X"));
-            Assert.IsFalse(GRYLibrary.Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"..\X"));
-            Assert.IsFalse(GRYLibrary.Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@".\X.mp3"));
-            Assert.IsFalse(GRYLibrary.Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"..\X.mp3"));
-            Assert.IsFalse(GRYLibrary.Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@".\X\Y.mp3"));
-            Assert.IsFalse(GRYLibrary.Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"..\X\Y.mp3"));
+            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"example/test"));
+            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@".git"));
+            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@".x/y.txt"));
+            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"x/y.txt"));
+            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"x"));
+            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"."));
+            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@".."));
+            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"./"));
+            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"../"));
+            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@".\"));
+            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"..\"));
+            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"./X"));
+            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"../X"));
+            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@".\X"));
+            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"..\X"));
+            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@".\X.mp3"));
+            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"..\X.mp3"));
+            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@".\X\Y.mp3"));
+            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"..\X\Y.mp3"));
         }
     }
 }
