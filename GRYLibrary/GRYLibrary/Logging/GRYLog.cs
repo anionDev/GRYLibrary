@@ -44,7 +44,7 @@ namespace GRYLibrary.Core.Log
         {
             lock(_LockObject)
             {
-                this._ConsoleDefaultColor = System.Console.ForegroundColor;
+                this._ConsoleDefaultColor = Console.ForegroundColor;
                 this.Configuration = configuration;
                 this._Initialized = true;
             }

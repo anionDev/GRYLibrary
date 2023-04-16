@@ -15,8 +15,8 @@ namespace GRYLibrary.Core.GenericWebAPIServer.ExecutionModes.Visitors
         }
         public string Handle(Analysis analysis)
         {
-            string result = Path.Join(System.IO.Path.GetTempPath(), Guid.NewGuid().ToString());
-            GRYLibrary.Core.Miscellaneous.Utilities.EnsureDirectoryExists(result);
+            string result = Path.Join(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Miscellaneous.Utilities.EnsureDirectoryExists(result);
             return result;
         }
 

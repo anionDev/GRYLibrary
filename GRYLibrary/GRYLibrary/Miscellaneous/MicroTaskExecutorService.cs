@@ -13,7 +13,7 @@ namespace GRYLibrary.Core.Miscellaneous
         private readonly Func<IEnumerable<T>> _GetActions;
         private readonly TimeSpan _WaitInterval = TimeSpan.FromMilliseconds(50);
         private readonly object _Lock = new object();
-        public MicroTaskExecutorService(Action<T> action, Func<IEnumerable<T>> getActions)
+        public MicroTaskExecutorService(Func<IEnumerable<T>> getActions,Action<T> action)
         {
             this._Action = action;
             this._GetActions = getActions;

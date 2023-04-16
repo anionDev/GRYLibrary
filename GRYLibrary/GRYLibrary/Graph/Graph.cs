@@ -29,10 +29,7 @@ namespace GRYLibrary.Core.Graph
         public abstract ISet<Vertex> GetDirectSuccessors(Vertex vertex, bool doNotWalkAgainstDirectedEdges = true);
         public bool SelfLoopIsAllowed
         {
-            get
-            {
-                return this._SelfLoopIsAllowed;
-            }
+            get => this._SelfLoopIsAllowed;
             set
             {
                 if(!value && this.ContainsOneOrMoreSelfLoops())
