@@ -1,5 +1,6 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using GRYLibrary.Core.GenericWebAPIServer.Middlewares;
+using GRYLibrary.Core.GenericWebAPIServer.Services;
 using GRYLibrary.Core.GenericWebAPIServer.Utilities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +13,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         where ConfigurationConstantsType : IWebAPIConfigurationConstants
         where ConfigurationVariablesType : IWebAPIConfigurationVariables
     {
+        public IGeneralLogger Logger { get; set; }
         public WebAPIConfigurationValues<ConfigurationConstantsType, ConfigurationVariablesType> WebAPIConfigurationValues { get; set; }
         public Action<WebApplicationBuilder, WebAPIConfigurationValues<ConfigurationConstantsType, ConfigurationVariablesType>> ConfigureBuilder { get; set; } = (builder, webAPIConfigurationValues) =>
         {

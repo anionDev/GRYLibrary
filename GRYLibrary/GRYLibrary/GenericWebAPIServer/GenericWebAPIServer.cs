@@ -27,21 +27,20 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             where ConfigurationConstantsType : IWebAPIConfigurationConstants
             where ConfigurationVariablesType : IWebAPIConfigurationVariables, new()
         {
-            IGeneralLogger logger = null;
             int exitCode = 1;
+            IGeneralLogger logger = configuration.Logger;
             try
             {
                 ExecutionMode executionMode = configuration.WebAPIConfigurationValues.ExecutionMode;
                 configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables = executionMode.Accept(new GetWebAPIConfigurationVariablesVisitor<ConfigurationConstantsType, ConfigurationVariablesType>(configuration));
-                logger = executionMode.Accept(new GetLoggerVisitor<ConfigurationConstantsType, ConfigurationVariablesType>(configuration));
                 configuration.WebAPIConfigurationValues.Logger = logger;
-                IGeneralLogger.Log($"Start {configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", LogLevel.Information, logger);
+                logger.Log($"Start {configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", LogLevel.Information);
                 (WebApplication, ISet<string>) appAndUrls = CreateAPIServer(configuration);
                 WebApplication app = appAndUrls.Item1;
                 ISet<string> urls = appAndUrls.Item2;
                 try
                 {
-                    IGeneralLogger.Log($"Run WebAPI-server", LogLevel.Debug, configuration.WebAPIConfigurationValues.Logger);
+                    logger.Log($"Run WebAPI-server", LogLevel.Debug);
                     if(0 < urls.Count)
                     {
                         string urlSuffix;
@@ -53,10 +52,10 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                         {
                             urlSuffix = string.Empty;
                         }
-                        IGeneralLogger.Log($"The API is now available under the following URLs:", LogLevel.Debug, configuration.WebAPIConfigurationValues.Logger);
+                        configuration.WebAPIConfigurationValues.Logger.Log($"The API is now available under the following URLs:", LogLevel.Debug);
                         foreach(string url in urls)
                         {
-                            IGeneralLogger.Log(url + urlSuffix, LogLevel.Debug, configuration.WebAPIConfigurationValues.Logger);
+                            configuration.WebAPIConfigurationValues.Logger.Log(url + urlSuffix, LogLevel.Debug);
                         }
                     }
                     app.Run();
@@ -64,10 +63,10 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 }
                 catch(Exception exception)
                 {
-                    IGeneralLogger.LogException(exception, $"Fatal error in {configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", configuration.WebAPIConfigurationValues.Logger);
+                    configuration.WebAPIConfigurationValues.Logger.LogException(exception, $"Fatal error in {configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}");
                     exitCode = 2;
                 }
-                IGeneralLogger.Log($"Finished {configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", LogLevel.Information, configuration.WebAPIConfigurationValues.Logger);
+                configuration.WebAPIConfigurationValues.Logger.Log($"Finished {configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", LogLevel.Information);
             }
             catch(Exception exception)
             {
@@ -149,7 +148,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                         X509Certificate2 certificate = new(pfxFilePath, password);
                         if(configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is Productive && Miscellaneous.Utilities.IsSelfSIgned(certificate))
                         {
-                            IGeneralLogger.Log($"The used certificate '{configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePFXFilePath}' is self-signed. Using self-signed certificates is not recommended in a productive environment.", LogLevel.Warning, configuration.WebAPIConfigurationValues.Logger);
+                            configuration.WebAPIConfigurationValues.Logger.Log($"The used certificate '{configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePFXFilePath}' is self-signed. Using self-signed certificates is not recommended in a productive environment.", LogLevel.Warning);
                         }
                         listenOptions.UseHttps(configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePFXFilePath, password);
 
@@ -207,14 +206,12 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             return $"{protocol}://{domain}:{configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.Port}/{configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.APIRoutePrefix}";
         }
 
-        private class GetLoggerVisitor<ConfigurationConstantsType, ConfigurationVariablesType> :IExecutionModeVisitor<IGeneralLogger>
-        where ConfigurationConstantsType : IWebAPIConfigurationConstants
-        where ConfigurationVariablesType : IWebAPIConfigurationVariables
+        public class GetLoggerVisitor :IExecutionModeVisitor<IGeneralLogger>
         {
             private readonly GRYLogConfiguration _LogConfiguration;
-            public GetLoggerVisitor(WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType> webAPIConfiguration)
+            public GetLoggerVisitor(GRYLogConfiguration logConfiguration)
             {
-                this._LogConfiguration = webAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables.ApplicationSettings.LogConfiguration;
+                this._LogConfiguration = logConfiguration;
             }
             public IGeneralLogger Handle(Analysis analysis)
             {

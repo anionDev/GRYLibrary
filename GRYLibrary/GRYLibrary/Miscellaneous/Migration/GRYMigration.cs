@@ -1,6 +1,6 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using GRYLibrary.Core.GenericWebAPIServer.ExecutionModes;
-using GRYLibrary.Core.Log;
+using GRYLibrary.Core.GenericWebAPIServer.Services;
 using GRYLibrary.Core.Miscellaneous.Migration;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ namespace GRYLibrary.Core.Miscellaneous
     public class GRYMigration
     {
         internal static Encoding Encoding { get; set; } = new UTF8Encoding(false);
-        public static void MigrateIfRequired(string appName, Version3 currentVersion, GRYLog logger, string baseFolder, GRYEnvironment targetEnvironmentType, ExecutionMode executionMode, IDictionary<object, object> customValues,
+        public static void MigrateIfRequired(string appName, Version3 currentVersion, IGeneralLogger logger, string baseFolder, GRYEnvironment targetEnvironmentType, ExecutionMode executionMode, IDictionary<object, object> customValues,
           ISet<MigrationMetaInformation> migrations)
         {
             string informationFile = Path.Join(baseFolder, $"{appName}.xml");
@@ -57,17 +57,17 @@ namespace GRYLibrary.Core.Miscellaneous
                         foreach(MigrationMetaInformation orderedMigration in orderedMigrations)
                         {
                             bool migrationIfRequired = existingVersion < orderedMigration.SourceVersion;
-                            logger.Log($"Start migration from version {orderedMigration.SourceVersion} to {orderedMigration.TargetVersion}.");
+                            logger.Log($"Start migration from version {orderedMigration.SourceVersion} to {orderedMigration.TargetVersion}.", Microsoft.Extensions.Logging.LogLevel.Information);
                             try
                             {
                                 orderedMigration.Migration(new MigrationInformation(orderedMigration.SourceVersion, baseFolder, targetEnvironmentType, executionMode, customValues));
                                 existingVersion = orderedMigration.TargetVersion;
                                 WriteInformationToFile(informationFile, appName, existingVersion);
-                                logger.Log($"Finished migration from version {orderedMigration.SourceVersion} to {orderedMigration.TargetVersion}.");
+                                logger.Log($"Finished migration from version {orderedMigration.SourceVersion} to {orderedMigration.TargetVersion}.", Microsoft.Extensions.Logging.LogLevel.Information);
                             }
                             catch(Exception exception)
                             {
-                                logger.Log($"Error while migration.", exception);
+                                logger.LogException(exception, $"Error while migration.");
                             }
                         }
                     }
@@ -75,7 +75,7 @@ namespace GRYLibrary.Core.Miscellaneous
             }
             else
             {
-                Utilities.EnsureFileExists(informationFile);
+                Utilities.EnsureFileExists(informationFile, true);
                 WriteInformationToFile(informationFile, appName, currentVersion);
             }
         }
@@ -112,7 +112,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
             public Version3 GetCodeUnitVersion()
             {
-                return Version3.Parse(ApplicationVersion);
+                return Version3.Parse(this.ApplicationVersion);
             }
         }
     }

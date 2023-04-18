@@ -9,9 +9,5 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public string LicenseURL { get; set; }
         public string AppDescription { get; set; }
         public GRYLogConfiguration LogConfiguration { get; set; }
-        public ApplicationSettings()
-        {
-            this.LogConfiguration = new GRYLogConfiguration();
-        }
     }
 }

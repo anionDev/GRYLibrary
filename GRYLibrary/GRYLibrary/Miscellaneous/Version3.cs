@@ -91,7 +91,7 @@ namespace GRYLibrary.Core.Miscellaneous
             return $"{this.Major}.{this.Minor}.{this.Patch}";
         }
 
-        internal static Version3 Parse(string applicationVersion)
+        public static Version3 Parse(string applicationVersion)
         {
             string[] splitted = applicationVersion.Split('.');
             return new Version3(ushort.Parse(splitted[0]), ushort.Parse(splitted[1]), ushort.Parse(splitted[2]));
