@@ -23,24 +23,51 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 {
     public static class GenericWebAPIServer
     {
-        public static int DefaultWebAPIMainFunction<ConfigurationConstantsType, ConfigurationVariablesType>(WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType> configuration)
+        public static int DefaultWebAPIMainFunction<ConfigurationConstantsType, ConfigurationVariablesType,ApplicationsSpecificSettingsType>(WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType> configuration, Action preRun, Action postRun)
             where ConfigurationConstantsType : IWebAPIConfigurationConstants
             where ConfigurationVariablesType : IWebAPIConfigurationVariables, new()
         {
             int exitCode = 1;
             IGeneralLogger logger = configuration.Logger;
+            ExecutionMode executionMode = configuration.WebAPIConfigurationValues.ExecutionMode;
+            (WebApplication, ISet<string>) appAndUrls = default;
+            bool startApplication = true;
             try
             {
-                ExecutionMode executionMode = configuration.WebAPIConfigurationValues.ExecutionMode;
-                configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables = executionMode.Accept(new GetWebAPIConfigurationVariablesVisitor<ConfigurationConstantsType, ConfigurationVariablesType>(configuration));
+                HashSet<Type> knownTypes =new HashSet<Type>();
+                knownTypes.Add(typeof(ApplicationsSpecificSettingsType));
+                configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables = executionMode.Accept(new GetWebAPIConfigurationVariablesVisitor<ConfigurationConstantsType, ConfigurationVariablesType>(configuration, knownTypes));
                 configuration.WebAPIConfigurationValues.Logger = logger;
                 logger.Log($"Start {configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", LogLevel.Information);
-                (WebApplication, ISet<string>) appAndUrls = CreateAPIServer(configuration);
+                appAndUrls = CreateAPIServer(configuration);
+            }
+            catch(Exception exception)
+            {
+                startApplication = false;
+                string message = "Initialization-exception";
+                logger.AddLogEntry(new LogItem(message, exception));
+                if(configuration.WebAPIConfigurationValues.RethrowInitializationExceptions)
+                {
+                    throw;
+                }
+                else
+                {
+                    exitCode = 3;
+                }
+            }
+
+            if(startApplication && !configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.GeneralApplicationSettings.Enabled)
+            {
+                startApplication = false;
+                logger.Log($"Application is disabled.", LogLevel.Information);
+            }
+
+            if(startApplication)
+            {
                 WebApplication app = appAndUrls.Item1;
                 ISet<string> urls = appAndUrls.Item2;
                 try
                 {
-                    logger.Log($"Run WebAPI-server", LogLevel.Debug);
                     if(0 < urls.Count)
                     {
                         string urlSuffix;
@@ -52,13 +79,22 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                         {
                             urlSuffix = string.Empty;
                         }
-                        configuration.WebAPIConfigurationValues.Logger.Log($"The API is now available under the following URLs:", LogLevel.Debug);
+                        configuration.WebAPIConfigurationValues.Logger.Log($"The API is available under the following URL:", LogLevel.Debug);
                         foreach(string url in urls)
                         {
                             configuration.WebAPIConfigurationValues.Logger.Log(url + urlSuffix, LogLevel.Debug);
                         }
                     }
+
+                    logger.Log($"Run Pre-action", LogLevel.Debug);
+                    preRun();
+
+                    logger.Log($"Run WebAPI-server", LogLevel.Debug);
                     app.Run();
+
+                    logger.Log($"Run Post-action", LogLevel.Debug);
+                    postRun();
+
                     exitCode = 0;
                 }
                 catch(Exception exception)
@@ -67,24 +103,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                     exitCode = 2;
                 }
                 configuration.WebAPIConfigurationValues.Logger.Log($"Finished {configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", LogLevel.Information);
-            }
-            catch(Exception exception)
-            {
-                string message = "Initialization-exception";
-                if(logger == null)
-                {
-                    Console.WriteLine(message);
-                    Console.WriteLine(exception.Message);
-                    Console.WriteLine(exception.StackTrace);
-                }
-                else
-                {
-                    logger.AddLogEntry(new LogItem(message, exception));
-                }
-                if(configuration.WebAPIConfigurationValues.RethrowInitializationExceptions)
-                {
-                    throw;
-                }
             }
             return exitCode;
         }
@@ -173,17 +191,17 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                     {
                         Version = appVersionString,
                         Title = configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName + " API",
-                        Description = configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.ApplicationSettings.AppDescription,
-                        TermsOfService = new Uri(configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.ApplicationSettings.TermsOfServiceURL),
+                        Description = configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.GeneralApplicationSettings.AppDescription,
+                        TermsOfService = new Uri(configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.GeneralApplicationSettings.TermsOfServiceURL),
                         Contact = new OpenApiContact
                         {
                             Name = "Contact",
-                            Url = new Uri(configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.ApplicationSettings.ContactURL)
+                            Url = new Uri(configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.GeneralApplicationSettings.ContactURL)
                         },
                         License = new OpenApiLicense
                         {
                             Name = "License",
-                            Url = new Uri(configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.ApplicationSettings.LicenseURL)
+                            Url = new Uri(configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables.GeneralApplicationSettings.LicenseURL)
                         }
                     });
                     string xmlFilename = $"{configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}.xml";
@@ -231,7 +249,8 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             where ConfigurationVariablesType : IWebAPIConfigurationVariables, new()
         {
             private readonly MetaConfigurationSettings<ConfigurationVariablesType, IWebAPIConfigurationVariables> _MetaConfiguration;
-            public GetWebAPIConfigurationVariablesVisitor(WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType> webAPIConfiguration)
+            private readonly ISet<Type> _KnownTypes;
+            public GetWebAPIConfigurationVariablesVisitor(WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType> webAPIConfiguration, ISet<Type> knownTypes)
             {
                 this._MetaConfiguration = new MetaConfigurationSettings<ConfigurationVariablesType, IWebAPIConfigurationVariables>()
                 {
@@ -239,6 +258,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                     File = webAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.ConfigurationFile,
                     InitialValue = webAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables
                 };
+                _KnownTypes = knownTypes;
             }
 
             public ConfigurationVariablesType Handle(Analysis analysis)
@@ -248,7 +268,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
             public ConfigurationVariablesType Handle(RunProgram runProgram)
             {
-                return MetaConfigurationManager.GetConfiguration(this._MetaConfiguration);
+                return MetaConfigurationManager.GetConfiguration(this._MetaConfiguration, _KnownTypes);
             }
         }
         public static string GetBaseFolderForProjectInCommonProjectStructure(GRYEnvironment environment, string programFolder)

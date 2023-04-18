@@ -2764,23 +2764,19 @@ namespace GRYLibrary.Core.Miscellaneous
                     return configurationRoot.GetRequiredSection(typeof(T).Name).Get<T>();
                 });
         }
-        public static T CreateOrLoadXMLConfigurationFile<T, TBase>(string configurationFile, T initialValue) where T : TBase, new()
+        public static T CreateOrLoadXMLConfigurationFile<T, TBase>(string configurationFile, T initialValue, ISet<Type> knownTypes) where T : TBase, new()
         {
+            SimpleObjectPersistence<T> simpleObjectPersistence = new SimpleObjectPersistence<T>();
+            simpleObjectPersistence.Serializer.KnownTypes.UnionWith(knownTypes);
             return CreateOrLoadConfigurationFile<T, TBase>(configurationFile, initialValue,
                 (configurationFile, initialValue) =>
                 {
-                    SimpleObjectPersistence<T> simpleObjectPersistence = new SimpleObjectPersistence<T>
-                    {
-                        File = configurationFile,
-                        Object = initialValue
-                    };
+                    simpleObjectPersistence.File = configurationFile;
+                    simpleObjectPersistence.Object = initialValue;
                     simpleObjectPersistence.SaveObjectToFile();
                 }, (configurationFile) =>
                 {
-                    SimpleObjectPersistence<T> simpleObjectPersistence = new SimpleObjectPersistence<T>
-                    {
-                        File = configurationFile
-                    };
+                    simpleObjectPersistence.File = configurationFile;
                     simpleObjectPersistence.LoadObjectFromFile();
                     return simpleObjectPersistence.Object;
                 });

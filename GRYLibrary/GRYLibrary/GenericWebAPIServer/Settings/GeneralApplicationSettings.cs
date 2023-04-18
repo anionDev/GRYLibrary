@@ -2,8 +2,9 @@
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Settings
 {
-    public class ApplicationSettings
+    public class GeneralApplicationSettings
     {
+        public bool Enabled { get; set; }
         public string TermsOfServiceURL { get; set; }
         public string ContactURL { get; set; }
         public string LicenseURL { get; set; }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GRYLibrary.Core.GenericWebAPIServer.Settings;
+using GRYLibrary.Core.Miscellaneous;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -66,7 +68,8 @@ namespace GRYLibrary.Core.XMLSerializer
         }
         private Type[] GetExtraTypes()
         {
-            return this.KnownTypes.Where(this._T.IsAssignableFrom).ToArray();
+            var x= this.KnownTypes/*.Where(this._T.IsAssignableFrom)*/.ToArray();
+            return x;
         }
         private XmlSerializer GetSerializer()
         {
