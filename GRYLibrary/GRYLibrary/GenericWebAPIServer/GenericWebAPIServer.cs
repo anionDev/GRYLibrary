@@ -23,7 +23,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 {
     public static class GenericWebAPIServer
     {
-        public static int DefaultWebAPIMainFunction<ConfigurationConstantsType, ConfigurationVariablesType,ApplicationsSpecificSettingsType>(WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType> configuration, Action preRun, Action postRun)
+        public static int DefaultWebAPIMainFunction<ConfigurationConstantsType, ConfigurationVariablesType>(WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType> configuration, Action preRun, Action postRun)
             where ConfigurationConstantsType : IWebAPIConfigurationConstants
             where ConfigurationVariablesType : IWebAPIConfigurationVariables, new()
         {
@@ -35,7 +35,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             try
             {
                 HashSet<Type> knownTypes =new HashSet<Type>();
-                knownTypes.Add(typeof(ApplicationsSpecificSettingsType));
+                knownTypes.Add(typeof(ConfigurationVariablesType));
                 configuration.WebAPIConfigurationValues.WebAPIConfigurationVariables = executionMode.Accept(new GetWebAPIConfigurationVariablesVisitor<ConfigurationConstantsType, ConfigurationVariablesType>(configuration, knownTypes));
                 configuration.WebAPIConfigurationValues.Logger = logger;
                 logger.Log($"Start {configuration.WebAPIConfigurationValues.WebAPIConfigurationConstants.AppName}", LogLevel.Information);

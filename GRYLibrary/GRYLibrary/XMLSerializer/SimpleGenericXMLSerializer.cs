@@ -29,6 +29,7 @@ namespace GRYLibrary.Core.XMLSerializer
             this.Encoding = new UTF8Encoding(false);
             this.XMLWriterSettings = new XmlWriterSettings() { Indent = true, Encoding = Encoding, IndentChars = "     ", NewLineOnAttributes = false, OmitXmlDeclaration = true };
             this.KnownTypes = new HashSet<Type>();
+            //  KnownTypes.Add(typeof(CustomWebAPIConfigurationVariables<TestX>));
             this.XmlAttributeOverrides = new XmlAttributeOverrides();
             this.DefaultNamespace = string.Empty;
         }
@@ -68,8 +69,8 @@ namespace GRYLibrary.Core.XMLSerializer
         }
         private Type[] GetExtraTypes()
         {
-            var x= this.KnownTypes/*.Where(this._T.IsAssignableFrom)*/.ToArray();
-            return x;
+            Type[] types = this.KnownTypes/*.Where(this._T.IsAssignableFrom)*/.ToArray();
+            return types;
         }
         private XmlSerializer GetSerializer()
         {
