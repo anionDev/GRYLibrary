@@ -12,8 +12,8 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public string SwaggerDocumentName { get; set; } = "APISpecification";
         public ushort Port { get; set; } = 80;
         public string APIRoutePrefix { get; set; } = "API";
-        public RelativeFilePath TLSCertificatePasswordFile { get; set; } = null;
-        public RelativeFilePath TLSCertificatePFXFilePath { get; set; } = null;
+        public AbstractFilePath TLSCertificatePasswordFile { get; set; } = null;
+        public AbstractFilePath TLSCertificatePFXFilePath { get; set; } = null;
         public BlacklistProvider BlackListProvider { get; set; } //TODO use interface-type for middleware-propertys
         public DDOSProtectionSettings DDOSProtectionSettings { get; set; }
         public ObfuscationSettings ObfuscationSettings { get; set; }

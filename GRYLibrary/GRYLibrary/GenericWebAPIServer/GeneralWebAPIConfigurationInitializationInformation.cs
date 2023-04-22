@@ -11,6 +11,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 {
     public class GeneralWebAPIConfigurationInitializationInformation
     {
+        //<required>
         public string AppName { get; set; }
         public Version3 AppVersion { get; set; }
         public string AppDescription { get; set; }
@@ -18,8 +19,15 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         public GRYEnvironment TargetEnvironmentType { get; set; }
         public string Domain { get; set; }
         public bool UseHTTPS { get; set; }
+
         public string NonProductiveCertificatePasswordHex { get; set; }
+        /// <summary>
+        /// Represents a certificate which should be used as fallback if <see cref="UseHTTPS"/>==true and the certificate given by <see cref="TLSCertificatePFXFilePathRelative"/> is not available.
+        /// </summary>
         public string NonProductiveCertificatePFXHex { get; set; }
+        //</required>
+
+        //<optional>
         public string ProgramFolder { get; set; }
         public string BaseFolder { get; set; }
         public string ConfigurationFolderRelative { get; set; }
@@ -31,6 +39,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         public Action PreRun { get; set; }
         public Action PostRun { get; set; }
         public Action<IServiceCollection> InitializeServices { get; set; }
+        //</optional>
 
         public GeneralWebAPIConfigurationInitializationInformation(string appName, Version3 appVersion, string appDescription, ExecutionMode executionMode, GRYEnvironment targetEnvironmentType, string domain, bool useHTTPS, string nonProductiveCertificatePasswordHex, string nonProductiveCertificatePFXHex)
         {
@@ -74,6 +83,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             {
                 this.TLSCertificatePFXFilePathRelative = this.CertificateFolderRelative + Path.DirectorySeparatorChar + $"{this.Domain}.pfx";
                 this.TLSCertificatePasswordFileRelative = this.CertificateFolderRelative + Path.DirectorySeparatorChar + $"{this.Domain}.password";
+            }
+            else
+            {
+                this.TLSCertificatePFXFilePathRelative = null;
+                this.TLSCertificatePasswordFileRelative = null;
             }
             if(this.PreRun == null)
             {

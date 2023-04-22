@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace GRYLibrary.Core.Miscellaneous.FilePath
 {
+    [XmlInclude(typeof(AbstractFilePath))]
+    [XmlInclude(typeof(RelativeFilePath))]
     public abstract class AbstractFilePath
     {
         public abstract string FilePath { get; set; }
