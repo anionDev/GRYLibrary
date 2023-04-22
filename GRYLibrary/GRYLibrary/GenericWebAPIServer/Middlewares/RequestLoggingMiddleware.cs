@@ -21,7 +21,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
         public RequestLoggingMiddleware(RequestDelegate next, IRequestLoggingSettings requestLoggingSettings, IWebAPIConfigurationConstants webAPIConfigurationConstants) : base(next)
         {
             this._RequestLoggingSettings = requestLoggingSettings;
-            this._Logger = GeneralLogger.Create(GetLogConfiguration(requestLoggingSettings.WebServerAccessLogFile, webAPIConfigurationConstants.TargetEnvironmentType));
+            this._Logger = GeneralLogger.CreateUsingGRYLog(GetLogConfiguration(requestLoggingSettings.WebServerAccessLogFile, webAPIConfigurationConstants.TargetEnvironmentType));
         }
         private static GRYLogConfiguration GetLogConfiguration(string webServerAccessLogFile, GRYEnvironment environment)
         {

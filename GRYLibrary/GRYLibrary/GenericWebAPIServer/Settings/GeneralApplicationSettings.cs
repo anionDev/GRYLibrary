@@ -2,6 +2,9 @@
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Settings
 {
+    /// <summary>
+    /// Represents general configuration-settings for an application which are allowed to be changed in a configuration-file.
+    /// </summary>
     public class GeneralApplicationSettings
     {
         public bool Enabled { get; set; }

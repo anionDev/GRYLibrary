@@ -6,7 +6,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Services
     public class GeneralLogger :IGeneralLogger
     {
         public Action<LogItem> AddLogEntry { get; set; }
-        public static GeneralLogger Create(GRYLogConfiguration configuration)
+        public static GeneralLogger CreateUsingGRYLog(GRYLogConfiguration configuration)
         {
             GRYLog logObject = GRYLog.Create(configuration);
             return new GeneralLogger()
@@ -18,6 +18,10 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Services
         public static GeneralLogger NoLog()
         {
             return new GeneralLogger() { AddLogEntry = (logItem) => { } };
+        }
+        public static GeneralLogger CreateUsingConsole()
+        {
+            return CreateUsingGRYLog(new GRYLogConfiguration(true));
         }
     }
 }

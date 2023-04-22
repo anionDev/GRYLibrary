@@ -2,7 +2,10 @@
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Settings
 {
-    public class WebServerSettings
+    /// <summary>
+    /// Represents configuration-settings for a WebAPI-server which are allowed to be changed in a configuration-file.
+    /// </summary>
+    public class WebServerConfiguration
     {
         public string SwaggerDocumentName { get; set; } = "APISpecification";
         public ushort Port { get; set; } = 80;

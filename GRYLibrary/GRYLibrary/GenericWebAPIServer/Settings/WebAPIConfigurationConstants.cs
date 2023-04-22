@@ -4,6 +4,9 @@ using System;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Settings
 {
+    /// <summary>
+    /// Represents general configuration-settings for an application which are not allowed to be changed in a configuration-file.
+    /// </summary>
     public interface IWebAPIConfigurationConstants
     {
         public GRYEnvironment TargetEnvironmentType { get; }
@@ -12,6 +15,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public string ConfigurationFile { get; }
         public Action<IServiceCollection> ConfigureServices { get; }
     }
+    /// <inheritdoc cref="IWebAPIConfigurationConstants"/>
     public class WebAPIConfigurationConstants :IWebAPIConfigurationConstants
     {
         public GRYEnvironment TargetEnvironmentType { get; private set; }

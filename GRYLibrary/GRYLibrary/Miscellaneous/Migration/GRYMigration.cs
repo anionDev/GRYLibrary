@@ -82,17 +82,21 @@ namespace GRYLibrary.Core.Miscellaneous
 
         private static ApplicationInformation GetInformationFromFile(string informationFile)
         {
-            SimpleObjectPersistence<ApplicationInformation> simpleObjectPersistence = new SimpleObjectPersistence<ApplicationInformation>();
-            simpleObjectPersistence.File = informationFile;
+            SimpleObjectPersistence<ApplicationInformation> simpleObjectPersistence = new SimpleObjectPersistence<ApplicationInformation>
+            {
+                File = informationFile
+            };
             simpleObjectPersistence.LoadObjectFromFile();
             return simpleObjectPersistence.Object;
         }
 
         private static void WriteInformationToFile(string informationFile, string appName, Version3 version)
         {
-            SimpleObjectPersistence<ApplicationInformation> simpleObjectPersistence = new SimpleObjectPersistence<ApplicationInformation>();
-            simpleObjectPersistence.File = informationFile;
-            simpleObjectPersistence.Object = new ApplicationInformation(appName, version.ToString());
+            SimpleObjectPersistence<ApplicationInformation> simpleObjectPersistence = new SimpleObjectPersistence<ApplicationInformation>
+            {
+                File = informationFile,
+                Object = new ApplicationInformation(appName, version.ToString())
+            };
             simpleObjectPersistence.SaveObjectToFile();
         }
         public class ApplicationInformation

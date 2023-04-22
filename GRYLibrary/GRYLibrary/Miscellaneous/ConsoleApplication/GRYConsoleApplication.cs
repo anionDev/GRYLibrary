@@ -7,9 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace GRYLibrary.Core.Miscellaneous
+namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
 {
-    public class GRYConsoleApplication<CMDOptions, InitializationConfig>
+    public class GRYConsoleApplication<CMDOptions, InitializationConfig> where CMDOptions : ICommandlineParameter
     {
         private readonly Func<CMDOptions, ExecutionMode, InitializationConfig, int> _Main;
         private readonly string _ProgramName;
@@ -31,7 +31,7 @@ namespace GRYLibrary.Core.Miscellaneous
             this._ProgramCanRunWithoutArguments = programCanRunWithoutArguments;
         }
 
-        public int Main(string[] arguments, InitializationConfig gc)
+        public int Main(string[] arguments, InitializationConfig initializationConfiguration)
         {
             int result = 1;
             try
@@ -64,7 +64,11 @@ namespace GRYLibrary.Core.Miscellaneous
                         else
                         {
                             parserResult
-                                .WithParsed(options => result = this.HandleSuccessfullyParsedArguments(options, gc))
+                                .WithParsed(options =>
+                                {
+                                    options.OriginalArguments = arguments;
+                                    result = this.HandleSuccessfullyParsedArguments(options, initializationConfiguration);
+                                })
                                 .WithNotParsed(errors =>
                                 {
                                     result = 3;
@@ -103,7 +107,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         private int HandleSuccessfullyParsedArguments(CMDOptions options, InitializationConfig gc)
         {
-            return this._Main(options, this._ExecutionMode,gc);
+            return this._Main(options, this._ExecutionMode, gc);
         }
 
         public void WriteHelp(ParserResult<CMDOptions> argumentParserResult)

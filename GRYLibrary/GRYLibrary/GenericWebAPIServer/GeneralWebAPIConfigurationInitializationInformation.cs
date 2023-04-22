@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GRYLibrary.Core.GenericWebAPIServer
 {
-    public class GeneralWebAPIConfigInitializationInformation
+    public class GeneralWebAPIConfigurationInitializationInformation
     {
         public string AppName { get; set; }
         public Version3 AppVersion { get; set; }
@@ -28,11 +28,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         public string CertificateFolder { get; set; }
         public string TLSCertificatePFXFilePath { get; set; }
         public string TLSCertificatePasswordFile { get; set; }
-        public Action PreRun { get;  set; }
+        public Action PreRun { get; set; }
         public Action PostRun { get; set; }
-        public Action<IServiceCollection> initializeServices{ get; set; }
+        public Action<IServiceCollection> InitializeServices { get; set; }
 
-        public GeneralWebAPIConfigInitializationInformation(string appName, Version3 appVersion, string appDescription, ExecutionMode executionMode, GRYEnvironment targetEnvironmentType, string domain, bool useHTTPS, string nonProductiveCertificatePasswordHex, string nonProductiveCertificatePFXHex)
+        public GeneralWebAPIConfigurationInitializationInformation(string appName, Version3 appVersion, string appDescription, ExecutionMode executionMode, GRYEnvironment targetEnvironmentType, string domain, bool useHTTPS, string nonProductiveCertificatePasswordHex, string nonProductiveCertificatePFXHex)
         {
             this.AppName = appName;
             this.AppVersion = appVersion;
@@ -83,9 +83,9 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             {
                 this.PostRun = () => { };
             }
-            if(this.initializeServices == null)
+            if(this.InitializeServices == null)
             {
-                this.initializeServices = (services) => { };
+                this.InitializeServices = (services) => { };
             }
         }
     }

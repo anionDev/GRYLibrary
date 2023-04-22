@@ -9,6 +9,9 @@ using Console = GRYLibrary.Core.Log.ConcreteLogTargets.Console;
 
 namespace GRYLibrary.Core.Log
 {
+    /// <summary>
+    /// Represents a log-configuration for <see cref="GRYLog"/>.
+    /// </summary>
     public interface IGRYLogConfiguration :IDisposable
     {
         public List<GRYLogTarget> LogTargets { get; set; }
@@ -27,7 +30,8 @@ namespace GRYLibrary.Core.Log
         public bool LogEveryLineOfLogEntryInNewLine { get; set; }
         public bool StoreProcessedLogItemsInternally { get; set; }
     }
-    public class GRYLogConfiguration :IGRYLogConfiguration
+    /// <inheritdoc cref="IGRYLogConfiguration"/>
+    public sealed class GRYLogConfiguration :IGRYLogConfiguration
     {
         public List<GRYLogTarget> LogTargets { get; set; }
         public bool WriteLogEntriesAsynchronous { get; set; }
