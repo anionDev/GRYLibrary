@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.IO;
 using YamlDotNet.Core.Tokens;
 
@@ -15,9 +16,9 @@ namespace GRYLibrary.Core.Miscellaneous.FilePath
             }
             set
             {
-                if(!Utilities.IsAbsoluteLocalFilePath(this._FilePath))
+                if(!Utilities.IsAbsoluteLocalFilePath(value))
                 {
-                    throw new ArgumentException($"Expected absolute path but was not an absolute path: '{this._FilePath}'.");
+                    throw new ArgumentException($"Expected absolute path but was not an absolute path: '{value}'.");
                 }
                 this._FilePath = value;
             }

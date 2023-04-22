@@ -96,6 +96,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
                     ExecutionMode = executionMode,
                     PreRun = initialInformation.PreRun,
                     PostRun = initialInformation.PostRun,
+                    BasePath = baseFolder,
                 };
                 webAPIConfiguration.ExecutionMode.Accept(new CreateFolderVisitor(baseFolder, configurationFolder.GetPath(baseFolder), certificateFolder.GetPath(baseFolder)));
                 int result = WebAPIRunner(webAPIConfiguration);

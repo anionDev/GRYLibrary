@@ -14,9 +14,9 @@ namespace GRYLibrary.Core.Miscellaneous.FilePath
             }
             set
             {
-                if(!Utilities.IsRelativeLocalFilePath(this._FilePath))
+                if(!Utilities.IsRelativeLocalFilePath(value))
                 {
-                    throw new ArgumentException($"Expected relative path but was not a relative path: '{this._FilePath}'.");
+                    throw new ArgumentException($"Expected relative path but was not a relative path: '{value}'.");
                 }
                 this._FilePath = value;
             }
