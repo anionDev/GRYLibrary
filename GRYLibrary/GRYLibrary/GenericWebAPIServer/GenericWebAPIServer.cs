@@ -258,7 +258,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                     File = webAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationConstants.ConfigurationFile,
                     InitialValue = webAPIConfiguration.WebAPIConfigurationValues.WebAPIConfigurationVariables
                 };
-                _KnownTypes = knownTypes;
+                this._KnownTypes = knownTypes;
             }
 
             public ConfigurationVariablesType Handle(Analysis analysis)
@@ -268,7 +268,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
             public ConfigurationVariablesType Handle(RunProgram runProgram)
             {
-                return MetaConfigurationManager.GetConfiguration(this._MetaConfiguration, _KnownTypes);
+                return MetaConfigurationManager.GetConfiguration(this._MetaConfiguration, this._KnownTypes);
             }
         }
         public static string GetBaseFolderForProjectInCommonProjectStructure(GRYEnvironment environment, string programFolder)

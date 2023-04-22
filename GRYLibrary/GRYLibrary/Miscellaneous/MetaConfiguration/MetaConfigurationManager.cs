@@ -17,12 +17,12 @@ namespace GRYLibrary.Core.Miscellaneous.MetaConfiguration
             public HandleConfigurationVisitor(MetaConfigurationSettings<T, TBase> configuration, ISet<Type> knownTypes)
             {
                 this._Configuration = configuration;
-                _KnownTypes = knownTypes;
+                this._KnownTypes = knownTypes;
             }
 
             public T Handle(XML xML)
             {
-                return Utilities.CreateOrLoadXMLConfigurationFile<T, TBase>(this._Configuration.File, this._Configuration.InitialValue, _KnownTypes);
+                return Utilities.CreateOrLoadXMLConfigurationFile<T, TBase>(this._Configuration.File, this._Configuration.InitialValue, this._KnownTypes);
             }
 
             public T Handle(JSON jSON)

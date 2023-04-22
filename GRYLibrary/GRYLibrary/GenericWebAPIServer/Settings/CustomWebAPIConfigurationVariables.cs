@@ -1,9 +1,7 @@
-﻿using GRYLibrary.Core.GenericWebAPIServer.Settings;
-
-namespace GRYLibrary.Core.GenericWebAPIServer.Settings
+﻿namespace GRYLibrary.Core.GenericWebAPIServer.Settings
 {
-    public class CustomWebAPIConfigurationVariables <T>:WebAPIConfigurationVariables
+    public class CustomWebAPIConfigurationVariables<T> :WebAPIConfigurationVariables where T : new()
     {
-       public T ApplicationSpecificSettings { get; set; }
+        public T ApplicationSpecificSettings { get; set; } = new T();
     }
 }

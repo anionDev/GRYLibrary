@@ -9,9 +9,9 @@ using System.IO;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
-    public class GRYConsoleApplication<T>
+    public class GRYConsoleApplication<CMDOptions, InitializationConfig>
     {
-        private readonly Func<T, ExecutionMode, int> _Main;
+        private readonly Func<CMDOptions, ExecutionMode, InitializationConfig, int> _Main;
         private readonly string _ProgramName;
         private readonly string _ProgramVersion;
         private readonly string _ProgramDescription;
@@ -19,7 +19,7 @@ namespace GRYLibrary.Core.Miscellaneous
         private readonly ExecutionMode _ExecutionMode;
         private readonly SentenceBuilder _SentenceBuilder;
         private readonly bool _ProgramCanRunWithoutArguments;
-        public GRYConsoleApplication(Func<T, ExecutionMode, int> main, string programName, string programVersion, string programDescription, bool programCanRunWithoutArguments, ExecutionMode executionMode)
+        public GRYConsoleApplication(Func<CMDOptions, ExecutionMode, InitializationConfig, int> main, string programName, string programVersion, string programDescription, bool programCanRunWithoutArguments, ExecutionMode executionMode)
         {
             this._Main = main;
             this._ProgramName = programName;
@@ -31,7 +31,7 @@ namespace GRYLibrary.Core.Miscellaneous
             this._ProgramCanRunWithoutArguments = programCanRunWithoutArguments;
         }
 
-        public int Main(string[] arguments)
+        public int Main(string[] arguments, InitializationConfig gc)
         {
             int result = 1;
             try
@@ -55,7 +55,7 @@ namespace GRYLibrary.Core.Miscellaneous
                     }
                     else
                     {
-                        ParserResult<T> parserResult = new Parser(settings => settings.CaseInsensitiveEnumValues = true).ParseArguments<T>(arguments);
+                        ParserResult<CMDOptions> parserResult = new Parser(settings => settings.CaseInsensitiveEnumValues = true).ParseArguments<CMDOptions>(arguments);
                         if(ShowHelp(arguments))
                         {
                             this.WriteHelp(parserResult);
@@ -64,7 +64,7 @@ namespace GRYLibrary.Core.Miscellaneous
                         else
                         {
                             parserResult
-                                .WithParsed(options => result = this.HandleSuccessfullyParsedArguments(options))
+                                .WithParsed(options => result = this.HandleSuccessfullyParsedArguments(options, gc))
                                 .WithNotParsed(errors =>
                                 {
                                     result = 3;
@@ -101,12 +101,12 @@ namespace GRYLibrary.Core.Miscellaneous
             }
         }
 
-        private int HandleSuccessfullyParsedArguments(T options)
+        private int HandleSuccessfullyParsedArguments(CMDOptions options, InitializationConfig gc)
         {
-            return this._Main(options, this._ExecutionMode);
+            return this._Main(options, this._ExecutionMode,gc);
         }
 
-        public void WriteHelp(ParserResult<T> argumentParserResult)
+        public void WriteHelp(ParserResult<CMDOptions> argumentParserResult)
         {
             this._Log.Log(HelpText.AutoBuild(argumentParserResult).ToString());
             if(this._ProgramDescription is not null)
