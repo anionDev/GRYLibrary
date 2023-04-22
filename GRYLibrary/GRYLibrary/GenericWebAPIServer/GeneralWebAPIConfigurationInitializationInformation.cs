@@ -22,12 +22,12 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         public string NonProductiveCertificatePFXHex { get; set; }
         public string ProgramFolder { get; set; }
         public string BaseFolder { get; set; }
-        public string ConfigurationFolder { get; set; }
-        public string LogFolder { get; set; }
-        public string LogFile { get; set; }
-        public string CertificateFolder { get; set; }
-        public string TLSCertificatePFXFilePath { get; set; }
-        public string TLSCertificatePasswordFile { get; set; }
+        public string ConfigurationFolderRelative { get; set; }
+        public string LogFolderRelative { get; set; }
+        public string LogFileRelative { get; set; }
+        public string CertificateFolderRelative { get; set; }
+        public string TLSCertificatePFXFilePathRelative { get; set; }
+        public string TLSCertificatePasswordFileRelative { get; set; }
         public Action PreRun { get; set; }
         public Action PostRun { get; set; }
         public Action<IServiceCollection> InitializeServices { get; set; }
@@ -54,26 +54,26 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             {
                 this.BaseFolder = this.ExecutionMode.Accept(new GetBaseFolder(this.TargetEnvironmentType, this.ProgramFolder));
             }
-            if(this.ConfigurationFolder == null)
+            if(this.ConfigurationFolderRelative == null)
             {
-                this.ConfigurationFolder = Path.Combine(this.BaseFolder, "Configuration");
+                this.ConfigurationFolderRelative = "."/*will be replaced by BaseFolder*/ + Path.DirectorySeparatorChar + "Configuration";
             }
-            if(this.LogFolder == null)
+            if(this.LogFolderRelative == null)
             {
-                this.LogFolder = Path.Combine(this.BaseFolder, "Log");
+                this.LogFolderRelative = "."/*will be replaced by BaseFolder*/ + Path.DirectorySeparatorChar + "Log";
             }
-            if(this.LogFile == null)
+            if(this.LogFileRelative == null)
             {
-                this.LogFile = Path.Join(this.LogFolder, $"{this.AppName}.Core.log");
+                this.LogFileRelative = this.LogFolderRelative + Path.DirectorySeparatorChar + $"{this.AppName}.Core.log";
             }
-            if(this.CertificateFolder == null)
+            if(this.CertificateFolderRelative == null)
             {
-                this.CertificateFolder = Path.Combine(this.ConfigurationFolder, "Certificate");
+                this.CertificateFolderRelative = this.ConfigurationFolderRelative + Path.DirectorySeparatorChar + "Certificate";
             }
             if(this.UseHTTPS)
             {
-                this.TLSCertificatePFXFilePath = Path.Join(this.CertificateFolder, $"{this.Domain}.pfx");
-                this.TLSCertificatePasswordFile = Path.Join(this.CertificateFolder, $"{this.Domain}.password");
+                this.TLSCertificatePFXFilePathRelative = this.CertificateFolderRelative + Path.DirectorySeparatorChar + $"{this.Domain}.pfx";
+                this.TLSCertificatePasswordFileRelative = this.CertificateFolderRelative + Path.DirectorySeparatorChar + $"{this.Domain}.password";
             }
             if(this.PreRun == null)
             {

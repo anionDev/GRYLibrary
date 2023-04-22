@@ -19,9 +19,12 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         where ConfigurationConstantsType : IWebAPIConfigurationConstants
         where ConfigurationVariablesType : IWebAPIConfigurationVariables
     {
+        public WebAPIConfiguration(){
+            }
         public IGeneralLogger Logger { get; set; }
         public ConfigurationConstantsType WebAPIConfigurationConstants { get; set; }
         public ConfigurationVariablesType WebAPIConfigurationVariables { get; set; }
+        public string BasePath { get; set; }
         public ExecutionMode ExecutionMode { get; set; }
         public bool RethrowInitializationExceptions { get; set; }
         public string[] CommandlineArguments { get; set; }
@@ -75,5 +78,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
                 });
             }
         };
+        public Action PreRun { get; set; }
+        public Action PostRun { get; set; } 
     }
 }

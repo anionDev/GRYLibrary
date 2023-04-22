@@ -1,4 +1,5 @@
-﻿using GRYLibrary.Core.Miscellaneous;
+﻿using GRYLibrary.Core.Log.ConcreteLogTargets;
+using GRYLibrary.Core.Miscellaneous;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,10 @@ namespace GRYLibrary.Core.Log
     public sealed class GRYLog :IDisposable, ILogger
     {
         public GRYLogConfiguration Configuration { get; set; }
+        /// <summary>
+        /// Represents the basepath for the possibly relative path when accessing <see cref="LogFile.File"/>.
+        /// </summary>
+        public string BasePath{ get; set; }
         private readonly static object _LockObject = new();
         private readonly bool _Initialized = false;
         private int _AmountOfErrors = 0;
@@ -44,7 +49,7 @@ namespace GRYLibrary.Core.Log
         {
             lock(_LockObject)
             {
-                this._ConsoleDefaultColor = Console.ForegroundColor;
+                this._ConsoleDefaultColor = System.Console.ForegroundColor;
                 this.Configuration = configuration;
                 this._Initialized = true;
             }
@@ -269,7 +274,6 @@ namespace GRYLibrary.Core.Log
         {
             return logLevel.Equals(LogLevel.Error) || logLevel.Equals(LogLevel.Critical);
         }
-
 
         public void ExecuteAndLogForEach<T>(IEnumerable<T> items, Action<T> itemAction, string nameOfEntireLoopAction, string subNamespaceOfEntireLoopAction, Func<T, string> nameOfSingleItemFunc, Func<T, string> subNamespaceOfSingleItemFunc, bool preventThrowingExceptions = false, LogLevel logLevelForOverhead = LogLevel.Debug)
         {

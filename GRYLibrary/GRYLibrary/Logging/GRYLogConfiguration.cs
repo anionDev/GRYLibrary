@@ -1,5 +1,6 @@
 ﻿using GRYLibrary.Core.AdvancedObjectAnalysis;
 using GRYLibrary.Core.Log.ConcreteLogTargets;
+using GRYLibrary.Core.Miscellaneous.FilePath;
 using GRYLibrary.Core.XMLSerializer;
 using Microsoft.Extensions.Logging;
 using System;
@@ -130,6 +131,10 @@ namespace GRYLibrary.Core.Log
             }
         }
         public static GRYLogConfiguration GetCommonConfiguration(string logFile = null, bool verbose = false)
+        {
+            return GetCommonConfiguration(AbstractFilePath.FromString(logFile), verbose);
+        }
+        public static GRYLogConfiguration GetCommonConfiguration(AbstractFilePath logFile = null, bool verbose = false)
         {
             GRYLogConfiguration result = new GRYLogConfiguration(true);
             if(logFile != null)

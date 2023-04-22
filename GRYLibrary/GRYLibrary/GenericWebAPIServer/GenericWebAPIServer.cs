@@ -4,6 +4,7 @@ using GRYLibrary.Core.GenericWebAPIServer.Filter;
 using GRYLibrary.Core.GenericWebAPIServer.Services;
 using GRYLibrary.Core.GenericWebAPIServer.Settings;
 using GRYLibrary.Core.Log;
+using GRYLibrary.Core.Miscellaneous.FilePath;
 using GRYLibrary.Core.Miscellaneous.MetaConfiguration;
 using GRYLibrary.Core.Miscellaneous.MetaConfiguration.ConfigurationFormats;
 using Microsoft.AspNetCore.Builder;
@@ -26,7 +27,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
     /// </summary>
     public static class GenericWebAPIServer
     {
-        public static int WebAPIRunnter<ConfigurationConstantsType, ConfigurationVariablesType>(WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType> configuration, Action preRun, Action postRun)
+        public static int WebAPIRunner<ConfigurationConstantsType, ConfigurationVariablesType>(WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType> configuration)
             where ConfigurationConstantsType : IWebAPIConfigurationConstants
             where ConfigurationVariablesType : IWebAPIConfigurationVariables, new()
         {
@@ -73,7 +74,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                     if(0 < urls.Count)
                     {
                         string urlSuffix;
-                        if(HostAPIDocumentation(configuration.WebAPIConfigurationConstants.TargetEnvironmentType))
+                        if(HostAPIDocumentation(configuration.WebAPIConfigurationConstants.TargetEnvironmentType, configuration.WebAPIConfigurationVariables.WebServerSettings.HostAPISpecificationForInNonDevelopmentEnvironment))
                         {
                             urlSuffix = "/index.html";
                         }
@@ -89,13 +90,13 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                     }
 
                     logger.Log($"Run Pre-action", LogLevel.Debug);
-                    preRun();
+                    configuration.PreRun();
 
                     logger.Log($"Run WebAPI-server", LogLevel.Debug);
                     app.Run();
 
                     logger.Log($"Run Post-action", LogLevel.Debug);
-                    postRun();
+                    configuration.PostRun();
 
                     exitCode = 0;
                 }
@@ -109,9 +110,16 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             return exitCode;
         }
 
-        private static bool HostAPIDocumentation(GRYEnvironment environment)
+        private static bool HostAPIDocumentation(GRYEnvironment environment, bool hostAPISpecificationForInNonDevelopmentEnvironment)
         {
-            return environment is not Productive;
+            if(environment is Development)
+            {
+                return true;
+            }
+            else
+            {
+                return hostAPISpecificationForInNonDevelopmentEnvironment;
+            }
         }
 
         public static ExecutionMode GetExecutionMode()
@@ -159,21 +167,21 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                     else
                     {
                         protocol = "https";
-                        string pfxFilePath = configuration.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePFXFilePath;
+                        string pfxFilePath = configuration.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePFXFilePath.GetPath(configuration.BasePath);
                         string password = null;
                         if(configuration.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePasswordFile != null)
                         {
-                            password = File.ReadAllText(configuration.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePasswordFile, new UTF8Encoding(false));
+                            password = File.ReadAllText(configuration.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePasswordFile.GetPath(configuration.BasePath), new UTF8Encoding(false));
                         }
                         X509Certificate2 certificate = new(pfxFilePath, password);
                         if(configuration.WebAPIConfigurationConstants.TargetEnvironmentType is Productive && Miscellaneous.Utilities.IsSelfSIgned(certificate))
                         {
                             configuration.Logger.Log($"The used certificate '{configuration.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePFXFilePath}' is self-signed. Using self-signed certificates is not recommended in a productive environment.", LogLevel.Warning);
                         }
-                        listenOptions.UseHttps(configuration.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePFXFilePath, password);
+                        listenOptions.UseHttps(configuration.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePFXFilePath.GetPath(configuration.BasePath), password);
 
                         X509Certificate2Collection collection = new X509Certificate2Collection();
-                        collection.Import(configuration.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePFXFilePath, password, X509KeyStorageFlags.PersistKeySet);
+                        collection.Import(configuration.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePFXFilePath.GetPath(configuration.BasePath), password, X509KeyStorageFlags.PersistKeySet);
                         List<X509Certificate2> certs = collection.ToList();
                         string dnsName = certs[0].GetNameInfo(X509NameType.DnsName, false);
                         domain = dnsName;
@@ -183,7 +191,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             string appVersionString = "v" + configuration.WebAPIConfigurationConstants.AppVersion;
 
             builder.Services.AddControllers();
-            if(HostAPIDocumentation(configuration.WebAPIConfigurationConstants.TargetEnvironmentType))
+            if(HostAPIDocumentation(configuration.WebAPIConfigurationConstants.TargetEnvironmentType, configuration.WebAPIConfigurationVariables.WebServerSettings.HostAPISpecificationForInNonDevelopmentEnvironment))
             {
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen(swaggerOptions =>
@@ -229,9 +237,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         public class GetLoggerVisitor :IExecutionModeVisitor<IGeneralLogger>
         {
             private readonly GRYLogConfiguration _LogConfiguration;
-            public GetLoggerVisitor(GRYLogConfiguration logConfiguration)
+            private readonly string _BaseFolder;
+            public GetLoggerVisitor(GRYLogConfiguration logConfiguration, string baseFolder)
             {
                 this._LogConfiguration = logConfiguration;
+                this._BaseFolder = baseFolder;
             }
             public IGeneralLogger Handle(Analysis analysis)
             {
@@ -240,7 +250,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
             public IGeneralLogger Handle(RunProgram runProgram)
             {
-                return GeneralLogger.CreateUsingGRYLog(this._LogConfiguration);
+                return GeneralLogger.CreateUsingGRYLog(this._LogConfiguration, this._BaseFolder);
             }
         }
         /// <summary>
@@ -287,6 +297,10 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         }
 
         public static GRYLogConfiguration GetDefaultLogConfiguration(string logFile, bool verbose, GRYEnvironment targetEnvironmentType)
+        {
+            return GetDefaultLogConfiguration(AbstractFilePath.FromString(logFile), verbose, targetEnvironmentType);
+        }
+        public static GRYLogConfiguration GetDefaultLogConfiguration(AbstractFilePath logFile, bool verbose, GRYEnvironment targetEnvironmentType)
         {
             GRYLogConfiguration result = GRYLogConfiguration.GetCommonConfiguration(logFile, verbose);
             if(targetEnvironmentType is Development)

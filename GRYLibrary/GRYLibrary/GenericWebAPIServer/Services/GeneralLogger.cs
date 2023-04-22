@@ -1,5 +1,7 @@
-﻿using GRYLibrary.Core.Log;
+﻿using GRYLibrary.Core.Graph;
+using GRYLibrary.Core.Log;
 using System;
+using System.IO;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Services
 {
@@ -8,7 +10,12 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Services
         public Action<LogItem> AddLogEntry { get; set; }
         public static GeneralLogger CreateUsingGRYLog(GRYLogConfiguration configuration)
         {
+          return  CreateUsingGRYLog(configuration, Directory.GetCurrentDirectory());
+        }
+        public static GeneralLogger CreateUsingGRYLog(GRYLogConfiguration configuration, string basePath = null)
+        {
             GRYLog logObject = GRYLog.Create(configuration);
+            logObject.BasePath = basePath;
             return new GeneralLogger()
             {
                 AddLogEntry = logObject.Log

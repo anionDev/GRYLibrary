@@ -11,6 +11,7 @@ using System.IO;
 using static GRYLibrary.Core.GenericWebAPIServer.GenericWebAPIServer;
 using GRYLibrary.Core.Miscellaneous.ConsoleApplication;
 using System;
+using GRYLibrary.Core.Miscellaneous.FilePath;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
 {
@@ -25,27 +26,29 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
             string domain = initialInformation.Domain;
             string programFolder = initialInformation.ProgramFolder;
             string baseFolder = initialInformation.BaseFolder;
-            string configurationFolder = initialInformation.ConfigurationFolder;
-            string logFolder = initialInformation.LogFolder;
-            string logFile = initialInformation.LogFile;
-            string certificateFolder = initialInformation.CertificateFolder;
+            RelativeFilePath configurationFolder = new RelativeFilePath() { FilePath = initialInformation.ConfigurationFolderRelative };
+            RelativeFilePath logFolder = new RelativeFilePath() { FilePath = initialInformation.LogFolderRelative };
+            RelativeFilePath logFile = new RelativeFilePath() { FilePath = initialInformation.LogFileRelative };
+            RelativeFilePath certificateFolder = new RelativeFilePath() { FilePath = initialInformation.CertificateFolderRelative };
+            RelativeFilePath tlsCertificatePFXFile = new RelativeFilePath() { FilePath = initialInformation.TLSCertificatePFXFilePathRelative };
+            RelativeFilePath tlsCertificatePasswordFile = new RelativeFilePath() { FilePath = initialInformation.TLSCertificatePasswordFileRelative };
             try
             {
                 GRYLogConfiguration logConfiguration = GetDefaultLogConfiguration(logFile, true, targetEnvironmentType);
-                logger = executionMode.Accept(new GetLoggerVisitor(logConfiguration));
+                logger = executionMode.Accept(new GetLoggerVisitor(logConfiguration, baseFolder));
                 GRYMigration.MigrateIfRequired(initialInformation.AppName, initialInformation.AppVersion, logger, baseFolder, targetEnvironmentType, executionMode, new Dictionary<object, object>(), new HashSet<MigrationMetaInformation>());
 
                 string protocol = initialInformation.UseHTTPS ? "https" : "http";
-                if(initialInformation.UseHTTPS && !File.Exists(initialInformation.TLSCertificatePFXFilePath))
+                if(initialInformation.UseHTTPS && !File.Exists(tlsCertificatePFXFile.GetPath(baseFolder)))
                 {
                     if(targetEnvironmentType is Productive)
                     {
-                        logger.Log($"\"{initialInformation.TLSCertificatePFXFilePath}\" does not exist. Attempt to retrieve nonproductive-certificate. It is recommended to replace it by a productive-certificate as soon as possible.", LogLevel.Warning);
+                        logger.Log($"\"{tlsCertificatePFXFile.GetPath(baseFolder)}\" does not exist. Attempt to retrieve nonproductive-certificate. It is recommended to replace it by a productive-certificate as soon as possible.", LogLevel.Warning);
                     }
-                    Miscellaneous.Utilities.EnsureFileExists(initialInformation.TLSCertificatePasswordFile, true);
-                    File.WriteAllBytes(initialInformation.TLSCertificatePasswordFile, Miscellaneous.Utilities.HexStringToByteArray(initialInformation.NonProductiveCertificatePasswordHex));
-                    Miscellaneous.Utilities.EnsureFileExists(initialInformation.TLSCertificatePFXFilePath, true);
-                    File.WriteAllBytes(initialInformation.TLSCertificatePFXFilePath, Miscellaneous.Utilities.HexStringToByteArray(initialInformation.NonProductiveCertificatePFXHex));
+                    Miscellaneous.Utilities.EnsureFileExists(tlsCertificatePasswordFile.GetPath(baseFolder), true);
+                    File.WriteAllBytes(tlsCertificatePasswordFile.GetPath(baseFolder), Miscellaneous.Utilities.HexStringToByteArray(initialInformation.NonProductiveCertificatePasswordHex));
+                    Miscellaneous.Utilities.EnsureFileExists(tlsCertificatePFXFile.GetPath(baseFolder), true);
+                    File.WriteAllBytes(tlsCertificatePFXFile.GetPath(baseFolder), Miscellaneous.Utilities.HexStringToByteArray(initialInformation.NonProductiveCertificatePFXHex));
                 }
                 GeneralApplicationSettings generalApplicationSettings = new GeneralApplicationSettings()
                 {
@@ -59,14 +62,14 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
                 WebServerConfiguration webServerSettings = new WebServerConfiguration()
                 {
                     Port = (ushort)(initialInformation.UseHTTPS ? 443 : 80),
-                    TLSCertificatePasswordFile = initialInformation.TLSCertificatePasswordFile,
-                    TLSCertificatePFXFilePath = initialInformation.TLSCertificatePFXFilePath,
+                    TLSCertificatePasswordFile = tlsCertificatePasswordFile,
+                    TLSCertificatePFXFilePath = tlsCertificatePFXFile,
                     BlackListProvider = new BlacklistProvider(),
                     DDOSProtectionSettings = new DDOSProtectionSettings(),
                     ObfuscationSettings = new ObfuscationSettings(),
                     ExceptionManagerSettings = new ExceptionManagerSettings(),
                     RequestCounterSettings = new RequestCounterSettings(),
-                    RequestLoggingSettings = new RequestLoggingSettings() { WebServerAccessLogFile = Path.Join(logFolder, $"{initialInformation.AppName}.WebServerAccess.log") },
+                    RequestLoggingSettings = new RequestLoggingSettings() { WebServerAccessLogFile = AbstractFilePath.FromString(logFolder.FilePath + Path.DirectorySeparatorChar + $"{initialInformation.AppName}.WebServerAccess.log") },
                     WebApplicationFirewallSettings = new WebApplicationFirewallSettings(),
                     APIKeyValidatorSettings = new APIKeyValidatorSettings(),
                 };
@@ -74,7 +77,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
                      targetEnvironmentType,
                      initialInformation.AppName,
                      initialInformation.AppVersion.ToString(),
-                     Path.Combine(configurationFolder, "WebAPIServerSettings.xml"),
+                     Path.Combine(configurationFolder.GetPath(baseFolder), "WebAPIServerSettings.xml"),
                      (serviceCollection) => initialInformation.InitializeServices(serviceCollection)
                  );
                 CustomWebAPIConfigurationVariables<PersistedConfigurationType> webAPIConfigurationVariables = new CustomWebAPIConfigurationVariables<PersistedConfigurationType>()
@@ -90,10 +93,12 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
                     WebAPIConfigurationVariables = webAPIConfigurationVariables,
                     RethrowInitializationExceptions = true,
                     CommandlineArguments = commandlineArguments.OriginalArguments,
-                    ExecutionMode = executionMode
+                    ExecutionMode = executionMode,
+                    PreRun = initialInformation.PreRun,
+                    PostRun = initialInformation.PostRun,
                 };
-                webAPIConfiguration.ExecutionMode.Accept(new CreateFolderVisitor(baseFolder, configurationFolder, certificateFolder));
-                int result = WebAPIRunnter(webAPIConfiguration, initialInformation.PreRun, initialInformation.PostRun);
+                webAPIConfiguration.ExecutionMode.Accept(new CreateFolderVisitor(baseFolder, configurationFolder.GetPath(baseFolder), certificateFolder.GetPath(baseFolder)));
+                int result = WebAPIRunner(webAPIConfiguration);
                 return result;
             }
             catch(Exception exception)
