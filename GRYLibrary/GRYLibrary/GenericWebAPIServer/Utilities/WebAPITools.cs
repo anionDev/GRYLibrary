@@ -12,6 +12,7 @@ using static GRYLibrary.Core.GenericWebAPIServer.GenericWebAPIServer;
 using GRYLibrary.Core.Miscellaneous.ConsoleApplication;
 using System;
 using GRYLibrary.Core.Miscellaneous.FilePath;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
 {
@@ -37,8 +38,9 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
                 GRYLogConfiguration logConfiguration = GetDefaultLogConfiguration(logFile, true, targetEnvironmentType);
                 logger = executionMode.Accept(new GetLoggerVisitor(logConfiguration, baseFolder));
                 GRYMigration.MigrateIfRequired(initialInformation.AppName, initialInformation.AppVersion, logger, baseFolder, targetEnvironmentType, executionMode, new Dictionary<object, object>(), new HashSet<MigrationMetaInformation>());
-
                 string protocol = initialInformation.UseHTTPS ? "https" : "http";
+                ushort port = (ushort)(initialInformation.UseHTTPS ? 443 : 80);
+                string address = $"{protocol}://{initialInformation.Domain}:{port}";
                 if(initialInformation.UseHTTPS && !File.Exists(tlsCertificatePFXFile.GetPath(baseFolder)))
                 {
                     if(targetEnvironmentType is Productive)
@@ -53,15 +55,15 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
                 GeneralApplicationSettings generalApplicationSettings = new GeneralApplicationSettings()
                 {
                     Enabled = true,
-                    TermsOfServiceURL = $"{protocol}://{initialInformation.Domain}/Other/TermsOfService",
-                    ContactURL = $"{protocol}://{initialInformation.Domain}/Other/Contact",
-                    LicenseURL = $"{protocol}://{initialInformation.Domain}/Other/License",
+                    TermsOfServiceURL = $"{address}/Other/TermsOfService",
+                    ContactURL = $"{address}/Other/Contact",
+                    LicenseURL = $"{address}/Other/License",
                     AppDescription = initialInformation.AppDescription,
                     LogConfiguration = logConfiguration
                 };
                 WebServerConfiguration webServerSettings = new WebServerConfiguration()
                 {
-                    Port = (ushort)(initialInformation.UseHTTPS ? 443 : 80),
+                    Port = port,
                     TLSCertificatePasswordFile = tlsCertificatePasswordFile,
                     TLSCertificatePFXFilePath = tlsCertificatePFXFile,
                     BlackListProvider = new BlacklistProvider(),
@@ -73,12 +75,17 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
                     WebApplicationFirewallSettings = new WebApplicationFirewallSettings(),
                     APIKeyValidatorSettings = new APIKeyValidatorSettings(),
                 };
+                IInjectableSettings injectableSettings = new InjectableSettings(address);
                 WebAPIConfigurationConstants webAPIConfigurationConstants = new WebAPIConfigurationConstants(
                      targetEnvironmentType,
                      initialInformation.AppName,
                      initialInformation.AppVersion.ToString(),
                      Path.Combine(configurationFolder.GetPath(baseFolder), "WebAPIServerSettings.xml"),
-                     (serviceCollection) => initialInformation.InitializeServices(serviceCollection)
+                     (serviceCollection) =>
+                     {
+                         serviceCollection.AddSingleton<IInjectableSettings>(injectableSettings);
+                         initialInformation.InitializeServices(serviceCollection);
+                     }
                  );
                 CustomWebAPIConfigurationVariables<PersistedConfigurationType> webAPIConfigurationVariables = new CustomWebAPIConfigurationVariables<PersistedConfigurationType>()
                 {
@@ -99,7 +106,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
                     BasePath = baseFolder,
                 };
                 webAPIConfiguration.ExecutionMode.Accept(new CreateFolderVisitor(baseFolder, configurationFolder.GetPath(baseFolder), certificateFolder.GetPath(baseFolder)));
-                int result = WebAPIRunner(webAPIConfiguration);
+                int result = WebAPIRunner(webAPIConfiguration, injectableSettings);
                 return result;
             }
             catch(Exception exception)

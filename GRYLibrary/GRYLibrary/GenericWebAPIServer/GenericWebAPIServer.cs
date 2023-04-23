@@ -28,14 +28,14 @@ namespace GRYLibrary.Core.GenericWebAPIServer
     /// </summary>
     public static class GenericWebAPIServer
     {
-        public static int WebAPIRunner<ConfigurationConstantsType, ConfigurationVariablesType>(WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType> configuration)
+        public static int WebAPIRunner<ConfigurationConstantsType, ConfigurationVariablesType>(WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType> configuration, IInjectableSettings injectableSettings)
             where ConfigurationConstantsType : IWebAPIConfigurationConstants
             where ConfigurationVariablesType : IWebAPIConfigurationVariables, new()
         {
             int exitCode = 2;
             IGeneralLogger logger = configuration.Logger;
             ExecutionMode executionMode = configuration.ExecutionMode;
-            (WebApplication, ISet<string>) appAndUrls = default;
+            (WebApplication, string) appAndUrl = default;
             bool startApplication = true;
             try
             {
@@ -43,7 +43,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 configuration.WebAPIConfigurationVariables = executionMode.Accept(new GetWebAPIConfigurationVariablesVisitor<ConfigurationConstantsType, ConfigurationVariablesType>(configuration, knownTypes));
                 configuration.Logger = logger;
                 logger.Log($"Start {configuration.WebAPIConfigurationConstants.AppName}", LogLevel.Information);
-                appAndUrls = CreateAPIServer(configuration);
+                appAndUrl = CreateAPIServer(configuration, injectableSettings);
             }
             catch(Exception exception)
             {
@@ -68,27 +68,21 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
             if(startApplication)
             {
-                WebApplication app = appAndUrls.Item1;
-                ISet<string> urls = appAndUrls.Item2;
+                WebApplication app = appAndUrl.Item1;
+                string url = appAndUrl.Item2;
                 try
                 {
-                    if(0 < urls.Count)
+                    string urlSuffix;
+                    if(HostAPIDocumentation(configuration.WebAPIConfigurationConstants.TargetEnvironmentType, configuration.WebAPIConfigurationVariables.WebServerSettings.HostAPISpecificationForInNonDevelopmentEnvironment, configuration.ExecutionMode))
                     {
-                        string urlSuffix;
-                        if(HostAPIDocumentation(configuration.WebAPIConfigurationConstants.TargetEnvironmentType, configuration.WebAPIConfigurationVariables.WebServerSettings.HostAPISpecificationForInNonDevelopmentEnvironment,configuration.ExecutionMode))
-                        {
-                            urlSuffix = "/index.html";
-                        }
-                        else
-                        {
-                            urlSuffix = string.Empty;
-                        }
-                        configuration.Logger.Log($"The API is available under the following URLs:", LogLevel.Debug);
-                        foreach(string url in urls)
-                        {
-                            configuration.Logger.Log(url + urlSuffix, LogLevel.Debug);
-                        }
+                        urlSuffix = "/index.html";
                     }
+                    else
+                    {
+                        urlSuffix = string.Empty;
+                    }
+                    configuration.Logger.Log($"The API is available under the following URL:", LogLevel.Debug);
+                    configuration.Logger.Log(url + urlSuffix, LogLevel.Debug);
 
                     logger.Log($"Run Pre-action", LogLevel.Debug);
                     configuration.PreRun();
@@ -113,7 +107,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
         private static bool HostAPIDocumentation(GRYEnvironment environment, bool hostAPISpecificationForInNonDevelopmentEnvironment, ExecutionMode executionMode)
         {
-            return executionMode.Accept(new GetHostAPIDocumentationVisitor(environment, hostAPISpecificationForInNonDevelopmentEnvironment));  
+            return executionMode.Accept(new GetHostAPIDocumentationVisitor(environment, hostAPISpecificationForInNonDevelopmentEnvironment));
         }
         private class GetHostAPIDocumentationVisitor :IExecutionModeVisitor<bool>
         {
@@ -133,13 +127,13 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
             public bool Handle(RunProgram runProgram)
             {
-                if(_Environment is Development)
+                if(this._Environment is Development)
                 {
                     return true;
                 }
                 else
                 {
-                    return _HostAPISpecificationForInNonDevelopmentEnvironment;
+                    return this._HostAPISpecificationForInNonDevelopmentEnvironment;
                 }
             }
         }
@@ -153,7 +147,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             return RunProgram.Instance;
         }
 
-        public static (WebApplication, ISet<string>) CreateAPIServer<ConfigurationConstantsType, ConfigurationVariablesType>(WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType> configuration)
+        public static (WebApplication, string) CreateAPIServer<ConfigurationConstantsType, ConfigurationVariablesType>(WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType> configuration, IInjectableSettings injectableSettings)
             where ConfigurationConstantsType : IWebAPIConfigurationConstants
             where ConfigurationVariablesType : IWebAPIConfigurationVariables
         {
@@ -174,21 +168,13 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             builder.Services.AddSingleton<IWebAPIConfigurationConstants>((serviceProvider) => configuration.WebAPIConfigurationConstants);
             builder.Services.AddSingleton<IWebAPIConfigurationVariables>((serviceProvider) => configuration.WebAPIConfigurationVariables);
             configuration.WebAPIConfigurationConstants.ConfigureServices(builder.Services);
-            string protocol = null;
-            string localAddress = "127.0.0.1";
-            string domain = localAddress;
             builder.WebHost.ConfigureKestrel(kestrelOptions =>
             {
                 kestrelOptions.AddServerHeader = false;
                 kestrelOptions.ListenAnyIP(configuration.WebAPIConfigurationVariables.WebServerSettings.Port, listenOptions =>
                 {
-                    if(configuration.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePFXFilePath == null)
+                    if(configuration.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePFXFilePath != null)
                     {
-                        protocol = "http";
-                    }
-                    else
-                    {
-                        protocol = "https";
                         string pfxFilePath = configuration.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePFXFilePath.GetPath(configuration.BasePath);
                         string password = null;
                         if(configuration.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePasswordFile != null)
@@ -206,7 +192,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                         collection.Import(configuration.WebAPIConfigurationVariables.WebServerSettings.TLSCertificatePFXFilePath.GetPath(configuration.BasePath), password, X509KeyStorageFlags.PersistKeySet);
                         List<X509Certificate2> certs = collection.ToList();
                         string dnsName = certs[0].GetNameInfo(X509NameType.DnsName, false);
-                        domain = dnsName;
                     }
                 });
             });
@@ -243,17 +228,8 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             configuration.ConfigureBuilder(builder, configuration);
             WebApplication app = builder.Build();
             configuration.ConfigureApp(app, configuration);
-            string generalUrl = GetURL(protocol, domain, configuration);
-            string localUrl = GetURL(protocol, localAddress, configuration);
-            return (app, new HashSet<string>() { generalUrl, localUrl });
-        }
-
-        private static string GetURL<ConfigurationConstantsType, ConfigurationVariablesType>(string protocol, string domain, WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType> configuration)
-            where ConfigurationConstantsType : IWebAPIConfigurationConstants
-            where ConfigurationVariablesType : IWebAPIConfigurationVariables
-
-        {
-            return $"{protocol}://{domain}:{configuration.WebAPIConfigurationVariables.WebServerSettings.Port}/{configuration.WebAPIConfigurationVariables.WebServerSettings.APIRoutePrefix}";
+            string url = $"{injectableSettings.Address}/{configuration.WebAPIConfigurationVariables.WebServerSettings.APIRoutePrefix}";
+            return (app, url);
         }
 
         public class GetLoggerVisitor :IExecutionModeVisitor<IGeneralLogger>

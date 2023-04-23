@@ -48,7 +48,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             this.AppDescription = appDescription;
             this.ExecutionMode = executionMode;
             this.TargetEnvironmentType = targetEnvironmentType;
-            this.Domain = domain;
+            this.Domain = (targetEnvironmentType is Development) ? "localhost" : domain;
             this.UseHTTPS = useHTTPS;
             this.NonProductiveCertificatePasswordHex = nonProductiveCertificatePasswordHex;
             this.NonProductiveCertificatePFXHex = nonProductiveCertificatePFXHex;
