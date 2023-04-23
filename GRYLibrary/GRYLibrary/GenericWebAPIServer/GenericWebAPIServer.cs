@@ -10,6 +10,7 @@ using GRYLibrary.Core.Miscellaneous.MetaConfiguration.ConfigurationFormats;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
@@ -74,7 +75,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                     if(0 < urls.Count)
                     {
                         string urlSuffix;
-                        if(HostAPIDocumentation(configuration.WebAPIConfigurationConstants.TargetEnvironmentType, configuration.WebAPIConfigurationVariables.WebServerSettings.HostAPISpecificationForInNonDevelopmentEnvironment))
+                        if(HostAPIDocumentation(configuration.WebAPIConfigurationConstants.TargetEnvironmentType, configuration.WebAPIConfigurationVariables.WebServerSettings.HostAPISpecificationForInNonDevelopmentEnvironment,configuration.ExecutionMode))
                         {
                             urlSuffix = "/index.html";
                         }
@@ -110,15 +111,36 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             return exitCode;
         }
 
-        private static bool HostAPIDocumentation(GRYEnvironment environment, bool hostAPISpecificationForInNonDevelopmentEnvironment)
+        private static bool HostAPIDocumentation(GRYEnvironment environment, bool hostAPISpecificationForInNonDevelopmentEnvironment, ExecutionMode executionMode)
         {
-            if(environment is Development)
+            return executionMode.Accept(new GetHostAPIDocumentationVisitor(environment, hostAPISpecificationForInNonDevelopmentEnvironment));  
+        }
+        private class GetHostAPIDocumentationVisitor :IExecutionModeVisitor<bool>
+        {
+            private readonly GRYEnvironment _Environment;
+            private readonly bool _HostAPISpecificationForInNonDevelopmentEnvironment;
+
+            public GetHostAPIDocumentationVisitor(GRYEnvironment environment, bool hostAPISpecificationForInNonDevelopmentEnvironment)
+            {
+                this._Environment = environment;
+                this._HostAPISpecificationForInNonDevelopmentEnvironment = hostAPISpecificationForInNonDevelopmentEnvironment;
+            }
+
+            public bool Handle(Analysis analysis)
             {
                 return true;
             }
-            else
+
+            public bool Handle(RunProgram runProgram)
             {
-                return hostAPISpecificationForInNonDevelopmentEnvironment;
+                if(_Environment is Development)
+                {
+                    return true;
+                }
+                else
+                {
+                    return _HostAPISpecificationForInNonDevelopmentEnvironment;
+                }
             }
         }
 
@@ -191,7 +213,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             string appVersionString = "v" + configuration.WebAPIConfigurationConstants.AppVersion;
 
             builder.Services.AddControllers();
-            if(HostAPIDocumentation(configuration.WebAPIConfigurationConstants.TargetEnvironmentType, configuration.WebAPIConfigurationVariables.WebServerSettings.HostAPISpecificationForInNonDevelopmentEnvironment))
+            if(HostAPIDocumentation(configuration.WebAPIConfigurationConstants.TargetEnvironmentType, configuration.WebAPIConfigurationVariables.WebServerSettings.HostAPISpecificationForInNonDevelopmentEnvironment, configuration.ExecutionMode))
             {
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen(swaggerOptions =>
