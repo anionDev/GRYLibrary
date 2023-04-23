@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using GRYLibrary.Core.Miscellaneous.FilePath;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Net;
 
@@ -6,7 +7,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Services
 {
     public interface IRequestLoggingSettings :IMiddlewareSettings
     {
-        public string WebServerAccessLogFile { get; set; }
+        public AbstractFilePath WebServerAccessLogFile { get; set; }
         public string FormatRequest(Request request, LogLevel logLevel, bool logEntireRequestContent);
         public bool ShouldBeLogged(Request request);
         public LogLevel GetLogLevel(Request request);

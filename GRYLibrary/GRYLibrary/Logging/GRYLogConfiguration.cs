@@ -1,5 +1,6 @@
 ﻿using GRYLibrary.Core.AdvancedObjectAnalysis;
 using GRYLibrary.Core.Log.ConcreteLogTargets;
+using GRYLibrary.Core.Miscellaneous.FilePath;
 using GRYLibrary.Core.XMLSerializer;
 using Microsoft.Extensions.Logging;
 using System;
@@ -9,6 +10,9 @@ using Console = GRYLibrary.Core.Log.ConcreteLogTargets.Console;
 
 namespace GRYLibrary.Core.Log
 {
+    /// <summary>
+    /// Represents a log-configuration for <see cref="GRYLog"/>.
+    /// </summary>
     public interface IGRYLogConfiguration :IDisposable
     {
         public List<GRYLogTarget> LogTargets { get; set; }
@@ -27,7 +31,8 @@ namespace GRYLibrary.Core.Log
         public bool LogEveryLineOfLogEntryInNewLine { get; set; }
         public bool StoreProcessedLogItemsInternally { get; set; }
     }
-    public class GRYLogConfiguration :IGRYLogConfiguration
+    /// <inheritdoc cref="IGRYLogConfiguration"/>
+    public sealed class GRYLogConfiguration :IGRYLogConfiguration
     {
         public List<GRYLogTarget> LogTargets { get; set; }
         public bool WriteLogEntriesAsynchronous { get; set; }
@@ -126,6 +131,10 @@ namespace GRYLibrary.Core.Log
             }
         }
         public static GRYLogConfiguration GetCommonConfiguration(string logFile = null, bool verbose = false)
+        {
+            return GetCommonConfiguration(AbstractFilePath.FromString(logFile), verbose);
+        }
+        public static GRYLogConfiguration GetCommonConfiguration(AbstractFilePath logFile = null, bool verbose = false)
         {
             GRYLogConfiguration result = new GRYLogConfiguration(true);
             if(logFile != null)

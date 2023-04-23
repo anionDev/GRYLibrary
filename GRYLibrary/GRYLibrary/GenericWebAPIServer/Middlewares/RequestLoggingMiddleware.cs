@@ -3,6 +3,7 @@ using GRYLibrary.Core.GenericWebAPIServer.Services;
 using GRYLibrary.Core.GenericWebAPIServer.Settings;
 using GRYLibrary.Core.Log;
 using GRYLibrary.Core.Log.ConcreteLogTargets;
+using GRYLibrary.Core.Miscellaneous.FilePath;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
@@ -21,9 +22,9 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
         public RequestLoggingMiddleware(RequestDelegate next, IRequestLoggingSettings requestLoggingSettings, IWebAPIConfigurationConstants webAPIConfigurationConstants) : base(next)
         {
             this._RequestLoggingSettings = requestLoggingSettings;
-            this._Logger = GeneralLogger.Create(GetLogConfiguration(requestLoggingSettings.WebServerAccessLogFile, webAPIConfigurationConstants.TargetEnvironmentType));
+            this._Logger = GeneralLogger.CreateUsingGRYLog(GetLogConfiguration(requestLoggingSettings.WebServerAccessLogFile, webAPIConfigurationConstants.TargetEnvironmentType));
         }
-        private static GRYLogConfiguration GetLogConfiguration(string webServerAccessLogFile, GRYEnvironment environment)
+        private static GRYLogConfiguration GetLogConfiguration(AbstractFilePath webServerAccessLogFile, GRYEnvironment environment)
         {
             GRYLogConfiguration logConfig = new GRYLogConfiguration(true);
             LogFile filelog = new LogFile

@@ -1,5 +1,7 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
+using GRYLibrary.Core.GenericWebAPIServer.ExecutionModes;
 using GRYLibrary.Core.GenericWebAPIServer.Middlewares;
+using GRYLibrary.Core.GenericWebAPIServer.Services;
 using GRYLibrary.Core.GenericWebAPIServer.Utilities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,17 +10,30 @@ using System;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Settings
 {
+    /// <summary>
+    /// Represents a configuration-container with all runtime-information which are required to run a WebAPI. 
+    /// </summary>
+    /// <typeparam name="ConfigurationConstantsType"></typeparam>
+    /// <typeparam name="ConfigurationVariablesType"></typeparam>
     public class WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType>
         where ConfigurationConstantsType : IWebAPIConfigurationConstants
         where ConfigurationVariablesType : IWebAPIConfigurationVariables
     {
-        public WebAPIConfigurationValues<ConfigurationConstantsType, ConfigurationVariablesType> WebAPIConfigurationValues { get; set; }
-        public Action<WebApplicationBuilder, WebAPIConfigurationValues<ConfigurationConstantsType, ConfigurationVariablesType>> ConfigureBuilder { get; set; } = (builder, webAPIConfigurationValues) =>
+        public WebAPIConfiguration(){
+            }
+        public IGeneralLogger Logger { get; set; }
+        public ConfigurationConstantsType WebAPIConfigurationConstants { get; set; }
+        public ConfigurationVariablesType WebAPIConfigurationVariables { get; set; }
+        public string BasePath { get; set; }
+        public ExecutionMode ExecutionMode { get; set; }
+        public bool RethrowInitializationExceptions { get; set; }
+        public string[] CommandlineArguments { get; set; }
+        public Action<WebApplicationBuilder, WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType>> ConfigureBuilder { get; set; } = (builder, webAPIConfigurationValues) =>
         {
             builder.Services.AddLogging(c => c.ClearProviders());
             builder.Services.AddControllers(mvcOptions => mvcOptions.UseGeneralRoutePrefix(webAPIConfigurationValues.WebAPIConfigurationVariables.WebServerSettings.APIRoutePrefix));
         };
-        public Action<WebApplication, WebAPIConfigurationValues<ConfigurationConstantsType, ConfigurationVariablesType>> ConfigureApp { get; set; } = (app, webAPIConfigurationValues) =>
+        public Action<WebApplication, WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType>> ConfigureApp { get; set; } = (app, webAPIConfigurationValues) =>
         {
             #region General Threat-Protection
             if(webAPIConfigurationValues.WebAPIConfigurationConstants.TargetEnvironmentType is Productive)
@@ -63,5 +78,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
                 });
             }
         };
+        public Action PreRun { get; set; }
+        public Action PostRun { get; set; } 
     }
 }

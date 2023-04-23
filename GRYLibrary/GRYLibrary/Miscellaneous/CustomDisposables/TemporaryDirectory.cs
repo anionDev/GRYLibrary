@@ -10,7 +10,7 @@ namespace GRYLibrary.Core.Miscellaneous.CustomDisposables
         {
             this.TemporaryDirectoryPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             Utilities.EnsureDirectoryExists(this.TemporaryDirectoryPath);
-            DisposeAction = () => Utilities.EnsureDirectoryDoesNotExist(this.TemporaryDirectoryPath);
+            this.DisposeAction = () => Utilities.EnsureDirectoryDoesNotExist(this.TemporaryDirectoryPath);
         }
     }
 }

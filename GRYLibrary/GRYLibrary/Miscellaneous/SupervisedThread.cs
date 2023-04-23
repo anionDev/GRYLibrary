@@ -16,7 +16,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static SupervisedThread Create(Action action, string name = "", string informationAboutInvoker = "")
         {
-            return CreateByLogFile(action, string.Empty, name, informationAboutInvoker);
+            return CreateByLogFile(action, null, name, informationAboutInvoker);
         }
 
         private SupervisedThread(Action action, GRYLog log, string name, string informationAboutInvoker)
