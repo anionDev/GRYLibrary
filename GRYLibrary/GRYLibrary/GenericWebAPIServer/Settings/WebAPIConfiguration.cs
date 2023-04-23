@@ -13,17 +13,15 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
     /// <summary>
     /// Represents a configuration-container with all runtime-information which are required to run a WebAPI. 
     /// </summary>
-    /// <typeparam name="ConfigurationConstantsType"></typeparam>
-    /// <typeparam name="ConfigurationVariablesType"></typeparam>
-    public class WebAPIConfiguration<ConfigurationConstantsType, ConfigurationVariablesType>
+    public class WebAPIConfiguration<ConfigurationConstantsType, PersistentConfigurationTypes>
         where ConfigurationConstantsType : IWebAPIConfigurationConstants
-        where ConfigurationVariablesType : IWebAPIConfigurationVariables
+        where PersistentConfigurationTypes : WebAPIConfigurationVariables<PersistentConfigurationTypes>,new()
     {
         public WebAPIConfiguration(){
             }
         public IGeneralLogger Logger { get; set; }
         public ConfigurationConstantsType WebAPIConfigurationConstants { get; set; }
-        public ConfigurationVariablesType WebAPIConfigurationVariables { get; set; }
+        public PersistentConfigurationTypes WebAPIConfigurationVariables { get; set; }
         public string BasePath { get; set; }
         public ExecutionMode ExecutionMode { get; set; }
         public bool RethrowInitializationExceptions { get; set; }

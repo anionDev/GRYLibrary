@@ -168,6 +168,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             builder.Services.AddSingleton<IWebAPIConfigurationConstants>((serviceProvider) => configuration.WebAPIConfigurationConstants);
             builder.Services.AddSingleton<IWebAPIConfigurationVariables>((serviceProvider) => configuration.WebAPIConfigurationVariables);
             // builder.Services.AddSingleton<>();//TODO add settings from configfile. therefor it is probably requried to enforce developer to use CustomWebAPIConfigurationVariables<CustomConfigType> for the settings. then the settings are less configurable/configurable in another way. then some things can probably be simplified/refactored.
+            //update: this is now started. now fix all the errors!
             configuration.WebAPIConfigurationConstants.ConfigureServices(builder.Services);
             builder.WebHost.ConfigureKestrel(kestrelOptions =>
             {
