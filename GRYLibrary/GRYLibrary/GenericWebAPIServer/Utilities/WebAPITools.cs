@@ -13,6 +13,7 @@ using GRYLibrary.Core.Miscellaneous.ConsoleApplication;
 using System;
 using GRYLibrary.Core.Miscellaneous.FilePath;
 using Microsoft.Extensions.DependencyInjection;
+using Namotion.Reflection;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
 {
@@ -75,7 +76,16 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
                     WebApplicationFirewallSettings = new WebApplicationFirewallSettings(),
                     APIKeyValidatorSettings = new APIKeyValidatorSettings(),
                 };
-                IInjectableSettings injectableSettings = new InjectableSettings(address);
+                IInjectableSettings injectableSettings = new InjectableSettings(
+                    address,
+                    initialInformation.Domain, 
+                    executionMode,
+                    initialInformation.TargetEnvironmentType, 
+                    initialInformation.ProgramFolder,
+                    initialInformation.AppName, 
+                    initialInformation.AppVersion, 
+                    logFolder.GetPath(initialInformation.BaseFolder)
+                );
                 WebAPIConfigurationConstants webAPIConfigurationConstants = new WebAPIConfigurationConstants(
                      targetEnvironmentType,
                      initialInformation.AppName,
