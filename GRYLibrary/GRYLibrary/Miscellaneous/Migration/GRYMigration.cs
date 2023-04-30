@@ -1,6 +1,7 @@
-﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
+﻿using GRYLibrary.Core.GeneralPurposeLogger;
+using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using GRYLibrary.Core.GenericWebAPIServer.ExecutionModes;
-using GRYLibrary.Core.GenericWebAPIServer.Services;
+using GRYLibrary.Core.Miscellaneous.FilePath;
 using GRYLibrary.Core.Miscellaneous.Migration;
 using System;
 using System.Collections.Generic;
@@ -13,10 +14,10 @@ namespace GRYLibrary.Core.Miscellaneous
     public class GRYMigration
     {
         internal static Encoding Encoding { get; set; } = new UTF8Encoding(false);
-        public static void MigrateIfRequired(string appName, Version3 currentVersion, IGeneralLogger logger, string baseFolder, GRYEnvironment targetEnvironmentType, ExecutionMode executionMode, IDictionary<object, object> customValues,
+        public static void MigrateIfRequired(AbstractFilePath basicInformationFile,string appName, Version3 currentVersion, IGeneralLogger logger, string baseFolder, GRYEnvironment targetEnvironmentType, ExecutionMode executionMode, IDictionary<object, object> customValues,
           ISet<MigrationMetaInformation> migrations)
         {
-            string informationFile = Path.Join(baseFolder, $"{appName}.xml");
+            string informationFile = basicInformationFile.GetPath(baseFolder);
             if(File.Exists(informationFile))
             {
                 ApplicationInformation appInformation = GetInformationFromFile(informationFile);

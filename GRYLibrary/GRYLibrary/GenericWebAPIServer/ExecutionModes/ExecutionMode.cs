@@ -4,6 +4,10 @@
     {
         public abstract void Accept(IExecutionModeVisitor visitor);
         public abstract T Accept<T>(IExecutionModeVisitor<T> visitor);
+        public override string ToString()
+        {
+            return this.GetType().Name;
+        }
     }
     public interface IExecutionModeVisitor
     {

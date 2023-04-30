@@ -22,7 +22,21 @@ namespace GRYLibrary.Core.GenericWebAPIServer.ExecutionModes.Visitors
 
         public string Handle(RunProgram runProgram)
         {
-            return GenericWebAPIServer.GetBaseFolderForProjectInCommonProjectStructure(this._TargetEnvironmentType, this._ProgramFolder);
+            return GetBaseFolderForProjectInCommonProjectStructure(this._TargetEnvironmentType, this._ProgramFolder);
         }
+
+        public static string GetBaseFolderForProjectInCommonProjectStructure(GRYEnvironment environment, string programFolder)
+        {
+            string workspaceFolderName = "Workspace";
+            if(environment is Development)
+            {
+                return Miscellaneous.Utilities.ResolveToFullPath($"../../{workspaceFolderName}", programFolder);
+            }
+            else
+            {
+                return $"/{workspaceFolderName}";
+            }
+        }
+
     }
 }

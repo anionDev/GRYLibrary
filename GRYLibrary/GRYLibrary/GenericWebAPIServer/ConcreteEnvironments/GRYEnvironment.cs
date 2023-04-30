@@ -18,14 +18,17 @@ namespace GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments
                 return this.GetType().Equals(obj.GetType());
             }
         }
+
         public override int GetHashCode()
         {
             return this.GetType().GetHashCode();
         }
+
         public override string ToString()
         {
             return this.GetType().Name;
         }
+
         public static GRYEnvironment Parse(string environment)
         {
             if(environment == null)

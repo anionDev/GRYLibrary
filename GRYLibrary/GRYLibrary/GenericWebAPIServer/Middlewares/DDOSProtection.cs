@@ -1,4 +1,4 @@
-using GRYLibrary.Core.GenericWebAPIServer.Services;
+using GRYLibrary.Core.GenericWebAPIServer.Middlewares.Configuration;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
@@ -9,7 +9,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     /// </summary>
     public class DDOSProtection :AbstractMiddleware
     {
-        private IDDOSProtectionSettings _DDOSProtectionSettings;
+        private readonly IDDOSProtectionSettings _DDOSProtectionSettings;
         /// <inheritdoc/>
         public DDOSProtection(RequestDelegate next, IDDOSProtectionSettings ddosProtectionSettings) : base(next)
         {
@@ -28,7 +28,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
             // - the request is too big or
             // - the source-ip tries to do enumeration in the context of penetration-testing/hacking or 
             // - the source-ip has already done this request with the same route/payload in the last 2 seconds
-
 
             return this._Next(context);
         }

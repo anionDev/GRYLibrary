@@ -1,5 +1,5 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
-using GRYLibrary.Core.GenericWebAPIServer.Services;
+using GRYLibrary.Core.GenericWebAPIServer.Middlewares.Configuration;
 using GRYLibrary.Core.GenericWebAPIServer.Settings;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
@@ -9,22 +9,20 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     /// <summary>
     /// Represents a middleware which removes some not required information of responses for security purposes.
     /// </summary>
-    public class Obfuscation :AbstractMiddleware
+    public class Obfuscation<AppConstants> :AbstractMiddleware
     {
         private readonly IObfuscationSettings _ObfuscationSettings;
-        private readonly IWebAPIConfigurationVariables _WebAPIConfigurationVariables;
-        private readonly IWebAPIConfigurationConstants _WebAPIConfigurationConstants;
+        private readonly IApplicationConstants<AppConstants> _AppConstants;
         /// <inheritdoc/>
-        public Obfuscation(RequestDelegate next, IObfuscationSettings obfuscationSettings, IWebAPIConfigurationVariables webAPIConfigurationVariables, IWebAPIConfigurationConstants webAPIConfigurationConstants) : base(next)
+        public Obfuscation(RequestDelegate next, IObfuscationSettings obfuscationSettings,IApplicationConstants<AppConstants> appConstants) : base(next)
         {
             this._ObfuscationSettings = obfuscationSettings;
-            this._WebAPIConfigurationVariables = webAPIConfigurationVariables;
-            this._WebAPIConfigurationConstants = webAPIConfigurationConstants;
+            this._AppConstants = appConstants;
         }
         /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
         {
-            if(this._WebAPIConfigurationConstants.TargetEnvironmentType is Productive)
+            if(this._AppConstants.Environment is Productive)
             {
                 bool clearResponseBody;
                 int responseStatusCode;
