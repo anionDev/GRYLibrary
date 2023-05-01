@@ -603,6 +603,20 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             return $"{Math.Floor(timespan.TotalHours).ToString().PadLeft(2, '0')}:{timespan.Minutes.ToString().PadLeft(2, '0')}:{timespan.Seconds.ToString().PadLeft(2, '0')}";
         }
+
+        public const string ISO8601FormatForDateTimesInFullFormat = "yyyy-MM-ddTHH:mm:sszzz";
+        public static string FormatTimestamp(DateTime timestamp, bool addMillisecondsInLogTimestamps)
+        {
+            if(addMillisecondsInLogTimestamps)
+            {
+                return timestamp.ToString("o");//2023-05-01T11:44:53.4931284+02:00
+            }
+            else
+            {
+                return timestamp.ToString(ISO8601FormatForDateTimesInFullFormat);//2023-05-01T11:44:53+02:00
+            }
+        }
+
         public static string DateTimeToISO8601String(DateTime dateTime, bool addMilliseconds = true)
         {
             string format;

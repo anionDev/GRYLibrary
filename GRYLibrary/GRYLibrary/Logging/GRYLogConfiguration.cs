@@ -67,7 +67,7 @@ namespace GRYLibrary.Core.Log
             this.PrintEmptyLines = false;
             this.PrintErrorsAsInformation = false;
             this.Name = string.Empty;
-            this.DateFormat = "yyyy-MM-dd HH:mm:ss";
+            this.DateFormat = Miscellaneous.Utilities.ISO8601FormatForDateTimesInFullFormat;
             this.LoggedMessageTypesConfiguration = new List<SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>>
             {
                 new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Trace, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Trace), ConsoleColor = ConsoleColor.Gray }),

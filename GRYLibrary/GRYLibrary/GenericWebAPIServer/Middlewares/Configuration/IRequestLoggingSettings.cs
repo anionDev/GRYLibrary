@@ -9,6 +9,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.Configuration
 {
     public interface IRequestLoggingSettings :IMiddlewareSettings
     {
+        public bool AddMillisecondsInLogTimestamps { get; set; } 
         public bool LogClientIP { get; set; }
         public GRYLogConfiguration RequestsLogConfiguration { get; set; }
         public bool ShouldBeLogged(Request request);

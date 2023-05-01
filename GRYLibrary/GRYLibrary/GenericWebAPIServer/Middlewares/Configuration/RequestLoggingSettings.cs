@@ -5,6 +5,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.Configuration
 {
     public class RequestLoggingSettings :IRequestLoggingSettings
     {
+        public bool AddMillisecondsInLogTimestamps { get; set; } = false;
         public GRYLogConfiguration RequestsLogConfiguration { get; set; }
         public bool Enabled { get; set; } = true;
         public bool LogClientIP { get; set; } = true;

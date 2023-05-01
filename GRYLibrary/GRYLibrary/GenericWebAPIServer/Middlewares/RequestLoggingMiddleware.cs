@@ -57,7 +57,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
                 ushort responseHTTPStatuscode = (ushort)context.Response.StatusCode;
                 IPAddress clientIP = context.Connection.RemoteIpAddress;
                 Request request = new Request(timestamp, clientIP, context.Request.Method, requestRoute, context.Request.Headers, requestBody, null/*TODO*/, responseHTTPStatuscode, context.Response.Headers, responseBody);
-                if(_RequestLoggingSettings.ShouldBeLogged(request))
+                if(this._RequestLoggingSettings.ShouldBeLogged(request))
                 {
                     LogLevel logLevel = this._RequestLoggingSettings.GetLogLevel(request);
                     string formatted;
@@ -74,7 +74,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
             }
             catch(Exception exception)
             {
-                _RequestLogger.LogException(exception, "Error while logging request.");
+                this._RequestLogger.LogException(exception, "Error while logging request.");
             }
         }
 
@@ -82,7 +82,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
         {
             string clientIPAsString = this.FormatIPAddress(request.ClientIPAddress);
             return $"Request:{Environment.NewLine}"
-                        + $"  Timestamp: {request.Timestamp:o}{Environment.NewLine}"
+                        + $"  Timestamp: {this.FormatTimestamp(request.Timestamp)}{Environment.NewLine}"
                         + $"  Client-ip: {clientIPAsString}{Environment.NewLine}"
                         + $"  Request-details:{Environment.NewLine}"
                         + $"    Method: {request.Route}{Environment.NewLine}"
@@ -93,9 +93,13 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
                         + $"    Body: {this.Truncate(request.ResponseBody, maximalLengthofBodies)}{Environment.NewLine}";
         }
 
+        private string FormatTimestamp(DateTime timestamp)
+        {
+            return Miscellaneous.Utilities.FormatTimestamp(timestamp, this._RequestLoggingSettings.AddMillisecondsInLogTimestamps);
+        }
         private string FormatIPAddress(IPAddress clientIP)
         {
-            if(_RequestLoggingSettings.LogClientIP)
+            if(this._RequestLoggingSettings.LogClientIP)
             {
                 if(clientIP == null)
                 {
@@ -115,7 +119,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
         internal string FormatLogEntrySummary(Request request)
         {
             string clientIPAsString = this.FormatIPAddress(request.ClientIPAddress);
-            return $"Request: {request.Timestamp:o} {clientIPAsString} requested \"{request.Method} {request.Route}\" and got response-code {request.ResponseStatusCode}.";
+            return $"Request: {this.FormatTimestamp(request.Timestamp)} {clientIPAsString} requested \"{request.Method} {request.Route}\" and got response-code {request.ResponseStatusCode}.";
         }
         internal string Truncate(string value, uint maxLength)
         {

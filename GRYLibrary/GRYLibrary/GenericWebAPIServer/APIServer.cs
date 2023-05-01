@@ -66,7 +66,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
         private WebApplication Initialize(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration, IGeneralLogger logger)
         {
-            logger.Log($"Start {this._APIServerInitializer.ApplicationConstants.ApplicationName}", LogLevel.Debug);
+            logger.Log($"Start {this._APIServerInitializer.ApplicationConstants.ApplicationName}", LogLevel.Information);
             bool diagnosis = false;
             if(diagnosis)
             {
