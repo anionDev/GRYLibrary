@@ -95,7 +95,21 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
 
         private string FormatIPAddress(IPAddress clientIP)
         {
-            return this._RequestLoggingSettings.LogClientIP ? "(IP-address not saved)" : (clientIP == null ? clientIP.ToString() : "(IP-address not available)");
+            if(_RequestLoggingSettings.LogClientIP)
+            {
+                if(clientIP == null)
+                {
+                    return "(IP-address not available)";
+                }
+                else
+                {
+                    return clientIP.ToString();
+                }
+            }
+            else
+            {
+                return "(IP-address not saved)";
+            }
         }
 
         internal string FormatLogEntrySummary(Request request)
