@@ -1,6 +1,7 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using GRYLibrary.Core.GenericWebAPIServer.Middlewares.Configuration;
 using GRYLibrary.Core.GenericWebAPIServer.Utilities;
+using System;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration
 {
@@ -24,23 +25,23 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration
         public const string APIRoutePrefix = "API";
         public static string GetAPIDocumentationRoutePrefix() { return $"{APIRoutePrefix}/APIDocumentation"; }
         public ServerConfiguration() { }
-        public static ServerConfiguration Create(string domain, GRYEnvironment environment, TLSCertificateInformation tlsCertificateInformation)
+        public static ServerConfiguration Create(string domain, GRYEnvironment environment, TLSCertificateInformation tlsCertificateInformation, Func<string, string, string, bool> apiKeyIsValid)
         {
             ServerConfiguration result = new ServerConfiguration();
             result.Protocol = HTTPS.Create(tlsCertificateInformation);
-            SetCommonSettings(result, environment, domain);
+            SetCommonSettings(result, environment, domain, apiKeyIsValid);
             return result;
         }
 
-        public static ServerConfiguration Create(string domain, GRYEnvironment environment)
+        public static ServerConfiguration Create(string domain, GRYEnvironment environment, Func<string/*apiKey*/, string/*method*/, string/*route*/, bool> apiKeyIsValid)
         {
             ServerConfiguration result = new ServerConfiguration();
             result.Protocol = new HTTP();
-            SetCommonSettings(result, environment, domain);
+            SetCommonSettings(result, environment, domain,apiKeyIsValid);
             return result;
         }
         public const string LocalDomain = "localhost";
-        private static void SetCommonSettings(ServerConfiguration result, GRYEnvironment environment, string domain)
+        private static void SetCommonSettings(ServerConfiguration result, GRYEnvironment environment, string domain, Func<string/*apiKey*/, string/*method*/, string/*route*/, bool> apiKeyIsValid)
         {
             result.Domain = environment is Development ? LocalDomain : domain;
             result.BlackListProvider = new BlacklistProvider();
@@ -50,7 +51,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration
             result.RequestCounterSettings = new RequestCounterSettings();
             result.RequestLoggingSettings = new RequestLoggingSettings() { RequestsLogConfiguration = ServerUtilities.GetLogConfiguration("Requests.log", environment) };
             result.WebApplicationFirewallSettings = new WebApplicationFirewallSettings();
-            result.APIKeyValidatorSettings = new APIKeyValidatorSettings();
+            result.APIKeyValidatorSettings = new APIKeyValidatorSettings(apiKeyIsValid);
         }
 
         public string GetServerAddress()

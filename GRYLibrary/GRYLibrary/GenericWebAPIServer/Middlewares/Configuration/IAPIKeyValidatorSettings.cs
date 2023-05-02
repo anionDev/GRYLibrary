@@ -2,5 +2,6 @@
 {
     public interface IAPIKeyValidatorSettings :IMiddlewareSettings
     {
+        public bool APIKeyIsValid(string apiKey,string method, string route);
     }
 }
