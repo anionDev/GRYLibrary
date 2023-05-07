@@ -1,7 +1,8 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
-using GRYLibrary.Core.GenericWebAPIServer.Middlewares.Configuration;
+using GRYLibrary.Core.GenericWebAPIServer.Middlewares;
+using GRYLibrary.Core.GenericWebAPIServer.Middlewares.MiddlewareConfigurations;
 using GRYLibrary.Core.GenericWebAPIServer.Utilities;
-using System;
+using System.Collections.Generic;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration
 {
@@ -21,7 +22,20 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration
         public RequestCounterSettings RequestCounterSettings { get; set; }
         public RequestLoggingSettings RequestLoggingSettings { get; set; }
         public WebApplicationFirewallSettings WebApplicationFirewallSettings { get; set; }
-        public CredentialsValidatorSettings CredentialsValidatorSettings { get; set; }
+        public APIKeyValidatorSettings APIKeyValidatorSettings { get; set; }
+        public ISet<IMiddlewareSettings> GetSettingsOfCommonMiddlewares()
+        {
+            return new HashSet<IMiddlewareSettings>() {
+                BlackListProvider,
+                DDOSProtectionSettings,
+                ObfuscationSettings,
+                ExceptionManagerSettings,
+                RequestCounterSettings,
+                RequestLoggingSettings,
+                WebApplicationFirewallSettings,
+                APIKeyValidatorSettings
+            };
+        }
         public const string APIRoutePrefix = "API";
         public static string GetAPIDocumentationRoutePrefix() { return $"{APIRoutePrefix}/APIDocumentation"; }
         public ServerConfiguration() { }
@@ -51,7 +65,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration
             result.RequestCounterSettings = new RequestCounterSettings();
             result.RequestLoggingSettings = new RequestLoggingSettings() { RequestsLogConfiguration = ServerUtilities.GetLogConfiguration("Requests.log", environment) };
             result.WebApplicationFirewallSettings = new WebApplicationFirewallSettings();
-            result.CredentialsValidatorSettings = new CredentialsValidatorSettings();
+            result.APIKeyValidatorSettings = new APIKeyValidatorSettings();
         }
 
         public string GetServerAddress()

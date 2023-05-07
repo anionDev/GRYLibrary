@@ -1,5 +1,5 @@
 using GRYLibrary.Core.GeneralPurposeLogger;
-using GRYLibrary.Core.GenericWebAPIServer.Middlewares.Configuration;
+using GRYLibrary.Core.GenericWebAPIServer.Middlewares.MiddlewareConfigurationInterfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.IO;
@@ -10,20 +10,19 @@ using System.Text;
 using GRYLibrary.Core.GenericWebAPIServer.Settings;
 using GRYLibrary.Core.GenericWebAPIServer.Utilities;
 
-namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
+namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.ConcreteMiddlewares
 {
     /// <summary>
     /// Represents a middleware which logs the requests.
     /// </summary>
-    public class RequestLoggingMiddleware<PersistedApplicationSpecificConfiguration, AppConstants> :AbstractMiddleware
-        where PersistedApplicationSpecificConfiguration : new()
+    public class RequestLoggingMiddleware :AbstractMiddleware
     {
         private readonly IGeneralLogger _RequestLogger;
         private readonly IGeneralLogger _ServerLogger;
         private readonly IRequestLoggingSettings _RequestLoggingSettings;
-        private readonly IApplicationConstants<AppConstants> _AppConstants;
+        private readonly IApplicationConstants _AppConstants;
         /// <inheritdoc/>
-        public RequestLoggingMiddleware(RequestDelegate next, IRequestLoggingSettings requestLoggingSettings, IApplicationConstants<AppConstants> appConstants, IGeneralLogger serverLogger) : base(next)
+        public RequestLoggingMiddleware(RequestDelegate next, IRequestLoggingSettings requestLoggingSettings, IApplicationConstants appConstants, IGeneralLogger serverLogger) : base(next)
         {
             this._RequestLoggingSettings = requestLoggingSettings;
             this._AppConstants = appConstants;
@@ -35,7 +34,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
         {
             DateTime moment = DateTime.Now;
             UTF8Encoding encoding = new UTF8Encoding(false);
-            HttpRequestRewindExtensions.EnableBuffering(context.Request);
+            context.Request.EnableBuffering();
             string requestBody = await new StreamReader(context.Request.Body, encoding, false).ReadToEndAsync();
             context.Request.Body.Seek(0, SeekOrigin.Begin);
             Stream originalBodyStream = context.Response.Body;

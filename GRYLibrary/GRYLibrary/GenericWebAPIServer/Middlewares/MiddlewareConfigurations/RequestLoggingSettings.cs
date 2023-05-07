@@ -1,7 +1,10 @@
-﻿using GRYLibrary.Core.Log;
+﻿using GRYLibrary.Core.GenericWebAPIServer.Middlewares.MiddlewareConfigurationInterfaces;
+using GRYLibrary.Core.Log;
 using Microsoft.Extensions.Logging;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Collections.Generic;
 
-namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.Configuration
+namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.MiddlewareConfigurations
 {
     public class RequestLoggingSettings :IRequestLoggingSettings
     {
@@ -10,8 +13,9 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.Configuration
         public bool Enabled { get; set; } = true;
         public bool LogClientIP { get; set; } = true;
 
-        public RequestLoggingSettings()
+        public ISet<FilterDescriptor> GetFilter()
         {
+            return new HashSet<FilterDescriptor>();
         }
 
         public virtual bool ShouldBeLogged(Request request)

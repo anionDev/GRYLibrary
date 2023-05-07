@@ -1,8 +1,8 @@
-﻿using GRYLibrary.Core.GenericWebAPIServer.Middlewares.Configuration;
+﻿using GRYLibrary.Core.GenericWebAPIServer.Middlewares.MiddlewareConfigurationInterfaces;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
+namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.ConcreteMiddlewares
 {
     /// <summary>
     /// Represents a blacklist which blocks all requests from blacklisted sources.
