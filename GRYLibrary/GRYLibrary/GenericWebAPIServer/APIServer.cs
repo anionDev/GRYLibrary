@@ -27,11 +27,11 @@ using System.Text;
 
 namespace GRYLibrary.Core.GenericWebAPIServer
 {
-    public class APIServer2<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
+    public class APIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
         where PersistedApplicationSpecificConfiguration : new()
     {
         private readonly APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration> _APIServerInitializer;
-        public APIServer2(APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration> apiServerInitializer)
+        public APIServer(APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration> apiServerInitializer)
         {
             this._APIServerInitializer = apiServerInitializer;
             this._APIServerInitializer.ApplicationConstants.Initialize(this._APIServerInitializer.BaseFolder);
@@ -39,7 +39,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
         public static int XWebAPIMain(CommandlineParameterType commandlineParameter, APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration> initializer)
         {
-            APIServer2<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> server = new APIServer2<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>(initializer);
+            APIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> server = new APIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>(initializer);
             return server.Run(commandlineParameter);
         }
         public int Run(CommandlineParameterType commandlineParameter)
@@ -51,7 +51,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 this.RunMigrationIfRequired(logger, this._APIServerInitializer.BasicInformationFile);
                 IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration = this.LoadConfiguration();
                 logger = this.GetApplicationLogger(persistedApplicationSpecificConfiguration);
-                WebApplication server = this.Initialize(persistedApplicationSpecificConfiguration, logger);
+                WebApplication server = this.Initialize(persistedApplicationSpecificConfiguration, logger, commandlineParameter);
                 this._APIServerInitializer.PreRun();
                 this.RunAPIServer(server);
                 this._APIServerInitializer.PostRun();
@@ -64,7 +64,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             }
         }
 
-        private WebApplication Initialize(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration, IGeneralLogger logger)
+        private WebApplication Initialize(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration, IGeneralLogger logger, CommandlineParameterType commandlineParameter)
         {
             logger.Log($"Start {this._APIServerInitializer.ApplicationConstants.ApplicationName}", LogLevel.Information);
             bool diagnosis = false;
@@ -74,11 +74,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 logger.Log($"Executionmode: {this._APIServerInitializer.ApplicationConstants.ExecutionMode}", LogLevel.Debug);
             }
             this.EnsureCertificateIsAvailableIfRequired(persistedApplicationSpecificConfiguration, logger);
-            WebApplication webApplication = this.CreateAPIServer(persistedApplicationSpecificConfiguration, logger);
+            WebApplication webApplication = this.CreateAPIServer(persistedApplicationSpecificConfiguration, logger,commandlineParameter);
             return webApplication;
         }
 
-        private WebApplication CreateAPIServer(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration, IGeneralLogger logger)
+        private WebApplication CreateAPIServer(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration, IGeneralLogger logger, CommandlineParameterType commandlineParameter)
         {
             WebApplicationBuilder builder = WebApplication.CreateBuilder(new WebApplicationOptions
             {
@@ -101,7 +101,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             builder.Services.AddSingleton<IObfuscationSettings>((serviceProvider) => persistedApplicationSpecificConfiguration.ServerConfiguration.ObfuscationSettings);
             builder.Services.AddSingleton<IWebApplicationFirewallSettings>((serviceProvider) => persistedApplicationSpecificConfiguration.ServerConfiguration.WebApplicationFirewallSettings);
             builder.Services.AddSingleton<IExceptionManagerSettings>((serviceProvider) => persistedApplicationSpecificConfiguration.ServerConfiguration.ExceptionManagerSettings);
-            builder.Services.AddSingleton<IAPIKeyValidatorSettings>((serviceProvider) => persistedApplicationSpecificConfiguration.ServerConfiguration.APIKeyValidatorSettings);
+            builder.Services.AddSingleton<ICredentialsValidatorSettings>((serviceProvider) => persistedApplicationSpecificConfiguration.ServerConfiguration.CredentialsValidatorSettings);
             builder.Services.AddSingleton<IRequestCounterSettings>((serviceProvider) => persistedApplicationSpecificConfiguration.ServerConfiguration.RequestCounterSettings);
             builder.Services.AddSingleton<IRequestLoggingSettings>((serviceProvider) => persistedApplicationSpecificConfiguration.ServerConfiguration.RequestLoggingSettings);
 
@@ -180,17 +180,21 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 {
                     app.UseMiddleware<BlackList>();
                 }
+            }
+            if(this._APIServerInitializer.ApplicationConstants.Environment is not Development)
+            {
                 if(persistedApplicationSpecificConfiguration.ServerConfiguration.ObfuscationSettings.Enabled)
                 {
                     app.UseMiddleware<Obfuscation<ApplicationSpecificConstants>>();
                 }
-            }
-            if(this._APIServerInitializer.ApplicationConstants.Environment is not Development)
-            {
                 if(persistedApplicationSpecificConfiguration.ServerConfiguration.ExceptionManagerSettings.Enabled)
                 {
                     app.UseMiddleware<ExceptionManager>();
                 }
+            }
+            if(persistedApplicationSpecificConfiguration.ServerConfiguration.Protocol is HTTPS)
+            {
+                app.UseHsts();
             }
             #endregion
 
@@ -210,9 +214,9 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             {
                 app.UseMiddleware<WebApplicationFirewall>();
             }
-            if(persistedApplicationSpecificConfiguration.ServerConfiguration.APIKeyValidatorSettings.Enabled)
+            if(persistedApplicationSpecificConfiguration.ServerConfiguration.CredentialsValidatorSettings.Enabled)
             {
-                app.UseMiddleware<APIKeyValidator>();
+                app.UseMiddleware<CredentialsValidator>();
             }
             if(this._APIServerInitializer.ApplicationConstants.Environment is not Development)
             {

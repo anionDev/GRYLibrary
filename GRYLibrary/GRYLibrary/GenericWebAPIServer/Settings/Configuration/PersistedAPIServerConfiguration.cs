@@ -23,11 +23,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration
         public ServerConfiguration ServerConfiguration { get; set; }
         public GRYLogConfiguration ApplicationLogConfiguration { get; set; }
         public PersistedApplicationSpecificConfiguration ApplicationSpecificConfiguration { get; set; }
-        public static PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> Create<PersistedAppSpecificConfiguration>(string domain, PersistedAppSpecificConfiguration persistedApplicationSpecificConfiguration, GRYEnvironment environment, string fallbackCertificatePasswordFileContentHex, string fallbackCertificatePFXFileContentHex, Func<string/*apiKey*/, string/*method*/, string/*route*/, bool> apiKeyIsValid)
+        public static PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> Create<PersistedAppSpecificConfiguration>(string domain, PersistedAppSpecificConfiguration persistedApplicationSpecificConfiguration, GRYEnvironment environment, string fallbackCertificatePasswordFileContentHex, string fallbackCertificatePFXFileContentHex)
             where PersistedAppSpecificConfiguration : new()
         {
             PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> result = new PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration>();
-            result.ServerConfiguration = ServerConfiguration.Create(domain, environment, TLSCertificateInformation.Create(AbstractFilePath.FromString($"./Certificate.{domain}.password"), AbstractFilePath.FromString($"./Certificate.{domain}.pfx"), fallbackCertificatePasswordFileContentHex, fallbackCertificatePFXFileContentHex),apiKeyIsValid);
+            result.ServerConfiguration = ServerConfiguration.Create(domain, environment, TLSCertificateInformation.Create(AbstractFilePath.FromString($"./Certificate.{domain}.password"), AbstractFilePath.FromString($"./Certificate.{domain}.pfx"), fallbackCertificatePasswordFileContentHex, fallbackCertificatePFXFileContentHex));
             result.ApplicationLogConfiguration = ServerUtilities.GetLogConfiguration("Server.log", environment);
             result.ApplicationSpecificConfiguration = persistedApplicationSpecificConfiguration;
             return result;
