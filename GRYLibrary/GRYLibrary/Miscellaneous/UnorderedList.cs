@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
@@ -26,7 +27,34 @@ namespace GRYLibrary.Core.Miscellaneous
         /// <returns>Returns true if and only if there is a bijection between this and <paramref name="other"/>.</returns>
         public bool Equals(UnorderedList<T> other)
         {
-            throw new NotImplementedException();
+            return ToTuples(GetItemsWithCount(this)).Equals(ToTuples(GetItemsWithCount(other)));
+        }
+
+        private ISet<WriteableTuple<T, ulong>> ToTuples(IDictionary<T, ulong> dictionary)
+        {
+            var result = new HashSet<WriteableTuple<T, ulong>>();
+            foreach(var kvp in dictionary)
+            {
+                result.Add(new WriteableTuple<T, ulong>(kvp.Key, kvp.Value));
+            }
+            return result;
+        }
+
+        private IDictionary<T, ulong> GetItemsWithCount(UnorderedList<T> items)
+        {
+            Dictionary<T, ulong> result = new Dictionary<T, ulong>();
+            foreach(var item in items)
+            {
+                if(result.ContainsKey(item))
+                {
+                    result.Add(item, 0);
+                }
+                else
+                {
+                    result[item] = result[item] + 1;
+                }
+            }
+            return result;
         }
 
         public int IndexOf(T item)
