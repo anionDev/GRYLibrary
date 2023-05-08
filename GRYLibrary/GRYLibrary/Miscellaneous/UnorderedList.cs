@@ -27,20 +27,10 @@ namespace GRYLibrary.Core.Miscellaneous
         /// <returns>Returns true if and only if there is a bijection between this and <paramref name="other"/>.</returns>
         public bool Equals(UnorderedList<T> other)
         {
-            return ToTuples(GetItemsWithCount(this)).Equals(ToTuples(GetItemsWithCount(other)));
+            return GetItemsWithCount(this).Equals(GetItemsWithCount(other));
         }
 
-        private ISet<WriteableTuple<T, ulong>> ToTuples(IDictionary<T, ulong> dictionary)
-        {
-            var result = new HashSet<WriteableTuple<T, ulong>>();
-            foreach(var kvp in dictionary)
-            {
-                result.Add(new WriteableTuple<T, ulong>(kvp.Key, kvp.Value));
-            }
-            return result;
-        }
-
-        private IDictionary<T, ulong> GetItemsWithCount(UnorderedList<T> items)
+        private ISet<WriteableTuple<T, ulong>> GetItemsWithCount(UnorderedList<T> items)
         {
             Dictionary<T, ulong> result = new Dictionary<T, ulong>();
             foreach(var item in items)
@@ -54,7 +44,7 @@ namespace GRYLibrary.Core.Miscellaneous
                     result[item] = result[item] + 1;
                 }
             }
-            return result;
+            return new HashSet<WriteableTuple<T, ulong>>(result.Select(kvp => new WriteableTuple<T, ulong>(kvp.Key, kvp.Value)));
         }
 
         public int IndexOf(T item)
