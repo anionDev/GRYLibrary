@@ -3,13 +3,13 @@ using System.Xml.Serialization;
 
 namespace GRYLibrary.Core.Miscellaneous.FilePath
 {
-    [XmlInclude(typeof(AbstractFilePath))]
+    [XmlInclude(typeof(AbsoluteFilePath))]
     [XmlInclude(typeof(RelativeFilePath))]
     public abstract class AbstractFilePath
     {
         public abstract string FilePath { get; set; }
 
-        internal static AbstractFilePath FromString(string logFile)
+        public static AbstractFilePath FromString(string logFile)
         {
             if(string.IsNullOrWhiteSpace(logFile))
             {

@@ -72,8 +72,8 @@
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.0.2" />
     <PackageReference Include="MSTest.TestFramework" Version="3.0.2" />
-    <PackageReference Include="NJsonSchema" Version="10.8.0" />
-    <PackageReference Include="NSwag.AspNetCore" Version="13.18.2" />
+    <PackageReference Include="NJsonSchema" Version="10.9.0" />
+    <PackageReference Include="NSwag.AspNetCore" Version="13.19.0" />
     <PackageReference Include="System.Collections.Immutable" Version="7.0.0" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
   </ItemGroup>

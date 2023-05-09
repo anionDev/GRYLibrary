@@ -1,20 +1,20 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
-using GRYLibrary.Core.GenericWebAPIServer.Middlewares.Configuration;
+using GRYLibrary.Core.GenericWebAPIServer.Middlewares.MiddlewareConfigurationInterfaces;
 using GRYLibrary.Core.GenericWebAPIServer.Settings;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
+namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.ConcreteMiddlewares
 {
     /// <summary>
     /// Represents a middleware which removes some not required information of responses for security purposes.
     /// </summary>
-    public class Obfuscation<AppConstants> :AbstractMiddleware
+    public class Obfuscation :AbstractMiddleware
     {
         private readonly IObfuscationSettings _ObfuscationSettings;
-        private readonly IApplicationConstants<AppConstants> _AppConstants;
+        private readonly IApplicationConstants _AppConstants;
         /// <inheritdoc/>
-        public Obfuscation(RequestDelegate next, IObfuscationSettings obfuscationSettings,IApplicationConstants<AppConstants> appConstants) : base(next)
+        public Obfuscation(RequestDelegate next, IObfuscationSettings obfuscationSettings, IApplicationConstants appConstants) : base(next)
         {
             this._ObfuscationSettings = obfuscationSettings;
             this._AppConstants = appConstants;

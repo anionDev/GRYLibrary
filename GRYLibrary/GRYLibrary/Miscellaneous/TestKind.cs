@@ -30,5 +30,9 @@
         /// Tests that are always skipped when committing but can be useful to demonstrate a certain thing/function.
         /// </summary>
         DemonstrationTest = 6,
+        /// <summary>
+        /// Tests that verifies a certain performance for a certain operation. Testcases of this kind requires appropriate hardware.
+        /// </summary>
+        PerformanceTest = 7,
     }
 }

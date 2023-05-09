@@ -36,6 +36,8 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
             int result = 1;
             try
             {
+                string title = $"{_ProgramName} (v{_ProgramVersion})";
+                Console.Title = title;
                 if(arguments == null)
                 {
                     throw Utilities.CreateNullReferenceExceptionDueToParameter(nameof(arguments));

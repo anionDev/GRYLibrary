@@ -1,6 +1,8 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
-using GRYLibrary.Core.GenericWebAPIServer.Middlewares.Configuration;
+using GRYLibrary.Core.GenericWebAPIServer.Middlewares;
+using GRYLibrary.Core.GenericWebAPIServer.Middlewares.MiddlewareConfigurations;
 using GRYLibrary.Core.GenericWebAPIServer.Utilities;
+using System.Collections.Generic;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration
 {
@@ -21,6 +23,19 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration
         public RequestLoggingSettings RequestLoggingSettings { get; set; }
         public WebApplicationFirewallSettings WebApplicationFirewallSettings { get; set; }
         public APIKeyValidatorSettings APIKeyValidatorSettings { get; set; }
+        public ISet<IMiddlewareSettings> GetSettingsOfCommonMiddlewares()
+        {
+            return new HashSet<IMiddlewareSettings>() {
+                BlackListProvider,
+                DDOSProtectionSettings,
+                ObfuscationSettings,
+                ExceptionManagerSettings,
+                RequestCounterSettings,
+                RequestLoggingSettings,
+                WebApplicationFirewallSettings,
+                APIKeyValidatorSettings
+            };
+        }
         public const string APIRoutePrefix = "API";
         public static string GetAPIDocumentationRoutePrefix() { return $"{APIRoutePrefix}/APIDocumentation"; }
         public ServerConfiguration() { }
