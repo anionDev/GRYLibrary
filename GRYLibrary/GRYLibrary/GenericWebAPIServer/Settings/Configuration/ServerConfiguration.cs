@@ -1,8 +1,4 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
-using GRYLibrary.Core.GenericWebAPIServer.Middlewares;
-using GRYLibrary.Core.GenericWebAPIServer.Middlewares.MiddlewareConfigurations;
-using GRYLibrary.Core.GenericWebAPIServer.Utilities;
-using System.Collections.Generic;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration
 {
@@ -15,42 +11,25 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration
         public string LicenseURLSubPath { get; set; } = "/API/APIDocumentation/Information/License";
         public bool HostAPISpecificationForInNonDevelopmentEnvironment { get; set; } = false;
         public string APIDocumentationDocumentName { get; set; } = "APISpecification";
-        public BlacklistProvider BlackListProvider { get; set; }
-        public DDOSProtectionSettings DDOSProtectionSettings { get; set; }
-        public ObfuscationSettings ObfuscationSettings { get; set; }
-        public ExceptionManagerSettings ExceptionManagerSettings { get; set; }
-        public RequestCounterSettings RequestCounterSettings { get; set; }
-        public RequestLoggingSettings RequestLoggingSettings { get; set; }
-        public WebApplicationFirewallSettings WebApplicationFirewallSettings { get; set; }
-        public APIKeyValidatorSettings APIKeyValidatorSettings { get; set; }
-        public ISet<IMiddlewareSettings> GetSettingsOfCommonMiddlewares()
-        {
-            return new HashSet<IMiddlewareSettings>() {
-                BlackListProvider,
-                DDOSProtectionSettings,
-                ObfuscationSettings,
-                ExceptionManagerSettings,
-                RequestCounterSettings,
-                RequestLoggingSettings,
-                WebApplicationFirewallSettings,
-                APIKeyValidatorSettings
-            };
-        }
         public const string APIRoutePrefix = "API";
         public static string GetAPIDocumentationRoutePrefix() { return $"{APIRoutePrefix}/APIDocumentation"; }
         public ServerConfiguration() { }
         public static ServerConfiguration Create(string domain, GRYEnvironment environment, TLSCertificateInformation tlsCertificateInformation)
         {
-            ServerConfiguration result = new ServerConfiguration();
-            result.Protocol = HTTPS.Create(tlsCertificateInformation);
+            ServerConfiguration result = new ServerConfiguration
+            {
+                Protocol = HTTPS.Create(tlsCertificateInformation)
+            };
             SetCommonSettings(result, environment, domain);
             return result;
         }
 
         public static ServerConfiguration Create(string domain, GRYEnvironment environment)
         {
-            ServerConfiguration result = new ServerConfiguration();
-            result.Protocol = new HTTP();
+            ServerConfiguration result = new ServerConfiguration
+            {
+                Protocol = new HTTP()
+            };
             SetCommonSettings(result, environment, domain);
             return result;
         }
@@ -58,14 +37,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration
         private static void SetCommonSettings(ServerConfiguration result, GRYEnvironment environment, string domain)
         {
             result.Domain = environment is Development ? LocalDomain : domain;
-            result.BlackListProvider = new BlacklistProvider();
-            result.DDOSProtectionSettings = new DDOSProtectionSettings();
-            result.ObfuscationSettings = new ObfuscationSettings();
-            result.ExceptionManagerSettings = new ExceptionManagerSettings();
-            result.RequestCounterSettings = new RequestCounterSettings();
-            result.RequestLoggingSettings = new RequestLoggingSettings() { RequestsLogConfiguration = ServerUtilities.GetLogConfiguration("Requests.log", environment) };
-            result.WebApplicationFirewallSettings = new WebApplicationFirewallSettings();
-            result.APIKeyValidatorSettings = new APIKeyValidatorSettings();
         }
 
         public string GetServerAddress()

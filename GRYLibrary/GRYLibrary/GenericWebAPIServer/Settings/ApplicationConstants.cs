@@ -1,6 +1,5 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using GRYLibrary.Core.GenericWebAPIServer.ExecutionModes;
-using GRYLibrary.Core.GenericWebAPIServer.Middlewares.ConcreteMiddlewares;
 using GRYLibrary.Core.GenericWebAPIServer.Settings.CommonRoutes;
 using GRYLibrary.Core.Miscellaneous;
 using GRYLibrary.Core.Miscellaneous.FilePath;
@@ -30,6 +29,8 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public CommonRoutesInformation CommonRoutes { get; set; }
         public void Initialize(string baseFolder);
         public Type ApiKeyValidatorMiddleware { get; set; }
+        public Type AuthenticationMiddleware { get; set; } 
+        public Type AuthorizationMiddleware { get; set; } 
         public Type BlackListMiddleware { get; set; }
         public Type DDOSProtectionMiddleware { get; set; }
         public Type ExceptionManagerMiddleware { get; set; }
@@ -74,14 +75,16 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public string GetConfigurationFile() { return this.ConfigurationFile.GetPath(this.GetConfigurationFolder()); }
         public string GetLogFolder() { return this.LogFolder.GetPath(this._BaseFolder); }
         public CommonRoutesInformation CommonRoutes { get; set; } = new HostCommonRoutes();
-        public Type ApiKeyValidatorMiddleware { get; set; } = typeof(APIKeyValidator);
-        public Type BlackListMiddleware { get; set; } = typeof(BlackList);
-        public Type DDOSProtectionMiddleware { get; set; } = typeof(DDOSProtection);
-        public Type ExceptionManagerMiddleware { get; set; } = typeof(ExceptionManager);
-        public Type ObfuscationMiddleware { get; set; } = typeof(Obfuscation);
-        public Type RequestCounterMiddleware { get; set; } = typeof(RequestCounter);
-        public Type RequestLoggingMiddleware { get; set; } = typeof(RequestLoggingMiddleware);
-        public Type WebApplicationFirewallMiddleware { get; set; } = typeof(WebApplicationFirewall);
+        public Type ApiKeyValidatorMiddleware { get; set; } = null;
+        public Type AuthenticationMiddleware { get; set; } = null;
+        public Type AuthorizationMiddleware { get; set; } = null;
+        public Type BlackListMiddleware { get; set; } = null;
+        public Type DDOSProtectionMiddleware { get; set; } = null;
+        public Type ExceptionManagerMiddleware { get; set; } = null;
+        public Type ObfuscationMiddleware { get; set; } = null;
+        public Type RequestCounterMiddleware { get; set; } = null;
+        public Type RequestLoggingMiddleware { get; set; } = null;
+        public Type WebApplicationFirewallMiddleware { get; set; } = null;
         public ISet<Type> KnownTypes { get; set; } = new HashSet<Type>();
 
         public void Initialize(string baseFolder)

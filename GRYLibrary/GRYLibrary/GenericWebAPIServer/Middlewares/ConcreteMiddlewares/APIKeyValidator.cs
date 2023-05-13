@@ -17,12 +17,12 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.ConcreteMiddlewares
             string method = context.Request.Method;
             string route = context.Request.Path;
             bool accessAllowed;
-            if(_APIKeyValidatorSettings.APIKeyIsRequired(method, route))
+            if(this._APIKeyValidatorSettings.APIKeyIsRequired(method, route))
             {
-                (bool provided, string apiKey) = _APIKeyValidatorSettings.TryGetAPIKey(context);
+                (bool provided, string apiKey) = this._APIKeyValidatorSettings.TryGetAPIKey(context);
                 if(provided)
                 {
-                    accessAllowed = _APIKeyValidatorSettings.APIKeyIsAuthorized(apiKey, method, route);
+                    accessAllowed = this._APIKeyValidatorSettings.APIKeyIsAuthorized(apiKey, method, route);
                     if(accessAllowed)
                     {
                         context.Items["APIKey"] = apiKey;

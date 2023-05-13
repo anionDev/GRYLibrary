@@ -1,8 +1,6 @@
 ﻿using GRYLibrary.Core.GeneralPurposeLogger;
 using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using GRYLibrary.Core.GenericWebAPIServer.ExecutionModes;
-using GRYLibrary.Core.GenericWebAPIServer.Middlewares;
-using GRYLibrary.Core.GenericWebAPIServer.Middlewares.MiddlewareConfigurationInterfaces;
 using GRYLibrary.Core.GenericWebAPIServer.Settings;
 using GRYLibrary.Core.GenericWebAPIServer.Settings.CommonRoutes;
 using GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration;
@@ -96,15 +94,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             builder.Services.AddSingleton((serviceProvider) => this._APIServerInitializer.ApplicationConstants);
             builder.Services.AddSingleton<IApplicationConstants>((serviceProvider) => this._APIServerInitializer.ApplicationConstants);
 
-            builder.Services.AddSingleton<IBlacklistProvider>((serviceProvider) => persistedApplicationSpecificConfiguration.ServerConfiguration.BlackListProvider);
-            builder.Services.AddSingleton<IDDOSProtectionSettings>((serviceProvider) => persistedApplicationSpecificConfiguration.ServerConfiguration.DDOSProtectionSettings);
-            builder.Services.AddSingleton<IObfuscationSettings>((serviceProvider) => persistedApplicationSpecificConfiguration.ServerConfiguration.ObfuscationSettings);
-            builder.Services.AddSingleton<IWebApplicationFirewallSettings>((serviceProvider) => persistedApplicationSpecificConfiguration.ServerConfiguration.WebApplicationFirewallSettings);
-            builder.Services.AddSingleton<IExceptionManagerSettings>((serviceProvider) => persistedApplicationSpecificConfiguration.ServerConfiguration.ExceptionManagerSettings);
-            builder.Services.AddSingleton<IAPIKeyValidatorSettings>((serviceProvider) => persistedApplicationSpecificConfiguration.ServerConfiguration.APIKeyValidatorSettings);
-            builder.Services.AddSingleton<IRequestCounterSettings>((serviceProvider) => persistedApplicationSpecificConfiguration.ServerConfiguration.RequestCounterSettings);
-            builder.Services.AddSingleton<IRequestLoggingSettings>((serviceProvider) => persistedApplicationSpecificConfiguration.ServerConfiguration.RequestLoggingSettings);
-
             this._APIServerInitializer.ConfigureServices(builder.Services, this._APIServerInitializer.ApplicationConstants, persistedApplicationSpecificConfiguration);
             builder.WebHost.ConfigureKestrel(kestrelOptions =>
             {
@@ -143,12 +132,9 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen(swaggerOptions =>
                 {
-                    foreach(IMiddlewareSettings middlewareSettings in persistedApplicationSpecificConfiguration.ServerConfiguration.GetSettingsOfCommonMiddlewares())
+                    foreach(FilterDescriptor filter in this._APIServerInitializer.Filter)
                     {
-                        foreach(FilterDescriptor filter in middlewareSettings.GetFilter())
-                        {
-                            swaggerOptions.OperationFilterDescriptors.Add(filter);
-                        }
+                        swaggerOptions.OperationFilterDescriptors.Add(filter);
                     }
                     swaggerOptions.SwaggerDoc(persistedApplicationSpecificConfiguration.ServerConfiguration.APIDocumentationDocumentName, new OpenApiInfo
                     {
@@ -178,22 +164,22 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             #region General Threat-Protection
             if(this._APIServerInitializer.ApplicationConstants.Environment is Productive)
             {
-                if(persistedApplicationSpecificConfiguration.ServerConfiguration.DDOSProtectionSettings.Enabled)
+                if(this._APIServerInitializer.ApplicationConstants.DDOSProtectionMiddleware != null)
                 {
                     app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.DDOSProtectionMiddleware);
                 }
-                if(persistedApplicationSpecificConfiguration.ServerConfiguration.BlackListProvider.Enabled)
+                if(this._APIServerInitializer.ApplicationConstants.BlackListMiddleware != null)
                 {
                     app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.BlackListMiddleware);
                 }
             }
             if(this._APIServerInitializer.ApplicationConstants.Environment is not Development)
             {
-                if(persistedApplicationSpecificConfiguration.ServerConfiguration.ObfuscationSettings.Enabled)
+                if(this._APIServerInitializer.ApplicationConstants.ObfuscationMiddleware != null)
                 {
                     app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.ObfuscationMiddleware);
                 }
-                if(persistedApplicationSpecificConfiguration.ServerConfiguration.ExceptionManagerSettings.Enabled)
+                if(this._APIServerInitializer.ApplicationConstants.ExceptionManagerMiddleware != null)
                 {
                     app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.ExceptionManagerMiddleware);
                 }
@@ -205,7 +191,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             #endregion
 
             #region Diagnosis
-            if(persistedApplicationSpecificConfiguration.ServerConfiguration.RequestLoggingSettings.Enabled)
+            if(this._APIServerInitializer.ApplicationConstants.RequestLoggingMiddleware!=null)
             {
                 app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.RequestLoggingMiddleware);
             }
@@ -216,17 +202,25 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             #endregion
 
             #region Bussiness-implementation of access-restriction
-            if(persistedApplicationSpecificConfiguration.ServerConfiguration.WebApplicationFirewallSettings.Enabled)
+            if(this._APIServerInitializer.ApplicationConstants.WebApplicationFirewallMiddleware != null)
             {
                 app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.WebApplicationFirewallMiddleware);
             }
-            if(persistedApplicationSpecificConfiguration.ServerConfiguration.APIKeyValidatorSettings.Enabled)
+            if(this._APIServerInitializer.ApplicationConstants.ApiKeyValidatorMiddleware != null)
             {
                 app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.ApiKeyValidatorMiddleware);
             }
+            if(this._APIServerInitializer.ApplicationConstants.AuthenticationMiddleware != null)
+            {
+                app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.AuthenticationMiddleware);
+            }
+            if(this._APIServerInitializer.ApplicationConstants.AuthorizationMiddleware != null)
+            {
+                app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.AuthorizationMiddleware);
+            }
             if(this._APIServerInitializer.ApplicationConstants.Environment is not Development)
             {
-                if(persistedApplicationSpecificConfiguration.ServerConfiguration.RequestCounterSettings.Enabled)
+                if(this._APIServerInitializer.ApplicationConstants.RequestCounterMiddleware != null)
                 {
                     app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.RequestCounterMiddleware);
                 }

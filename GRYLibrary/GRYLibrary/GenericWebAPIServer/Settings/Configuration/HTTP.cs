@@ -4,8 +4,10 @@
     {
         public static HTTP Create()
         {
-            HTTP result = new HTTP();
-            result.Port = 80;
+            HTTP result = new HTTP
+            {
+                Port = 80
+            };
             return result;
         }
 

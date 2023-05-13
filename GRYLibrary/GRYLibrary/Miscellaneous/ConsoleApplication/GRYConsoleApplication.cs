@@ -36,7 +36,7 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
             int result = 1;
             try
             {
-                string title = $"{_ProgramName} (v{_ProgramVersion})";
+                string title = $"{this._ProgramName} (v{this._ProgramVersion})";
                 Console.Title = title;
                 if(arguments == null)
                 {
