@@ -33,7 +33,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.MiddlewareConfiguratio
             public const string QueryParameterName = "APIKey";
             public static (bool provided, string apiKey) TryGetAPIKey(HttpContext context)
             {
-                bool apiKeyIsGiven = context.Request.Query.TryGetValue(APIKeyFilter.QueryParameterName, out StringValues values);
+                bool apiKeyIsGiven = context.Request.Query.TryGetValue(QueryParameterName, out StringValues values);
                 if(apiKeyIsGiven)
                 {
                     if(values.Count == 1)
