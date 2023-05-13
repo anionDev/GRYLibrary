@@ -1,8 +1,6 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.Middlewares.MiddlewareConfigurationInterfaces;
 using GRYLibrary.Core.Log;
 using Microsoft.Extensions.Logging;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using System.Collections.Generic;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.MiddlewareConfigurations
 {

@@ -1,10 +1,4 @@
-﻿using GRYLibrary.Core.GenericWebAPIServer.Settings;
-using Keycloak.Net;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Keycloak.Net;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.Systems.KeyCloak
 {
@@ -21,6 +15,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.Systems.KeyCloak
         private void Initialize()
         {
             this.KeycloakClient = new KeycloakClient(this.Settings.URL, this.Settings.User, this.Settings.Password, new KeycloakOptions(adminClientId: "admin"));
+        }
+
+        public KeycloakClient GetKeycloakClient()
+        {
+            return this.KeycloakClient;
         }
     }
 }
