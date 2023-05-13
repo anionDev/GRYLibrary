@@ -11,7 +11,7 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
 {
     public class GRYConsoleApplication<CMDOptions, InitializationConfig> where CMDOptions : ICommandlineParameter
     {
-        private readonly Func<CMDOptions, ExecutionMode, InitializationConfig, int> _Main;
+        private readonly Func<CMDOptions, InitializationConfig, int> _Main;
         private readonly string _ProgramName;
         private readonly string _ProgramVersion;
         private readonly string _ProgramDescription;
@@ -19,16 +19,16 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
         private readonly ExecutionMode _ExecutionMode;
         private readonly SentenceBuilder _SentenceBuilder;
         private readonly bool _ProgramCanRunWithoutArguments;
-        public GRYConsoleApplication(Func<CMDOptions, ExecutionMode, InitializationConfig, int> main, string programName, string programVersion, string programDescription, bool programCanRunWithoutArguments, ExecutionMode executionMode)
+        public GRYConsoleApplication(Func<CMDOptions,  InitializationConfig, int> main, string programName, string programVersion, string programDescription, bool programCanRunWithoutArguments, ExecutionMode executionMode)
         {
             this._Main = main;
             this._ProgramName = programName;
             this._ProgramVersion = programVersion;
             this._ProgramDescription = programDescription;
-            this._ExecutionMode = executionMode;
             this._Log = GRYLog.Create();
             this._SentenceBuilder = SentenceBuilder.Create();
             this._ProgramCanRunWithoutArguments = programCanRunWithoutArguments;
+            this._ExecutionMode = executionMode;
         }
 
         public int Main(string[] arguments, InitializationConfig initializationConfiguration)
@@ -36,6 +36,8 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
             int result = 1;
             try
             {
+                string title = $"{this._ProgramName} (v{this._ProgramVersion})";
+                Console.Title = title;
                 if(arguments == null)
                 {
                     throw Utilities.CreateNullReferenceExceptionDueToParameter(nameof(arguments));
@@ -107,7 +109,7 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
 
         private int HandleSuccessfullyParsedArguments(CMDOptions options, InitializationConfig gc)
         {
-            return this._Main(options, this._ExecutionMode, gc);
+            return this._Main(options,  gc);
         }
 
         public void WriteHelp(ParserResult<CMDOptions> argumentParserResult)

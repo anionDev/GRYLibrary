@@ -8,7 +8,6 @@ namespace GRYLibrary.Core.Log.ConcreteLogTargets
 {
     public sealed class LogFile :GRYLogTarget
     {
-
         public LogFile() { }
         public AbstractFilePath File { get; set; }
         public string Encoding { get; set; } = "utf-8";
@@ -28,23 +27,23 @@ namespace GRYLibrary.Core.Log.ConcreteLogTargets
 
         public void Flush()
         {
-            if(string.IsNullOrWhiteSpace(this.File.GetPath(this._BasePath)))
+            string logfile = this.File.GetPath(this._BasePath);
+            if(string.IsNullOrWhiteSpace(logfile))
             {
                 throw new NullReferenceException($"LogFile is not defined.");
             }
-            string file = this.File.GetPath();
-            Utilities.EnsureFileExists(file, true);
+            Utilities.EnsureFileExists(logfile, true);
             string result = string.Empty;
             for(int i = 0; i < this._Pool.Count; i++)
             {
-                if(!(i == 0 && Utilities.FileIsEmpty(file)))
+                if(!(i == 0 && Utilities.FileIsEmpty(logfile)))
                 {
                     result += Environment.NewLine;
                 }
                 result += this._Pool[i];
             }
             Encoding encoding = Utilities.GetEncodingByIdentifier(this.Encoding);
-            System.IO.File.AppendAllText(file, result, encoding);
+            System.IO.File.AppendAllText(logfile, result, encoding);
             this._Pool.Clear();
         }
 

@@ -370,10 +370,10 @@ namespace GRYLibrary.Core.Log
             }
         }
 
-
         public void Dispose()
         {
         }
+
         public IDisposable UseSubNamespace(string subnamespace)
         {
             return new GRYLogSubNamespaceProvider(this, subnamespace);
@@ -395,7 +395,9 @@ namespace GRYLibrary.Core.Log
         {
             return $"EventId: {eventId.Id}, EventName: '{eventId.Name}'";
         }
+
         #region ILogger-Implementation
+
         public bool IsEnabled(LogLevel logLevel)
         {
             return this.AnyLogTargetEnabled;
@@ -409,7 +411,6 @@ namespace GRYLibrary.Core.Log
         {
             this.Log(() => $"{this.FormatEvent(eventId)} | {formatter(state, exception)}", logLevel, 0x78200004.ToString());
         }
-
 
         #endregion
 

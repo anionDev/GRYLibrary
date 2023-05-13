@@ -2,7 +2,10 @@
 using GRYLibrary.Core.Exceptions;
 using GRYLibrary.Core.ExecutePrograms;
 using GRYLibrary.Core.ExecutePrograms.WaitingStates;
+using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
+using GRYLibrary.Core.GenericWebAPIServer.ExecutionModes;
 using GRYLibrary.Core.Log;
+using GRYLibrary.Core.Miscellaneous.FilePath;
 using GRYLibrary.Core.OperatingSystem;
 using GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems;
 using GRYLibrary.Core.XMLSerializer;
@@ -603,6 +606,20 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             return $"{Math.Floor(timespan.TotalHours).ToString().PadLeft(2, '0')}:{timespan.Minutes.ToString().PadLeft(2, '0')}:{timespan.Seconds.ToString().PadLeft(2, '0')}";
         }
+
+        public const string ISO8601FormatForDateTimesInFullFormat = "yyyy-MM-ddTHH:mm:sszzz";
+        public static string FormatTimestamp(DateTime timestamp, bool addMillisecondsInLogTimestamps)
+        {
+            if(addMillisecondsInLogTimestamps)
+            {
+                return timestamp.ToString("o");//2023-05-01T11:44:53.4931284+02:00
+            }
+            else
+            {
+                return timestamp.ToString(ISO8601FormatForDateTimesInFullFormat);//2023-05-01T11:44:53+02:00
+            }
+        }
+
         public static string DateTimeToISO8601String(DateTime dateTime, bool addMilliseconds = true)
         {
             string format;
@@ -2799,6 +2816,23 @@ namespace GRYLibrary.Core.Miscellaneous
                 createInitialFile(configurationFile, initialValue);
             }
             return configuration;
+        }
+        public static ExecutionMode GetExecutionMode()
+        {
+            if(Assembly.GetEntryAssembly().GetName().Name == "dotnet-swagger")
+            {
+                return Analysis.Instance;
+            }
+            return RunProgram.Instance;
+        }
+        public static GRYLogConfiguration GetLogConfiguration(string filename, GRYEnvironment environment)
+        {
+            GRYLogConfiguration result = GRYLogConfiguration.GetCommonConfiguration(AbstractFilePath.FromString("./" + filename), environment is Development);
+            foreach(GRYLogTarget target in result.LogTargets)
+            {
+                target.Format = GRYLogLogFormat.GRYLogFormat;
+            }
+            return result;
         }
     }
 }

@@ -197,11 +197,13 @@ namespace GRYLibrary.Core.Miscellaneous
         /// <returns></returns>
         public object Clone()
         {
-            Version version1 = new Version();
-            version1.major = this.major;
-            version1.minor = this.minor;
-            version1.build = this.build;
-            version1.revision = this.revision;
+            Version version1 = new Version
+            {
+                major = this.major,
+                minor = this.minor,
+                build = this.build,
+                revision = this.revision
+            };
             return version1;
         }
         #endregion

@@ -11,8 +11,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
             opts.Conventions.Add(new RoutePrefixConvention(routeAttribute));
         }
 
-        public static void UseGeneralRoutePrefix(this MvcOptions opts, string
-        prefix)
+        public static void UseGeneralRoutePrefix(this MvcOptions opts, string prefix)
         {
             opts.UseGeneralRoutePrefix(new RouteAttribute(prefix));
         }
