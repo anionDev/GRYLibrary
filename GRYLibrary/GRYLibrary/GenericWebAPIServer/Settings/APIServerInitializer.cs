@@ -5,7 +5,9 @@ using GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration;
 using GRYLibrary.Core.Miscellaneous;
 using GRYLibrary.Core.Miscellaneous.FilePath;
 using Microsoft.Extensions.DependencyInjection;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
@@ -42,5 +44,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
             string result = applicationConstants.ExecutionMode.Accept(new GetBaseFolder(applicationConstants.Environment, programFolder));
             return result;
         }
+
+        public ISet<FilterDescriptor> Filter { get; set; } = new HashSet<FilterDescriptor>();
     }
 }

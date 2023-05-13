@@ -1,5 +1,4 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
-using GRYLibrary.Core.GenericWebAPIServer.Utilities;
 using GRYLibrary.Core.Log;
 using GRYLibrary.Core.Miscellaneous.FilePath;
 
@@ -25,12 +24,13 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration
         public static PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> Create<PersistedAppSpecificConfiguration>(string domain, PersistedAppSpecificConfiguration persistedApplicationSpecificConfiguration, GRYEnvironment environment, string fallbackCertificatePasswordFileContentHex, string fallbackCertificatePFXFileContentHex)
             where PersistedAppSpecificConfiguration : new()
         {
-            PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> result = new PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration>();
-            result.ServerConfiguration = ServerConfiguration.Create(domain, environment, TLSCertificateInformation.Create(AbstractFilePath.FromString($"./Certificate.{domain}.password"), AbstractFilePath.FromString($"./Certificate.{domain}.pfx"), fallbackCertificatePasswordFileContentHex, fallbackCertificatePFXFileContentHex));
-            result.ApplicationLogConfiguration = ServerUtilities.GetLogConfiguration("Server.log", environment);
-            result.ApplicationSpecificConfiguration = persistedApplicationSpecificConfiguration;
+            PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> result = new PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration>
+            {
+                ServerConfiguration = ServerConfiguration.Create(domain, environment, TLSCertificateInformation.Create(AbstractFilePath.FromString($"./Certificate.{domain}.password"), AbstractFilePath.FromString($"./Certificate.{domain}.pfx"), fallbackCertificatePasswordFileContentHex, fallbackCertificatePFXFileContentHex)),
+                ApplicationLogConfiguration = GRYLibrary.Core.Miscellaneous.Utilities.GetLogConfiguration("Server.log", environment),
+                ApplicationSpecificConfiguration = persistedApplicationSpecificConfiguration
+            };
             return result;
         }
-
     }
 }

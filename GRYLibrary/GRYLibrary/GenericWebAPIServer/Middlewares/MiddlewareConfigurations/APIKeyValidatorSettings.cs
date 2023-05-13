@@ -7,7 +7,6 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FilterDescriptor = Swashbuckle.AspNetCore.SwaggerGen.FilterDescriptor;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.MiddlewareConfigurations
 {
@@ -24,15 +23,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.MiddlewareConfiguratio
             return false;
         }
 
-        public virtual ISet<FilterDescriptor> GetFilter()
-        {
-            return new HashSet<FilterDescriptor>();
-        }
-
         public virtual (bool provided, string apiKey) TryGetAPIKey(HttpContext context)
         {
             throw new NotSupportedException();
         }
+
         public class APIKeyFilter :IOperationFilter
         {
             public const string QueryParameterName = "APIKey";
@@ -68,6 +63,5 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.MiddlewareConfiguratio
                 });
             }
         }
-
     }
 }

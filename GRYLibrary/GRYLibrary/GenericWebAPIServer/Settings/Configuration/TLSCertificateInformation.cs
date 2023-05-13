@@ -10,11 +10,13 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration
         public string FallbackCertificatePFXFileContentHex { get; set; } = default;
         public static TLSCertificateInformation Create(AbstractFilePath certificatePasswordFile, AbstractFilePath certificatePFXFile, string fallbackCertificatePasswordFileContentHex, string fallbackCertificatePFXFileContentHex)
         {
-            TLSCertificateInformation result = new TLSCertificateInformation();
-            result.CertificatePasswordFile = certificatePasswordFile;
-            result.CertificatePFXFile = certificatePFXFile;
-            result.FallbackCertificatePasswordFileContentHex = fallbackCertificatePasswordFileContentHex;
-            result.FallbackCertificatePFXFileContentHex = fallbackCertificatePFXFileContentHex;
+            TLSCertificateInformation result = new TLSCertificateInformation
+            {
+                CertificatePasswordFile = certificatePasswordFile,
+                CertificatePFXFile = certificatePFXFile,
+                FallbackCertificatePasswordFileContentHex = fallbackCertificatePasswordFileContentHex,
+                FallbackCertificatePFXFileContentHex = fallbackCertificatePFXFileContentHex
+            };
             return result;
         }
         public string GetCertificatePasswordFile(string certificateFolder) { return this.CertificatePasswordFile.GetPath(certificateFolder); }

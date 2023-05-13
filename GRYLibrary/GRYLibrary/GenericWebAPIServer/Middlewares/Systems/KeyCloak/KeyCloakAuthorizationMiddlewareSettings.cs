@@ -2,9 +2,9 @@
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Generic;
 
-namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.MiddlewareConfigurations
+namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.Systems.KeyCloak
 {
-    public class WebApplicationFirewallSettings :IWebApplicationFirewallSettings
+    public class KeyCloakAuthorizationMiddlewareSettings :IKeyCloakAuthorizationMiddlewareSettings
     {
         public bool Enabled { get; set; } = false;
     }

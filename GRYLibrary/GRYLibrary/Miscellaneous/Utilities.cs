@@ -2,7 +2,10 @@
 using GRYLibrary.Core.Exceptions;
 using GRYLibrary.Core.ExecutePrograms;
 using GRYLibrary.Core.ExecutePrograms.WaitingStates;
+using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
+using GRYLibrary.Core.GenericWebAPIServer.ExecutionModes;
 using GRYLibrary.Core.Log;
+using GRYLibrary.Core.Miscellaneous.FilePath;
 using GRYLibrary.Core.OperatingSystem;
 using GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems;
 using GRYLibrary.Core.XMLSerializer;
@@ -2813,6 +2816,23 @@ namespace GRYLibrary.Core.Miscellaneous
                 createInitialFile(configurationFile, initialValue);
             }
             return configuration;
+        }
+        public static ExecutionMode GetExecutionMode()
+        {
+            if(Assembly.GetEntryAssembly().GetName().Name == "dotnet-swagger")
+            {
+                return Analysis.Instance;
+            }
+            return RunProgram.Instance;
+        }
+        public static GRYLogConfiguration GetLogConfiguration(string filename, GRYEnvironment environment)
+        {
+            GRYLogConfiguration result = GRYLogConfiguration.GetCommonConfiguration(AbstractFilePath.FromString("./" + filename), environment is Development);
+            foreach(GRYLogTarget target in result.LogTargets)
+            {
+                target.Format = GRYLogLogFormat.GRYLogFormat;
+            }
+            return result;
         }
     }
 }

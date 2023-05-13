@@ -13,10 +13,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.MiddlewareConfiguratio
         public bool Enabled { get; set; } = true;
         public bool LogClientIP { get; set; } = true;
 
-        public ISet<FilterDescriptor> GetFilter()
-        {
-            return new HashSet<FilterDescriptor>();
-        }
+       
 
         public virtual bool ShouldBeLogged(Request request)
         {

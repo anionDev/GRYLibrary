@@ -7,9 +7,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.MiddlewareConfiguratio
     public class DDOSProtectionSettings :IDDOSProtectionSettings
     {
         public bool Enabled { get; set; } = false;
-        public ISet<FilterDescriptor> GetFilter()
-        {
-            return new HashSet<FilterDescriptor>();
-        }
+     
     }
 }
