@@ -23,8 +23,8 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public IApplicationConstants<AppSpecificConstants> ApplicationConstants { get; set; }
         public PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> InitialApplicationConfiguration { get; set; }
         public Action<IServiceCollection, IApplicationConstants<AppSpecificConstants>, IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>> ConfigureServices { get; set; }
-        public Action PreRun { get; set; }
-        public Action PostRun { get; set; }
+        public Action<IApplicationConstants<AppSpecificConstants>, IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>> PreRun { get; set; }
+        public Action<IApplicationConstants<AppSpecificConstants>, IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>> PostRun { get; set; }
         public AbstractFilePath BasicInformationFile { get; set; }
         public APIServerInitializer(string applicationName, Version3 applicationVersion, ExecutionMode executionMode, GRYEnvironment environment, AppSpecificConstants applicationSpecificConstants, string domain, string appDescription, PersistedApplicationSpecificConfiguration persistedApplicationSpecificConfiguration, string fallbackCertificatePasswordFileContentHex, string fallbackCertificatePFXFileContentHex)
         {
@@ -33,8 +33,8 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
             this.BaseFolder = GetDefaultBaseFolder(this.ApplicationConstants);
             this.InitialApplicationConfiguration = PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>.Create(domain, persistedApplicationSpecificConfiguration, environment, fallbackCertificatePasswordFileContentHex, fallbackCertificatePFXFileContentHex);
             this.ConfigureServices = (_, _, _) => { };
-            this.PreRun = () => { };
-            this.PostRun = () => { };
+            this.PreRun = (_, _) => { };
+            this.PostRun = (_, _) => { };
             this.BasicInformationFile = AbstractFilePath.FromString("./BasicApplicationInformation.xml");
         }
 
