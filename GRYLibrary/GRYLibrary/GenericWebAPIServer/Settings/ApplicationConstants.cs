@@ -29,9 +29,10 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public CommonRoutesInformation CommonRoutes { get; set; }
         public void Initialize(string baseFolder);
         public Type ApiKeyValidatorMiddleware { get; set; }
-        public Type AuthenticationMiddleware { get; set; } 
-        public Type AuthorizationMiddleware { get; set; } 
+        public Type AuthenticationMiddleware { get; set; }
+        public Type AuthorizationMiddleware { get; set; }
         public Type BlackListMiddleware { get; set; }
+        public Type CaptchaMiddleware { get; set; }
         public Type DDOSProtectionMiddleware { get; set; }
         public Type ExceptionManagerMiddleware { get; set; }
         public Type ObfuscationMiddleware { get; set; }
@@ -79,6 +80,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public Type AuthenticationMiddleware { get; set; } = null;
         public Type AuthorizationMiddleware { get; set; } = null;
         public Type BlackListMiddleware { get; set; } = null;
+        public Type CaptchaMiddleware { get; set; }
         public Type DDOSProtectionMiddleware { get; set; } = null;
         public Type ExceptionManagerMiddleware { get; set; } = null;
         public Type ObfuscationMiddleware { get; set; } = null;

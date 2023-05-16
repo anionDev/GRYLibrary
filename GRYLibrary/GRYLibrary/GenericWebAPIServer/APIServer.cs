@@ -162,7 +162,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             WebApplication app = builder.Build();
 
             #region General Threat-Protection
-            if(this._APIServerInitializer.ApplicationConstants.Environment is Productive)
+            if(this._APIServerInitializer.ApplicationConstants.Environment is not Development)
             {
                 if(this._APIServerInitializer.ApplicationConstants.DDOSProtectionMiddleware != null)
                 {
@@ -172,9 +172,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 {
                     app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.BlackListMiddleware);
                 }
-            }
-            if(this._APIServerInitializer.ApplicationConstants.Environment is not Development)
-            {
                 if(this._APIServerInitializer.ApplicationConstants.ObfuscationMiddleware != null)
                 {
                     app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.ObfuscationMiddleware);
@@ -183,7 +180,12 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 {
                     app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.ExceptionManagerMiddleware);
                 }
+                if(this._APIServerInitializer.ApplicationConstants.CaptchaMiddleware != null)
+                {
+                    app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.CaptchaMiddleware);
+                }
             }
+            app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.CaptchaMiddleware);
             if(persistedApplicationSpecificConfiguration.ServerConfiguration.Protocol is HTTPS)
             {
                 app.UseHsts();
