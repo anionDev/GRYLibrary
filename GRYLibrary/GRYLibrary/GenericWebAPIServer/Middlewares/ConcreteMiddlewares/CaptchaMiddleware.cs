@@ -28,10 +28,10 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.ConcreteMiddlewares
             {
                 HttpStatusCode statusCode = HttpStatusCode.OK;
                 string message = string.Empty;
+                string captchaIdKey = "captchaId";
+                string captchaValueKey = "captchaValue";
                 if(this.UserTriesToSolveCaptcha(context))
                 {
-                    string captchaIdKey = "captchaId";
-                    string captchaValueKey = "captchaValue";
                     string captchaId = context.Request.Query[captchaIdKey];
                     string captchaValue = context.Request.Query[captchaValueKey];
                     bool result = this._CaptchaMiddlewareSettings.TrySolve(captchaId, captchaValue, out string accessKey, out string failMessage);
@@ -60,6 +60,8 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.ConcreteMiddlewares
                 html = html.Replace($"__message__", message);
                 html = html.Replace($"__captchabase64__", captchaBase64);
                 html = html.Replace($"__captchaid__", id);
+                html = html.Replace($"__captchaidquerykey__", captchaIdKey);
+                html = html.Replace($"__captchavaluequerykey__", captchaValueKey);
                 context.Response.BodyWriter.WriteAsync(encoding.GetBytes(html));
                 return Task.CompletedTask;
             }

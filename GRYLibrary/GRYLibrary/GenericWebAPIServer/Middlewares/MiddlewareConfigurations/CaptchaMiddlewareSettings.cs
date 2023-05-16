@@ -30,8 +30,8 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.MiddlewareConfiguratio
     </form>
         <form>
             <label for=""Value""> Value:</label> <br />
-            <input type=""text"" name=""captchaValue"" required> <br />
-            <input type=""hidden"" name=""captchaId"" value=""__captchaid__"" required> <br />
+            <input type=""text"" name=""__captchavaluequerykey__"" required> <br />
+            <input type=""hidden"" name=""__captchaidquerykey__"" value=""__captchaid__"" required> <br />
             <input type=""submit"" value=""Enter"">
         </form>
     </div>

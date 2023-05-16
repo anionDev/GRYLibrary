@@ -2,6 +2,6 @@
 {
     public class KeyCloakAuthenticationMiddlewareSettings :IKeyCloakAuthenticationMiddlewareSettings
     {
-        public bool Enabled { get; set; } = false;      
+        public bool Enabled { get; set; } = false;
     }
 }
