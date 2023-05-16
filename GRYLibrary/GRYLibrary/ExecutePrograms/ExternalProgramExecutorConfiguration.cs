@@ -24,12 +24,18 @@ namespace GRYLibrary.Core.ExecutePrograms
         public string Title { get; set; } = null;
         public WaitingState WaitingState { get; set; } = new RunSynchronously();
         public bool CreateWindow { get; set; } = true;
-
         public string LogNamespace { get; set; } = null;
-
         public string User { get; set; } = null;
         public string Password { get; set; } = null;
         public bool UpdateConsoleTitle { get; set; } = false;
         public bool DelegateToEpew { get; set; } = false;
+        /// <remarks>
+        /// If this property is set to false, then <see cref="ExternalProgramExecutor.AllStdOutLines"/> will remain empty and <see cref="ExternalProgramExecutor.LogObject"/> will not have any entry.
+        /// </remarks>
+        public bool RedirectStandardOutput { get; set; } = true;
+        /// <remarks>
+        /// If this property is set to false, then <see cref="ExternalProgramExecutor.AllStdErrLines"/> will remain empty and <see cref="ExternalProgramExecutor.LogObject"/> will not have any entry.
+        /// </remarks>
+        public bool RedirectStandardError { get; set; } = true;
     }
 }
