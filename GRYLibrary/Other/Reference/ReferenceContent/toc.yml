@@ -1,6 +1,6 @@
 - name: Articles
   href: Articles/
-  homepage: Articles/
+  homepage: Articles/index.html
 - name: API Documentation
   href: API/
-  homepage: API/
+  homepage: API/index.html
