@@ -288,8 +288,8 @@ namespace GRYLibrary.Core.ExecutePrograms
                     ErrorDialog = false,
                     Arguments = this.Configuration.Argument,
                     WorkingDirectory = this.Configuration.WorkingDirectory,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
+                    RedirectStandardOutput = this.Configuration.RedirectStandardOutput,
+                    RedirectStandardError = this.Configuration.RedirectStandardError,
                     CreateNoWindow = !this.Configuration.CreateWindow,
                 };
 
@@ -332,8 +332,14 @@ namespace GRYLibrary.Core.ExecutePrograms
                 this.LogImmediatelyAfterStart(this._ProcessId);
                 if(this.Configuration.WaitingState is RunSynchronously)
                 {
-                    this._Process.BeginOutputReadLine();
-                    this._Process.BeginErrorReadLine();
+                    if(this.Configuration.RedirectStandardOutput)
+                    {
+                        this._Process.BeginOutputReadLine();
+                    }
+                    if(this.Configuration.RedirectStandardError)
+                    {
+                        this._Process.BeginErrorReadLine();
+                    }
                     readLogItemsThread = SupervisedThread.Create(this.LogOutputImplementation);
                     readLogItemsThread.Name = $"Logger-Thread for '{this.Configuration.Title}' ({nameof(ExternalProgramExecutor)}({this.Configuration.Title}))";
                     readLogItemsThread.LogOverhead = false;

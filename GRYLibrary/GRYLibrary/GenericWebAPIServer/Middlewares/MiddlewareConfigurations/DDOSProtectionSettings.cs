@@ -4,7 +4,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.MiddlewareConfiguratio
 {
     public class DDOSProtectionSettings :IDDOSProtectionSettings
     {
-        public bool Enabled { get; set; } = false;
-     
+        public bool Enabled { get; set; } = false;     
     }
 }

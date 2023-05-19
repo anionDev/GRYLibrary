@@ -14,7 +14,8 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.Systems.KeyCloak
 
         private void Initialize()
         {
-            this.KeycloakClient = new KeycloakClient(this.Settings.URL, this.Settings.User, this.Settings.Password, new KeycloakOptions(adminClientId: "admin"));
+            this.KeycloakClient = new KeycloakClient(this.Settings.URL, this.Settings.User, this.Settings.Password);
+   
         }
 
         public KeycloakClient GetKeycloakClient()

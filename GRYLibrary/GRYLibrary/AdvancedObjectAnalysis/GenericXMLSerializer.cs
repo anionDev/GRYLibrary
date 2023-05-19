@@ -84,7 +84,6 @@ namespace GRYLibrary.Core.AdvancedXMLSerialysis
             this.GetSerializer().Serialize(writer, objectForRealSerialization);
         }
 
-
         public U Deserialize<U>(string serializedObject)
         {
             return (U)this.Deserialize(serializedObject);

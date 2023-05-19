@@ -50,9 +50,9 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration = this.LoadConfiguration(this._APIServerInitializer.ApplicationConstants.KnownTypes);
                 logger = this.GetApplicationLogger(persistedApplicationSpecificConfiguration);
                 WebApplication server = this.Initialize(persistedApplicationSpecificConfiguration, logger, commandlineParameter);
-                this._APIServerInitializer.PreRun();
+                this._APIServerInitializer.PreRun(this._APIServerInitializer.ApplicationConstants, persistedApplicationSpecificConfiguration);
                 this.RunAPIServer(server);
-                this._APIServerInitializer.PostRun();
+                this._APIServerInitializer.PostRun(this._APIServerInitializer.ApplicationConstants, persistedApplicationSpecificConfiguration);
                 return 0;
             }
             catch(Exception exception)
@@ -123,7 +123,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                     }
                 });
             });
-            string appVersionString = "v" + this._APIServerInitializer.ApplicationConstants.ApplicationVersion.ToString();
+            string appVersionString = $"v{this._APIServerInitializer.ApplicationConstants.ApplicationVersion}";
 
             builder.Services.AddControllers();
             bool hostAPIDocumentation = HostAPIDocumentation(this._APIServerInitializer.ApplicationConstants.Environment, persistedApplicationSpecificConfiguration.ServerConfiguration.HostAPISpecificationForInNonDevelopmentEnvironment, this._APIServerInitializer.ApplicationConstants.ExecutionMode);
@@ -139,7 +139,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                     swaggerOptions.SwaggerDoc(persistedApplicationSpecificConfiguration.ServerConfiguration.APIDocumentationDocumentName, new OpenApiInfo
                     {
                         Version = appVersionString,
-                        Title = this._APIServerInitializer.ApplicationConstants.ApplicationName + " API",
+                        Title = $"{this._APIServerInitializer.ApplicationConstants.ApplicationName} API",
                         Description = this._APIServerInitializer.ApplicationConstants.ApplicationDescription,
                         TermsOfService = new Uri(persistedApplicationSpecificConfiguration.ServerConfiguration.GetServerAddress() + persistedApplicationSpecificConfiguration.ServerConfiguration.TermsOfServiceURLSubPath),
                         Contact = new OpenApiContact
@@ -162,7 +162,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             WebApplication app = builder.Build();
 
             #region General Threat-Protection
-            if(this._APIServerInitializer.ApplicationConstants.Environment is Productive)
+            if(this._APIServerInitializer.ApplicationConstants.Environment is not Development)
             {
                 if(this._APIServerInitializer.ApplicationConstants.DDOSProtectionMiddleware != null)
                 {
@@ -172,9 +172,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 {
                     app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.BlackListMiddleware);
                 }
-            }
-            if(this._APIServerInitializer.ApplicationConstants.Environment is not Development)
-            {
                 if(this._APIServerInitializer.ApplicationConstants.ObfuscationMiddleware != null)
                 {
                     app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.ObfuscationMiddleware);
@@ -183,7 +180,12 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 {
                     app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.ExceptionManagerMiddleware);
                 }
+                if(this._APIServerInitializer.ApplicationConstants.CaptchaMiddleware != null)
+                {
+                    app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.CaptchaMiddleware);
+                }
             }
+            app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.CaptchaMiddleware);
             if(persistedApplicationSpecificConfiguration.ServerConfiguration.Protocol is HTTPS)
             {
                 app.UseHsts();
@@ -191,7 +193,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             #endregion
 
             #region Diagnosis
-            if(this._APIServerInitializer.ApplicationConstants.RequestLoggingMiddleware!=null)
+            if(this._APIServerInitializer.ApplicationConstants.RequestLoggingMiddleware != null)
             {
                 app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.RequestLoggingMiddleware);
             }
@@ -234,7 +236,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 app.UseSwagger(options => options.RouteTemplate = $"{ServerConfiguration.GetAPIDocumentationRoutePrefix()}/Other/Resources/{{documentName}}/{this._APIServerInitializer.ApplicationConstants.ApplicationName}.api.json");
                 app.UseSwaggerUI(options =>
                 {
-                    string appVersionString = "v" + this._APIServerInitializer.ApplicationConstants.ApplicationVersion.ToString();
+                    string appVersionString = $"v{this._APIServerInitializer.ApplicationConstants.ApplicationVersion}";
                     options.SwaggerEndpoint($"Other/Resources/{persistedApplicationSpecificConfiguration.ServerConfiguration.APIDocumentationDocumentName}/{this._APIServerInitializer.ApplicationConstants.ApplicationName}.api.json", this._APIServerInitializer.ApplicationConstants.ApplicationName + " " + appVersionString);
                     options.RoutePrefix = ServerConfiguration.GetAPIDocumentationRoutePrefix();
                 });
