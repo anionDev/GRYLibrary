@@ -20,7 +20,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.ConcreteMiddlewares
         /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
         {
-            if(this.UserHasAlreadySolvedTheCaptcha(_CaptchaMiddlewareSettings, context))
+            if(this.UserHasAlreadySolvedTheCaptcha(this._CaptchaMiddlewareSettings, context))
             {
                 return this._Next(context);
             }
@@ -40,7 +40,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.ConcreteMiddlewares
                         List<KeyValuePair<string, string>> query = context.Request.Query.SelectMany(x => x.Value, (col, value) => new KeyValuePair<string, string>(col.Key, value)).ToList();
                         query.RemoveAll(queryParameter => queryParameter.Key == captchaIdKey || queryParameter.Key == captchaValueKey);
                         context.Request.QueryString = new QueryBuilder(query).ToQueryString();
-                        this.SetAccessToken(_CaptchaMiddlewareSettings, context, accessKey);
+                        this.SetAccessToken(this._CaptchaMiddlewareSettings, context, accessKey);
                         context.Response.Redirect(context.Request.Path);
                         return Task.CompletedTask;
                     }
@@ -56,7 +56,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.ConcreteMiddlewares
                 string captchaBase64 = Convert.ToBase64String(picture);
                 context.Response.StatusCode = (int)statusCode;
                 context.Response.ContentType = "text/html";
-                string html = _CaptchaMiddlewareSettings.CaptchaPage;
+                string html = this._CaptchaMiddlewareSettings.CaptchaPage;
                 html = html.Replace($"__message__", message);
                 html = html.Replace($"__captchabase64__", captchaBase64);
                 html = html.Replace($"__captchaid__", id);

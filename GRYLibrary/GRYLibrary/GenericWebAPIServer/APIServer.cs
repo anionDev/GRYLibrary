@@ -185,7 +185,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                     app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.CaptchaMiddleware);
                 }
             }
-            app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.CaptchaMiddleware);
             if(persistedApplicationSpecificConfiguration.ServerConfiguration.Protocol is HTTPS)
             {
                 app.UseHsts();
@@ -347,8 +346,16 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
         private IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> LoadConfiguration(ISet<Type> knownTypes)
         {
-            IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> result = this._APIServerInitializer.ApplicationConstants.ExecutionMode.Accept(new GetPersistedAPIServerConfigurationVisitor(this._APIServerInitializer.ApplicationConstants.GetConfigurationFile(), this._APIServerInitializer.InitialApplicationConfiguration, knownTypes));
-            return result;
+            string configFile = this._APIServerInitializer.ApplicationConstants.GetConfigurationFile();
+            if(this._APIServerInitializer.ThrowErrorIfConfigurationDoesNotExistInProduction && this._APIServerInitializer.ApplicationConstants.Environment is Productive && !File.Exists(configFile))
+            {
+                throw new FileNotFoundException($"Configurationfile \"{configFile}\" does not exist.");
+            }
+            else
+            {
+                IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> result = this._APIServerInitializer.ApplicationConstants.ExecutionMode.Accept(new GetPersistedAPIServerConfigurationVisitor(configFile, this._APIServerInitializer.InitialApplicationConfiguration, knownTypes));
+                return result;
+            }
         }
         private class GetPersistedAPIServerConfigurationVisitor :IExecutionModeVisitor<IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>>
         {
