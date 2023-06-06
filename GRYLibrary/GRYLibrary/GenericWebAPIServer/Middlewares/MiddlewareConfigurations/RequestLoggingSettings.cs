@@ -1,6 +1,8 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.Middlewares.MiddlewareConfigurationInterfaces;
 using GRYLibrary.Core.Log;
 using Microsoft.Extensions.Logging;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Collections.Generic;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.MiddlewareConfigurations
 {
@@ -9,9 +11,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.MiddlewareConfiguratio
         public bool AddMillisecondsInLogTimestamps { get; set; } = false;
         public GRYLogConfiguration RequestsLogConfiguration { get; set; }
         public bool Enabled { get; set; } = true;
-        public bool LogClientIP { get; set; } = true;
-
-       
+        public bool LogClientIP { get; set; } = true;       
 
         public virtual bool ShouldBeLogged(Request request)
         {
@@ -33,6 +33,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.MiddlewareConfiguratio
         public bool ShouldLogEntireRequestContent(Request request)
         {
             return request.ResponseStatusCode / 100 == 5;
+        }
+
+        public ISet<IOperationFilter> GetFilter()
+        {
+            return new HashSet<IOperationFilter>();
         }
     }
 }

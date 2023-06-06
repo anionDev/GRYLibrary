@@ -18,10 +18,12 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public Version3 ApplicationVersion { get; set; }
         public ExecutionMode ExecutionMode { get; set; }
         public GRYEnvironment Environment { get; set; }
+        public AbstractFilePath DataFolder { get; set; }
         public AbstractFilePath ConfigurationFolder { get; set; }
         public AbstractFilePath CertificateFolder { get; set; }
         public AbstractFilePath ConfigurationFile { get; set; }
         public AbstractFilePath LogFolder { get; set; }
+        public string GetDataFolder();
         public string GetConfigurationFolder();
         public string GetCertificateFolder();
         public string GetConfigurationFile();
@@ -57,6 +59,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
             this.ApplicationSpecificConstants = applicationSpecificConstants;
             this.ConfigurationFolder = AbstractFilePath.FromString("./Configuration");
             this.CertificateFolder = AbstractFilePath.FromString("./Certificates");
+            this.DataFolder = AbstractFilePath.FromString("./Data");
             this.ConfigurationFile = AbstractFilePath.FromString("./Configuration.xml");
             this.LogFolder = AbstractFilePath.FromString("./Logs");
         }
@@ -67,10 +70,12 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public ExecutionMode ExecutionMode { get; set; }
         public GRYEnvironment Environment { get; set; }
         public AppSpecificConstants ApplicationSpecificConstants { get; set; }
+        public AbstractFilePath DataFolder { get; set; }
         public AbstractFilePath ConfigurationFolder { get; set; }
         public AbstractFilePath CertificateFolder { get; set; }
         public AbstractFilePath ConfigurationFile { get; set; }
         public AbstractFilePath LogFolder { get; set; }
+        public string GetDataFolder() { return this.DataFolder.GetPath(this._BaseFolder); }
         public string GetConfigurationFolder() { return this.ConfigurationFolder.GetPath(this._BaseFolder); }
         public string GetCertificateFolder() { return this.CertificateFolder.GetPath(this.GetConfigurationFolder()); }
         public string GetConfigurationFile() { return this.ConfigurationFile.GetPath(this.GetConfigurationFolder()); }
@@ -85,7 +90,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public Type ExceptionManagerMiddleware { get; set; } = null;
         public Type ObfuscationMiddleware { get; set; } = null;
         public Type RequestCounterMiddleware { get; set; } = null;
-        public Type RequestLoggingMiddleware { get; set; } = null;
+        public Type RequestLoggingMiddleware { get; set; }
         public Type WebApplicationFirewallMiddleware { get; set; } = null;
         public ISet<Type> KnownTypes { get; set; } = new HashSet<Type>();
 

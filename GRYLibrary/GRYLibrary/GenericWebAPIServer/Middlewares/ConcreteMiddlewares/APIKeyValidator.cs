@@ -35,7 +35,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.ConcreteMiddlewares
                 else
                 {
                     accessAllowed = false;
-                    context.Response.StatusCode = 401;
+                    context.Response.StatusCode = 403;
                 }
             }
             else

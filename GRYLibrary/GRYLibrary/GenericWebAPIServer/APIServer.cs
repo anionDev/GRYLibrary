@@ -1,6 +1,7 @@
 ﻿using GRYLibrary.Core.GeneralPurposeLogger;
 using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using GRYLibrary.Core.GenericWebAPIServer.ExecutionModes;
+using GRYLibrary.Core.GenericWebAPIServer.Middlewares.SupportInterfaces;
 using GRYLibrary.Core.GenericWebAPIServer.Settings;
 using GRYLibrary.Core.GenericWebAPIServer.Settings.CommonRoutes;
 using GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration;
@@ -93,6 +94,35 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             builder.Services.AddSingleton((serviceProvider) => persistedApplicationSpecificConfiguration);
             builder.Services.AddSingleton((serviceProvider) => this._APIServerInitializer.ApplicationConstants);
             builder.Services.AddSingleton<IApplicationConstants>((serviceProvider) => this._APIServerInitializer.ApplicationConstants);
+
+            #region Load defined middlewares
+
+            //TODO this must be refactored so that *all* stuff which belongs to a defined middleware is in its region here. a good overview is impossible otherwise.
+            #region APIKeyValidatorMiddleware
+            bool useAPIKeyValidatorMiddleware = false;
+            if(persistedApplicationSpecificConfiguration is ISupportAPIKeyValidatorMiddleware supportAPIKeyValidatorMiddleware)
+            {
+                if(supportAPIKeyValidatorMiddleware.APIKeyValidatorSettings.Enabled)
+                {
+                    useAPIKeyValidatorMiddleware = true;
+                    this._APIServerInitializer.Filter.UnionWith(supportAPIKeyValidatorMiddleware.APIKeyValidatorSettings.GetFilter());
+                }
+            }
+            #endregion
+
+            #region RequestLoggingMiddleware
+            bool useRequestLoggingMiddleware = false;
+            if(persistedApplicationSpecificConfiguration is ISupportRequestLoggingMiddleware supportRequestLoggingMiddleware)
+            {
+                if(supportRequestLoggingMiddleware.RequestLoggingSettings.Enabled)
+                {
+                    useRequestLoggingMiddleware = true;
+                    this._APIServerInitializer.Filter.UnionWith(supportRequestLoggingMiddleware.RequestLoggingSettings.GetFilter());
+                }
+            }
+            #endregion
+
+            #endregion
 
             this._APIServerInitializer.ConfigureServices(builder.Services, this._APIServerInitializer.ApplicationConstants, persistedApplicationSpecificConfiguration);
             builder.WebHost.ConfigureKestrel(kestrelOptions =>
@@ -192,7 +222,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             #endregion
 
             #region Diagnosis
-            if(this._APIServerInitializer.ApplicationConstants.RequestLoggingMiddleware != null)
+            if(useRequestLoggingMiddleware)
             {
                 app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.RequestLoggingMiddleware);
             }
@@ -207,7 +237,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             {
                 app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.WebApplicationFirewallMiddleware);
             }
-            if(this._APIServerInitializer.ApplicationConstants.ApiKeyValidatorMiddleware != null)
+            if(useAPIKeyValidatorMiddleware)//TODO use this pattern with the useXMiddleware-variable and its initialization also for all other supported middlewares
             {
                 app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.ApiKeyValidatorMiddleware);
             }
@@ -225,6 +255,10 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 {
                     app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.RequestCounterMiddleware);
                 }
+            }
+            foreach(Type customMiddleware in _APIServerInitializer.CustomMiddlewares)
+            {
+                app.UseMiddleware(customMiddleware);
             }
             #endregion
 

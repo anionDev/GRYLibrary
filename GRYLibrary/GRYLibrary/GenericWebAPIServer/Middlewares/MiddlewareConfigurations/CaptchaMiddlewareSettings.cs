@@ -1,6 +1,8 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.Middlewares.MiddlewareConfigurationInterfaces;
 using GRYLibrary.Core.Miscellaneous.Captcha;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
+using System.Collections.Generic;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.MiddlewareConfigurations
 {
@@ -67,6 +69,10 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.MiddlewareConfiguratio
         public bool UserHasAlreadySolvedTheCaptcha(string accessToken, out string failMessage)
         {
             return this._CaptchaManager.UserHasAlreadySolvedTheCaptcha(accessToken, out failMessage);
+        }
+        public ISet<IOperationFilter> GetFilter()
+        {
+            return new HashSet<IOperationFilter>();
         }
     }
 }

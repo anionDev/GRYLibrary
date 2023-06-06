@@ -18,15 +18,15 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.ConcreteMiddlewares
     public class RequestLoggingMiddleware :AbstractMiddleware
     {
         private readonly IGeneralLogger _RequestLogger;
-        private readonly IGeneralLogger _ServerLogger;
+        private readonly IGeneralLogger _Logger;
         private readonly IRequestLoggingSettings _RequestLoggingSettings;
         private readonly IApplicationConstants _AppConstants;
         /// <inheritdoc/>
-        public RequestLoggingMiddleware(RequestDelegate next, IRequestLoggingSettings requestLoggingSettings, IApplicationConstants appConstants, IGeneralLogger serverLogger) : base(next)
+        public RequestLoggingMiddleware(RequestDelegate next, IRequestLoggingSettings requestLoggingSettings, IApplicationConstants appConstants, IGeneralLogger logger) : base(next)
         {
             this._RequestLoggingSettings = requestLoggingSettings;
             this._AppConstants = appConstants;
-            this._ServerLogger = serverLogger;
+            this._Logger = logger;
             this._RequestLogger = this._AppConstants.ExecutionMode.Accept(new GetLoggerVisitor(this._RequestLoggingSettings.RequestsLogConfiguration, this._AppConstants.GetLogFolder(), "Requests"));
         }
         /// <inheritdoc/>
