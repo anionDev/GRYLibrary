@@ -1,6 +1,7 @@
 ﻿using GRYLibrary.Core.GeneralPurposeLogger;
 using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using GRYLibrary.Core.GenericWebAPIServer.ExecutionModes;
+using GRYLibrary.Core.GenericWebAPIServer.Middlewares;
 using GRYLibrary.Core.GenericWebAPIServer.Middlewares.SupportInterfaces;
 using GRYLibrary.Core.GenericWebAPIServer.Settings;
 using GRYLibrary.Core.GenericWebAPIServer.Settings.CommonRoutes;
@@ -13,6 +14,7 @@ using GRYLibrary.Core.Miscellaneous.MetaConfiguration.ConfigurationFormats;
 using GRYLibrary.Core.Miscellaneous.Migration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
@@ -96,29 +98,67 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             builder.Services.AddSingleton<IApplicationConstants>((serviceProvider) => this._APIServerInitializer.ApplicationConstants);
 
             #region Load defined middlewares
+            var middlewares = new List<Type>();
 
-            //TODO this must be refactored so that *all* stuff which belongs to a defined middleware is in its region here. a good overview is impossible otherwise.
-            #region APIKeyValidatorMiddleware
-            bool useAPIKeyValidatorMiddleware = false;
-            if(persistedApplicationSpecificConfiguration is ISupportAPIKeyValidatorMiddleware supportAPIKeyValidatorMiddleware)
+            #region General Threat-Protection
+            if(this._APIServerInitializer.ApplicationConstants.Environment is not Development)
             {
-                if(supportAPIKeyValidatorMiddleware.APIKeyValidatorSettings.Enabled)
+                if(this._APIServerInitializer.ApplicationConstants.DDOSProtectionMiddleware != null)
                 {
-                    useAPIKeyValidatorMiddleware = true;
-                    this._APIServerInitializer.Filter.UnionWith(supportAPIKeyValidatorMiddleware.APIKeyValidatorSettings.GetFilter());
+                    // TODO app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.DDOSProtectionMiddleware);
                 }
+                if(this._APIServerInitializer.ApplicationConstants.BlackListMiddleware != null)
+                {
+                    // TODO app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.BlackListMiddleware);
+                }
+                if(this._APIServerInitializer.ApplicationConstants.ObfuscationMiddleware != null)
+                {
+                    // TODO app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.ObfuscationMiddleware);
+                }
+                if(this._APIServerInitializer.ApplicationConstants.ExceptionManagerMiddleware != null)
+                {
+                    // TODO app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.ExceptionManagerMiddleware);
+                }
+                if(this._APIServerInitializer.ApplicationConstants.CaptchaMiddleware != null)
+                {
+                    // TODO app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.CaptchaMiddleware);
+                }
+            }
+            if(persistedApplicationSpecificConfiguration.ServerConfiguration.Protocol is HTTPS)
+            {
+                middlewares.Add(typeof(HstsMiddleware));
             }
             #endregion
 
-            #region RequestLoggingMiddleware
-            bool useRequestLoggingMiddleware = false;
-            if(persistedApplicationSpecificConfiguration is ISupportRequestLoggingMiddleware supportRequestLoggingMiddleware)
+            #region Diagnosis
+            AddDefinedMiddleware<ISupportRequestLoggingMiddleware>(persistedApplicationSpecificConfiguration, _APIServerInitializer.ApplicationConstants.RequestLoggingMiddleware, middlewares);
+            //TODO do something like middlewares.Add(typeof(DeveloperExceptionPageMiddlewareImpl));
+            #endregion
+
+            #region Bussiness-implementation of access-restriction
+            if(this._APIServerInitializer.ApplicationConstants.WebApplicationFirewallMiddleware != null)
             {
-                if(supportRequestLoggingMiddleware.RequestLoggingSettings.Enabled)
+                // TODO app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.WebApplicationFirewallMiddleware);
+            }
+            AddDefinedMiddleware<ISupportAPIKeyValidatorMiddleware>(persistedApplicationSpecificConfiguration, _APIServerInitializer.ApplicationConstants.ApiKeyValidatorMiddleware, middlewares);
+            if(this._APIServerInitializer.ApplicationConstants.AuthenticationMiddleware != null)
+            {
+                // TODO app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.AuthenticationMiddleware);
+            }
+            if(this._APIServerInitializer.ApplicationConstants.AuthorizationMiddleware != null)
+            {
+                // TODO app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.AuthorizationMiddleware);
+            }
+            if(this._APIServerInitializer.ApplicationConstants.Environment is not Development)
+            {
+                if(this._APIServerInitializer.ApplicationConstants.RequestCounterMiddleware != null)
                 {
-                    useRequestLoggingMiddleware = true;
-                    this._APIServerInitializer.Filter.UnionWith(supportRequestLoggingMiddleware.RequestLoggingSettings.GetFilter());
+                    // TODO app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.RequestCounterMiddleware);
                 }
+            }
+            foreach(Type customMiddleware in _APIServerInitializer.CustomMiddlewares)
+            {
+                middlewares.Add(customMiddleware);
             }
             #endregion
 
@@ -190,80 +230,12 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             builder.Services.AddLogging(c => c.ClearProviders());
             builder.Services.AddControllers(mvcOptions => mvcOptions.UseGeneralRoutePrefix(ServerConfiguration.GetAPIDocumentationRoutePrefix()));
             WebApplication app = builder.Build();
-
-            #region General Threat-Protection
-            if(this._APIServerInitializer.ApplicationConstants.Environment is not Development)
+            foreach(Type middleware in middlewares)
             {
-                if(this._APIServerInitializer.ApplicationConstants.DDOSProtectionMiddleware != null)
-                {
-                    app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.DDOSProtectionMiddleware);
-                }
-                if(this._APIServerInitializer.ApplicationConstants.BlackListMiddleware != null)
-                {
-                    app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.BlackListMiddleware);
-                }
-                if(this._APIServerInitializer.ApplicationConstants.ObfuscationMiddleware != null)
-                {
-                    app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.ObfuscationMiddleware);
-                }
-                if(this._APIServerInitializer.ApplicationConstants.ExceptionManagerMiddleware != null)
-                {
-                    app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.ExceptionManagerMiddleware);
-                }
-                if(this._APIServerInitializer.ApplicationConstants.CaptchaMiddleware != null)
-                {
-                    app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.CaptchaMiddleware);
-                }
+                app.UseMiddleware(middleware);
             }
-            if(persistedApplicationSpecificConfiguration.ServerConfiguration.Protocol is HTTPS)
-            {
-                app.UseHsts();
-            }
-            #endregion
-
-            #region Diagnosis
-            if(useRequestLoggingMiddleware)
-            {
-                app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.RequestLoggingMiddleware);
-            }
-            if(this._APIServerInitializer.ApplicationConstants.Environment is Development)
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            #endregion
-
-            #region Bussiness-implementation of access-restriction
-            if(this._APIServerInitializer.ApplicationConstants.WebApplicationFirewallMiddleware != null)
-            {
-                app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.WebApplicationFirewallMiddleware);
-            }
-            if(useAPIKeyValidatorMiddleware)//TODO use this pattern with the useXMiddleware-variable and its initialization also for all other supported middlewares
-            {
-                app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.ApiKeyValidatorMiddleware);
-            }
-            if(this._APIServerInitializer.ApplicationConstants.AuthenticationMiddleware != null)
-            {
-                app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.AuthenticationMiddleware);
-            }
-            if(this._APIServerInitializer.ApplicationConstants.AuthorizationMiddleware != null)
-            {
-                app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.AuthorizationMiddleware);
-            }
-            if(this._APIServerInitializer.ApplicationConstants.Environment is not Development)
-            {
-                if(this._APIServerInitializer.ApplicationConstants.RequestCounterMiddleware != null)
-                {
-                    app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.RequestCounterMiddleware);
-                }
-            }
-            foreach(Type customMiddleware in _APIServerInitializer.CustomMiddlewares)
-            {
-                app.UseMiddleware(customMiddleware);
-            }
-            #endregion
 
             #region API Documentation
-
             if(hostAPIDocumentation)
             {
                 app.UseSwagger(options => options.RouteTemplate = $"{ServerConfiguration.GetAPIDocumentationRoutePrefix()}/Other/Resources/{{documentName}}/{this._APIServerInitializer.ApplicationConstants.ApplicationName}.api.json");
@@ -274,9 +246,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                     options.RoutePrefix = ServerConfiguration.GetAPIDocumentationRoutePrefix();
                 });
             }
-
             string url = $"{persistedApplicationSpecificConfiguration.ServerConfiguration.GetServerAddress()}/{ServerConfiguration.GetAPIDocumentationRoutePrefix()}";
-
             string urlSuffix;
             if(HostAPIDocumentation(this._APIServerInitializer.ApplicationConstants.Environment, hostAPIDocumentation, this._APIServerInitializer.ApplicationConstants.ExecutionMode))
             {
@@ -288,13 +258,24 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             }
             logger.Log($"The API is available under the following URL:", LogLevel.Debug);
             logger.Log(url + urlSuffix, LogLevel.Debug);
-
             #endregion
 
             app.UseRouting();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
 
             return app;
+        }
+
+        private void AddDefinedMiddleware<SupportDefinedMiddlewareType>(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration, Type middlewareType, List<Type> middlewares) where SupportDefinedMiddlewareType : ISupportedMiddleware
+        {
+            if(persistedApplicationSpecificConfiguration is SupportDefinedMiddlewareType supportMiddleware)
+            {
+                if(supportMiddleware.IsEnabled())
+                {
+                    this._APIServerInitializer.Filter.UnionWith(supportMiddleware.GetFilter());
+                    middlewares.Add(middlewareType);
+                }
+            }
         }
 
         private void EnsureCertificateIsAvailableIfRequired(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration, IGeneralLogger logger)

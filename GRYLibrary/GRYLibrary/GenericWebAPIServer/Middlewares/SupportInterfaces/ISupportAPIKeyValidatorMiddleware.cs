@@ -2,7 +2,7 @@
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares.SupportInterfaces
 {
-    public interface ISupportAPIKeyValidatorMiddleware
+    public interface ISupportAPIKeyValidatorMiddleware:ISupportedMiddleware
     {
         public IAPIKeyValidatorSettings APIKeyValidatorSettings { get; set; }
     }
