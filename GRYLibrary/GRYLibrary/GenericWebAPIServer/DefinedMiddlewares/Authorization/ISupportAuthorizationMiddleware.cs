@@ -2,6 +2,6 @@
 {
     public interface ISupportAuthorizationMiddleware :ISupportedMiddleware
     {
-        IAuthorizationConfiguration ConfigurationForAuthorizationMiddleware { get; set; }
+        IAuthorizationConfiguration ConfigurationForAuthorizationMiddleware { get;  }
     }
 }

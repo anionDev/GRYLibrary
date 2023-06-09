@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.Authorization.APIKeyValidator
 {
-    public abstract class APIKeyValidatorConfiguration :IAuthorizationConfiguration
+    public abstract class APIKeyValidatorConfiguration :IAPIKeyValidatorConfiguration
     {
         public bool Enabled { get; set; } = true;
       
