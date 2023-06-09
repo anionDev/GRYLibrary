@@ -1,8 +1,18 @@
 ﻿using GRYLibrary.Core.GeneralPurposeLogger;
 using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
+using GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares;
+using GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.Authentication;
+using GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.Authorization;
+using GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.Blacklist;
+using GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.Captcha;
+using GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.DDOSProtectionMiddleware;
+using GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.ExceptionManager;
+using GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.Obfuscation;
+using GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.RequestCounter;
+using GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.RequestLogging;
+using GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.WebApplicationFirewall;
 using GRYLibrary.Core.GenericWebAPIServer.ExecutionModes;
 using GRYLibrary.Core.GenericWebAPIServer.Middlewares;
-using GRYLibrary.Core.GenericWebAPIServer.Middlewares.SupportInterfaces;
 using GRYLibrary.Core.GenericWebAPIServer.Settings;
 using GRYLibrary.Core.GenericWebAPIServer.Settings.CommonRoutes;
 using GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration;
@@ -14,7 +24,6 @@ using GRYLibrary.Core.Miscellaneous.MetaConfiguration.ConfigurationFormats;
 using GRYLibrary.Core.Miscellaneous.Migration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
@@ -97,71 +106,35 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             builder.Services.AddSingleton((serviceProvider) => this._APIServerInitializer.ApplicationConstants);
             builder.Services.AddSingleton<IApplicationConstants>((serviceProvider) => this._APIServerInitializer.ApplicationConstants);
 
-            #region Load defined middlewares
-            var middlewares = new List<Type>();
+            #region Load middlewares
+            List<Type> middlewares = new List<Type>();
+            List<Type> businessMiddleware = new List<Type>();
 
             #region General Threat-Protection
             if(this._APIServerInitializer.ApplicationConstants.Environment is not Development)
             {
-                if(this._APIServerInitializer.ApplicationConstants.DDOSProtectionMiddleware != null)
-                {
-                    // TODO app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.DDOSProtectionMiddleware);
-                }
-                if(this._APIServerInitializer.ApplicationConstants.BlackListMiddleware != null)
-                {
-                    // TODO app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.BlackListMiddleware);
-                }
-                if(this._APIServerInitializer.ApplicationConstants.ObfuscationMiddleware != null)
-                {
-                    // TODO app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.ObfuscationMiddleware);
-                }
-                if(this._APIServerInitializer.ApplicationConstants.ExceptionManagerMiddleware != null)
-                {
-                    // TODO app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.ExceptionManagerMiddleware);
-                }
-                if(this._APIServerInitializer.ApplicationConstants.CaptchaMiddleware != null)
-                {
-                    // TODO app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.CaptchaMiddleware);
-                }
+                this.AddDefinedMiddleware((ISupportDDOSProtectionMiddleware c) => c.ConfigurationForDDOSProtection, this._APIServerInitializer.ApplicationConstants.CaptchaMiddleware, persistedApplicationSpecificConfiguration, middlewares);
+                this.AddDefinedMiddleware((ISupportBlacklistMiddleware c) => c.ConfigurationForBlacklistMiddleware, this._APIServerInitializer.ApplicationConstants.CaptchaMiddleware, persistedApplicationSpecificConfiguration, middlewares);
+                this.AddDefinedMiddleware((ISupportObfuscationMiddleware c) => c.ConfigurationForObfuscationMiddleware, this._APIServerInitializer.ApplicationConstants.CaptchaMiddleware, persistedApplicationSpecificConfiguration, middlewares);
+                this.AddDefinedMiddleware((ISupportCaptchaMiddleware c) => c.ConfigurationForCaptchaMiddleware, this._APIServerInitializer.ApplicationConstants.CaptchaMiddleware, persistedApplicationSpecificConfiguration, middlewares);
+                this.AddDefinedMiddleware((ISupportExceptionManagerMiddleware c) => c.ConfigurationForExceptionManagerMiddleware, this._APIServerInitializer.ApplicationConstants.CaptchaMiddleware, persistedApplicationSpecificConfiguration, middlewares);
             }
-            if(persistedApplicationSpecificConfiguration.ServerConfiguration.Protocol is HTTPS)
-            {
-                middlewares.Add(typeof(HstsMiddleware));
-            }
+            this.AddDefinedMiddleware((ISupportWebApplicationFirewallMiddleware c) => c.ConfigurationForWebApplicationFirewall, this._APIServerInitializer.ApplicationConstants.RequestLoggingMiddleware, persistedApplicationSpecificConfiguration, middlewares);
+            this.AddDefinedMiddleware((ISupportRequestLoggingMiddleware c) => c.ConfigurationForRequestLoggingMiddleware, this._APIServerInitializer.ApplicationConstants.RequestLoggingMiddleware, persistedApplicationSpecificConfiguration, middlewares);
             #endregion
 
-            #region Diagnosis
-            AddDefinedMiddleware<ISupportRequestLoggingMiddleware>(persistedApplicationSpecificConfiguration, _APIServerInitializer.ApplicationConstants.RequestLoggingMiddleware, middlewares);
-            //TODO do something like middlewares.Add(typeof(DeveloperExceptionPageMiddlewareImpl));
-            #endregion
-
-            #region Bussiness-implementation of access-restriction
-            if(this._APIServerInitializer.ApplicationConstants.WebApplicationFirewallMiddleware != null)
-            {
-                // TODO app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.WebApplicationFirewallMiddleware);
-            }
-            AddDefinedMiddleware<ISupportAPIKeyValidatorMiddleware>(persistedApplicationSpecificConfiguration, _APIServerInitializer.ApplicationConstants.ApiKeyValidatorMiddleware, middlewares);
-            if(this._APIServerInitializer.ApplicationConstants.AuthenticationMiddleware != null)
-            {
-                // TODO app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.AuthenticationMiddleware);
-            }
-            if(this._APIServerInitializer.ApplicationConstants.AuthorizationMiddleware != null)
-            {
-                // TODO app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.AuthorizationMiddleware);
-            }
+            #region Bussiness-implementation
+            this.AddDefinedMiddleware((ISupportAuthenticationMiddleware c) => c.ConfigurationForAuthenticationMiddleware, this._APIServerInitializer.ApplicationConstants.AuthenticationMiddleware, persistedApplicationSpecificConfiguration, businessMiddleware);
+            this.AddDefinedMiddleware((ISupportAuthorizationMiddleware c) => c.ConfigurationForAuthorizationMiddleware, this._APIServerInitializer.ApplicationConstants.AuthorizationMiddleware, persistedApplicationSpecificConfiguration, businessMiddleware);
             if(this._APIServerInitializer.ApplicationConstants.Environment is not Development)
             {
-                if(this._APIServerInitializer.ApplicationConstants.RequestCounterMiddleware != null)
-                {
-                    // TODO app.UseMiddleware(this._APIServerInitializer.ApplicationConstants.RequestCounterMiddleware);
-                }
+                this.AddDefinedMiddleware((ISupportRequestCounterMiddleware c) => c.ConfigurationForRequestCounterMiddleware, this._APIServerInitializer.ApplicationConstants.RequestCounterMiddleware, persistedApplicationSpecificConfiguration, businessMiddleware);
             }
-            foreach(Type customMiddleware in _APIServerInitializer.CustomMiddlewares)
+            foreach(Type customMiddleware in this._APIServerInitializer.CustomMiddlewares)
             {
-                middlewares.Add(customMiddleware);
+                businessMiddleware.Add(customMiddleware);
             }
             #endregion
-
             #endregion
 
             this._APIServerInitializer.ConfigureServices(builder.Services, this._APIServerInitializer.ApplicationConstants, persistedApplicationSpecificConfiguration);
@@ -230,10 +203,25 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             builder.Services.AddLogging(c => c.ClearProviders());
             builder.Services.AddControllers(mvcOptions => mvcOptions.UseGeneralRoutePrefix(ServerConfiguration.GetAPIDocumentationRoutePrefix()));
             WebApplication app = builder.Build();
+
+            #region add middlewares
             foreach(Type middleware in middlewares)
             {
                 app.UseMiddleware(middleware);
             }
+            if(persistedApplicationSpecificConfiguration.ServerConfiguration.Protocol is HTTPS)
+            {
+                app.UseHsts();
+            }
+            if(this._APIServerInitializer.ApplicationConstants.Environment is Development)
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            foreach(Type middleware in businessMiddleware)
+            {
+                app.UseMiddleware(middleware);
+            }
+            #endregion
 
             #region API Documentation
             if(hostAPIDocumentation)
@@ -266,14 +254,27 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             return app;
         }
 
-        private void AddDefinedMiddleware<SupportDefinedMiddlewareType>(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration, Type middlewareType, List<Type> middlewares) where SupportDefinedMiddlewareType : ISupportedMiddleware
+        private void AddDefinedMiddleware<SupportDefinedMiddlewareType>(
+            Func<SupportDefinedMiddlewareType, IMiddlewareConfiguration> getMiddlewareConfiguration,
+            Type middlewareType,
+            IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration,
+            List<Type> middlewares
+        ) where SupportDefinedMiddlewareType : ISupportedMiddleware
         {
-            if(persistedApplicationSpecificConfiguration is SupportDefinedMiddlewareType supportMiddleware)
+            if(persistedApplicationSpecificConfiguration is SupportDefinedMiddlewareType supportDefinedMiddlewareType)
             {
-                if(supportMiddleware.IsEnabled())
+                IMiddlewareConfiguration middlewareConfiguration = getMiddlewareConfiguration(supportDefinedMiddlewareType);
+                if(middlewareConfiguration.Enabled)
                 {
-                    this._APIServerInitializer.Filter.UnionWith(supportMiddleware.GetFilter());
-                    middlewares.Add(middlewareType);
+                    this._APIServerInitializer.Filter.UnionWith(middlewareConfiguration.GetFilter());
+                    if(middlewareType == null)
+                    {
+                        throw new NullReferenceException($"No middleware-type given for {typeof(SupportDefinedMiddlewareType).FullName}.");
+                    }
+                    else
+                    {
+                        middlewares.Add(middlewareType);
+                    }
                 }
             }
         }
@@ -399,6 +400,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             }
         }
         #endregion
+
         private void RunMigrationIfRequired(IGeneralLogger logger, AbstractFilePath basicInformationFile)
         {
             GRYMigration.MigrateIfRequired(basicInformationFile, this._APIServerInitializer.ApplicationConstants.ApplicationName, this._APIServerInitializer.ApplicationConstants.ApplicationVersion, logger, this._APIServerInitializer.BaseFolder, this._APIServerInitializer.ApplicationConstants.Environment, this._APIServerInitializer.ApplicationConstants.ExecutionMode, new Dictionary<object, object>(), new HashSet<MigrationMetaInformation>());

@@ -30,7 +30,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public string GetLogFolder();
         public CommonRoutesInformation CommonRoutes { get; set; }
         public void Initialize(string baseFolder);
-        public Type ApiKeyValidatorMiddleware { get; set; }
         public Type AuthenticationMiddleware { get; set; }
         public Type AuthorizationMiddleware { get; set; }
         public Type BlackListMiddleware { get; set; }
@@ -81,7 +80,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public string GetConfigurationFile() { return this.ConfigurationFile.GetPath(this.GetConfigurationFolder()); }
         public string GetLogFolder() { return this.LogFolder.GetPath(this._BaseFolder); }
         public CommonRoutesInformation CommonRoutes { get; set; } = new HostCommonRoutes();
-        public Type ApiKeyValidatorMiddleware { get; set; } = null;
         public Type AuthenticationMiddleware { get; set; } = null;
         public Type AuthorizationMiddleware { get; set; } = null;
         public Type BlackListMiddleware { get; set; } = null;

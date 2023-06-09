@@ -18,7 +18,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration
         {
             ServerConfiguration result = new ServerConfiguration
             {
-                Protocol = HTTPS.Create(tlsCertificateInformation)
+                Protocol = tlsCertificateInformation == null ? HTTP.Create() : HTTPS.Create(tlsCertificateInformation)
             };
             SetCommonSettings(result, environment, domain);
             return result;
