@@ -6,9 +6,9 @@ namespace GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.RequestCounter
     public class RequestCounterConfiguration :IRequestCounterConfiguration
     {
         public bool Enabled { get; set; } = true;
-        public ISet<IOperationFilter> GetFilter()
+        public ISet<FilterDescriptor> GetFilter()
         {
-            return new HashSet<IOperationFilter>();
+            return new HashSet<FilterDescriptor>();
         }
     }
 }

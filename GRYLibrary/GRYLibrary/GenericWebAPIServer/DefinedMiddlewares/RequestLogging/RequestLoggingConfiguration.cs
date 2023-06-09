@@ -1,4 +1,5 @@
 ﻿using GRYLibrary.Core.Log;
+using GRYLibrary.Core.Miscellaneous.FilePath;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
@@ -10,7 +11,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.RequestLogging
     public class RequestLoggingConfiguration :IRequestLoggingConfiguration
     {
         public bool AddMillisecondsInLogTimestamps { get; set; } = false;
-        public GRYLogConfiguration RequestsLogConfiguration { get; set; }
+        public GRYLogConfiguration RequestsLogConfiguration { get; set; } =  GRYLogConfiguration.GetCommonConfiguration(RelativeFilePath.FromString("./Requests.log"));
         public bool Enabled { get; set; } = true;
         public bool LogClientIP { get; set; } = true;
 
@@ -39,7 +40,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.RequestLogging
         public virtual string FormatLogEntryFull(Request request, uint maximalLengthofBodies)
         {
             string clientIPAsString = this.FormatIPAddress(request.ClientIPAddress);
-            return $"Request:{Environment.NewLine}"
+            return $"Request received:{Environment.NewLine}"
                         + $"  Timestamp: {this.FormatTimestamp(request.Timestamp)}{Environment.NewLine}"
                         + $"  Client-ip: {clientIPAsString}{Environment.NewLine}"
                         + $"  Request-details:{Environment.NewLine}"
@@ -54,7 +55,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.RequestLogging
         public virtual string FormatLogEntrySummary(Request request)
         {
             string clientIPAsString = this.FormatIPAddress(request.ClientIPAddress);
-            return $"Request: {this.FormatTimestamp(request.Timestamp)} {clientIPAsString} requested \"{request.Method} {request.Route}\" and got response-code {request.ResponseStatusCode}.";
+            return $"Request received: {this.FormatTimestamp(request.Timestamp)} {clientIPAsString} requested \"{request.Method} {request.Route}\" and got response-code {request.ResponseStatusCode}.";
         }
         public virtual string FormatTimestamp(DateTime timestamp)
         {
@@ -83,9 +84,9 @@ namespace GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.RequestLogging
             }
         }
 
-        public ISet<IOperationFilter> GetFilter()
+        public ISet<FilterDescriptor> GetFilter()
         {
-            return new HashSet<IOperationFilter>();
+            return new HashSet<FilterDescriptor>();
         }
     }
 }

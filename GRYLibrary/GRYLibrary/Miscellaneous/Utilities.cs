@@ -2825,14 +2825,5 @@ namespace GRYLibrary.Core.Miscellaneous
             }
             return RunProgram.Instance;
         }
-        public static GRYLogConfiguration GetLogConfiguration(string filename, GRYEnvironment environment)
-        {
-            GRYLogConfiguration result = GRYLogConfiguration.GetCommonConfiguration(AbstractFilePath.FromString("./" + filename), environment is Development);
-            foreach(GRYLogTarget target in result.LogTargets)
-            {
-                target.Format = GRYLogLogFormat.GRYLogFormat;
-            }
-            return result;
-        }
     }
 }

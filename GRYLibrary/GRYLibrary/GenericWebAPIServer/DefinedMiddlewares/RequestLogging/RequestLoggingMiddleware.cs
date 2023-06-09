@@ -77,8 +77,5 @@ namespace GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.RequestLogger
                 this._RequestLogger.LogException(exception, "Error while logging request.");
             }
         }
-
-
-   
-         }
+    }
 }

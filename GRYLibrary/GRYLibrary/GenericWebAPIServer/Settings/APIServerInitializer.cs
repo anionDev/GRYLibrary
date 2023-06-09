@@ -47,6 +47,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
             return result;
         }
 
-        public ISet<IOperationFilter> Filter { get; set; } = new HashSet<IOperationFilter>();
+        public ISet<FilterDescriptor> Filter { get; set; } = new HashSet<FilterDescriptor>();
     }
 }

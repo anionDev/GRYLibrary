@@ -38,9 +38,9 @@ namespace GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.Captcha
 </body>
 </html>";
 
-            public ISet<IOperationFilter> GetFilter()
+            public ISet<FilterDescriptor> GetFilter()
         {
-            return new HashSet<IOperationFilter>();
+            return new HashSet<FilterDescriptor>();
         }
     }
 }

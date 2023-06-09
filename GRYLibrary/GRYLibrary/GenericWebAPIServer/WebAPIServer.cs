@@ -3,6 +3,7 @@ using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares;
 using GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.Authentication;
 using GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.Authorization;
+using GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.Authorization.APIKeyValidator;
 using GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.Blacklist;
 using GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.Captcha;
 using GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.DDOSProtectionMiddleware;
@@ -18,6 +19,7 @@ using GRYLibrary.Core.GenericWebAPIServer.Settings.CommonRoutes;
 using GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration;
 using GRYLibrary.Core.GenericWebAPIServer.Utilities;
 using GRYLibrary.Core.Miscellaneous;
+using GRYLibrary.Core.Miscellaneous.Event;
 using GRYLibrary.Core.Miscellaneous.FilePath;
 using GRYLibrary.Core.Miscellaneous.MetaConfiguration;
 using GRYLibrary.Core.Miscellaneous.MetaConfiguration.ConfigurationFormats;
@@ -37,11 +39,11 @@ using System.Text;
 
 namespace GRYLibrary.Core.GenericWebAPIServer
 {
-    public class APIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
+    public class WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
         where PersistedApplicationSpecificConfiguration : new()
     {
         private readonly APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration> _APIServerInitializer;
-        public APIServer(APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration> apiServerInitializer)
+        public WebAPIServer(APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration> apiServerInitializer)
         {
             this._APIServerInitializer = apiServerInitializer;
             this._APIServerInitializer.ApplicationConstants.Initialize(this._APIServerInitializer.BaseFolder);
@@ -49,7 +51,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
         public static int WebAPIMain(CommandlineParameterType commandlineParameter, APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration> initializer)
         {
-            APIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> server = new APIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>(initializer);
+            WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> server = new WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>(initializer);
             return server.Run(commandlineParameter);
         }
         public int Run(CommandlineParameterType commandlineParameter)
@@ -113,13 +115,13 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             #region General Threat-Protection
             if(this._APIServerInitializer.ApplicationConstants.Environment is not Development)
             {
-                this.AddDefinedMiddleware((ISupportDDOSProtectionMiddleware c) => c.ConfigurationForDDOSProtection, this._APIServerInitializer.ApplicationConstants.CaptchaMiddleware, persistedApplicationSpecificConfiguration, middlewares);
-                this.AddDefinedMiddleware((ISupportBlacklistMiddleware c) => c.ConfigurationForBlacklistMiddleware, this._APIServerInitializer.ApplicationConstants.CaptchaMiddleware, persistedApplicationSpecificConfiguration, middlewares);
-                this.AddDefinedMiddleware((ISupportObfuscationMiddleware c) => c.ConfigurationForObfuscationMiddleware, this._APIServerInitializer.ApplicationConstants.CaptchaMiddleware, persistedApplicationSpecificConfiguration, middlewares);
+                this.AddDefinedMiddleware((ISupportDDOSProtectionMiddleware c) => c.ConfigurationForDDOSProtection, this._APIServerInitializer.ApplicationConstants.DDOSProtectionMiddleware, persistedApplicationSpecificConfiguration, middlewares);
+                this.AddDefinedMiddleware((ISupportBlacklistMiddleware c) => c.ConfigurationForBlacklistMiddleware, this._APIServerInitializer.ApplicationConstants.BlackListMiddleware, persistedApplicationSpecificConfiguration, middlewares);
+                this.AddDefinedMiddleware((ISupportObfuscationMiddleware c) => c.ConfigurationForObfuscationMiddleware, this._APIServerInitializer.ApplicationConstants.ObfuscationMiddleware, persistedApplicationSpecificConfiguration, middlewares);
                 this.AddDefinedMiddleware((ISupportCaptchaMiddleware c) => c.ConfigurationForCaptchaMiddleware, this._APIServerInitializer.ApplicationConstants.CaptchaMiddleware, persistedApplicationSpecificConfiguration, middlewares);
-                this.AddDefinedMiddleware((ISupportExceptionManagerMiddleware c) => c.ConfigurationForExceptionManagerMiddleware, this._APIServerInitializer.ApplicationConstants.CaptchaMiddleware, persistedApplicationSpecificConfiguration, middlewares);
+                this.AddDefinedMiddleware((ISupportExceptionManagerMiddleware c) => c.ConfigurationForExceptionManagerMiddleware, this._APIServerInitializer.ApplicationConstants.ExceptionManagerMiddleware, persistedApplicationSpecificConfiguration, middlewares);
             }
-            this.AddDefinedMiddleware((ISupportWebApplicationFirewallMiddleware c) => c.ConfigurationForWebApplicationFirewall, this._APIServerInitializer.ApplicationConstants.RequestLoggingMiddleware, persistedApplicationSpecificConfiguration, middlewares);
+            this.AddDefinedMiddleware((ISupportWebApplicationFirewallMiddleware c) => c.ConfigurationForWebApplicationFirewall, this._APIServerInitializer.ApplicationConstants.WebApplicationFirewallMiddleware, persistedApplicationSpecificConfiguration, middlewares);
             this.AddDefinedMiddleware((ISupportRequestLoggingMiddleware c) => c.ConfigurationForRequestLoggingMiddleware, this._APIServerInitializer.ApplicationConstants.RequestLoggingMiddleware, persistedApplicationSpecificConfiguration, middlewares);
             #endregion
 
@@ -175,6 +177,15 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen(swaggerOptions =>
                 {
+                   /* foreach(IOperationFilter filter in this._APIServerInitializer.Filter)
+                    {
+                        swaggerOptions.OperationFilterDescriptors.Add(new FilterDescriptor
+                        {
+                            Type = filter.GetType(),
+                            Arguments = Array.Empty<object>()
+                        });
+                        swaggerOptions.OperationFilterDescriptors.Add(filter);
+                    }*/
                     foreach(FilterDescriptor filter in this._APIServerInitializer.Filter)
                     {
                         swaggerOptions.OperationFilterDescriptors.Add(filter);
@@ -204,7 +215,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             builder.Services.AddControllers(mvcOptions => mvcOptions.UseGeneralRoutePrefix(ServerConfiguration.GetAPIDocumentationRoutePrefix()));
             WebApplication app = builder.Build();
 
-            #region add middlewares
+            #region Add middlewares
             foreach(Type middleware in middlewares)
             {
                 app.UseMiddleware(middleware);
@@ -261,7 +272,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             List<Type> middlewares
         ) where SupportDefinedMiddlewareType : ISupportedMiddleware
         {
-            if(persistedApplicationSpecificConfiguration is SupportDefinedMiddlewareType supportDefinedMiddlewareType)
+            if(persistedApplicationSpecificConfiguration.ApplicationSpecificConfiguration is SupportDefinedMiddlewareType supportDefinedMiddlewareType)
             {
                 IMiddlewareConfiguration middlewareConfiguration = getMiddlewareConfiguration(supportDefinedMiddlewareType);
                 if(middlewareConfiguration.Enabled)

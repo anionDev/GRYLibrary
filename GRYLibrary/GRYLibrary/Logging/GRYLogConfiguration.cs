@@ -1,4 +1,5 @@
 ﻿using GRYLibrary.Core.AdvancedObjectAnalysis;
+using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using GRYLibrary.Core.Log.ConcreteLogTargets;
 using GRYLibrary.Core.Miscellaneous.FilePath;
 using GRYLibrary.Core.XMLSerializer;
@@ -143,11 +144,12 @@ namespace GRYLibrary.Core.Log
                 filelog.File = logFile;
                 filelog.Enabled = true;
             }
-            if(verbose)
+            foreach(GRYLogTarget logTarget in result.LogTargets)
             {
-                foreach(GRYLogTarget logLevel in result.LogTargets)
+                logTarget.Format = GRYLogLogFormat.GRYLogFormat;
+                if(verbose)
                 {
-                    logLevel.LogLevels.Add(LogLevel.Debug);
+                    logTarget.LogLevels.Add(LogLevel.Debug);
                 }
             }
             return result;

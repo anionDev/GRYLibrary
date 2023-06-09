@@ -6,6 +6,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Middlewares
     public interface IMiddlewareConfiguration
     {
         public bool Enabled { get; set; }
-        public ISet<IOperationFilter> GetFilter();
+        public ISet<FilterDescriptor> GetFilter();
     }
 }

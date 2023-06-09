@@ -6,9 +6,9 @@ namespace GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.Obfuscation
     public class ObfuscationConfiguration :IObfuscationConfiguration
     {
         public bool Enabled { get; set; } = true;
-        public ISet<IOperationFilter> GetFilter()
+        public ISet<FilterDescriptor> GetFilter()
         {
-            return new HashSet<IOperationFilter>();
+            return new HashSet<FilterDescriptor>();
         }
     }
 }
