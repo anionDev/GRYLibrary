@@ -1,5 +1,4 @@
-﻿using GRYLibrary.Core.Miscellaneous.Captcha;
-using Swashbuckle.AspNetCore.SwaggerGen;
+﻿using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 

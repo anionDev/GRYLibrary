@@ -27,7 +27,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public Action<IApplicationConstants<AppSpecificConstants>, IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>> PreRun { get; set; }
         public Action<IApplicationConstants<AppSpecificConstants>, IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>> PostRun { get; set; }
         public AbstractFilePath BasicInformationFile { get; set; }
-        public IList<Type> CustomMiddlewares { get; set; } = new List<Type>();
         public APIServerInitializer(string applicationName, Version3 applicationVersion, ExecutionMode executionMode, GRYEnvironment environment, AppSpecificConstants applicationSpecificConstants, string domain, string appDescription, PersistedApplicationSpecificConfiguration persistedApplicationSpecificConfiguration, string fallbackCertificatePasswordFileContentHex, string fallbackCertificatePFXFileContentHex)
         {
             this.ApplicationConstants = new ApplicationConstants<AppSpecificConstants>(applicationName, appDescription, applicationVersion, executionMode, environment, applicationSpecificConstants);

@@ -1,11 +1,9 @@
 using GRYLibrary.Core.GeneralPurposeLogger;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System.IO;
 using System.Net;
 using System;
 using System.Threading.Tasks;
-using System.Text;
 using GRYLibrary.Core.GenericWebAPIServer.Utilities;
 using GRYLibrary.Core.GenericWebAPIServer.Middlewares;
 using GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.RequestLogging;
@@ -31,22 +29,14 @@ namespace GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.RequestLogger
             this._RequestLogger = this._AppConstants.ExecutionMode.Accept(new GetLoggerVisitor(this._RequestLoggingSettings.RequestsLogConfiguration, this._AppConstants.GetLogFolder(), "Requests"));
         }
         /// <inheritdoc/>
-        public async override Task Invoke(HttpContext context)
+        public override Task Invoke(HttpContext context)
         {
             DateTime moment = DateTime.Now;
-            UTF8Encoding encoding = new UTF8Encoding(false);
-            context.Request.EnableBuffering();
-            string requestBody = await new StreamReader(context.Request.Body, encoding, false).ReadToEndAsync();
-            context.Request.Body.Seek(0, SeekOrigin.Begin);
-            Stream originalBodyStream = context.Response.Body;
-            using MemoryStream responseBodyStream = new MemoryStream();
-            context.Response.Body = responseBodyStream;
-            await this._Next(context);
-            context.Response.Body.Seek(0, SeekOrigin.Begin);
-            string responseBody = await new StreamReader(context.Response.Body, encoding, false).ReadToEndAsync();
-            context.Response.Body.Seek(0, SeekOrigin.Begin);
-            await responseBodyStream.CopyToAsync(originalBodyStream);
+            string requestBody = Tools.GetRequestBodyAsString(context);
+            Task result = this._Next(context);
+            string responseBody = Tools.GetResponseBodyAsString(context);
             this.LogHTTPRequest(context, requestBody, responseBody, moment);
+            return result;
         }
 
         private void LogHTTPRequest(HttpContext context, string requestBody, string responseBody, DateTime timestamp, uint maximalLengthofBodies = 4096)

@@ -40,6 +40,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public Type RequestCounterMiddleware { get; set; }
         public Type RequestLoggingMiddleware { get; set; }
         public Type WebApplicationFirewallMiddleware { get; set; }
+        public IList<Type> CustomMiddlewares { get; set; }
         public ISet<Type> KnownTypes { get; set; }
     }
     public interface IApplicationConstants<AppSpecificConstants> :IApplicationConstants
@@ -90,6 +91,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public Type RequestCounterMiddleware { get; set; } = null;
         public Type RequestLoggingMiddleware { get; set; }
         public Type WebApplicationFirewallMiddleware { get; set; } = null;
+        public IList<Type> CustomMiddlewares { get; set; } = new List<Type>();
         public ISet<Type> KnownTypes { get; set; } = new HashSet<Type>();
 
         public void Initialize(string baseFolder)

@@ -1,62 +1,100 @@
 ﻿using GRYLibrary.Core.Miscellaneous;
+using System;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteCommonAlgorithms.ConcreteSymmetricAlgorithms
 {
     public class AES256 :SymmetricEncryptionAlgorithm
     {
+        private const int _IVLength = 16;
 #pragma warning disable SYSLIB0022 // Typ oder Element ist veraltet
         private const int _AESBlockLength = 16;
-        /// <inheritdoc/>
-        public override byte[] Decrypt(byte[] encryptedData, byte[] password)
-        {
-            (byte[], byte[]) splitted = Utilities.Split(encryptedData, _AESBlockLength);
-            byte[] iv = splitted.Item1;
-            encryptedData = splitted.Item2;
-            using MemoryStream result = new();
-            using(RijndaelManaged algorithmImplementation = new())
-            {
-                algorithmImplementation.Key = password;
-                algorithmImplementation.IV = iv;
-                algorithmImplementation.Mode = CipherMode.CBC;
-                algorithmImplementation.Padding = PaddingMode.Zeros;
-                ICryptoTransform decryptor = algorithmImplementation.CreateDecryptor(algorithmImplementation.Key, algorithmImplementation.IV);
-                using MemoryStream memoryStream = new(encryptedData);
-                using CryptoStream cryptoStream = new(memoryStream, decryptor, CryptoStreamMode.Read);
-                byte[] buffer = new byte[_AESBlockLength];
-                int read = cryptoStream.Read(buffer, 0, buffer.Length);
-                while(0 < read)
-                {
-                    result.Write(buffer, 0, read);
-                    read = cryptoStream.Read(buffer, 0, buffer.Length);
-                }
-                cryptoStream.Flush();
-            }
-            return result.ToArray();
-        }
 
         /// <inheritdoc/>
-        public override byte[] Encrypt(byte[] unencryptedData, byte[] password)
+        public override byte[] Encrypt(byte[] data, byte[] key)
         {
-            byte[] iv = this.GetIV();
+            string plainText = Utilities.ByteArrayToHexString(data);
+            // Check arguments.
+            if(plainText == null || plainText.Length <= 0)
+                throw new ArgumentNullException("plainText");
+            if(key == null || key.Length <= 0)
+                throw new ArgumentNullException("Key");
             byte[] encrypted;
-            using(RijndaelManaged algorithmImplementation = new())
+
+            // Create an Aes object
+            // with the specified key and IV.
+            using(Aes aesAlg = Aes.Create())
             {
-                algorithmImplementation.Key = password;
-                algorithmImplementation.IV = iv;
-                algorithmImplementation.Mode = CipherMode.CBC;
-                algorithmImplementation.Padding = PaddingMode.Zeros;
-                ICryptoTransform encryptor = algorithmImplementation.CreateEncryptor(algorithmImplementation.Key, algorithmImplementation.IV);
-                using MemoryStream memoryStream = new();
-                using CryptoStream csEncrypt = new(memoryStream, encryptor, CryptoStreamMode.Write);
-                using(StreamWriter streamWriter = new(csEncrypt))
+                aesAlg.Key = key;
+
+                // Create an encryptor to perform the stream transform.
+                ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+
+                // Create the streams used for encryption.
+                using(MemoryStream msEncrypt = new MemoryStream())
                 {
-                    streamWriter.Write(unencryptedData);
+                    using(CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    {
+                        using(StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                        {
+                            //Write all data to the stream.
+                            swEncrypt.Write(plainText);
+                        }
+                        encrypted = msEncrypt.ToArray();
+                    }
                 }
-                encrypted = memoryStream.ToArray();
+                encrypted = aesAlg.IV.Concat(encrypted).ToArray();
             }
-            return Utilities.Concat(iv, encrypted);
+
+            // Return the encrypted bytes from the memory stream.
+            return encrypted;
+        }
+        /// <inheritdoc/>
+        public override byte[] Decrypt(byte[] data, byte[] key)
+        {
+            string cipherText = Utilities.ByteArrayToHexString(data);
+            // Check arguments.
+            if(cipherText == null || cipherText.Length <= 0)
+                throw new ArgumentNullException("cipherText");
+            if(key == null || key.Length <= 0)
+                throw new ArgumentNullException("Key");
+            byte[] iv = data.Take(_IVLength).ToArray();
+            data = data.Skip(_IVLength).ToArray();
+            if(iv == null || iv.Length <= 0)
+                throw new ArgumentNullException("IV");
+
+            // Declare the string used to hold
+            // the decrypted text.
+            string plaintext = null;
+
+            // Create an Aes object
+            // with the specified key and IV.
+            using(Aes aesAlg = Aes.Create())
+            {
+                aesAlg.Key = key;
+                aesAlg.IV = iv;
+                // Create a decryptor to perform the stream transform.
+                ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+
+                // Create the streams used for decryption.
+                using(MemoryStream msDecrypt = new MemoryStream(data))
+                {
+                    using(CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                    {
+                        using(StreamReader srDecrypt = new StreamReader(csDecrypt))
+                        {
+
+                            // Read the decrypted bytes from the decrypting stream
+                            // and place them in a string.
+                            plaintext = srDecrypt.ReadToEnd();
+                        }
+                    }
+                }
+            }
+            return Utilities.HexStringToByteArray(plaintext);
         }
 
         private byte[] GetIV()
