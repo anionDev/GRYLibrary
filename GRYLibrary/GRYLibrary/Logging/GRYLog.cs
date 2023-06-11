@@ -17,7 +17,7 @@ namespace GRYLibrary.Core.Log
         /// <summary>
         /// Represents the basepath for the possibly relative path when accessing <see cref="LogFile.File"/>.
         /// </summary>
-        public string BasePath{ get; set; }
+        public string BasePath { get; set; }
         private readonly static object _LockObject = new();
         private readonly bool _Initialized = false;
         private int _AmountOfErrors = 0;
@@ -251,9 +251,13 @@ namespace GRYLibrary.Core.Log
                     {
                         if(logTarget.Enabled)
                         {
-                            if(logTarget.LogLevels.Contains(logItem.LogLevel))
+                            if(logItem.LogTargets.Contains(logTarget))
                             {
-                                logTarget.Execute(logItem, this);
+
+                                if(logTarget.LogLevels.Contains(logItem.LogLevel))
+                                {
+                                    logTarget.Execute(logItem, this);
+                                }
                             }
                         }
                     }

@@ -2347,6 +2347,11 @@ namespace GRYLibrary.Core.Miscellaneous
             return result;
         }
 
+        public static T WaitAndGetResult<T>(this Task<T> task)
+        {
+            task.Wait();
+            return task.Result;
+        }
         public static bool IsDefault(object @object)
         {
             if(@object == null)

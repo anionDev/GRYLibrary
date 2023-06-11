@@ -32,12 +32,12 @@ namespace GRYLibrary.Core.Log
         #region Overhead
         public override bool Equals(object @object)
         {
-            return Generic.GenericEquals(this, @object);
+            return @object is not null && @object.GetType().Equals(this.GetType());
         }
 
         public override int GetHashCode()
         {
-            return Generic.GenericGetHashCode(this);
+            return this.GetType().GetHashCode();
         }
 
         public override string ToString()
@@ -46,6 +46,17 @@ namespace GRYLibrary.Core.Log
         }
 
         public abstract void Dispose();
+
+        internal static ISet<GRYLogTarget> GetAll()
+        {
+            var result= new HashSet<GRYLogTarget>();
+            result.Add(new ConcreteLogTargets. Console());
+            result.Add(new LogFile());
+            result.Add(new Observer());
+            result.Add(new Syslog());
+            result.Add(new WindowsEventLog());
+            return result;
+        }
         #endregion
     }
 }

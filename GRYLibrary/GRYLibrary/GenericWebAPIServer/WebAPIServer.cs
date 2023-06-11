@@ -175,15 +175,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen(swaggerOptions =>
                 {
-                   /* foreach(IOperationFilter filter in this._APIServerInitializer.Filter)
-                    {
-                        swaggerOptions.OperationFilterDescriptors.Add(new FilterDescriptor
-                        {
-                            Type = filter.GetType(),
-                            Arguments = Array.Empty<object>()
-                        });
-                        swaggerOptions.OperationFilterDescriptors.Add(filter);
-                    }*/
                     foreach(FilterDescriptor filter in this._APIServerInitializer.Filter)
                     {
                         swaggerOptions.OperationFilterDescriptors.Add(filter);
