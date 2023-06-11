@@ -130,7 +130,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             {
                 this.AddDefinedMiddleware((ISupportRequestCounterMiddleware c) => c.ConfigurationForRequestCounterMiddleware, this._APIServerInitializer.ApplicationConstants.RequestCounterMiddleware, persistedApplicationSpecificConfiguration, businessMiddleware);
             }
-            foreach(Type customMiddleware in this._APIServerInitializer.CustomMiddlewares)
+            foreach(Type customMiddleware in this._APIServerInitializer.ApplicationConstants.CustomMiddlewares)
             {
                 businessMiddleware.Add(customMiddleware);
             }
