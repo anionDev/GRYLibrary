@@ -7,9 +7,8 @@ using System.Net;
 
 namespace GRYLibrary.Core.GenericWebAPIServer
 {
-
     [ApiController]
-    [Route($"/{ServerConfiguration.APIRoutePrefix}/APIDocumentation/Information")]
+    [Route($"{ServerConfiguration.APIRoutePrefix}/APIDocumentation/Information")]
     public class OtherURLs :ControllerBase
     {
         private readonly IApplicationConstants _Configuration;

@@ -1,4 +1,5 @@
-﻿using GRYLibrary.Core.GeneralPurposeLogger;
+﻿using Flurl;
+using GRYLibrary.Core.GeneralPurposeLogger;
 using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares;
 using GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.Authentication;
@@ -39,6 +40,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 {
     public class WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
         where PersistedApplicationSpecificConfiguration : new()
+        where CommandlineParameterType : class
     {
         private readonly APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration> _APIServerInitializer;
         public WebAPIServer(APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration> apiServerInitializer)
@@ -101,6 +103,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 mvcBuilder.AddApplicationPart(typeof(OtherURLs).Assembly);
             }
 
+            builder.Services.AddSingleton((serviceProvider) => commandlineParameter);
             builder.Services.AddSingleton((serviceProvider) => logger);
             builder.Services.AddSingleton((serviceProvider) => persistedApplicationSpecificConfiguration);
             builder.Services.AddSingleton((serviceProvider) => this._APIServerInitializer.ApplicationConstants);
@@ -135,6 +138,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 businessMiddleware.Add(customMiddleware);
             }
             #endregion
+
             #endregion
 
             this._APIServerInitializer.ConfigureServices(builder.Services, this._APIServerInitializer.ApplicationConstants, persistedApplicationSpecificConfiguration);
@@ -179,7 +183,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                     {
                         swaggerOptions.OperationFilterDescriptors.Add(filter);
                     }
-                    swaggerOptions.SwaggerDoc(persistedApplicationSpecificConfiguration.ServerConfiguration.APIDocumentationDocumentName, new OpenApiInfo
+                    swaggerOptions.SwaggerDoc(ServerConfiguration.APIDocumentationDocumentName, new OpenApiInfo
                     {
                         Version = appVersionString,
                         Title = $"{this._APIServerInitializer.ApplicationConstants.ApplicationName} API",
@@ -201,7 +205,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 });
             }
             builder.Services.AddLogging(c => c.ClearProviders());
-            builder.Services.AddControllers(mvcOptions => mvcOptions.UseGeneralRoutePrefix(ServerConfiguration.GetAPIDocumentationRoutePrefix()));
+            builder.Services.AddControllers(mvcOptions => mvcOptions.UseGeneralRoutePrefix(ServerConfiguration.APIRoutePrefix));
             WebApplication app = builder.Build();
 
             #region Add middlewares
@@ -224,33 +228,28 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             #endregion
 
             #region API Documentation
+            string apiLink = persistedApplicationSpecificConfiguration.ServerConfiguration.GetServerAddress() + ServerConfiguration.APIDocumentationRoutePrefix;
             if(hostAPIDocumentation)
             {
-                app.UseSwagger(options => options.RouteTemplate = $"{ServerConfiguration.GetAPIDocumentationRoutePrefix()}/Other/Resources/{{documentName}}/{this._APIServerInitializer.ApplicationConstants.ApplicationName}.api.json");
+                app.UseSwagger(options =>
+                {
+                    options.RouteTemplate = $"/Other/Resources/{{documentName}}/{this._APIServerInitializer.ApplicationConstants.ApplicationName}.api.json";
+                });
                 app.UseSwaggerUI(options =>
                 {
+                    var swaggerLink = "/index.html";
                     string appVersionString = $"v{this._APIServerInitializer.ApplicationConstants.ApplicationVersion}";
-                    options.SwaggerEndpoint($"Other/Resources/{persistedApplicationSpecificConfiguration.ServerConfiguration.APIDocumentationDocumentName}/{this._APIServerInitializer.ApplicationConstants.ApplicationName}.api.json", this._APIServerInitializer.ApplicationConstants.ApplicationName + " " + appVersionString);
-                    options.RoutePrefix = ServerConfiguration.GetAPIDocumentationRoutePrefix();
+                    options.SwaggerEndpoint(swaggerLink, this._APIServerInitializer.ApplicationConstants.ApplicationName + " " + appVersionString);
+                    options.RoutePrefix = "/Other/Resources";
+                    apiLink = apiLink+swaggerLink;
                 });
             }
-            string url = $"{persistedApplicationSpecificConfiguration.ServerConfiguration.GetServerAddress()}/{ServerConfiguration.GetAPIDocumentationRoutePrefix()}";
-            string urlSuffix;
-            if(HostAPIDocumentation(this._APIServerInitializer.ApplicationConstants.Environment, hostAPIDocumentation, this._APIServerInitializer.ApplicationConstants.ExecutionMode))
-            {
-                urlSuffix = "/index.html";
-            }
-            else
-            {
-                urlSuffix = string.Empty;
-            }
-            logger.Log($"The API is available under the following URL:", LogLevel.Debug);
-            logger.Log(url + urlSuffix, LogLevel.Debug);
             #endregion
 
             app.UseRouting();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
-
+            logger.Log($"The API will now be available under the following URL:", LogLevel.Debug);
+            logger.Log(apiLink, LogLevel.Debug);
             return app;
         }
 
