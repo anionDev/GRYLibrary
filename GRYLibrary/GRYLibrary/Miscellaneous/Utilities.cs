@@ -2799,7 +2799,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public static T CreateOrLoadXMLConfigurationFile<T, TBase>(string configurationFile, T initialValue, ISet<Type> knownTypes) where T : TBase, new()
         {
             SimpleObjectPersistence<T> simpleObjectPersistence = new SimpleObjectPersistence<T>();
-            simpleObjectPersistence.Serializer.KnownTypes.UnionWith(knownTypes);
+           // simpleObjectPersistence.Serializer.KnownTypes.UnionWith(knownTypes);
             return CreateOrLoadConfigurationFile<T, TBase>(configurationFile, initialValue,
                 (configurationFile, initialValue) =>
                 {

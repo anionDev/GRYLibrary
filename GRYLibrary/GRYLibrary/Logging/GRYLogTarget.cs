@@ -49,7 +49,7 @@ namespace GRYLibrary.Core.Log
 
         internal static ISet<GRYLogTarget> GetAll()
         {
-            var result= new HashSet<GRYLogTarget>();
+            HashSet<GRYLogTarget> result = new HashSet<GRYLogTarget>();
             result.Add(new ConcreteLogTargets. Console());
             result.Add(new LogFile());
             result.Add(new Observer());

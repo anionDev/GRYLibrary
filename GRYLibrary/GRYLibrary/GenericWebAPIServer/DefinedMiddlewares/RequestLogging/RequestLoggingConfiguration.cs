@@ -1,10 +1,7 @@
 ﻿using GRYLibrary.Core.Log;
 using GRYLibrary.Core.Miscellaneous.FilePath;
-using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System;
 using System.Collections.Generic;
-using System.Net;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.RequestLogging
 {
