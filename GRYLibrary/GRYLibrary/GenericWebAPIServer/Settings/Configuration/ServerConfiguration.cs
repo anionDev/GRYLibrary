@@ -8,11 +8,10 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration
         public Protocol Protocol { get; set; }
         public bool HostAPISpecificationForInNonDevelopmentEnvironment { get; set; } = false;
         public const string APIRoutePrefix = "/API";
-        public const string APIDocumentationDocumentName  = "APIDocumentation";
-        public const string APIDocumentationRoutePrefix =$"{APIRoutePrefix}/{APIDocumentationDocumentName}"; 
-        public string TermsOfServiceURLSubPath { get; set; } = $"{APIDocumentationRoutePrefix}/Information/TermsOfService";
-        public string ContactURLSubPath { get; set; } = $"{APIDocumentationRoutePrefix}/Information/Contact";
-        public string LicenseURLSubPath { get; set; } = $"{APIDocumentationRoutePrefix}/Information/License";
+        public const string APIDocumentationDocumentName  = "Specification";
+        public const string TermsOfServiceURLSubPath  = $"{APIRoutePrefix}/Other/Resources/Information/TermsOfService";
+        public const string ContactURLSubPath  = $"{APIRoutePrefix}/Other/Resources/Information/Contact";
+        public const string LicenseURLSubPath = $"{APIRoutePrefix}/Other/Resources/Information/License";
         public ServerConfiguration() { }
         public static ServerConfiguration Create(string domain, GRYEnvironment environment, TLSCertificateInformation tlsCertificateInformation)
         {

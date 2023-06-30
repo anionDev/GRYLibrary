@@ -10,7 +10,7 @@ namespace GRYLibrary.Core.XMLSerializer
     /// </summary>
     /// <typeparam name="T">The type of the object which should be serialized.</typeparam>
     public class SimpleGenericXMLSerializer<T> where T : new()
-    { 
+    {
         public SimpleGenericXMLSerializer()
         {
         }
@@ -20,6 +20,7 @@ namespace GRYLibrary.Core.XMLSerializer
             IExtendedXmlSerializer serializer = new ConfigurationContainer().UseAutoFormatting()
                                                                 .UseOptimizedNamespaces()
                                                                 .EnableImplicitTyping(typeof(T))
+                                                                .EnableReferences()
                                                                 .Create();
             string document = serializer.Serialize(new XmlWriterSettings { Indent = true }, @object);
             return document;
@@ -31,7 +32,7 @@ namespace GRYLibrary.Core.XMLSerializer
                                                                 .UseOptimizedNamespaces()
                                                                 .EnableImplicitTyping(typeof(T))
                                                                 .Create();
-            T document = serializer.Deserialize<T>( xml);
+            T document = serializer.Deserialize<T>(xml);
             return document;
         }
     }

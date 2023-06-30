@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using GRYLibrary.Core.GenericWebAPIServer.CommonRoutes;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
@@ -26,22 +27,25 @@ namespace GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.Authorization.A
 
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            if(operation.Parameters == null)
+            if(!context.MethodInfo.DeclaringType.Assembly.Equals(typeof(CommonRoutesController).Assembly))
             {
-                operation.Parameters = new List<OpenApiParameter>();
-            }
-            operation.Parameters.Add(new OpenApiParameter
-            {
-                Name = QueryParameterName,
-                In = ParameterLocation.Header,
-                Description = "APIKey for authorization",
-                Required = false,
-                Schema = new OpenApiSchema
+                if(operation.Parameters == null)
                 {
-                    Type = "string",
-                    Default = new OpenApiString(string.Empty)
+                    operation.Parameters = new List<OpenApiParameter>();
                 }
-            });
+                operation.Parameters.Add(new OpenApiParameter
+                {
+                    Name = QueryParameterName,
+                    In = ParameterLocation.Header,
+                    Description = "APIKey for authorization",
+                    Required = false,
+                    Schema = new OpenApiSchema
+                    {
+                        Type = "string",
+                        Default = new OpenApiString(string.Empty)
+                    }
+                });
+            }
         }
     }
 }

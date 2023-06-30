@@ -1,6 +1,6 @@
-﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
+﻿using GRYLibrary.Core.GenericWebAPIServer.CommonRoutes;
+using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using GRYLibrary.Core.GenericWebAPIServer.ExecutionModes;
-using GRYLibrary.Core.GenericWebAPIServer.Settings.CommonRoutes;
 using GRYLibrary.Core.Miscellaneous;
 using GRYLibrary.Core.Miscellaneous.FilePath;
 using System;
@@ -28,7 +28,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public string GetCertificateFolder();
         public string GetConfigurationFile();
         public string GetLogFolder();
-        public CommonRoutesInformation CommonRoutes { get; set; }
+        public CommonRoutesHostInformation CommonRoutes { get; set; }
         public void Initialize(string baseFolder);
         public Type AuthenticationMiddleware { get; set; }
         public Type AuthorizationMiddleware { get; set; }
@@ -80,7 +80,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public string GetCertificateFolder() { return this.CertificateFolder.GetPath(this.GetConfigurationFolder()); }
         public string GetConfigurationFile() { return this.ConfigurationFile.GetPath(this.GetConfigurationFolder()); }
         public string GetLogFolder() { return this.LogFolder.GetPath(this._BaseFolder); }
-        public CommonRoutesInformation CommonRoutes { get; set; } = new HostCommonRoutes();
+        public CommonRoutesHostInformation CommonRoutes { get; set; } = new HostCommonRoutes();
         public Type AuthenticationMiddleware { get; set; } = null;
         public Type AuthorizationMiddleware { get; set; } = null;
         public Type BlackListMiddleware { get; set; } = null;

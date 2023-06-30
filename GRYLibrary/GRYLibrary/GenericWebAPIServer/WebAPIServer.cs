@@ -1,5 +1,6 @@
 ﻿using Flurl;
 using GRYLibrary.Core.GeneralPurposeLogger;
+using GRYLibrary.Core.GenericWebAPIServer.CommonRoutes;
 using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares;
 using GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.Authentication;
@@ -15,7 +16,6 @@ using GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.WebApplicationFirew
 using GRYLibrary.Core.GenericWebAPIServer.ExecutionModes;
 using GRYLibrary.Core.GenericWebAPIServer.Middlewares;
 using GRYLibrary.Core.GenericWebAPIServer.Settings;
-using GRYLibrary.Core.GenericWebAPIServer.Settings.CommonRoutes;
 using GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration;
 using GRYLibrary.Core.GenericWebAPIServer.Utilities;
 using GRYLibrary.Core.Miscellaneous;
@@ -100,7 +100,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             IMvcBuilder mvcBuilder = builder.Services.AddControllers();
             if(this._APIServerInitializer.ApplicationConstants.CommonRoutes is HostCommonRoutes)
             {
-                mvcBuilder.AddApplicationPart(typeof(OtherURLs).Assembly);
+                mvcBuilder.AddApplicationPart(typeof(CommonRoutesController).Assembly);
             }
 
             builder.Services.AddSingleton((serviceProvider) => commandlineParameter);
@@ -172,8 +172,10 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             });
             string appVersionString = $"v{this._APIServerInitializer.ApplicationConstants.ApplicationVersion}";
 
+            builder.Services.AddControllers(mvcOptions => mvcOptions.UseGeneralRoutePrefix(ServerConfiguration.APIRoutePrefix));
             builder.Services.AddControllers();
             bool hostAPIDocumentation = HostAPIDocumentation(this._APIServerInitializer.ApplicationConstants.Environment, persistedApplicationSpecificConfiguration.ServerConfiguration.HostAPISpecificationForInNonDevelopmentEnvironment, this._APIServerInitializer.ApplicationConstants.ExecutionMode);
+            string apiUITitle = $"{this._APIServerInitializer.ApplicationConstants.ApplicationName} v{this._APIServerInitializer.ApplicationConstants.ApplicationVersion} API documentation";
             if(hostAPIDocumentation)
             {
                 builder.Services.AddEndpointsApiExplorer();
@@ -183,29 +185,32 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                     {
                         swaggerOptions.OperationFilterDescriptors.Add(filter);
                     }
-                    swaggerOptions.SwaggerDoc(ServerConfiguration.APIDocumentationDocumentName, new OpenApiInfo
+                    var openAPIInfo = new OpenApiInfo
                     {
                         Version = appVersionString,
-                        Title = $"{this._APIServerInitializer.ApplicationConstants.ApplicationName} API",
+                        Title = apiUITitle,
                         Description = this._APIServerInitializer.ApplicationConstants.ApplicationDescription,
-                        TermsOfService = new Uri(persistedApplicationSpecificConfiguration.ServerConfiguration.GetServerAddress() + persistedApplicationSpecificConfiguration.ServerConfiguration.TermsOfServiceURLSubPath),
-                        Contact = new OpenApiContact
+                    };
+                    if(this._APIServerInitializer.ApplicationConstants.CommonRoutes is HostCommonRoutes)
+                    {
+                        openAPIInfo.TermsOfService = new Uri(persistedApplicationSpecificConfiguration.ServerConfiguration.GetServerAddress() + ServerConfiguration.TermsOfServiceURLSubPath);
+                        openAPIInfo.Contact = new OpenApiContact
                         {
                             Name = "Contact",
-                            Url = new Uri(persistedApplicationSpecificConfiguration.ServerConfiguration.GetServerAddress() + persistedApplicationSpecificConfiguration.ServerConfiguration.ContactURLSubPath)
-                        },
-                        License = new OpenApiLicense
+                            Url = new Uri(persistedApplicationSpecificConfiguration.ServerConfiguration.GetServerAddress() + ServerConfiguration.ContactURLSubPath)
+                        };
+                        openAPIInfo.License = new OpenApiLicense
                         {
                             Name = "License",
-                            Url = new Uri(persistedApplicationSpecificConfiguration.ServerConfiguration.GetServerAddress() + persistedApplicationSpecificConfiguration.ServerConfiguration.LicenseURLSubPath)
-                        }
-                    });
+                            Url = new Uri(persistedApplicationSpecificConfiguration.ServerConfiguration.GetServerAddress() + ServerConfiguration.LicenseURLSubPath)
+                        };
+                    }
+                    swaggerOptions.SwaggerDoc(ServerConfiguration.APIDocumentationDocumentName, openAPIInfo);
                     string xmlFilename = $"{this._APIServerInitializer.ApplicationConstants.ApplicationName}.xml";
                     swaggerOptions.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
                 });
             }
             builder.Services.AddLogging(c => c.ClearProviders());
-            builder.Services.AddControllers(mvcOptions => mvcOptions.UseGeneralRoutePrefix(ServerConfiguration.APIRoutePrefix));
             WebApplication app = builder.Build();
 
             #region Add middlewares
@@ -228,20 +233,27 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             #endregion
 
             #region API Documentation
-            string apiLink = persistedApplicationSpecificConfiguration.ServerConfiguration.GetServerAddress() + ServerConfiguration.APIDocumentationRoutePrefix;
+            string apiLink = persistedApplicationSpecificConfiguration.ServerConfiguration.GetServerAddress() + ServerConfiguration.APIRoutePrefix;
+            string resourcesRoute = "/Other/Resources";
             if(hostAPIDocumentation)
             {
-                app.UseSwagger(options =>
-                {
-                    options.RouteTemplate = $"/Other/Resources/{{documentName}}/{this._APIServerInitializer.ApplicationConstants.ApplicationName}.api.json";
-                });
+
+                string openAPISpecificationRoute = $"{resourcesRoute}/{ServerConfiguration.APIDocumentationDocumentName}";
+
+                string apiRoute = $"{ServerConfiguration.APIRoutePrefix.Substring(1)}";
+                string apiDocumentationRoute = $"APIDocumentation";
+                string apiDocumentationSubRoute = $"Other/Resources/{apiDocumentationRoute}";
+                string entireAPIDocumentationRoute = $"{apiRoute}/{apiDocumentationSubRoute}";
+
+                app.UseSwagger(options => options.RouteTemplate = $"{entireAPIDocumentationRoute}/{{documentName}}/{this._APIServerInitializer.ApplicationConstants.ApplicationName}.api.json");
                 app.UseSwaggerUI(options =>
                 {
-                    var swaggerLink = "/index.html";
                     string appVersionString = $"v{this._APIServerInitializer.ApplicationConstants.ApplicationVersion}";
-                    options.SwaggerEndpoint(swaggerLink, this._APIServerInitializer.ApplicationConstants.ApplicationName + " " + appVersionString);
-                    options.RoutePrefix = "/Other/Resources";
-                    apiLink = apiLink+swaggerLink;
+                    string ui = $"{ServerConfiguration.APIDocumentationDocumentName}/{this._APIServerInitializer.ApplicationConstants.ApplicationName}.api.json";
+                    options.SwaggerEndpoint(ui, this._APIServerInitializer.ApplicationConstants.ApplicationName + " " + appVersionString);
+                    options.RoutePrefix = entireAPIDocumentationRoute;
+                    options.DocumentTitle = apiUITitle;
+                    apiLink = $"{apiLink}/{apiDocumentationSubRoute}/index.html";
                 });
             }
             #endregion
