@@ -18,7 +18,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.Authentication
         public abstract bool IsAuthenticated(HttpContext context);
         public override Task Invoke(HttpContext context)
         {
-            if(IsAuthenticatedInternal(context))
+            if(this.IsAuthenticatedInternal(context))
             {
                 return this._Next(context);
             }
@@ -32,7 +32,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.Authentication
         {
             if(this.AuthenticatedIsRequired(context))
             {
-                if(IsAuthenticated(context))
+                if(this.IsAuthenticated(context))
                 {
                     return true;
                 }

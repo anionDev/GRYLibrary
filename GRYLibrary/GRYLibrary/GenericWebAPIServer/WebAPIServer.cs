@@ -1,5 +1,4 @@
-﻿using Flurl;
-using GRYLibrary.Core.GeneralPurposeLogger;
+﻿using GRYLibrary.Core.GeneralPurposeLogger;
 using GRYLibrary.Core.GenericWebAPIServer.CommonRoutes;
 using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares;
@@ -185,7 +184,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                     {
                         swaggerOptions.OperationFilterDescriptors.Add(filter);
                     }
-                    var openAPIInfo = new OpenApiInfo
+                    OpenApiInfo openAPIInfo = new OpenApiInfo
                     {
                         Version = appVersionString,
                         Title = apiUITitle,
@@ -237,13 +236,10 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             string resourcesRoute = "/Other/Resources";
             if(hostAPIDocumentation)
             {
-
                 string openAPISpecificationRoute = $"{resourcesRoute}/{ServerConfiguration.APIDocumentationDocumentName}";
-
-                string apiRoute = $"{ServerConfiguration.APIRoutePrefix.Substring(1)}";
                 string apiDocumentationRoute = $"APIDocumentation";
                 string apiDocumentationSubRoute = $"Other/Resources/{apiDocumentationRoute}";
-                string entireAPIDocumentationRoute = $"{apiRoute}/{apiDocumentationSubRoute}";
+                string entireAPIDocumentationRoute = $"{ServerConfiguration.APIRoutePrefix[1..]}/{apiDocumentationSubRoute}";
 
                 app.UseSwagger(options => options.RouteTemplate = $"{entireAPIDocumentationRoute}/{{documentName}}/{this._APIServerInitializer.ApplicationConstants.ApplicationName}.api.json");
                 app.UseSwaggerUI(options =>

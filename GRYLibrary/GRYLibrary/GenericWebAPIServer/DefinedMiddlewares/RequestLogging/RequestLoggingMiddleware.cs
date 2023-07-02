@@ -45,7 +45,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.RequestLogger
             IPAddress clientIP = context.Connection.RemoteIpAddress;
             Request request = new Request(moment, clientIP, context.Request.Method, requestRoute,context.Request.Query, context.Request.Headers, requestBodyTask.Result, null/*TODO*/, responseHTTPStatuscode, context.Response.Headers, responseBodyTask.Result);
             this.LogHTTPRequest(request, false, new HashSet<GRYLogTarget> { new Log.ConcreteLogTargets.Console() });
-            this.LogHTTPRequest(request, ShouldLogEntireRequestContentInLogFile(request), new HashSet<GRYLogTarget> { new Log.ConcreteLogTargets.LogFile() });
+            this.LogHTTPRequest(request, this.ShouldLogEntireRequestContentInLogFile(request), new HashSet<GRYLogTarget> { new Log.ConcreteLogTargets.LogFile() });
             return result;
         }
 
@@ -59,7 +59,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.RequestLogger
                     string formatted;
                     if(logFullRequest)
                     {
-                        formatted = this.FormatLogEntryFull(request, _RequestLoggingSettings.MaximalLengthofBodies);
+                        formatted = this.FormatLogEntryFull(request, this._RequestLoggingSettings.MaximalLengthofBodies);
                     }
                     else
                     {

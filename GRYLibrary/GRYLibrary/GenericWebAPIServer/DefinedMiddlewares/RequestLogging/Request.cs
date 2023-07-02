@@ -37,13 +37,13 @@ namespace GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.RequestLogging
 
         internal string GetFormattedQuery()
         {
-            if(Query.Count == 0)
+            if(this.Query.Count == 0)
             {
                 return string.Empty;
             }
             else
             {
-                return "?" + string.Join(",", Query.Select(kvp => kvp.Key + "=" + kvp.Value));
+                return "?" + string.Join(",", this.Query.Select(kvp => kvp.Key + "=" + kvp.Value));
             }
         }
     }

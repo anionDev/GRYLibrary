@@ -110,10 +110,10 @@ namespace GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.Captcha
         {
             CaptchaGenerationSettings result = new CaptchaGenerationSettings()
             {
-                Alphabet =_CaptchaMiddlewareSettings. Alphabet,
-                ExpireDurationOfCaptcha = _CaptchaMiddlewareSettings.ExpireDurationOfCaptcha,
-                Length = _CaptchaMiddlewareSettings.Length,
-                ExpireDurationOfAccessToken = _CaptchaMiddlewareSettings.ExpireDurationOfAccessToken
+                Alphabet = this._CaptchaMiddlewareSettings. Alphabet,
+                ExpireDurationOfCaptcha = this._CaptchaMiddlewareSettings.ExpireDurationOfCaptcha,
+                Length = this._CaptchaMiddlewareSettings.Length,
+                ExpireDurationOfAccessToken = this._CaptchaMiddlewareSettings.ExpireDurationOfAccessToken
             };
             return result;
         }

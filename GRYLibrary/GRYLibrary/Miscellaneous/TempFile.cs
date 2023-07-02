@@ -7,17 +7,17 @@ namespace GRYLibrary.Core.Miscellaneous
         public string Path { get; set; }
         public TempFile():this(null)
         {
-            Path = System.IO.Path.Join(System.IO.Path.GetTempPath(), Guid.NewGuid().ToString().Substring(0, 8));
-            Utilities.EnsureFileExists(Path);
+            this.Path = System.IO.Path.Join(System.IO.Path.GetTempPath(), Guid.NewGuid().ToString().Substring(0, 8));
+            Utilities.EnsureFileExists(this.Path);
         }
         public TempFile(string extension)
         {
-            Path = System.IO.Path.Join(System.IO.Path.GetTempPath(), Guid.NewGuid().ToString().Substring(0, 8));
+            this.Path = System.IO.Path.Join(System.IO.Path.GetTempPath(), Guid.NewGuid().ToString().Substring(0, 8));
             if(extension != null)
             {
-                Path = $"{Path}.{extension}";
+                this.Path = $"{this.Path}.{extension}";
             }
-            Utilities.EnsureFileExists(Path);
+            Utilities.EnsureFileExists(this.Path);
         }
         public void Dispose()
         {

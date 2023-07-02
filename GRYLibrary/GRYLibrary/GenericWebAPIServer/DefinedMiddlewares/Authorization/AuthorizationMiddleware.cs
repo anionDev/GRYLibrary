@@ -18,7 +18,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.Authorization
         public abstract bool IsAuthorized(HttpContext context);
         public override Task Invoke(HttpContext context)
         {
-            if(IsAuthorizedInternal(context))
+            if(this.IsAuthorizedInternal(context))
             {
                 return this._Next(context);
             }
@@ -32,7 +32,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.Authorization
         {
             if(this.AuthorizationIsRequired(context))
             {
-                if(IsAuthorized(context))
+                if(this.IsAuthorized(context))
                 {
                     return true;
                 }

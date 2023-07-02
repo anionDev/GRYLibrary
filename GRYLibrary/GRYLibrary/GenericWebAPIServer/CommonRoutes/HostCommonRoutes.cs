@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace GRYLibrary.Core.GenericWebAPIServer.CommonRoutes
+﻿namespace GRYLibrary.Core.GenericWebAPIServer.CommonRoutes
 {
     public class HostCommonRoutes :CommonRoutesHostInformation
     {

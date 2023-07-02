@@ -3,11 +3,8 @@ using GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Routing;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.CommonRoutes
 {
@@ -21,40 +18,40 @@ namespace GRYLibrary.Core.GenericWebAPIServer.CommonRoutes
         public CommonRoutesController(IApplicationConstants configuration, ICommonRoutesInformation commonRoutesInformation, IEnumerable<EndpointDataSource> endpointSources)
         {
             this._Configuration = configuration;
-            _CommonRoutesInformation = commonRoutesInformation;
-            _EndpointSources = endpointSources;
+            this._CommonRoutesInformation = commonRoutesInformation;
+            this._EndpointSources = endpointSources;
         }
 
         [HttpGet]
         [Route(nameof(TermsOfService))]
         public IActionResult TermsOfService()
         {
-            return this.Redirect(_CommonRoutesInformation.TermsOfServiceLink);
+            return this.Redirect(this._CommonRoutesInformation.TermsOfServiceLink);
         }
 
         [HttpGet]
         [Route(nameof(Contact))]
         public IActionResult Contact()
         {
-            return this.Redirect(_CommonRoutesInformation.ContactLink);
+            return this.Redirect(this._CommonRoutesInformation.ContactLink);
         }
 
         [HttpGet]
         [Route(nameof(License))]
         public IActionResult License()
         {
-            return this.Redirect(_CommonRoutesInformation.LicenseLink);
+            return this.Redirect(this._CommonRoutesInformation.LicenseLink);
         }
 
         [HttpGet("ShowAllEndpoints")]
         public IActionResult ShowAllEndpoints()
         {
-            var endpoints = _EndpointSources.SelectMany(es => es.Endpoints).OfType<RouteEndpoint>();
+            IEnumerable<RouteEndpoint> endpoints = this._EndpointSources.SelectMany(es => es.Endpoints).OfType<RouteEndpoint>();
             var output = endpoints.Select(endPoint =>
             {
-                var controller = endPoint.Metadata.OfType<ControllerActionDescriptor>().FirstOrDefault();
-                var action = controller != null ? $"{controller.ControllerName}.{controller.ActionName}" : null;
-                var controllerMethod = controller != null ? $"{controller.ControllerTypeInfo.FullName}:{controller.MethodInfo.Name}" : null;
+                ControllerActionDescriptor controller = endPoint.Metadata.OfType<ControllerActionDescriptor>().FirstOrDefault();
+                string action = controller != null ? $"{controller.ControllerName}.{controller.ActionName}" : null;
+                string controllerMethod = controller != null ? $"{controller.ControllerTypeInfo.FullName}:{controller.MethodInfo.Name}" : null;
                 return new
                 {
                     Method = endPoint.Metadata.OfType<HttpMethodMetadata>().FirstOrDefault()?.HttpMethods?[0],
@@ -64,7 +61,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.CommonRoutes
                 };
             }
             );
-            return Json(output);
+            return this.Json(output);
         }
     }
 }

@@ -10,28 +10,28 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             get
             {
-                return _Value;
+                return this._Value;
             }
             set
             {
-                if(_Regex.IsMatch(value))
+                if(this._Regex.IsMatch(value))
                 {
-                    _Value = value;
+                    this._Value = value;
                 }
                 else
                 {
-                    throw new ArgumentException($"Value \"{_Value}\" is not assignable because it does not match the regex \"{_Regex}\".");
+                    throw new ArgumentException($"Value \"{this._Value}\" is not assignable because it does not match the regex \"{this._Regex}\".");
                 }
             }
         }
         private Regex _Regex;
         public Regex GetRegex()
         {
-            return _Regex;
+            return this._Regex;
         }
         public void SetRegex(Regex regex)
         {
-            _Regex = regex;
+            this._Regex = regex;
         }
     }
 }
