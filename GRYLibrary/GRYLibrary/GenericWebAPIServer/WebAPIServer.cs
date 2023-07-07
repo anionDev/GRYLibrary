@@ -93,7 +93,8 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         {
             WebApplicationBuilder builder = WebApplication.CreateBuilder(new WebApplicationOptions
             {
-                ApplicationName = this._APIServerInitializer.ApplicationConstants.ApplicationName
+                ApplicationName = this._APIServerInitializer.ApplicationConstants.ApplicationName,
+                EnvironmentName = this._APIServerInitializer.ApplicationConstants.Environment.GetType().Name
             });
 
             IMvcBuilder mvcBuilder = builder.Services.AddControllers();
@@ -151,17 +152,14 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                         string pfxFilePath = https.TLSCertificateInformation.CertificatePFXFile.GetPath(this._APIServerInitializer.ApplicationConstants.GetCertificateFolder());
                         string passwordFilePath = https.TLSCertificateInformation.CertificatePasswordFile.GetPath(this._APIServerInitializer.ApplicationConstants.GetCertificateFolder());
                         string password = File.ReadAllText(passwordFilePath, new UTF8Encoding(false));
-                        X509Certificate2 certificate = new(pfxFilePath, password);
+                        X509Certificate2 certificate;
+                        certificate = new X509Certificate2(pfxFilePath, password);
                         if(this._APIServerInitializer.ApplicationConstants.Environment is Productive && Miscellaneous.Utilities.IsSelfSIgned(certificate))
                         {
                             logger.Log($"The used certificate '{pfxFilePath}' is self-signed. Using self-signed certificates is not recommended in a productive environment.", LogLevel.Warning);
                         }
-                        listenOptions.UseHttps(pfxFilePath, password);
-
-                        X509Certificate2Collection collection = new X509Certificate2Collection();
-                        collection.Import(pfxFilePath, password, X509KeyStorageFlags.PersistKeySet);
-                        List<X509Certificate2> certs = collection.ToList();
-                        string dnsName = certs[0].GetNameInfo(X509NameType.DnsName, false);
+                        listenOptions.UseHttps(certificate);
+                        string dnsName = certificate.GetNameInfo(X509NameType.DnsName, false);
                         if(this._APIServerInitializer.ApplicationConstants.Environment is not Development && dnsName != persistedApplicationSpecificConfiguration.ServerConfiguration.Domain)
                         {
                             logger.Log($"The used certificate has the DNS-name '{dnsName}' which differs from the domain '{persistedApplicationSpecificConfiguration.ServerConfiguration.Domain}' which is set in the configuration.", LogLevel.Warning);
@@ -256,8 +254,8 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
             app.UseRouting();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
-            logger.Log($"The API will now be available under the following URL:", LogLevel.Debug);
-            logger.Log(apiLink, LogLevel.Debug);
+            logger.Log($"The API will now be available under the following URL:", LogLevel.Information);
+            logger.Log(apiLink, LogLevel.Information);
             return app;
         }
 

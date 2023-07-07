@@ -4,16 +4,16 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration
 {
     public class TLSCertificateInformation
     {
-        public AbstractFilePath CertificatePasswordFile { get; set; } = default;
         public AbstractFilePath CertificatePFXFile { get; set; } = default;
+        public AbstractFilePath CertificatePasswordFile { get; set; } = default;
         public string FallbackCertificatePasswordFileContentHex { get; set; } = default;
         public string FallbackCertificatePFXFileContentHex { get; set; } = default;
-        public static TLSCertificateInformation Create(AbstractFilePath certificatePasswordFile, AbstractFilePath certificatePFXFile, string fallbackCertificatePasswordFileContentHex, string fallbackCertificatePFXFileContentHex)
+        public static TLSCertificateInformation Create(AbstractFilePath certificatePFXFile, AbstractFilePath certificatePasswordFile, string fallbackCertificatePasswordFileContentHex, string fallbackCertificatePFXFileContentHex)
         {
             TLSCertificateInformation result = new TLSCertificateInformation
             {
-                CertificatePasswordFile = certificatePasswordFile,
                 CertificatePFXFile = certificatePFXFile,
+                CertificatePasswordFile = certificatePasswordFile,
                 FallbackCertificatePasswordFileContentHex = fallbackCertificatePasswordFileContentHex,
                 FallbackCertificatePFXFileContentHex = fallbackCertificatePFXFileContentHex
             };

@@ -32,7 +32,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
             this.ApplicationConstants = new ApplicationConstants<AppSpecificConstants>(applicationName, appDescription, applicationVersion, executionMode, environment, applicationSpecificConstants);
             this.ApplicationConstants.KnownTypes.Add(typeof(PersistedApplicationSpecificConfiguration));
             this.BaseFolder = GetDefaultBaseFolder(this.ApplicationConstants);
-            this.InitialApplicationConfiguration = PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>.Create(domain, persistedApplicationSpecificConfiguration, environment, fallbackCertificatePasswordFileContentHex, fallbackCertificatePFXFileContentHex);
+            this.InitialApplicationConfiguration = PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>.Create(domain, persistedApplicationSpecificConfiguration, environment, fallbackCertificatePasswordFileContentHex, fallbackCertificatePFXFileContentHex,ApplicationConstants.ApplicationName);
             this.ConfigureServices = (_, _, _) => { };
             this.PreRun = (_, _) => { };
             this.PostRun = (_, _) => { };
