@@ -152,8 +152,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                         string pfxFilePath = https.TLSCertificateInformation.CertificatePFXFile.GetPath(this._APIServerInitializer.ApplicationConstants.GetCertificateFolder());
                         string passwordFilePath = https.TLSCertificateInformation.CertificatePasswordFile.GetPath(this._APIServerInitializer.ApplicationConstants.GetCertificateFolder());
                         string password = File.ReadAllText(passwordFilePath, new UTF8Encoding(false));
-                        X509Certificate2 certificate;
-                        certificate = new X509Certificate2(pfxFilePath, password);
+                        X509Certificate2 certificate = certificate = new X509Certificate2(pfxFilePath, password);
                         if(this._APIServerInitializer.ApplicationConstants.Environment is Productive && Miscellaneous.Utilities.IsSelfSIgned(certificate))
                         {
                             logger.Log($"The used certificate '{pfxFilePath}' is self-signed. Using self-signed certificates is not recommended in a productive environment.", LogLevel.Warning);
@@ -293,15 +292,29 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 string passwordFile = https.TLSCertificateInformation.CertificatePasswordFile.GetPath(certFolder);
                 if(!File.Exists(https.TLSCertificateInformation.CertificatePFXFile.GetPath(certFolder)))
                 {
-                    Miscellaneous.Utilities.EnsureFileExists(passwordFile, true);
-                    File.WriteAllBytes(passwordFile, Miscellaneous.Utilities.HexStringToByteArray(https.TLSCertificateInformation.FallbackCertificatePasswordFileContentHex));
-
-                    Miscellaneous.Utilities.EnsureFileExists(pfxFile, true);
-                    File.WriteAllBytes(pfxFile, Miscellaneous.Utilities.HexStringToByteArray(https.TLSCertificateInformation.FallbackCertificatePFXFileContentHex));
-
                     if(this._APIServerInitializer.ApplicationConstants.Environment is Productive)
                     {
-                        logger.Log($"'{pfxFile}' does not exist. Nonproductive-certificate will be used instead. It is recommended to replace it by a productive-certificate as soon as possible.", LogLevel.Warning);
+                        logger.Log($"'{pfxFile}' does not exist. Fallback-certificate will be used instead. It is recommended to replace it by a valid certificate as soon as possible.", LogLevel.Warning);
+                    }
+
+                    if(https.TLSCertificateInformation.FallbackCertificatePasswordFileContentHex == null)
+                    {
+                        throw new ArgumentNullException($"{nameof(TLSCertificateInformation.FallbackCertificatePasswordFileContentHex)} is not allowed to be null if {nameof(HTTPS)} is used and no valid certificate is given.");
+                    }
+                    else
+                    {
+                        Miscellaneous.Utilities.EnsureFileExists(passwordFile, true);
+                        File.WriteAllBytes(passwordFile, Miscellaneous.Utilities.HexStringToByteArray(https.TLSCertificateInformation.FallbackCertificatePasswordFileContentHex));
+                    }
+
+                    if(https.TLSCertificateInformation.FallbackCertificatePasswordFileContentHex == null)
+                    {
+                        throw new ArgumentNullException($"{nameof(TLSCertificateInformation.FallbackCertificatePFXFileContentHex)} is not allowed to be null if {nameof(HTTPS)} is used and no valid certificate is given.");
+                    }
+                    else
+                    {
+                        Miscellaneous.Utilities.EnsureFileExists(pfxFile, true);
+                        File.WriteAllBytes(pfxFile, Miscellaneous.Utilities.HexStringToByteArray(https.TLSCertificateInformation.FallbackCertificatePFXFileContentHex));
                     }
                 }
             }
