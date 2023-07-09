@@ -6,14 +6,14 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
 
     public static class MvcOptionsExtensions
     {
-        public static void UseGeneralRoutePrefix(this MvcOptions opts, IRouteTemplateProvider routeAttribute)
+        public static void UseGeneralRoutePrefix(this MvcOptions mvcOptions, IRouteTemplateProvider routeAttribute)
         {
-            opts.Conventions.Add(new RoutePrefixConvention(routeAttribute));
+            mvcOptions.Conventions.Add(new RoutePrefixConvention(routeAttribute));
         }
 
-        public static void UseGeneralRoutePrefix(this MvcOptions opts, string prefix)
+        public static void UseGeneralRoutePrefix(this MvcOptions mvcOptions, string prefix)
         {
-            opts.UseGeneralRoutePrefix(new RouteAttribute(prefix));
+            mvcOptions.UseGeneralRoutePrefix(new RouteAttribute(prefix));
         }
     }
 }

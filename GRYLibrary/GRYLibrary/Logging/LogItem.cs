@@ -140,7 +140,7 @@ namespace GRYLibrary.Core.Log
             {
                 message = $"[{configuration.Name.Trim()}] {message}";
             }
-            if(configuration.ConvertTimeForLogentriesToUTCFormat)
+            if(configuration.ConvertTimeForLogEntriesToUTCFormat)
             {
                 momentOfLogEntry = momentOfLogEntry.ToUniversalTime();
             }

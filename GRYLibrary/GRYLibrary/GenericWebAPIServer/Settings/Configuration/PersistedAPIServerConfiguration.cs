@@ -26,7 +26,13 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration
         {
             domain = environment is Development ? $"{codeunitName.ToLower()}.test.local" : domain;
             ServerConfiguration serverConfiguration = new ServerConfiguration();
-            TLSCertificateInformation tlsCertificateInformation = fallbackCertificatePFXFileContentHex == null ? null : TLSCertificateInformation.Create(AbstractFilePath.FromString($"./{domain}.pfx"), AbstractFilePath.FromString($"./{domain}.password"), fallbackCertificatePasswordFileContentHex, fallbackCertificatePFXFileContentHex);
+            TLSCertificateInformation tlsCertificateInformation = fallbackCertificatePFXFileContentHex == null ? null : new TLSCertificateInformation
+            {
+                CertificatePFXFile = AbstractFilePath.FromString($"./{domain}.pfx"),
+                CertificatePasswordFile = AbstractFilePath.FromString($"./{domain}.password"),
+                FallbackCertificatePasswordFileContentHex = fallbackCertificatePasswordFileContentHex,
+                FallbackCertificatePFXFileContentHex = fallbackCertificatePFXFileContentHex
+            };
             serverConfiguration.Protocol = tlsCertificateInformation == null ? HTTP.Create() : HTTPS.Create(tlsCertificateInformation);
             serverConfiguration.Domain = domain;
             PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> result = new PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration>
