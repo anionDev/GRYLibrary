@@ -2,10 +2,8 @@
 using GRYLibrary.Core.Exceptions;
 using GRYLibrary.Core.ExecutePrograms;
 using GRYLibrary.Core.ExecutePrograms.WaitingStates;
-using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
 using GRYLibrary.Core.GenericWebAPIServer.ExecutionModes;
 using GRYLibrary.Core.Log;
-using GRYLibrary.Core.Miscellaneous.FilePath;
 using GRYLibrary.Core.OperatingSystem;
 using GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems;
 using GRYLibrary.Core.XMLSerializer;
@@ -2326,7 +2324,19 @@ namespace GRYLibrary.Core.Miscellaneous
             DateTime originalDateTime = DateTime.ParseExact(streamReader.ReadToEnd().Substring(begin, length), format, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
             return TimeZoneInfo.ConvertTime(originalDateTime, timezone);
         }
-
+        public static byte[] StreamToByteArray(Stream input)
+        {
+            byte[] buffer = new byte[16 * 1024];
+            using(MemoryStream ms = new MemoryStream())
+            {
+                int read;
+                while((read = input.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    ms.Write(buffer, 0, read);
+                }
+                return ms.ToArray();
+            }
+        }
         public static SerializableDictionary<TKey, TValue> ToSerializableDictionary<TKey, TValue>(this IDictionary<TKey, TValue> dictionary)
         {
             SerializableDictionary<TKey, TValue> result = new();
@@ -2337,6 +2347,11 @@ namespace GRYLibrary.Core.Miscellaneous
             return result;
         }
 
+        public static T WaitAndGetResult<T>(this Task<T> task)
+        {
+            task.Wait();
+            return task.Result;
+        }
         public static bool IsDefault(object @object)
         {
             if(@object == null)
@@ -2784,7 +2799,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public static T CreateOrLoadXMLConfigurationFile<T, TBase>(string configurationFile, T initialValue, ISet<Type> knownTypes) where T : TBase, new()
         {
             SimpleObjectPersistence<T> simpleObjectPersistence = new SimpleObjectPersistence<T>();
-            simpleObjectPersistence.Serializer.KnownTypes.UnionWith(knownTypes);
+           // simpleObjectPersistence.Serializer.KnownTypes.UnionWith(knownTypes);
             return CreateOrLoadConfigurationFile<T, TBase>(configurationFile, initialValue,
                 (configurationFile, initialValue) =>
                 {
@@ -2824,15 +2839,6 @@ namespace GRYLibrary.Core.Miscellaneous
                 return Analysis.Instance;
             }
             return RunProgram.Instance;
-        }
-        public static GRYLogConfiguration GetLogConfiguration(string filename, GRYEnvironment environment)
-        {
-            GRYLogConfiguration result = GRYLogConfiguration.GetCommonConfiguration(AbstractFilePath.FromString("./" + filename), environment is Development);
-            foreach(GRYLogTarget target in result.LogTargets)
-            {
-                target.Format = GRYLogLogFormat.GRYLogFormat;
-            }
-            return result;
         }
     }
 }

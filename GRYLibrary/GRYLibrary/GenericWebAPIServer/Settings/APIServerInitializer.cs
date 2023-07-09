@@ -19,6 +19,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
     public class APIServerInitializer<AppSpecificConstants, PersistedApplicationSpecificConfiguration>
         where PersistedApplicationSpecificConfiguration : new()
     {
+        public bool ThrowErrorIfConfigurationDoesNotExistInProduction { get; set; } = false;
         public string BaseFolder { get; set; }
         public IApplicationConstants<AppSpecificConstants> ApplicationConstants { get; set; }
         public PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> InitialApplicationConfiguration { get; set; }
@@ -31,7 +32,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
             this.ApplicationConstants = new ApplicationConstants<AppSpecificConstants>(applicationName, appDescription, applicationVersion, executionMode, environment, applicationSpecificConstants);
             this.ApplicationConstants.KnownTypes.Add(typeof(PersistedApplicationSpecificConfiguration));
             this.BaseFolder = GetDefaultBaseFolder(this.ApplicationConstants);
-            this.InitialApplicationConfiguration = PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>.Create(domain, persistedApplicationSpecificConfiguration, environment, fallbackCertificatePasswordFileContentHex, fallbackCertificatePFXFileContentHex);
+            this.InitialApplicationConfiguration = PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>.Create(domain, persistedApplicationSpecificConfiguration, environment, fallbackCertificatePasswordFileContentHex, fallbackCertificatePFXFileContentHex,ApplicationConstants.ApplicationName);
             this.ConfigureServices = (_, _, _) => { };
             this.PreRun = (_, _) => { };
             this.PostRun = (_, _) => { };

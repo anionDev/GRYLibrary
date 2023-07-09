@@ -29,6 +29,7 @@ namespace GRYLibrary.Core.Log
         public LogLevel LogLevel { get; internal set; }
         public Exception Exception { get; }
         public DateTime MomentOfLogEntry { get; } = DateTime.Now;
+        public ISet<GRYLogTarget> LogTargets { get; set; } = GRYLogTarget.GetAll();
         public string MessageId { get; }
         public string PlainMessage
         {

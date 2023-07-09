@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ExtendedXmlSerializer.Configuration;
+using ExtendedXmlSerializer;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Xml;
-using System.Xml.Serialization;
 
 namespace GRYLibrary.Core.XMLSerializer
 {
@@ -14,65 +11,29 @@ namespace GRYLibrary.Core.XMLSerializer
     /// <typeparam name="T">The type of the object which should be serialized.</typeparam>
     public class SimpleGenericXMLSerializer<T> where T : new()
     {
-        private readonly Type _T;
-        public Encoding Encoding { get; set; }
-        public XmlWriterSettings XMLWriterSettings { get; set; }
-        public ISet<Type> KnownTypes { get; set; }
-        public XmlAttributeOverrides XmlAttributeOverrides { get; set; }
-        public string DefaultNamespace { get; set; }
-
         public SimpleGenericXMLSerializer()
         {
-            this._T = typeof(T);
-            this.Encoding = new UTF8Encoding(false);
-            this.XMLWriterSettings = new XmlWriterSettings() { Indent = true, Encoding = Encoding, IndentChars = "     ", NewLineOnAttributes = false, OmitXmlDeclaration = true };
-            this.KnownTypes = new HashSet<Type>();
-            //  KnownTypes.Add(typeof(CustomWebAPIConfigurationVariables<TestX>));
-            this.XmlAttributeOverrides = new XmlAttributeOverrides();
-            this.DefaultNamespace = string.Empty;
-        }
-        public void SerializeToWriter(T @object, XmlWriter xmlWriter)
-        {
-            this.GetSerializer().Serialize(xmlWriter, @object);
         }
 
         public string Serialize(T @object)
         {
-            using Stream stream = new MemoryStream();
-            using(XmlWriter xmlWriter = XmlWriter.Create(stream, this.XMLWriterSettings))
-            {
-                XmlSerializer serializer = this.GetSerializer();
-                serializer.Serialize(xmlWriter, @object);
-            }
-            stream.Seek(0, SeekOrigin.Begin);
-            using StreamReader streamReader = new(stream);
-            return streamReader.ReadToEnd();
-        }
+            IExtendedXmlSerializer serializer = new ConfigurationContainer().UseAutoFormatting()
+                                                                .UseOptimizedNamespaces()
+                                                                .EnableImplicitTyping(typeof(T))
+                                                                .EnableReferences()
+                                                                .Create();
+            string document = serializer.Serialize(new XmlWriterSettings { Indent = true }, @object);
+            return document;
 
-        public T DeserializeFromReader(XmlReader xmlReader)
-        {
-            return (T)this.GetSerializer().Deserialize(xmlReader);
         }
         public T Deserialize(string xml)
         {
-            using Stream stream = new MemoryStream();
-            byte[] data = this.Encoding.GetBytes(xml);
-            stream.Write(data, 0, data.Length);
-            stream.Position = 0;
-            return (T)this.GetSerializer().Deserialize(stream);
-        }
-        public void AddAllTypesInCurrentDomainAssembliesToKnownTypes()
-        {
-            this.KnownTypes.UnionWith(new HashSet<Type>(AppDomain.CurrentDomain.GetAssemblies().SelectMany(assembly => assembly.GetTypes())));
-        }
-        private Type[] GetExtraTypes()
-        {
-            Type[] types = this.KnownTypes/*.Where(this._T.IsAssignableFrom)*/.ToArray();
-            return types;
-        }
-        private XmlSerializer GetSerializer()
-        {
-            return new XmlSerializer(this._T, this.XmlAttributeOverrides, this.GetExtraTypes(), new XmlRootAttribute(this._T.Name), this.DefaultNamespace);
+            IExtendedXmlSerializer serializer = new ConfigurationContainer().UseAutoFormatting()
+                                                                .UseOptimizedNamespaces()
+                                                                .EnableImplicitTyping(typeof(T))
+                                                                .Create();
+            T document = serializer.Deserialize<T>(xml);
+            return document;
         }
     }
 }

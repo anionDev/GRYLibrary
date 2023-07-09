@@ -21,13 +21,18 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration
         public ServerConfiguration ServerConfiguration { get; set; }
         public GRYLogConfiguration ApplicationLogConfiguration { get; set; }
         public PersistedApplicationSpecificConfiguration ApplicationSpecificConfiguration { get; set; }
-        public static PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> Create<PersistedAppSpecificConfiguration>(string domain, PersistedAppSpecificConfiguration persistedApplicationSpecificConfiguration, GRYEnvironment environment, string fallbackCertificatePasswordFileContentHex, string fallbackCertificatePFXFileContentHex)
+        public static PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> Create<PersistedAppSpecificConfiguration>(string domain, PersistedAppSpecificConfiguration persistedApplicationSpecificConfiguration, GRYEnvironment environment, string fallbackCertificatePasswordFileContentHex, string fallbackCertificatePFXFileContentHex, string codeunitName)
             where PersistedAppSpecificConfiguration : new()
         {
+            domain = environment is Development ? $"{codeunitName.ToLower()}.test.local" : domain;
+            ServerConfiguration serverConfiguration = new ServerConfiguration();
+            TLSCertificateInformation tlsCertificateInformation = fallbackCertificatePFXFileContentHex == null ? null : TLSCertificateInformation.Create(AbstractFilePath.FromString($"./{domain}.pfx"), AbstractFilePath.FromString($"./{domain}.password"), fallbackCertificatePasswordFileContentHex, fallbackCertificatePFXFileContentHex);
+            serverConfiguration.Protocol = tlsCertificateInformation == null ? HTTP.Create() : HTTPS.Create(tlsCertificateInformation);
+            serverConfiguration.Domain = domain;
             PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> result = new PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration>
             {
-                ServerConfiguration = ServerConfiguration.Create(domain, environment, TLSCertificateInformation.Create(AbstractFilePath.FromString($"./Certificate.{domain}.password"), AbstractFilePath.FromString($"./Certificate.{domain}.pfx"), fallbackCertificatePasswordFileContentHex, fallbackCertificatePFXFileContentHex)),
-                ApplicationLogConfiguration = Miscellaneous.Utilities.GetLogConfiguration("Server.log", environment),
+                ServerConfiguration = serverConfiguration,
+                ApplicationLogConfiguration = GRYLogConfiguration.GetCommonConfiguration("Server.log", environment is Development),
                 ApplicationSpecificConfiguration = persistedApplicationSpecificConfiguration
             };
             return result;
