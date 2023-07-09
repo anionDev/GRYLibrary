@@ -32,18 +32,17 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
             this.ApplicationConstants = new ApplicationConstants<AppSpecificConstants>(applicationName, appDescription, applicationVersion, executionMode, environment, applicationSpecificConstants);
             this.ApplicationConstants.KnownTypes.Add(typeof(PersistedApplicationSpecificConfiguration));
             this.BaseFolder = GetDefaultBaseFolder(this.ApplicationConstants);
-            this.InitialApplicationConfiguration = PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>.Create(domain, persistedApplicationSpecificConfiguration, environment, fallbackCertificatePasswordFileContentHex, fallbackCertificatePFXFileContentHex,ApplicationConstants.ApplicationName);
+            this.InitialApplicationConfiguration = PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>.Create(domain, persistedApplicationSpecificConfiguration, environment, fallbackCertificatePasswordFileContentHex, fallbackCertificatePFXFileContentHex, this.ApplicationConstants.ApplicationName);
             this.ConfigureServices = (_, _, _) => { };
             this.PreRun = (_, _) => { };
             this.PostRun = (_, _) => { };
             this.BasicInformationFile = AbstractFilePath.FromString("./BasicApplicationInformation.xml");
         }
 
-        internal static string GetDefaultBaseFolder(IApplicationConstants<AppSpecificConstants> applicationConstants)
+        private static string GetDefaultBaseFolder(IApplicationConstants<AppSpecificConstants> applicationConstants)
         {
             string programFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string result = applicationConstants.ExecutionMode.Accept(new GetBaseFolder(applicationConstants.Environment, programFolder));
-            return result;
+            return applicationConstants.ExecutionMode.Accept(new GetBaseFolder(applicationConstants.Environment, programFolder));
         }
 
         public ISet<FilterDescriptor> Filter { get; set; } = new HashSet<FilterDescriptor>();

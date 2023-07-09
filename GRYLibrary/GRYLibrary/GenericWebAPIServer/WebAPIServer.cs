@@ -166,8 +166,8 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                     }
                 });
             });
-            string appVersionString = $"v{this._APIServerInitializer.ApplicationConstants.ApplicationVersion}";
 
+            string appVersionString = $"v{this._APIServerInitializer.ApplicationConstants.ApplicationVersion}";
             builder.Services.AddControllers(mvcOptions => mvcOptions.UseGeneralRoutePrefix(ServerConfiguration.APIRoutePrefix));
             builder.Services.AddControllers();
             bool hostAPIDocumentation = HostAPIDocumentation(this._APIServerInitializer.ApplicationConstants.Environment, persistedApplicationSpecificConfiguration.ServerConfiguration.HostAPISpecificationForInNonDevelopmentEnvironment, this._APIServerInitializer.ApplicationConstants.ExecutionMode);
@@ -201,7 +201,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                             Url = new Uri(persistedApplicationSpecificConfiguration.ServerConfiguration.GetServerAddress() + ServerConfiguration.LicenseURLSubPath)
                         };
                     }
-                    swaggerOptions.SwaggerDoc(ServerConfiguration.APIDocumentationDocumentName, openAPIInfo);
+                    swaggerOptions.SwaggerDoc(ServerConfiguration.APISpecificationDocumentName, openAPIInfo);
                     string xmlFilename = $"{this._APIServerInitializer.ApplicationConstants.ApplicationName}.xml";
                     swaggerOptions.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
                 });
@@ -233,8 +233,8 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             string resourcesRoute = "/Other/Resources";
             if(hostAPIDocumentation)
             {
-                string openAPISpecificationRoute = $"{resourcesRoute}/{ServerConfiguration.APIDocumentationDocumentName}";
-                string apiDocumentationRoute = $"APIDocumentation";
+                string openAPISpecificationRoute = $"{resourcesRoute}/{ServerConfiguration.APISpecificationDocumentName}";
+                string apiDocumentationRoute = ServerConfiguration.APISpecificationDocumentName;
                 string apiDocumentationSubRoute = $"Other/Resources/{apiDocumentationRoute}";
                 string entireAPIDocumentationRoute = $"{ServerConfiguration.APIRoutePrefix[1..]}/{apiDocumentationSubRoute}";
 
@@ -242,7 +242,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 app.UseSwaggerUI(options =>
                 {
                     string appVersionString = $"v{this._APIServerInitializer.ApplicationConstants.ApplicationVersion}";
-                    string ui = $"{ServerConfiguration.APIDocumentationDocumentName}/{this._APIServerInitializer.ApplicationConstants.ApplicationName}.api.json";
+                    string ui = $"{ServerConfiguration.APISpecificationDocumentName}/{this._APIServerInitializer.ApplicationConstants.ApplicationName}.api.json";
                     options.SwaggerEndpoint(ui, this._APIServerInitializer.ApplicationConstants.ApplicationName + " " + appVersionString);
                     options.RoutePrefix = entireAPIDocumentationRoute;
                     options.DocumentTitle = apiUITitle;
@@ -325,7 +325,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         {
             return this._APIServerInitializer.ApplicationConstants.ExecutionMode.Accept(new GetLoggerVisitor(persistedApplicationSpecificConfiguration.ApplicationLogConfiguration, this._APIServerInitializer.ApplicationConstants.GetLogFolder(), "Server"));
         }
-
         #endregion
 
         private void CreateRequiredFolder()
@@ -340,7 +339,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         }
 
         #region Host API Documentation
-
         private static bool HostAPIDocumentation(GRYEnvironment environment, bool hostAPISpecificationForInNonDevelopmentEnvironment, ExecutionMode executionMode)
         {
             return executionMode.Accept(new GetHostAPIDocumentationVisitor(environment, hostAPISpecificationForInNonDevelopmentEnvironment));
@@ -373,7 +371,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer
                 }
             }
         }
-
         #endregion
 
         #region Create or load config-file

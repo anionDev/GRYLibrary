@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -295,14 +296,20 @@ namespace GRYLibrary.Core.ExecutePrograms
 
                 if(this.Configuration.User != null)
                 {
-
-                    System.Security.SecureString password = new System.Security.SecureString();
-                    StartInfo.UserName = this.Configuration.User;
-                    for(int x = 0; x < this.Configuration.Password.Length; x++)
+                    if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                     {
-                        password.AppendChar(this.Configuration.Password[x]);
+                        System.Security.SecureString password = new System.Security.SecureString();
+                        StartInfo.UserName = this.Configuration.User;
+                        for(int x = 0; x < this.Configuration.Password.Length; x++)
+                        {
+                            password.AppendChar(this.Configuration.Password[x]);
+                        }
+                        StartInfo.Password = password;
                     }
-                    StartInfo.Password = password;
+                    else
+                    {
+                        throw new ArgumentException("Running as another user is currently only supported on Windows.");
+                    }
                 }
                 if(this.Configuration.DelegateToEpew)
                 {
@@ -503,7 +510,7 @@ namespace GRYLibrary.Core.ExecutePrograms
 
         private string GetInvalidOperationDueToNotTerminatedMessageByMembername(string name, ExecutionState state, bool requiredIn)
         {
-            string requiredInAsString = requiredIn ? "" : " not";
+            string requiredInAsString = requiredIn ? string.Empty : " not";
             return $"'{name}' is not avilable because the current {nameof(ExecutionState)}-value state is {Enum.GetName(typeof(ExecutionState), this.CurrentExecutionState)} but it must{requiredInAsString} be in the state {Enum.GetName(typeof(ExecutionState), state)} to be able to query it.";
         }
 

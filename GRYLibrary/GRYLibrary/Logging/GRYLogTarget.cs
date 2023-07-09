@@ -3,6 +3,7 @@ using GRYLibrary.Core.Log.ConcreteLogTargets;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Xml.Serialization;
 
 namespace GRYLibrary.Core.Log
@@ -49,12 +50,17 @@ namespace GRYLibrary.Core.Log
 
         internal static ISet<GRYLogTarget> GetAll()
         {
-            HashSet<GRYLogTarget> result = new HashSet<GRYLogTarget>();
-            result.Add(new ConcreteLogTargets. Console());
-            result.Add(new LogFile());
-            result.Add(new Observer());
-            result.Add(new Syslog());
-            result.Add(new WindowsEventLog());
+            HashSet<GRYLogTarget> result = new HashSet<GRYLogTarget>
+            {
+                new ConcreteLogTargets.Console(),
+                new LogFile(),
+                new Observer(),
+                new Syslog()
+            };
+            if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                result.Add(new WindowsEventLog());
+            }
             return result;
         }
         #endregion

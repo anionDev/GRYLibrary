@@ -84,12 +84,12 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
         public Type AuthenticationMiddleware { get; set; } = null;
         public Type AuthorizationMiddleware { get; set; } = null;
         public Type BlackListMiddleware { get; set; } = null;
-        public Type CaptchaMiddleware { get; set; }
+        public Type CaptchaMiddleware { get; set; } = null;
         public Type DDOSProtectionMiddleware { get; set; } = null;
         public Type ExceptionManagerMiddleware { get; set; } = null;
         public Type ObfuscationMiddleware { get; set; } = null;
         public Type RequestCounterMiddleware { get; set; } = null;
-        public Type RequestLoggingMiddleware { get; set; }
+        public Type RequestLoggingMiddleware { get; set; } = null;
         public Type WebApplicationFirewallMiddleware { get; set; } = null;
         public IList<Type> CustomMiddlewares { get; set; } = new List<Type>();
         public ISet<Type> KnownTypes { get; set; } = new HashSet<Type>();
