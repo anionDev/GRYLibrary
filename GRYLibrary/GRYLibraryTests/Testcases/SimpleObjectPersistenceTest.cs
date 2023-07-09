@@ -41,22 +41,17 @@ namespace GRYLibrary.Tests.Testcases
                 Assert.AreEqual("y", sop2.Object.TestStringFromInterface);
 
                 Assert.AreEqual(testObject, sop2.Object);
-                string expectedXMLValue = @"<SerializeTestClass xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-     <ListTest>
-          <boolean>true</boolean>
-          <boolean>false</boolean>
-          <boolean>true</boolean>
-     </ListTest>
-     <TestAttribute>
-          <TestString1>encodingtest: áä?&lt;👍你好</TestString1>
-          <TestAttribute1>
-               <TestString1>x</TestString1>
-          </TestAttribute1>
-     </TestAttribute>
-     <TestStringFromInterface>y</TestStringFromInterface>
-     <TestDouble>3.142857142857143</TestDouble>
-     <TestDouble2>5</TestDouble2>
-</SerializeTestClass>";
+                string expectedXMLValue = @"<?xml version=""1.0"" encoding=""utf-8""?>
+<SimpleObjectPersistenceTest-SerializeTestClass xmlns:sys=""https://extendedxmlserializer.github.io/system"" xmlns:exs=""https://extendedxmlserializer.github.io/v2"" TestStringFromInterface=""y"" TestDouble=""3.142857142857143"" TestDouble2=""5"">
+  <ListTest Capacity=""4"">
+    <sys:boolean>true</sys:boolean>
+    <sys:boolean>false</sys:boolean>
+    <sys:boolean>true</sys:boolean>
+  </ListTest>
+  <TestAttribute TestString1=""encodingtest: áä?&lt;👍你好"">
+    <TestAttribute1 TestString1=""x"" />
+  </TestAttribute>
+</SimpleObjectPersistenceTest-SerializeTestClass>";
                 Assert.AreEqual(expectedXMLValue, content);
             }
             finally
