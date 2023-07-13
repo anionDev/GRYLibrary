@@ -1,4 +1,5 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration;
+using GRYLibrary.Core.Miscellaneous;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using System.Text;
@@ -24,21 +25,25 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
         }
         public static async Task<byte[]> GetResponseBodyAsByteArray(HttpContext context)
         {
-            string result = await GetResponseBodyAsString(context);
             UTF8Encoding encoding = new UTF8Encoding(false);
-            return encoding.GetBytes(result);
+            string resultString = await GetResponseBodyAsString(context);
+            var result = encoding.GetBytes(resultString);
+            return result;
         }
-        public static async Task<string> GetResponseBodyAsString(HttpContext context)
+        public static Task<string> GetResponseBodyAsString(HttpContext context)
         {
             UTF8Encoding encoding = new UTF8Encoding(false);
-            Stream originalBodyStream = context.Response.Body;
-            using MemoryStream responseBodyStream = new MemoryStream();
-            context.Response.Body = responseBodyStream;
+            string responseBody;
             context.Response.Body.Seek(0, SeekOrigin.Begin);
-            string responseBody = await new StreamReader(context.Response.Body, encoding, false).ReadToEndAsync();
-            context.Response.Body.Seek(0, SeekOrigin.Begin);
-            await responseBodyStream.CopyToAsync(originalBodyStream);
-            return responseBody;
+            using(var reader = new StreamReader(context.Response.Body))
+            {
+                context.Response.Body.Seek(0, SeekOrigin.Begin);
+                responseBody = reader.ReadToEnd();
+            }
+            context.Response.Body = new MemoryStream(encoding.GetBytes(responseBody));
+
+            return Task.FromResult(responseBody);
+
         }
     }
 }
