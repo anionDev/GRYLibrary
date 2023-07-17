@@ -1,6 +1,4 @@
-﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
-
-namespace GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration
+﻿namespace GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration
 {
     public class ServerConfiguration
     {
@@ -9,9 +7,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration
         public bool HostAPISpecificationForInNonDevelopmentEnvironment { get; set; } = false;
         public const string APIRoutePrefix = "/API";
         public const string APISpecificationDocumentName = "APISpecification";
-        public const string TermsOfServiceURLSubPath = $"{APIRoutePrefix}/Other/Resources/Information/TermsOfService";
-        public const string ContactURLSubPath = $"{APIRoutePrefix}/Other/Resources/Information/Contact";
-        public const string LicenseURLSubPath = $"{APIRoutePrefix}/Other/Resources/Information/License";
+        public const string ResourcesSubPath = $"Other/Resources";
+        public const string APIResourcesSubPath = $"{APIRoutePrefix}/{ResourcesSubPath}";
+        public const string TermsOfServiceURLSubPath = $"{APIResourcesSubPath}/Information/TermsOfService";
+        public const string ContactURLSubPath = $"{APIResourcesSubPath}/Information/Contact";
+        public const string LicenseURLSubPath = $"{APIResourcesSubPath}/Information/License";
         public string GetServerAddress()
         {
             return $"{this.Protocol.GetProtocol()}://{this.Domain}:{this.Protocol.Port}";

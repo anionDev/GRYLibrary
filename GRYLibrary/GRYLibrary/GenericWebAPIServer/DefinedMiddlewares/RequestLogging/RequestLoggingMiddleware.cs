@@ -10,6 +10,7 @@ using GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.RequestLogging;
 using GRYLibrary.Core.GenericWebAPIServer.Settings;
 using System.Collections.Generic;
 using GRYLibrary.Core.Log;
+using System.Text;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.RequestLogger
 {
@@ -34,19 +35,29 @@ namespace GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.RequestLogger
         public override Task Invoke(HttpContext context)
         {
             DateTime moment = DateTime.Now;
-            Task<string> requestBodyTask = Tools.GetRequestBodyAsString(context);
-            requestBodyTask.Wait();
-            Task result = this._Next(context);
-            Task<string> responseBodyTask = Tools.GetResponseBodyAsString(context);
-            responseBodyTask.Wait();
+            (byte[] requestBodyB, byte[] responseBodyB) = Tools.ExecuteAndGetBody(_Next, context);
 
+            string requestBody = BytesToString(requestBodyB);
+            string responseBody = BytesToString(responseBodyB);
             string requestRoute = context.Request.Path;
-            ushort responseHTTPStatuscode = (ushort)context.Response.StatusCode;
+            ushort responseHTTPStatusCode = (ushort)context.Response.StatusCode;
             IPAddress clientIP = context.Connection.RemoteIpAddress;
-            Request request = new Request(moment, clientIP, context.Request.Method, requestRoute,context.Request.Query, context.Request.Headers, requestBodyTask.Result, null/*TODO*/, responseHTTPStatuscode, context.Response.Headers, responseBodyTask.Result);
+            Request request = new Request(moment, clientIP, context.Request.Method, requestRoute, context.Request.Query, context.Request.Headers, requestBody, null/*TODO*/, responseHTTPStatusCode, context.Response.Headers, responseBody);
             this.LogHTTPRequest(request, false, new HashSet<GRYLogTarget> { new Log.ConcreteLogTargets.Console() });
             this.LogHTTPRequest(request, this.ShouldLogEntireRequestContentInLogFile(request), new HashSet<GRYLogTarget> { new Log.ConcreteLogTargets.LogFile() });
-            return result;
+            return Task.CompletedTask;
+        }
+
+        private string BytesToString(byte[] content)
+        {
+            try
+            {
+                return $"UTF8-encoded-content: \"{new UTF8Encoding(false).GetString(content)}\"";
+            }
+            catch
+            {
+                return $"Hex-encoded-content: {Miscellaneous.Utilities.ByteArrayToHexString(content)}";
+            }
         }
 
         private void LogHTTPRequest(Request request, bool logFullRequest, ISet<GRYLogTarget> logTargets)

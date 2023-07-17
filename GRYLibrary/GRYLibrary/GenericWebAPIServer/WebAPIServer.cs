@@ -31,7 +31,6 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
@@ -118,12 +117,15 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             {
                 this.AddDefinedMiddleware((ISupportDDOSProtectionMiddleware c) => c.ConfigurationForDDOSProtection, this._APIServerInitializer.ApplicationConstants.DDOSProtectionMiddleware, persistedApplicationSpecificConfiguration, middlewares);
                 this.AddDefinedMiddleware((ISupportBlacklistMiddleware c) => c.ConfigurationForBlacklistMiddleware, this._APIServerInitializer.ApplicationConstants.BlackListMiddleware, persistedApplicationSpecificConfiguration, middlewares);
+            }
+            this.AddDefinedMiddleware((ISupportRequestLoggingMiddleware c) => c.ConfigurationForRequestLoggingMiddleware, this._APIServerInitializer.ApplicationConstants.RequestLoggingMiddleware, persistedApplicationSpecificConfiguration, middlewares);
+            if(this._APIServerInitializer.ApplicationConstants.Environment is not Development)
+            {
+                this.AddDefinedMiddleware((ISupportWebApplicationFirewallMiddleware c) => c.ConfigurationForWebApplicationFirewall, this._APIServerInitializer.ApplicationConstants.WebApplicationFirewallMiddleware, persistedApplicationSpecificConfiguration, middlewares);
                 this.AddDefinedMiddleware((ISupportObfuscationMiddleware c) => c.ConfigurationForObfuscationMiddleware, this._APIServerInitializer.ApplicationConstants.ObfuscationMiddleware, persistedApplicationSpecificConfiguration, middlewares);
                 this.AddDefinedMiddleware((ISupportCaptchaMiddleware c) => c.ConfigurationForCaptchaMiddleware, this._APIServerInitializer.ApplicationConstants.CaptchaMiddleware, persistedApplicationSpecificConfiguration, middlewares);
                 this.AddDefinedMiddleware((ISupportExceptionManagerMiddleware c) => c.ConfigurationForExceptionManagerMiddleware, this._APIServerInitializer.ApplicationConstants.ExceptionManagerMiddleware, persistedApplicationSpecificConfiguration, middlewares);
             }
-            this.AddDefinedMiddleware((ISupportWebApplicationFirewallMiddleware c) => c.ConfigurationForWebApplicationFirewall, this._APIServerInitializer.ApplicationConstants.WebApplicationFirewallMiddleware, persistedApplicationSpecificConfiguration, middlewares);
-            this.AddDefinedMiddleware((ISupportRequestLoggingMiddleware c) => c.ConfigurationForRequestLoggingMiddleware, this._APIServerInitializer.ApplicationConstants.RequestLoggingMiddleware, persistedApplicationSpecificConfiguration, middlewares);
             #endregion
 
             #region Bussiness-implementation
@@ -144,6 +146,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             this._APIServerInitializer.ConfigureServices(builder.Services, this._APIServerInitializer.ApplicationConstants, persistedApplicationSpecificConfiguration);
             builder.WebHost.ConfigureKestrel(kestrelOptions =>
             {
+                kestrelOptions.AllowSynchronousIO = true;
                 kestrelOptions.AddServerHeader = false;
                 kestrelOptions.ListenAnyIP(persistedApplicationSpecificConfiguration.ServerConfiguration.Protocol.Port, listenOptions =>
                 {
@@ -230,12 +233,10 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
             #region API Documentation
             string apiLink = persistedApplicationSpecificConfiguration.ServerConfiguration.GetServerAddress() + ServerConfiguration.APIRoutePrefix;
-            string resourcesRoute = "/Other/Resources";
             if(hostAPIDocumentation)
             {
-                string openAPISpecificationRoute = $"{resourcesRoute}/{ServerConfiguration.APISpecificationDocumentName}";
-                string apiDocumentationRoute = ServerConfiguration.APISpecificationDocumentName;
-                string apiDocumentationSubRoute = $"Other/Resources/{apiDocumentationRoute}";
+                string openAPISpecificationRoute = $"/{ServerConfiguration.ResourcesSubPath}/{ServerConfiguration.APISpecificationDocumentName}";
+                string apiDocumentationSubRoute = $"{ServerConfiguration.ResourcesSubPath}/{ServerConfiguration.APISpecificationDocumentName}";
                 string entireAPIDocumentationRoute = $"{ServerConfiguration.APIRoutePrefix[1..]}/{apiDocumentationSubRoute}";
 
                 app.UseSwagger(options => options.RouteTemplate = $"{entireAPIDocumentationRoute}/{{documentName}}/{this._APIServerInitializer.ApplicationConstants.ApplicationName}.api.json");
