@@ -11,9 +11,6 @@ namespace GRYLibrary.Core.XMLSerializer
     /// <typeparam name="T">The type of the object which should be serialized.</typeparam>
     public class SimpleGenericXMLSerializer<T> where T : new()
     {
-        public SimpleGenericXMLSerializer()
-        {
-        }
 
         public string Serialize(T @object)
         {

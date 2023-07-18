@@ -8,6 +8,7 @@ namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteCommonAlgor
 {
     public class AES256 :SymmetricEncryptionAlgorithm
     {
+        #region AES
         private const int _IVLength = 16;
 #pragma warning disable SYSLIB0022 // Typ oder Element ist veraltet
         private const int _AESBlockLength = 16;
@@ -22,24 +23,21 @@ namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteCommonAlgor
             if(key == null || key.Length <= 0)
                 throw new ArgumentNullException("Key");
             byte[] encrypted;
-
-            // Create an Aes object
-            // with the specified key and IV.
             using(Aes aesAlg = Aes.Create())
             {
                 aesAlg.Key = key;
-
-                // Create an encryptor to perform the stream transform.
                 ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
 
-                // Create the streams used for encryption.
+                if(aesAlg.IV.Length != _IVLength)
+                {
+                    throw new ArgumentException($"Expected IV-length {_IVLength} but was {aesAlg.IV.Length}.");
+                }
                 using(MemoryStream msEncrypt = new MemoryStream())
                 {
                     using(CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
                     {
                         using(StreamWriter swEncrypt = new StreamWriter(csEncrypt))
                         {
-                            //Write all data to the stream.
                             swEncrypt.Write(plainText);
                         }
                         encrypted = msEncrypt.ToArray();
@@ -47,8 +45,6 @@ namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteCommonAlgor
                 }
                 encrypted = aesAlg.IV.Concat(encrypted).ToArray();
             }
-
-            // Return the encrypted bytes from the memory stream.
             return encrypted;
         }
         /// <inheritdoc/>
@@ -119,5 +115,6 @@ namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteCommonAlgor
             return Utilities.PadLeft(System.Text.Encoding.ASCII.GetBytes(nameof(AES256)), 10);
         }
 #pragma warning restore SYSLIB0022 // Typ oder Element ist veraltet
+        #endregion
     }
 }

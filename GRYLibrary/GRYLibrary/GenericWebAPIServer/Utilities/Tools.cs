@@ -24,7 +24,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
                 //read response body
                 intermediateResponseBody.Position = 0;
                 responseBody = Miscellaneous.Utilities.StreamToByteArray(intermediateResponseBody);
-                var t = new UTF8Encoding(false).GetString(responseBody);
+                string t = new UTF8Encoding(false).GetString(responseBody);
                 if(responseBodyUpdater != null)
                 {
                     responseBody = responseBodyUpdater(responseBody);
@@ -32,7 +32,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
 
                 //write response body to original response-stream
                 intermediateResponseBody.Position = 0;
-                using(var copyStream = new MemoryStream(responseBody))
+                using(MemoryStream copyStream = new MemoryStream(responseBody))
                 {
                     copyStream.CopyToAsync(originalResponseBody).Wait();
                 }
