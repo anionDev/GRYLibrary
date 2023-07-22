@@ -154,6 +154,5 @@ namespace GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.RequestLogger
                 return "(IP-address not saved)";
             }
         }
-
     }
 }

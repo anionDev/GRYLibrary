@@ -357,7 +357,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
             public bool Handle(Analysis analysis)
             {
-                return true;
+                return true;// required for generation of OpenAPI-specification-json-file
             }
 
             public bool Handle(RunProgram runProgram)

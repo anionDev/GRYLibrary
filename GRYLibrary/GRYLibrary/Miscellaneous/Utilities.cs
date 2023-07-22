@@ -2241,6 +2241,17 @@ namespace GRYLibrary.Core.Miscellaneous
             MixedEndian = 1,
             LittleEndian = 2,
         }
+        public static string NullSafeToString(object @object)
+        {
+            if(@object == null)
+            {
+                return "null";
+            }
+            else
+            {
+                return @object.ToString();
+            }
+        }
         #region Nullsafe-equals-helper
         public static bool NullSafeEquals(this object @this, object obj)
         {

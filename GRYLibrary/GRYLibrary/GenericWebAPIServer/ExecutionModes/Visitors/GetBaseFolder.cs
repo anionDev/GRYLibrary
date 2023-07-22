@@ -37,6 +37,5 @@ namespace GRYLibrary.Core.GenericWebAPIServer.ExecutionModes.Visitors
                 return $"/{workspaceFolderName}";
             }
         }
-
     }
 }
