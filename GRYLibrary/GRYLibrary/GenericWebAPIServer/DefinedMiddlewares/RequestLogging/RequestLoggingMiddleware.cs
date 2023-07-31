@@ -35,10 +35,10 @@ namespace GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.RequestLogger
         public override Task Invoke(HttpContext context)
         {
             DateTime moment = DateTime.Now;
-            (byte[] requestBodyB, byte[] responseBodyB) = Tools.ExecuteAndGetBody(_Next, context);
+            (byte[] requestBodyB, byte[] responseBodyB) = Tools.ExecuteAndGetBody(this._Next, context);
 
-            string requestBody = BytesToString(requestBodyB);
-            string responseBody = BytesToString(responseBodyB);
+            string requestBody = this.BytesToString(requestBodyB);
+            string responseBody = this.BytesToString(responseBodyB);
             string requestRoute = context.Request.Path;
             ushort responseHTTPStatusCode = (ushort)context.Response.StatusCode;
             IPAddress clientIP = context.Connection.RemoteIpAddress;

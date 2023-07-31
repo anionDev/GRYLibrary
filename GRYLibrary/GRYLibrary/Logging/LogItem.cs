@@ -40,7 +40,7 @@ namespace GRYLibrary.Core.Log
                     string plainMessage = this._GetMessageFunction();
                     if(this.Exception != null)
                     {
-                        plainMessage = this.GetExceptionMessage(this.Exception, plainMessage);
+                        plainMessage = GetExceptionMessage(this.Exception, plainMessage);
                     }
                     this._PlainMessage = plainMessage;
                     this._MessageLoaded = true;
@@ -203,7 +203,7 @@ namespace GRYLibrary.Core.Log
         {
             return !(left == right);
         }
-        private string GetExceptionMessage(Exception exception, string message = null, uint indentationLevel = 1, string exceptionTitle = "Exception-information")
+        public static string GetExceptionMessage(Exception exception, string message = null, uint indentationLevel = 1, string exceptionTitle = "Exception-information")
         {
             if(string.IsNullOrWhiteSpace(message))
             {
@@ -225,20 +225,20 @@ namespace GRYLibrary.Core.Log
                 {
                     result += @$"
 (Exception-details:
-{this.Indent(this.FormatStackTrace(exception), indentationLevel)},
-{this.Indent(this.FormatStackInnerException(exception, indentationLevel), indentationLevel)}
+{Indent(FormatStackTrace(exception), indentationLevel)},
+{Indent(FormatStackInnerException(exception, indentationLevel), indentationLevel)}
 )";
                 }
             }
             return result;
         }
-        private string Indent(IList<string> lines, uint indentationLevel)
+        private static string Indent(IList<string> lines, uint indentationLevel)
         {
             string fullIndentation = string.Concat(Enumerable.Repeat(_Indentation, (int)indentationLevel));
             return string.Join(Environment.NewLine, lines.Select(line => fullIndentation + line));
         }
 
-        private IList<string> FormatStackTrace(Exception exception)
+        private static IList<string> FormatStackTrace(Exception exception)
         {
             List<string> result = new();
             if(exception.StackTrace == null)
@@ -253,9 +253,9 @@ namespace GRYLibrary.Core.Log
             return result;
         }
 
-        private IList<string> FormatStackInnerException(Exception exception, uint indentationLevel)
+        private static IList<string> FormatStackInnerException(Exception exception, uint indentationLevel)
         {
-            return Utilities.SplitOnNewLineCharacter(this.GetExceptionMessage(exception.InnerException, null, indentationLevel + 1, "Inner exception")).ToList();
+            return Utilities.SplitOnNewLineCharacter(GetExceptionMessage(exception.InnerException, null, indentationLevel + 1, "Inner exception")).ToList();
         }
     }
 }

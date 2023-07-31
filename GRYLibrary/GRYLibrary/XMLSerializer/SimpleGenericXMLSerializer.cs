@@ -23,14 +23,14 @@ namespace GRYLibrary.Core.XMLSerializer
         }
         public string Serialize(T @object)
         {
-            string document = GetSerializer().Serialize(new XmlWriterSettings { Indent = true }, @object);
+            string document = this.GetSerializer().Serialize(new XmlWriterSettings { Indent = true }, @object);
             return document;
 
         }
 
         public T Deserialize(string xml)
         {
-            T document = GetSerializer().Deserialize<T>(xml);
+            T document = this.GetSerializer().Deserialize<T>(xml);
             return document;
         }
     }

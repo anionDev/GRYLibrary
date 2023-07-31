@@ -40,16 +40,22 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         where PersistedApplicationSpecificConfiguration : new()
         where CommandlineParameterType : class
     {
-        private readonly APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration> _APIServerInitializer;
-        public WebAPIServer(APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration> apiServerInitializer)
+        private APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> _APIServerInitializer;
+        public static WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> Create(CommandlineParameterType cmdArgs, Func<CommandlineParameterType, APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>> apiServerInitializerCreator)
         {
-            this._APIServerInitializer = apiServerInitializer;
-            this._APIServerInitializer.ApplicationConstants.Initialize(this._APIServerInitializer.BaseFolder);
+            return Create(apiServerInitializerCreator(cmdArgs));
+        }
+        public static WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> Create(APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> apiServerInitializer)
+        {
+            WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> result = new WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>();
+            result._APIServerInitializer = apiServerInitializer;
+            result._APIServerInitializer.ApplicationConstants.Initialize(result._APIServerInitializer.BaseFolder);
+            return result;
         }
 
-        public static int WebAPIMain(CommandlineParameterType commandlineParameter, APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration> initializer)
+        public static int WebAPIMain(CommandlineParameterType commandlineParameter, Func<CommandlineParameterType, APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>> initializer)
         {
-            WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> server = new WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>(initializer);
+            WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> server = Create(initializer(commandlineParameter));
             return server.Run(commandlineParameter);
         }
         public int Run(CommandlineParameterType commandlineParameter)
@@ -143,7 +149,7 @@ namespace GRYLibrary.Core.GenericWebAPIServer
 
             #endregion
 
-            this._APIServerInitializer.ConfigureServices(builder.Services, this._APIServerInitializer.ApplicationConstants, persistedApplicationSpecificConfiguration);
+            this._APIServerInitializer.ConfigureServices(builder.Services, this._APIServerInitializer.ApplicationConstants, persistedApplicationSpecificConfiguration, commandlineParameter);
             builder.WebHost.ConfigureKestrel(kestrelOptions =>
             {
                 kestrelOptions.AllowSynchronousIO = true;

@@ -12,7 +12,7 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             this.LockEnabled = true;
         }
-        public override long Value { get => base.Value; set => throw new InvalidOperationException($"Please use the {nameof(Semaphore.Increment)}- and {nameof(Semaphore.Decrement)}-operation to modify the value."); }
+        public override long Value { get => base.Value; set => throw new InvalidOperationException($"Please use the {nameof(Increment)}- and {nameof(Decrement)}-operation to modify the value."); }
         public void Increment()
         {
             base.Value += 1;
