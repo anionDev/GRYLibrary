@@ -3,7 +3,7 @@
   <CodeCoverage>
   <ModulePaths>
     <Exclude>
-      <ModulePath>(.*Test\.dll)|(Microsoft\..*)</ModulePath>
+      <ModulePath>^(.*Tests\.dll)|(Microsoft\..*)$</ModulePath>
     </Exclude>
   </ModulePaths>
   </CodeCoverage>
