@@ -26,7 +26,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.Authorization.A
             {
                 return false;
             }
-
         }
     }
 }

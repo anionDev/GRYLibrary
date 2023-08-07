@@ -2241,16 +2241,34 @@ namespace GRYLibrary.Core.Miscellaneous
             MixedEndian = 1,
             LittleEndian = 2,
         }
-        public static bool NullSafeSetEquals<T>(this ISet<T> @this, ISet<T> obj)
+        public static string NullSafeToString(object @object)
         {
-            return NullSafeHelper(@this, obj, (obj1, obj2) => obj1.SetEquals(obj2));
+            if(@object == null)
+            {
+                return "null";
+            }
+            else
+            {
+                return @object.ToString();
+            }
         }
-        public static bool NullSafeListEquals<T>(this IList<T> @this, IList<T> obj)
+        #region Nullsafe-equals-helper
+        public static bool NullSafeEquals(this object @this, object obj)
         {
-            return NullSafeHelper(@this, obj, (obj1, obj2) => obj1.SequenceEqual(obj2));
+            return NullSafeHelper(@this, obj, (obj1, obj2) => obj1.Equals(obj2));
         }
-        public static bool NullSafeEnumerableEquals<T>(this IEnumerable<T> @this, IEnumerable<T> obj)
+        public static bool NullSafeSetEquals<T>(this ISet<T> @this, ISet<T> obj, bool treatEmptyAsNull = false)
         {
+            return NullSafeHelper(TreatNullHelper(@this, treatEmptyAsNull), TreatNullHelper(obj, treatEmptyAsNull), (obj1, obj2) => obj1.ToHashSet().SetEquals(obj2));
+        }
+        public static bool NullSafeListEquals<T>(this IList<T> @this, IList<T> obj, bool treatEmptyAsNull = false)
+        {
+            return NullSafeHelper(TreatNullHelper(@this, treatEmptyAsNull), TreatNullHelper(obj, treatEmptyAsNull), (obj1, obj2) => obj1.SequenceEqual(obj2));
+        }
+        public static bool NullSafeEnumerableEquals<T>(this IEnumerable<T> @this, IEnumerable<T> obj, bool treatEmptyAsNull = false)
+        {
+            @this = TreatNullHelper(@this, treatEmptyAsNull);
+            obj = TreatNullHelper(obj, treatEmptyAsNull);
             return NullSafeHelper(@this, obj, (obj1, obj2) =>
             {
                 if(obj1.Count() != obj2.Count())
@@ -2269,9 +2287,23 @@ namespace GRYLibrary.Core.Miscellaneous
                 return true;
             });
         }
-        public static bool NullSafeEquals(this object @this, object obj)
+        private static IEnumerable<T> TreatNullHelper<T>(IEnumerable<T> items, bool treatEmptyAsNull)
         {
-            return NullSafeHelper(@this, obj, (obj1, obj2) => obj1.Equals(obj2));
+            if(treatEmptyAsNull && items != null)
+            {
+                if(items.Any())
+                {
+                    return items;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return items;
+            }
         }
         private static bool NullSafeHelper<T>(T object1, T object2, Func<T, T, bool> f)
         {
@@ -2306,6 +2338,7 @@ namespace GRYLibrary.Core.Miscellaneous
                 return false;
             }
         }
+        #endregion
         public static DateTime GetTimeFromInternetUtC()
         {
             return GetTimeFromInternet(TimeZoneInfo.Utc);
@@ -2326,14 +2359,9 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static byte[] StreamToByteArray(Stream input)
         {
-            byte[] buffer = new byte[16 * 1024];
             using(MemoryStream ms = new MemoryStream())
             {
-                int read;
-                while((read = input.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    ms.Write(buffer, 0, read);
-                }
+                input.CopyTo(ms);
                 return ms.ToArray();
             }
         }
@@ -2799,7 +2827,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public static T CreateOrLoadXMLConfigurationFile<T, TBase>(string configurationFile, T initialValue, ISet<Type> knownTypes) where T : TBase, new()
         {
             SimpleObjectPersistence<T> simpleObjectPersistence = new SimpleObjectPersistence<T>();
-           // simpleObjectPersistence.Serializer.KnownTypes.UnionWith(knownTypes);
+            // simpleObjectPersistence.Serializer.KnownTypes.UnionWith(knownTypes);
             return CreateOrLoadConfigurationFile<T, TBase>(configurationFile, initialValue,
                 (configurationFile, initialValue) =>
                 {

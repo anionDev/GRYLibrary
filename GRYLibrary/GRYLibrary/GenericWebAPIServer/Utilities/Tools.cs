@@ -1,5 +1,6 @@
 ﻿using GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration;
 using Microsoft.AspNetCore.Http;
+using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,37 +9,47 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
 {
     public static class Tools
     {
-        public static async Task<byte[]> GetRequestBodyAsByteArray(HttpContext context)
+        public static (byte[] requestBody, byte[] responsetBody) ExecuteAndGetBody(RequestDelegate next, HttpContext context, Func<byte[], byte[]> responseBodyUpdater = null)
         {
-            string result = await GetRequestBodyAsString(context);
-            UTF8Encoding encoding = new UTF8Encoding(false);
-            return encoding.GetBytes(result);
+            byte[] requestBody = GetRequestBody(context);
+            byte[] responseBody;
+            Stream originalResponseBody = context.Response.Body;
+            using(MemoryStream intermediateResponseBody = new MemoryStream())
+            {
+                context.Response.Body = intermediateResponseBody;
+
+                Task result = next(context);
+                result.Wait();
+
+                //read response body
+                intermediateResponseBody.Position = 0;
+                responseBody = Miscellaneous.Utilities.StreamToByteArray(intermediateResponseBody);
+                string t = new UTF8Encoding(false).GetString(responseBody);
+                if(responseBodyUpdater != null)
+                {
+                    responseBody = responseBodyUpdater(responseBody);
+                }
+
+                //write response body to original response-stream
+                intermediateResponseBody.Position = 0;
+                using(MemoryStream copyStream = new MemoryStream(responseBody))
+                {
+                    copyStream.CopyToAsync(originalResponseBody).Wait();
+                }
+            }
+            context.Response.Body = originalResponseBody;
+            return (requestBody, responseBody);
         }
-        public static async Task<string> GetRequestBodyAsString(HttpContext context)
+        public static byte[] GetRequestBody(HttpContext context)
         {
             context.Request.EnableBuffering();
-            UTF8Encoding encoding = new UTF8Encoding(false);
-            string result = await new StreamReader(context.Request.Body, encoding, false).ReadToEndAsync();
-            context.Request.Body = new MemoryStream(encoding.GetBytes(result));
+            byte[] result = Miscellaneous.Utilities.StreamToByteArray(context.Request.Body);
+            context.Request.Body = new MemoryStream(result);
             return result;
         }
-        public static async Task<byte[]> GetResponseBodyAsByteArray(HttpContext context)
+        public static bool IsAPIDocumentationRequest(HttpContext context)
         {
-            string result = await GetResponseBodyAsString(context);
-            UTF8Encoding encoding = new UTF8Encoding(false);
-            return encoding.GetBytes(result);
-        }
-        public static async Task<string> GetResponseBodyAsString(HttpContext context)
-        {
-            UTF8Encoding encoding = new UTF8Encoding(false);
-            Stream originalBodyStream = context.Response.Body;
-            using MemoryStream responseBodyStream = new MemoryStream();
-            context.Response.Body = responseBodyStream;
-            context.Response.Body.Seek(0, SeekOrigin.Begin);
-            string responseBody = await new StreamReader(context.Response.Body, encoding, false).ReadToEndAsync();
-            context.Response.Body.Seek(0, SeekOrigin.Begin);
-            await responseBodyStream.CopyToAsync(originalBodyStream);
-            return responseBody;
+            return context.Request.Path.ToString().StartsWith($"{ServerConfiguration.APIRoutePrefix}/{ServerConfiguration.ResourcesSubPath}/{ServerConfiguration.APISpecificationDocumentName}/");
         }
     }
 }

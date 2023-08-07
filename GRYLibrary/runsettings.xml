@@ -3,7 +3,7 @@
   <CodeCoverage>
 	<ModulePaths>
 	  <Exclude>
-		<ModulePath>.*Tests\.dll</ModulePath>
+		<ModulePath>.*\\[^\\]*test[^\\]*\.dll</ModulePath>
 	  </Exclude>
 	</ModulePaths>
   </CodeCoverage>

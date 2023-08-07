@@ -11,28 +11,26 @@ namespace GRYLibrary.Core.XMLSerializer
     /// <typeparam name="T">The type of the object which should be serialized.</typeparam>
     public class SimpleGenericXMLSerializer<T> where T : new()
     {
-        public SimpleGenericXMLSerializer()
+        public virtual IExtendedXmlSerializer GetSerializer()
         {
-        }
-
-        public string Serialize(T @object)
-        {
-            IExtendedXmlSerializer serializer = new ConfigurationContainer().UseAutoFormatting()
+            return new ConfigurationContainer().UseAutoFormatting()
                                                                 .UseOptimizedNamespaces()
                                                                 .EnableImplicitTyping(typeof(T))
                                                                 .EnableReferences()
+                                                                .WithEnumerableSupport()
+                                                                .Emit(EmitBehaviors.Classic)
                                                                 .Create();
-            string document = serializer.Serialize(new XmlWriterSettings { Indent = true }, @object);
+        }
+        public string Serialize(T @object)
+        {
+            string document = this.GetSerializer().Serialize(new XmlWriterSettings { Indent = true }, @object);
             return document;
 
         }
+
         public T Deserialize(string xml)
         {
-            IExtendedXmlSerializer serializer = new ConfigurationContainer().UseAutoFormatting()
-                                                                .UseOptimizedNamespaces()
-                                                                .EnableImplicitTyping(typeof(T))
-                                                                .Create();
-            T document = serializer.Deserialize<T>(xml);
+            T document = this.GetSerializer().Deserialize<T>(xml);
             return document;
         }
     }

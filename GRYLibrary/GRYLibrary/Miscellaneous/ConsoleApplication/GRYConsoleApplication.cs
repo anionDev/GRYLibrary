@@ -11,7 +11,7 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
 {
     public class GRYConsoleApplication<CMDOptions, InitializationConfig> where CMDOptions : ICommandlineParameter
     {
-        private readonly Func<CMDOptions, InitializationConfig, int> _Main;
+        private readonly Func<CMDOptions, Func<CMDOptions, InitializationConfig>, int> _Main;
         private readonly string _ProgramName;
         private readonly string _ProgramVersion;
         private readonly string _ProgramDescription;
@@ -19,7 +19,7 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
         private readonly ExecutionMode _ExecutionMode;
         private readonly SentenceBuilder _SentenceBuilder;
         private readonly bool _ProgramCanRunWithoutArguments;
-        public GRYConsoleApplication(Func<CMDOptions,  InitializationConfig, int> main, string programName, string programVersion, string programDescription, bool programCanRunWithoutArguments, ExecutionMode executionMode)
+        public GRYConsoleApplication(Func<CMDOptions, Func<CMDOptions, InitializationConfig>, int> main, string programName, string programVersion, string programDescription, bool programCanRunWithoutArguments, ExecutionMode executionMode)
         {
             this._Main = main;
             this._ProgramName = programName;
@@ -31,7 +31,7 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
             this._ExecutionMode = executionMode;
         }
 
-        public int Main(string[] arguments, InitializationConfig initializationConfiguration)
+        public int Main(string[] arguments, Func<CMDOptions, InitializationConfig> initializationConfiguration)
         {
             int result = 1;
             try
@@ -107,9 +107,9 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
             }
         }
 
-        private int HandleSuccessfullyParsedArguments(CMDOptions options, InitializationConfig gc)
+        private int HandleSuccessfullyParsedArguments(CMDOptions options, Func<CMDOptions, InitializationConfig> initializer)
         {
-            return this._Main(options,  gc);
+            return this._Main(options, initializer);
         }
 
         public void WriteHelp(ParserResult<CMDOptions> argumentParserResult)
@@ -124,7 +124,7 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
 
         public static bool ShowHelp(string[] commandlineArguments)
         {
-            if(commandlineArguments.Length == 0)
+            if(commandlineArguments.Length != 1)
             {
                 return false;
             }
