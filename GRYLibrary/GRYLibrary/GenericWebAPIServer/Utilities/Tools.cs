@@ -52,12 +52,11 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
         {
             return context.Request.Path.ToString().StartsWith($"{ServerConfiguration.APIRoutePrefix}/{ServerConfiguration.ResourcesSubPath}/{ServerConfiguration.APISpecificationDocumentName}/");
         }
-        public static int Create<GCodeUnitSpecificCommandlineParameter, GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration>(string codeUnitName, string codeUnitDescription, Version3 codeUnitVersion, string[] commandlineArguments, GRYEnvironment environmentTargetType, Func<GCodeUnitSpecificCommandlineParameter, APIServerInitializer<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>> initializer)
+        public static int Create<GCodeUnitSpecificCommandlineParameter, GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration>(string codeUnitName, string codeUnitDescription, Version3 codeUnitVersion, string[] commandlineArguments, GRYEnvironment environmentTargetType, ExecutionMode executionMode, Func<GCodeUnitSpecificCommandlineParameter, APIServerInitializer<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>> initializer)
             where GCodeUnitSpecificConfiguration : new()
             where GCodeUnitSpecificConstants : new()
             where GCodeUnitSpecificCommandlineParameter : class, ICommandlineParameter, new()
         {
-            ExecutionMode executionMode = Miscellaneous.Utilities.GetExecutionMode();
             return new GRYConsoleApplication<GCodeUnitSpecificCommandlineParameter, APIServerInitializer<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>>(WebAPIServer<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>.WebAPIMain, codeUnitName, codeUnitVersion.ToString(), codeUnitDescription, true, executionMode).Main(commandlineArguments, initializer);
         }
     }
