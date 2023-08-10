@@ -1,4 +1,4 @@
-﻿namespace GRYLibrary.Core.CryptoSystems
+﻿namespace GRYLibrary.Core.Crypto
 {
     public abstract class EncryptionAlgorithm :CryptographyAlgorithm
     {

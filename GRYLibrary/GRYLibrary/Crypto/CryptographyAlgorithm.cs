@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace GRYLibrary.Core.CryptoSystems
+namespace GRYLibrary.Core.Crypto
 {
     public abstract class CryptographyAlgorithm
     {

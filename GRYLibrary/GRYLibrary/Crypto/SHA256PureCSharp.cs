@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using System.Text;
 
-namespace GRYLibrary.Core.CryptoSystems.ConcreteHashAlgorithms
+namespace GRYLibrary.Core.Crypto
 {
     public class SHA256PureCSharp :HashAlgorithm
     {

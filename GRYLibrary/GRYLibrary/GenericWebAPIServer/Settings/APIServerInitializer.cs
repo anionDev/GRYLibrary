@@ -16,25 +16,27 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Settings
     /// <summary>
     /// Represents a container for all information which are required to start a WebAPI-server.
     /// </summary>
-    public class APIServerInitializer<AppSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
+    public class APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
         where PersistedApplicationSpecificConfiguration : new()
     {
         public bool ThrowErrorIfConfigurationDoesNotExistInProduction { get; set; } = false;
         public string BaseFolder { get; set; }
-        public IApplicationConstants<AppSpecificConstants> ApplicationConstants { get; set; }
+        public IApplicationConstants<ApplicationSpecificConstants> ApplicationConstants { get; set; }
         public PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> InitialApplicationConfiguration { get; set; }
-        public Action<IServiceCollection, IApplicationConstants<AppSpecificConstants>, IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>, CommandlineParameterType> ConfigureServices { get; set; }
-        public Action<IApplicationConstants<AppSpecificConstants>, IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>> PreRun { get; set; }
-        public Action<IApplicationConstants<AppSpecificConstants>, IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>> PostRun { get; set; }
+        public Action<IServiceCollection, IApplicationConstants<ApplicationSpecificConstants>, IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>, CommandlineParameterType> ConfigureServices { get; set; }
+        public Action<IApplicationConstants<ApplicationSpecificConstants>, IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>> PreRun { get; set; }
+        public Action<IApplicationConstants<ApplicationSpecificConstants>, IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>> PostRun { get; set; }
         public AbstractFilePath BasicInformationFile { get; set; }
-        public static APIServerInitializer<AppSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> Create<AppSpecificConstants, PersistedApplicationSpecificConfiguration>(string applicationName, Version3 applicationVersion, ExecutionMode executionMode, GRYEnvironment environment, AppSpecificConstants applicationSpecificConstants, string domain, string appDescription, PersistedApplicationSpecificConfiguration persistedApplicationSpecificConfiguration, string fallbackCertificatePasswordFileContentHex, string fallbackCertificatePFXFileContentHex)
-          where PersistedApplicationSpecificConfiguration : new()
+        public static APIServerInitializer<AppSpecificConstants, PersistedAppSpecificConfiguration, CommandlineParameterType> Create<AppSpecificConstants, PersistedAppSpecificConfiguration>(string applicationName, Version3 applicationVersion, ExecutionMode executionMode, GRYEnvironment environment, AppSpecificConstants applicationSpecificConstants, string domain, string appDescription, PersistedAppSpecificConfiguration persistedApplicationSpecificConfiguration, string fallbackCertificatePasswordFileContentHex, string fallbackCertificatePFXFileContentHex)
+          where PersistedAppSpecificConfiguration : new()
         {
-            APIServerInitializer<AppSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> result = new APIServerInitializer<AppSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>();
-            result.ApplicationConstants = new ApplicationConstants<AppSpecificConstants>(applicationName, appDescription, applicationVersion, executionMode, environment, applicationSpecificConstants);
-            result.ApplicationConstants.KnownTypes.Add(typeof(PersistedApplicationSpecificConfiguration));
+            APIServerInitializer<AppSpecificConstants, PersistedAppSpecificConfiguration, CommandlineParameterType> result = new APIServerInitializer<AppSpecificConstants, PersistedAppSpecificConfiguration, CommandlineParameterType>
+            {
+                ApplicationConstants = new ApplicationConstants<AppSpecificConstants>(applicationName, appDescription, applicationVersion, executionMode, environment, applicationSpecificConstants)
+            };
+            result.ApplicationConstants.KnownTypes.Add(typeof(PersistedAppSpecificConfiguration));
             result.BaseFolder = GetDefaultBaseFolder(result.ApplicationConstants);
-            result.InitialApplicationConfiguration = PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>.Create(domain, persistedApplicationSpecificConfiguration, environment, fallbackCertificatePasswordFileContentHex, fallbackCertificatePFXFileContentHex, result.ApplicationConstants.ApplicationName);
+            result.InitialApplicationConfiguration = PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration>.Create(domain, persistedApplicationSpecificConfiguration, environment, fallbackCertificatePasswordFileContentHex, fallbackCertificatePFXFileContentHex, result.ApplicationConstants.ApplicationName);
             result.ConfigureServices = (_, _, _, _) => { };
             result.PreRun = (_, _) => { };
             result.PostRun = (_, _) => { };
