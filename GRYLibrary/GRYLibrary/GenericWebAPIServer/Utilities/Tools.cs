@@ -1,4 +1,9 @@
-﻿using GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration;
+﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
+using GRYLibrary.Core.GenericWebAPIServer.ExecutionModes;
+using GRYLibrary.Core.GenericWebAPIServer.Settings;
+using GRYLibrary.Core.GenericWebAPIServer.Settings.Configuration;
+using GRYLibrary.Core.Miscellaneous;
+using GRYLibrary.Core.Miscellaneous.ConsoleApplication;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.IO;
@@ -24,7 +29,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
                 //read response body
                 intermediateResponseBody.Position = 0;
                 responseBody = Miscellaneous.Utilities.StreamToByteArray(intermediateResponseBody);
-                string t = new UTF8Encoding(false).GetString(responseBody);
                 if(responseBodyUpdater != null)
                 {
                     responseBody = responseBodyUpdater(responseBody);
@@ -32,10 +36,8 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
 
                 //write response body to original response-stream
                 intermediateResponseBody.Position = 0;
-                using(MemoryStream copyStream = new MemoryStream(responseBody))
-                {
-                    copyStream.CopyToAsync(originalResponseBody).Wait();
-                }
+                using MemoryStream copyStream = new MemoryStream(responseBody);
+                copyStream.CopyToAsync(originalResponseBody).Wait();
             }
             context.Response.Body = originalResponseBody;
             return (requestBody, responseBody);
@@ -50,6 +52,14 @@ namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
         public static bool IsAPIDocumentationRequest(HttpContext context)
         {
             return context.Request.Path.ToString().StartsWith($"{ServerConfiguration.APIRoutePrefix}/{ServerConfiguration.ResourcesSubPath}/{ServerConfiguration.APISpecificationDocumentName}/");
+        }
+        public static int Create<GCodeUnitSpecificCommandlineParameter, GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration>(string codeUnitName, string codeUnitDescription, Version3 codeUnitVersion, string[] commandlineArguments, GRYEnvironment environmentTargetType, Func<GCodeUnitSpecificCommandlineParameter, APIServerInitializer<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>> initializer)
+            where GCodeUnitSpecificConfiguration : new()
+            where GCodeUnitSpecificConstants : new()
+            where GCodeUnitSpecificCommandlineParameter : class, ICommandlineParameter, new()
+        {
+            ExecutionMode executionMode = Miscellaneous.Utilities.GetExecutionMode();
+            return new GRYConsoleApplication<GCodeUnitSpecificCommandlineParameter, APIServerInitializer<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>>(WebAPIServer<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>.WebAPIMain, codeUnitName, codeUnitVersion.ToString(), codeUnitDescription, true, executionMode).Main(commandlineArguments, initializer);
         }
     }
 }
