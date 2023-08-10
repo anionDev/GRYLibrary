@@ -7,7 +7,6 @@ using GRYLibrary.Core.Miscellaneous.ConsoleApplication;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.Utilities
