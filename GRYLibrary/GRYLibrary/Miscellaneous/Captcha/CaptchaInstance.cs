@@ -30,7 +30,7 @@ namespace GRYLibrary.Core.Miscellaneous.Captcha
         internal static byte[] GetPictureForString(string expectedUserInput)
         {
             RandomNumberProvider rng = new RandomNumberProvider();
-            IOptions<DNTCaptchaOptions> options = Options.Create<DNTCaptchaOptions>(new DNTCaptchaOptions());
+            IOptions<DNTCaptchaOptions> options = Options.Create(new DNTCaptchaOptions());
             //TODO use settings
             CaptchaImageProvider imageProvider = new CaptchaImageProvider(rng, options);
             return imageProvider.DrawCaptcha(expectedUserInput, "black", "white", 25, "Tahoma");

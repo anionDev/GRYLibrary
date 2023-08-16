@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 
-namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteCommonAlgorithms.ConcreteSymmetricAlgorithms
+namespace GRYLibrary.Core.Crypto
 {
     public class AES256 :SymmetricEncryptionAlgorithm
     {

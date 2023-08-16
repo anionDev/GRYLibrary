@@ -69,6 +69,7 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
                                 .WithParsed(options =>
                                 {
                                     options.OriginalArguments = arguments;
+                         
                                     result = this.HandleSuccessfullyParsedArguments(options, initializationConfiguration);
                                 })
                                 .WithNotParsed(errors =>

@@ -1,10 +1,9 @@
-﻿using GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteCommonAlgorithms;
-using GRYLibrary.Core.Miscellaneous;
+﻿using GRYLibrary.Core.Miscellaneous;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteOtherAlgorithms.ConcreteEncryptUsingPropertiesAlgorithms
+namespace GRYLibrary.Core.Crypto
 {
     /// <summary>
     /// The <see cref="GRYBCryptoSystem"/> is a cryptosystem to encrypt data with an optional masterkey to be able to decrypt the data without the password.
@@ -32,8 +31,8 @@ namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteOtherAlgori
         public const string GRYBCryptoSystemDatasetMagicHeader = "GRYBC";
         public static readonly byte[] GRYBCryptoSystemDatasetMagicHeaderBytes = System.Text.Encoding.ASCII.GetBytes(GRYBCryptoSystemDatasetMagicHeader);
         public ISet<(byte[], AsymmetricEncryptionAlgorithm)> PasswordEncryptionKeys { get; set; } = new HashSet<(byte[], AsymmetricEncryptionAlgorithm)>();
-        public SymmetricEncryptionAlgorithm InternalEncryptionAlgorithmForKeys { get; set; } = new ConcreteCommonAlgorithms.ConcreteSymmetricAlgorithms.AES256();
-        public HashAlgorithm HashAlgorithm { get; set; } = new ConcreteHashAlgorithms.SHA256();
+        public SymmetricEncryptionAlgorithm InternalEncryptionAlgorithmForKeys { get; set; } = new AES256();
+        public HashAlgorithm HashAlgorithm { get; set; } = new SHA256();
 
         /// <inheritdoc/>
         public override byte[] Encrypt(byte[] unencryptedData)

@@ -1,8 +1,7 @@
-﻿using GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteCommonAlgorithms.ConcreteAsymmetricAlgorithms.Helper;
-using GRYLibrary.Core.Miscellaneous;
+﻿using GRYLibrary.Core.Miscellaneous;
 using System;
 
-namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteCommonAlgorithms.ConcreteAsymmetricAlgorithms
+namespace GRYLibrary.Core.Crypto
 {
     public class ECC :AsymmetricEncryptionAlgorithm
     {

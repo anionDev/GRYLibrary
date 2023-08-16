@@ -1,4 +1,4 @@
-﻿namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteCommonAlgorithms
+﻿namespace GRYLibrary.Core.Crypto
 {
     public abstract class SymmetricEncryptionAlgorithm :CommonEncryptionAlgorithm
     {

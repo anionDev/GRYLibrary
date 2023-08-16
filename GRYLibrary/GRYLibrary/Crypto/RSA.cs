@@ -1,7 +1,7 @@
 ﻿using GRYLibrary.Core.Miscellaneous;
 using System.Security.Cryptography;
 
-namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteCommonAlgorithms.ConcreteAsymmetricAlgorithms
+namespace GRYLibrary.Core.Crypto
 {
     public class RSA :AsymmetricEncryptionAlgorithm
     {

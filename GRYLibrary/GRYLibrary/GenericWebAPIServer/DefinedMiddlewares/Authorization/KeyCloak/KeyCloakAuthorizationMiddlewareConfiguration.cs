@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GRYLibrary.Core.GenericWebAPIServer.DefinedMiddlewares.Authorization.KeyCloak
 {
-    public abstract class KeyCloakAuthorizationMiddlewareConfiguration :IKeyCloakAuthorizationMiddlewareConfiguration
+    public class KeyCloakAuthorizationMiddlewareConfiguration :IKeyCloakAuthorizationMiddlewareConfiguration
     {
         public bool Enabled { get; set; } = true;
 

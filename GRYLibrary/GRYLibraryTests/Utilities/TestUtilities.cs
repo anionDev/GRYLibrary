@@ -1,5 +1,5 @@
 ﻿using GRYLibrary.Core.AdvancedObjectAnalysis;
-using GRYLibrary.Core.CryptoSystems.ConcreteHashAlgorithms;
+using GRYLibrary.Core.Crypto;
 using GRYLibrary.Core.OperatingSystem;
 using GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -75,11 +75,11 @@ namespace GRYLibrary.Tests.Utilities
         {
             AssertSHA256ValueIsEqualsToDotNetImplementation(new SHA256PureCSharp(), input);
         }
-        internal static void AssertSHA256ValueIsEqualsToDotNetImplementation(Core.CryptoSystems.HashAlgorithm algorithmUnderTest, string input)
+        internal static void AssertSHA256ValueIsEqualsToDotNetImplementation(HashAlgorithm algorithmUnderTest, string input)
         {
-            AssertHashValueIsEqualsToDotNetImplementation(algorithmUnderTest, new Core.CryptoSystems.ConcreteHashAlgorithms.SHA256(), input);
+            AssertHashValueIsEqualsToDotNetImplementation(algorithmUnderTest, new SHA256(), input);
         }
-        internal static void AssertHashValueIsEqualsToDotNetImplementation(Core.CryptoSystems.HashAlgorithm algorithmUnderTest, Core.CryptoSystems.HashAlgorithm verificationAlgorithm, string input)
+        internal static void AssertHashValueIsEqualsToDotNetImplementation(HashAlgorithm algorithmUnderTest, HashAlgorithm verificationAlgorithm, string input)
         {
             // arrange
             byte[] inputAsByteArray = Core.Miscellaneous.Utilities.StringToByteArray(input);
