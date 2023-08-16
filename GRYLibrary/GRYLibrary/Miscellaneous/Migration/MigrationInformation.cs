@@ -1,5 +1,5 @@
-﻿using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
-using GRYLibrary.Core.GenericWebAPIServer.ExecutionModes;
+﻿using GRYLibrary.Core.APIServer.ConcreteEnvironments;
+using GRYLibrary.Core.APIServer.ExecutionModes;
 using System.Collections.Generic;
 
 namespace GRYLibrary.Core.Miscellaneous.Migration
