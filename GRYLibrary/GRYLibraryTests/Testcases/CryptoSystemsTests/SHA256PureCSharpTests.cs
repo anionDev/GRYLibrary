@@ -1,4 +1,4 @@
-﻿using GRYLibrary.Core.CryptoSystems.ConcreteHashAlgorithms;
+﻿using GRYLibrary.Core.Crypto;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static GRYLibrary.Core.Miscellaneous.Utilities;
 using static GRYLibrary.Tests.Utilities.TestUtilities;

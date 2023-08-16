@@ -47,8 +47,10 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         }
         public static WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> Create(APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> apiServerInitializer)
         {
-            WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> result = new WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>();
-            result._APIServerInitializer = apiServerInitializer;
+            WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> result = new WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
+            {
+                _APIServerInitializer = apiServerInitializer
+            };
             result._APIServerInitializer.ApplicationConstants.Initialize(result._APIServerInitializer.BaseFolder);
             return result;
         }
@@ -290,61 +292,6 @@ namespace GRYLibrary.Core.GenericWebAPIServer
             }
         }
 
-        private void EnsureCertificateIsAvailableIfRequired(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration, IGeneralLogger logger)
-        {
-            string certFolder = this._APIServerInitializer.ApplicationConstants.GetCertificateFolder();
-            if(persistedApplicationSpecificConfiguration.ServerConfiguration.Protocol is HTTPS https)
-            {
-                string pfxFile = https.TLSCertificateInformation.CertificatePFXFile.GetPath(certFolder);
-                string passwordFile = https.TLSCertificateInformation.CertificatePasswordFile.GetPath(certFolder);
-                if(!File.Exists(https.TLSCertificateInformation.CertificatePFXFile.GetPath(certFolder)))
-                {
-                    if(this._APIServerInitializer.ApplicationConstants.Environment is Productive)
-                    {
-                        logger.Log($"'{pfxFile}' does not exist. Fallback-certificate will be used instead. It is recommended to replace it by a valid certificate as soon as possible.", LogLevel.Warning);
-                    }
-
-                    if(https.TLSCertificateInformation.FallbackCertificatePasswordFileContentHex == null)
-                    {
-                        throw new ArgumentNullException($"{nameof(TLSCertificateInformation.FallbackCertificatePasswordFileContentHex)} is not allowed to be null if {nameof(HTTPS)} is used and no valid certificate is given.");
-                    }
-                    else
-                    {
-                        Miscellaneous.Utilities.EnsureFileExists(passwordFile, true);
-                        File.WriteAllBytes(passwordFile, Miscellaneous.Utilities.HexStringToByteArray(https.TLSCertificateInformation.FallbackCertificatePasswordFileContentHex));
-                    }
-
-                    if(https.TLSCertificateInformation.FallbackCertificatePasswordFileContentHex == null)
-                    {
-                        throw new ArgumentNullException($"{nameof(TLSCertificateInformation.FallbackCertificatePFXFileContentHex)} is not allowed to be null if {nameof(HTTPS)} is used and no valid certificate is given.");
-                    }
-                    else
-                    {
-                        Miscellaneous.Utilities.EnsureFileExists(pfxFile, true);
-                        File.WriteAllBytes(pfxFile, Miscellaneous.Utilities.HexStringToByteArray(https.TLSCertificateInformation.FallbackCertificatePFXFileContentHex));
-                    }
-                }
-            }
-        }
-
-        #region Get logger
-        private IGeneralLogger GetApplicationLogger(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration)
-        {
-            return this._APIServerInitializer.ApplicationConstants.ExecutionMode.Accept(new GetLoggerVisitor(persistedApplicationSpecificConfiguration.ApplicationLogConfiguration, this._APIServerInitializer.ApplicationConstants.GetLogFolder(), "Server"));
-        }
-        #endregion
-
-        private void CreateRequiredFolder()
-        {
-            Miscellaneous.Utilities.EnsureDirectoryExists(this._APIServerInitializer.ApplicationConstants.GetConfigurationFolder());
-            Miscellaneous.Utilities.EnsureDirectoryExists(this._APIServerInitializer.ApplicationConstants.GetLogFolder());
-        }
-
-        private void RunAPIServer(WebApplication server)
-        {
-            server.Run();
-        }
-
         #region Host API Documentation
         private static bool HostAPIDocumentation(GRYEnvironment environment, bool hostAPISpecificationForInNonDevelopmentEnvironment, ExecutionMode executionMode)
         {
@@ -423,9 +370,62 @@ namespace GRYLibrary.Core.GenericWebAPIServer
         }
         #endregion
 
+        private void EnsureCertificateIsAvailableIfRequired(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration, IGeneralLogger logger)
+        {
+            string certFolder = this._APIServerInitializer.ApplicationConstants.GetCertificateFolder();
+            if(persistedApplicationSpecificConfiguration.ServerConfiguration.Protocol is HTTPS https)
+            {
+                string pfxFile = https.TLSCertificateInformation.CertificatePFXFile.GetPath(certFolder);
+                string passwordFile = https.TLSCertificateInformation.CertificatePasswordFile.GetPath(certFolder);
+                if(!File.Exists(https.TLSCertificateInformation.CertificatePFXFile.GetPath(certFolder)))
+                {
+                    if(this._APIServerInitializer.ApplicationConstants.Environment is Productive)
+                    {
+                        logger.Log($"'{pfxFile}' does not exist. Fallback-certificate will be used instead. It is recommended to replace it by a valid certificate as soon as possible.", LogLevel.Warning);
+                    }
+
+                    if(https.TLSCertificateInformation.FallbackCertificatePasswordFileContentHex == null)
+                    {
+                        throw new ArgumentNullException($"{nameof(TLSCertificateInformation.FallbackCertificatePasswordFileContentHex)} is not allowed to be null if {nameof(HTTPS)} is used and no valid certificate is given.");
+                    }
+                    else
+                    {
+                        Miscellaneous.Utilities.EnsureFileExists(passwordFile, true);
+                        File.WriteAllBytes(passwordFile, Miscellaneous.Utilities.HexStringToByteArray(https.TLSCertificateInformation.FallbackCertificatePasswordFileContentHex));
+                    }
+
+                    if(https.TLSCertificateInformation.FallbackCertificatePasswordFileContentHex == null)
+                    {
+                        throw new ArgumentNullException($"{nameof(TLSCertificateInformation.FallbackCertificatePFXFileContentHex)} is not allowed to be null if {nameof(HTTPS)} is used and no valid certificate is given.");
+                    }
+                    else
+                    {
+                        Miscellaneous.Utilities.EnsureFileExists(pfxFile, true);
+                        File.WriteAllBytes(pfxFile, Miscellaneous.Utilities.HexStringToByteArray(https.TLSCertificateInformation.FallbackCertificatePFXFileContentHex));
+                    }
+                }
+            }
+        }
+
         private void RunMigrationIfRequired(IGeneralLogger logger, AbstractFilePath basicInformationFile)
         {
             GRYMigration.MigrateIfRequired(basicInformationFile, this._APIServerInitializer.ApplicationConstants.ApplicationName, this._APIServerInitializer.ApplicationConstants.ApplicationVersion, logger, this._APIServerInitializer.BaseFolder, this._APIServerInitializer.ApplicationConstants.Environment, this._APIServerInitializer.ApplicationConstants.ExecutionMode, new Dictionary<object, object>(), new HashSet<MigrationMetaInformation>());
+        }
+
+        private IGeneralLogger GetApplicationLogger(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration)
+        {
+            return this._APIServerInitializer.ApplicationConstants.ExecutionMode.Accept(new GetLoggerVisitor(persistedApplicationSpecificConfiguration.ApplicationLogConfiguration, this._APIServerInitializer.ApplicationConstants.GetLogFolder(), "Server"));
+        }
+
+        private void CreateRequiredFolder()
+        {
+            Miscellaneous.Utilities.EnsureDirectoryExists(this._APIServerInitializer.ApplicationConstants.GetConfigurationFolder());
+            Miscellaneous.Utilities.EnsureDirectoryExists(this._APIServerInitializer.ApplicationConstants.GetLogFolder());
+        }
+
+        private void RunAPIServer(WebApplication server)
+        {
+            server.Run();
         }
     }
 }

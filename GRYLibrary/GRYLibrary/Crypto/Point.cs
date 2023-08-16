@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
 
-namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteCommonAlgorithms.ConcreteAsymmetricAlgorithms.Helper
+namespace GRYLibrary.Core.Crypto
 {
     public readonly struct Point :IEquatable<Point>
     {

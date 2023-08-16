@@ -1,6 +1,6 @@
 ﻿using GRYLibrary.Core.Miscellaneous;
 
-namespace GRYLibrary.Core.CryptoSystems.EncryptionAlgorithms.ConcreteOtherAlgorithms
+namespace GRYLibrary.Core.Crypto
 {
     public abstract class EncryptUsingPropertiesAlgorithm :OtherEncryptionAlgorithm
     {

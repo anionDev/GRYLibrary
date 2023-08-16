@@ -1,6 +1,6 @@
 ﻿using GRYLibrary.Core.Miscellaneous;
 
-namespace GRYLibrary.Core.CryptoSystems.ConcreteHashAlgorithms
+namespace GRYLibrary.Core.Crypto
 {
     public class SHA256 :HashAlgorithm
     {

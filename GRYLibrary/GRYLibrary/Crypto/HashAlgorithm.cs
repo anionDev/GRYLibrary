@@ -1,6 +1,6 @@
 ﻿using GRYLibrary.Core.Miscellaneous;
 
-namespace GRYLibrary.Core.CryptoSystems
+namespace GRYLibrary.Core.Crypto
 {
     public abstract class HashAlgorithm :CryptographyAlgorithm
     {
