@@ -1,6 +1,6 @@
 ﻿using GRYLibrary.Core.GeneralPurposeLogger;
-using GRYLibrary.Core.GenericWebAPIServer.ConcreteEnvironments;
-using GRYLibrary.Core.GenericWebAPIServer.ExecutionModes;
+using GRYLibrary.Core.APIServer.ConcreteEnvironments;
+using GRYLibrary.Core.APIServer.ExecutionModes;
 using GRYLibrary.Core.Miscellaneous.FilePath;
 using GRYLibrary.Core.Miscellaneous.Migration;
 using System;

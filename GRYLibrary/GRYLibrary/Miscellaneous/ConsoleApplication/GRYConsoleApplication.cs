@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 using CommandLine.Text;
-using GRYLibrary.Core.GenericWebAPIServer.ExecutionModes;
+using GRYLibrary.Core.APIServer.ExecutionModes;
 using GRYLibrary.Core.Log;
 using Microsoft.Extensions.Logging;
 using System;

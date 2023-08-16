@@ -2,7 +2,7 @@
 using GRYLibrary.Core.Exceptions;
 using GRYLibrary.Core.ExecutePrograms;
 using GRYLibrary.Core.ExecutePrograms.WaitingStates;
-using GRYLibrary.Core.GenericWebAPIServer.ExecutionModes;
+using GRYLibrary.Core.APIServer.ExecutionModes;
 using GRYLibrary.Core.Log;
 using GRYLibrary.Core.OperatingSystem;
 using GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems;
