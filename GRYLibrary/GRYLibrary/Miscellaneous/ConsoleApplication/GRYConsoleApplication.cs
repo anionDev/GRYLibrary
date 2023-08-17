@@ -11,7 +11,7 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
 {
     public class GRYConsoleApplication<CMDOptions, InitializationConfig> where CMDOptions : ICommandlineParameter
     {
-        private readonly Func<CMDOptions, Func<CMDOptions, InitializationConfig>, int> _Main;
+        private readonly Func<CMDOptions, Action<CMDOptions, InitializationConfig>, int> _Main;
         private readonly string _ProgramName;
         private readonly string _ProgramVersion;
         private readonly string _ProgramDescription;
@@ -19,7 +19,7 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
         private readonly ExecutionMode _ExecutionMode;
         private readonly SentenceBuilder _SentenceBuilder;
         private readonly bool _ProgramCanRunWithoutArguments;
-        public GRYConsoleApplication(Func<CMDOptions, Func<CMDOptions, InitializationConfig>, int> main, string programName, string programVersion, string programDescription, bool programCanRunWithoutArguments, ExecutionMode executionMode)
+        public GRYConsoleApplication(Func<CMDOptions, Action<CMDOptions, InitializationConfig>, int> main, string programName, string programVersion, string programDescription, bool programCanRunWithoutArguments, ExecutionMode executionMode)
         {
             this._Main = main;
             this._ProgramName = programName;
@@ -31,7 +31,7 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
             this._ExecutionMode = executionMode;
         }
 
-        public int Main(string[] arguments, Func<CMDOptions, InitializationConfig> initializationConfiguration)
+        public int Main(string[] arguments, Action<CMDOptions, InitializationConfig> initializationConfiguration)
         {
             int result = 1;
             try
@@ -108,7 +108,7 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
             }
         }
 
-        private int HandleSuccessfullyParsedArguments(CMDOptions options, Func<CMDOptions, InitializationConfig> initializer)
+        private int HandleSuccessfullyParsedArguments(CMDOptions options, Action<CMDOptions, InitializationConfig> initializer)
         {
             return this._Main(options, initializer);
         }

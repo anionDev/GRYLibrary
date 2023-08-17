@@ -1,5 +1,4 @@
-﻿using GRYLibrary.Core.APIServer.Mid;
-using System;
+﻿using System;
 
 namespace GRYLibrary.Core.APIServer.Mid.Captcha
 {

@@ -5,7 +5,6 @@ using System.Net;
 using System;
 using System.Threading.Tasks;
 using GRYLibrary.Core.APIServer.Utilities;
-using GRYLibrary.Core.APIServer.Mid;
 using GRYLibrary.Core.APIServer.Mid.Logging;
 using GRYLibrary.Core.APIServer.Settings;
 using System.Collections.Generic;

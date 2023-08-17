@@ -52,7 +52,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
         {
             return context.Request.Path.ToString().StartsWith($"{ServerConfiguration.APIRoutePrefix}/{ServerConfiguration.ResourcesSubPath}/{ServerConfiguration.APISpecificationDocumentName}/");
         }
-        public static int Create<GCodeUnitSpecificCommandlineParameter, GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration>(string codeUnitName, string codeUnitDescription, Version3 codeUnitVersion, string[] commandlineArguments, GRYEnvironment environmentTargetType, ExecutionMode executionMode, Func<GCodeUnitSpecificCommandlineParameter, APIServerInitializer<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>> initializer)
+        public static int Create<GCodeUnitSpecificCommandlineParameter, GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration>(string codeUnitName, string codeUnitDescription, Version3 codeUnitVersion, string[] commandlineArguments, GRYEnvironment environmentTargetType, ExecutionMode executionMode, Action<GCodeUnitSpecificCommandlineParameter, APIServerInitializer<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>> initializer)
             where GCodeUnitSpecificConfiguration : new()
             where GCodeUnitSpecificConstants : new()
             where GCodeUnitSpecificCommandlineParameter : class, ICommandlineParameter, new()
