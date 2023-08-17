@@ -1,6 +1,7 @@
 ﻿using GRYLibrary.Core.APIServer.ConcreteEnvironments;
 using GRYLibrary.Core.APIServer.ExecutionModes;
 using GRYLibrary.Core.APIServer.Settings.Configuration;
+using GRYLibrary.Core.GeneralPurposeLogger;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GRYLibrary.Core.APIServer.Settings
@@ -11,7 +12,7 @@ namespace GRYLibrary.Core.APIServer.Settings
 
         public ConfigurationInformation(IServiceCollection serviceCollection, IApplicationConstants<ApplicationSpecificConstants> applicationConstants,
             IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration, CommandlineParameterType commandlineParameter,
-            ExecutionMode executionMode, GRYEnvironment environment)
+            ExecutionMode executionMode, GRYEnvironment environment, IGeneralLogger logger)
         {
             this.ServiceCollection = serviceCollection;
             this.ApplicationConstants = applicationConstants;
@@ -19,6 +20,7 @@ namespace GRYLibrary.Core.APIServer.Settings
             this.CommandlineParameter = commandlineParameter;
             this.ExecutionMode = executionMode;
             this.Environment = environment;
+            this.Logger = logger;
         }
 
         public IServiceCollection ServiceCollection { get; set; }
@@ -27,6 +29,6 @@ namespace GRYLibrary.Core.APIServer.Settings
         public CommandlineParameterType CommandlineParameter { get; set; }
         public ExecutionMode ExecutionMode { get; set; }
         public GRYEnvironment Environment { get; set; }
-
+        public IGeneralLogger Logger { get; set; }
     }
 }

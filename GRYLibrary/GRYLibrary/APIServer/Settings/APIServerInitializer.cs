@@ -3,6 +3,7 @@ using GRYLibrary.Core.APIServer.ExecutionModes;
 using GRYLibrary.Core.APIServer.ExecutionModes.Visitors;
 using GRYLibrary.Core.APIServer.Settings.Configuration;
 using GRYLibrary.Core.Miscellaneous;
+using GRYLibrary.Core.Miscellaneous.ConsoleApplication;
 using GRYLibrary.Core.Miscellaneous.FilePath;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
@@ -14,15 +15,17 @@ namespace GRYLibrary.Core.APIServer.Settings
 {
     public class APIServerInitializer
     {
-        public static APIServerInitializer<AppSpecificConstants, PersistedAppSpecificConfiguration, CommandlineParameterType> Create<AppSpecificConstants, PersistedAppSpecificConfiguration, CommandlineParameterType>()
+        public static APIServerInitializer<AppSpecificConstants, PersistedAppSpecificConfiguration, CommandlineParameterType> Create<AppSpecificConstants, PersistedAppSpecificConfiguration, CommandlineParameterType>(GRYConsoleApplicationInitialInformation gryConsoleApplicationInitialInformation)
               where PersistedAppSpecificConfiguration : new()
+              where AppSpecificConstants : new()
+              where CommandlineParameterType : ICommandlineParameter
         {
-            string applicationName = default;//TODO set value (take from "parent"-gryconsole-application-object)
-            string appDescription = default;//TODO set value (take from "parent"-gryconsole-application-object)
-            Version3 applicationVersion = default;//TODO set value (take from "parent"-gryconsole-application-object)
-            ExecutionMode executionMode = default;//TODO set value (take from "parent"-gryconsole-application-object)
-            GRYEnvironment environment = default;//TODO set value (take from "parent"-gryconsole-application-object)
-            AppSpecificConstants applicationSpecificConstants = default;//TODO set value
+            string applicationName = gryConsoleApplicationInitialInformation.ProgramName;
+            string appDescription = gryConsoleApplicationInitialInformation.ProgramDescription;
+            Version3 applicationVersion = Version3.Parse(gryConsoleApplicationInitialInformation.ProgramVersion);
+            ExecutionMode executionMode = gryConsoleApplicationInitialInformation.ExecutionMode;
+            GRYEnvironment environment = gryConsoleApplicationInitialInformation.Environment;
+            AppSpecificConstants applicationSpecificConstants = new AppSpecificConstants();
             PersistedAppSpecificConfiguration persistedApplicationSpecificConfiguration = default;//TODO set value (load from disk and create from disk before if not exist)
             string domain = default;//TODO set value (this value can probably be derived by the environment-variable and a development-certificate-name)
             string fallbackCertificatePasswordFileContentHex = default;//TODO set value and make sure it is not a fallback anymore
@@ -34,9 +37,11 @@ namespace GRYLibrary.Core.APIServer.Settings
             result.ApplicationConstants.KnownTypes.Add(typeof(PersistedAppSpecificConfiguration));
             result.BaseFolder = GetDefaultBaseFolder(result.ApplicationConstants);
             result.InitialApplicationConfiguration = PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration>.Create(domain, persistedApplicationSpecificConfiguration, environment, fallbackCertificatePasswordFileContentHex, fallbackCertificatePFXFileContentHex, result.ApplicationConstants.ApplicationName);
-            result.ConfigureServices = (_) => { };
-            result.PreRun = (_, _) => { };
-            result.PostRun = (_, _) => { };
+            result.Configure = (_) => { };
+            result.PreRun = () => { };
+            result.PostRun = () => { };
+            result.Filter = new HashSet<FilterDescriptor>();
+            result.ThrowErrorIfConfigurationDoesNotExistInProduction = false;
             result.BasicInformationFile = AbstractFilePath.FromString("./BasicApplicationInformation.xml");
             return result;
         }
@@ -52,14 +57,14 @@ namespace GRYLibrary.Core.APIServer.Settings
     public class APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
     where PersistedApplicationSpecificConfiguration : new()
     {
-        public bool ThrowErrorIfConfigurationDoesNotExistInProduction { get; set; } = false;
+        public bool ThrowErrorIfConfigurationDoesNotExistInProduction { get; set; }
         public string BaseFolder { get; set; }
         public IApplicationConstants<ApplicationSpecificConstants> ApplicationConstants { get; set; }
         public PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> InitialApplicationConfiguration { get; set; }
-        public Action<ConfigurationInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>> ConfigureServices { get; set; }
-        public Action<IApplicationConstants<ApplicationSpecificConstants>, IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>> PreRun { get; set; }
-        public Action<IApplicationConstants<ApplicationSpecificConstants>, IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>> PostRun { get; set; }
+        public Action<ConfigurationInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>> Configure { get; set; }
+        public Action PreRun { get; set; }
+        public Action PostRun { get; set; }
         public AbstractFilePath BasicInformationFile { get; set; }
-        public ISet<FilterDescriptor> Filter { get; set; } = new HashSet<FilterDescriptor>();
+        public ISet<FilterDescriptor> Filter { get; set; }
     }
 }
