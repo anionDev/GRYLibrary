@@ -1,5 +1,6 @@
 ﻿using CommandLine;
 using CommandLine.Text;
+using GRYLibrary.Core.APIServer.ConcreteEnvironments;
 using GRYLibrary.Core.APIServer.ExecutionModes;
 using GRYLibrary.Core.Log;
 using Microsoft.Extensions.Logging;
@@ -11,7 +12,7 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
 {
     public class GRYConsoleApplication<CMDOptions, InitializationConfig> where CMDOptions : ICommandlineParameter
     {
-        private readonly Func<CMDOptions, Func<CMDOptions, InitializationConfig>, int> _Main;
+        private readonly Func<CMDOptions, Action<CMDOptions, InitializationConfig>, GRYConsoleApplicationInitialInformation, int> _Main;
         private readonly string _ProgramName;
         private readonly string _ProgramVersion;
         private readonly string _ProgramDescription;
@@ -19,7 +20,8 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
         private readonly ExecutionMode _ExecutionMode;
         private readonly SentenceBuilder _SentenceBuilder;
         private readonly bool _ProgramCanRunWithoutArguments;
-        public GRYConsoleApplication(Func<CMDOptions, Func<CMDOptions, InitializationConfig>, int> main, string programName, string programVersion, string programDescription, bool programCanRunWithoutArguments, ExecutionMode executionMode)
+        private readonly GRYConsoleApplicationInitialInformation _GRYConsoleApplicationInitialInformation;
+        public GRYConsoleApplication(Func<CMDOptions, Action<CMDOptions, InitializationConfig>, GRYConsoleApplicationInitialInformation, int> main, string programName, string programVersion, string programDescription, bool programCanRunWithoutArguments, ExecutionMode executionMode, GRYEnvironment environment)
         {
             this._Main = main;
             this._ProgramName = programName;
@@ -29,9 +31,10 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
             this._SentenceBuilder = SentenceBuilder.Create();
             this._ProgramCanRunWithoutArguments = programCanRunWithoutArguments;
             this._ExecutionMode = executionMode;
+            this._GRYConsoleApplicationInitialInformation = new GRYConsoleApplicationInitialInformation(_ProgramName, _ProgramVersion, _ProgramDescription, _ExecutionMode, environment);
         }
 
-        public int Main(string[] arguments, Func<CMDOptions, InitializationConfig> initializationConfiguration)
+        public int Main(string[] arguments, Action<CMDOptions, InitializationConfig> initializationConfiguration)
         {
             int result = 1;
             try
@@ -69,7 +72,7 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
                                 .WithParsed(options =>
                                 {
                                     options.OriginalArguments = arguments;
-                         
+
                                     result = this.HandleSuccessfullyParsedArguments(options, initializationConfiguration);
                                 })
                                 .WithNotParsed(errors =>
@@ -108,9 +111,9 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
             }
         }
 
-        private int HandleSuccessfullyParsedArguments(CMDOptions options, Func<CMDOptions, InitializationConfig> initializer)
+        private int HandleSuccessfullyParsedArguments(CMDOptions options, Action<CMDOptions, InitializationConfig> initializer)
         {
-            return this._Main(options, initializer);
+            return this._Main(options, initializer, _GRYConsoleApplicationInitialInformation);
         }
 
         public void WriteHelp(ParserResult<CMDOptions> argumentParserResult)

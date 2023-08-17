@@ -1,5 +1,4 @@
-﻿using GRYLibrary.Core.APIServer.Mid;
-using GRYLibrary.Core.Log;
+﻿using GRYLibrary.Core.Log;
 
 namespace GRYLibrary.Core.APIServer.Mid.Logging
 {

@@ -13,7 +13,6 @@ using GRYLibrary.Core.APIServer.Mid.Counter;
 using GRYLibrary.Core.APIServer.Mid.Logging;
 using GRYLibrary.Core.APIServer.Mid.WAF;
 using GRYLibrary.Core.APIServer.ExecutionModes;
-using GRYLibrary.Core.APIServer.Mid;
 using GRYLibrary.Core.APIServer.Settings;
 using GRYLibrary.Core.APIServer.Settings.Configuration;
 using GRYLibrary.Core.APIServer.Utilities;
@@ -33,20 +32,25 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using GRYLibrary.Core.Miscellaneous.ConsoleApplication;
 
 namespace GRYLibrary.Core.APIServer
 {
     public class WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
         where PersistedApplicationSpecificConfiguration : new()
-        where CommandlineParameterType : class
+        where ApplicationSpecificConstants : new()
+        where CommandlineParameterType : class, ICommandlineParameter
     {
         private APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> _APIServerInitializer;
-        public static WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> Create(CommandlineParameterType cmdArgs, Func<CommandlineParameterType, APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>> apiServerInitializerCreator)
+        public static int WebAPIMain(CommandlineParameterType commandlineParameter, Action<CommandlineParameterType, APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>> apiServerInitializerConfigurator, GRYConsoleApplicationInitialInformation gryConsoleInitialInformation)
         {
-            return Create(apiServerInitializerCreator(cmdArgs));
+            WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> server = CreateWebAPIServer(commandlineParameter, apiServerInitializerConfigurator, gryConsoleInitialInformation);
+            return server.Run(commandlineParameter);
         }
-        public static WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> Create(APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> apiServerInitializer)
+        private static WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> CreateWebAPIServer(CommandlineParameterType cmdArgs, Action<CommandlineParameterType, APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>> apiServerInitializerConfigurator, GRYConsoleApplicationInitialInformation gryConsoleInitialInformation)
         {
+            APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> apiServerInitializer = APIServerInitializer.Create<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>(gryConsoleInitialInformation);
+            apiServerInitializerConfigurator(cmdArgs, apiServerInitializer);
             WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> result = new WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
             {
                 _APIServerInitializer = apiServerInitializer
@@ -55,11 +59,6 @@ namespace GRYLibrary.Core.APIServer
             return result;
         }
 
-        public static int WebAPIMain(CommandlineParameterType commandlineParameter, Func<CommandlineParameterType, APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>> initializer)
-        {
-            WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> server = Create(initializer(commandlineParameter));
-            return server.Run(commandlineParameter);
-        }
         public int Run(CommandlineParameterType commandlineParameter)
         {
             IGeneralLogger logger = GeneralLogger.CreateUsingConsole();
@@ -69,10 +68,10 @@ namespace GRYLibrary.Core.APIServer
                 this.RunMigrationIfRequired(logger, this._APIServerInitializer.BasicInformationFile);
                 IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration = this.LoadConfiguration(this._APIServerInitializer.ApplicationConstants.KnownTypes);
                 logger = this.GetApplicationLogger(persistedApplicationSpecificConfiguration);
-                WebApplication server = this.Initialize(persistedApplicationSpecificConfiguration, logger, commandlineParameter);
-                this._APIServerInitializer.PreRun(this._APIServerInitializer.ApplicationConstants, persistedApplicationSpecificConfiguration);
+                WebApplication server = this.CreateWebApplicationWrapper(persistedApplicationSpecificConfiguration, logger, commandlineParameter);
+                this._APIServerInitializer.PreRun();
                 this.RunAPIServer(server);
-                this._APIServerInitializer.PostRun(this._APIServerInitializer.ApplicationConstants, persistedApplicationSpecificConfiguration);
+                this._APIServerInitializer.PostRun();
                 return 0;
             }
             catch(Exception exception)
@@ -82,7 +81,7 @@ namespace GRYLibrary.Core.APIServer
             }
         }
 
-        private WebApplication Initialize(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration, IGeneralLogger logger, CommandlineParameterType commandlineParameter)
+        private WebApplication CreateWebApplicationWrapper(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration, IGeneralLogger logger, CommandlineParameterType commandlineParameter)
         {
             logger.Log($"Start {this._APIServerInitializer.ApplicationConstants.ApplicationName}", LogLevel.Information);
             bool diagnosis = false;
@@ -92,11 +91,11 @@ namespace GRYLibrary.Core.APIServer
                 logger.Log($"Executionmode: {this._APIServerInitializer.ApplicationConstants.ExecutionMode}", LogLevel.Debug);
             }
             this.EnsureCertificateIsAvailableIfRequired(persistedApplicationSpecificConfiguration, logger);
-            WebApplication webApplication = this.CreateAPIServer(persistedApplicationSpecificConfiguration, logger, commandlineParameter);
+            WebApplication webApplication = this.CreateWebApplication(persistedApplicationSpecificConfiguration, logger, commandlineParameter);
             return webApplication;
         }
 
-        private WebApplication CreateAPIServer(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration, IGeneralLogger logger, CommandlineParameterType commandlineParameter)
+        private WebApplication CreateWebApplication(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration, IGeneralLogger logger, CommandlineParameterType commandlineParameter)
         {
             WebApplicationBuilder builder = WebApplication.CreateBuilder(new WebApplicationOptions
             {
@@ -151,7 +150,9 @@ namespace GRYLibrary.Core.APIServer
 
             #endregion
 
-            this._APIServerInitializer.ConfigureServices(builder.Services, this._APIServerInitializer.ApplicationConstants, persistedApplicationSpecificConfiguration, commandlineParameter);
+            this._APIServerInitializer.Configure(new ConfigurationInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>(
+                builder.Services, this._APIServerInitializer.ApplicationConstants, persistedApplicationSpecificConfiguration, commandlineParameter,
+                this._APIServerInitializer.ApplicationConstants.ExecutionMode, this._APIServerInitializer.ApplicationConstants.Environment, logger));
             builder.WebHost.ConfigureKestrel(kestrelOptions =>
             {
                 kestrelOptions.AllowSynchronousIO = true;
