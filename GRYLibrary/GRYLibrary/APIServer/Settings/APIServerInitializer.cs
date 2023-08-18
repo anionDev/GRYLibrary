@@ -5,6 +5,8 @@ using GRYLibrary.Core.APIServer.Settings.Configuration;
 using GRYLibrary.Core.Miscellaneous;
 using GRYLibrary.Core.Miscellaneous.ConsoleApplication;
 using GRYLibrary.Core.Miscellaneous.FilePath;
+using GRYLibrary.Core.Miscellaneous.MetaConfiguration.ConfigurationFormats;
+using GRYLibrary.Core.Miscellaneous.MetaConfiguration;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
@@ -26,7 +28,6 @@ namespace GRYLibrary.Core.APIServer.Settings
             ExecutionMode executionMode = gryConsoleApplicationInitialInformation.ExecutionMode;
             GRYEnvironment environment = gryConsoleApplicationInitialInformation.Environment;
             AppSpecificConstants applicationSpecificConstants = new AppSpecificConstants();
-            PersistedAppSpecificConfiguration persistedApplicationSpecificConfiguration = default;//TODO set value (load from disk and create from disk before if not exist)
             string domain = default;//TODO set value (this value can probably be derived by the environment-variable and a development-certificate-name)
             string fallbackCertificatePasswordFileContentHex = default;//TODO set value and make sure it is not a fallback anymore
             string fallbackCertificatePFXFileContentHex = default;//TODO set value and make sure it is not a fallback anymore
@@ -34,14 +35,16 @@ namespace GRYLibrary.Core.APIServer.Settings
             {
                 ApplicationConstants = new ApplicationConstants<AppSpecificConstants>(applicationName, appDescription, applicationVersion, executionMode, environment, applicationSpecificConstants)
             };
+            PersistedAppSpecificConfiguration initialConfig = new PersistedAppSpecificConfiguration();
             result.ApplicationConstants.KnownTypes.Add(typeof(PersistedAppSpecificConfiguration));
+            result.InitialApplicationConfiguration = PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration>.Create(domain, initialConfig, environment, fallbackCertificatePasswordFileContentHex, fallbackCertificatePFXFileContentHex, result.ApplicationConstants.ApplicationName);
+            IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> persistedApplicationSpecificConfiguration =
+             LoadConfiguration(result.ApplicationConstants.KnownTypes, environment, executionMode, result.ApplicationConstants.GetConfigurationFile(), result.ApplicationConstants.ThrowErrorIfConfigurationDoesNotExistInProduction, result.InitialApplicationConfiguration);
             result.BaseFolder = GetDefaultBaseFolder(result.ApplicationConstants);
-            result.InitialApplicationConfiguration = PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration>.Create(domain, persistedApplicationSpecificConfiguration, environment, fallbackCertificatePasswordFileContentHex, fallbackCertificatePFXFileContentHex, result.ApplicationConstants.ApplicationName);
             result.Configure = (_) => { };
             result.PreRun = () => { };
             result.PostRun = () => { };
             result.Filter = new HashSet<FilterDescriptor>();
-            result.ThrowErrorIfConfigurationDoesNotExistInProduction = false;
             result.BasicInformationFile = AbstractFilePath.FromString("./BasicApplicationInformation.xml");
             return result;
         }
@@ -50,6 +53,51 @@ namespace GRYLibrary.Core.APIServer.Settings
             string programFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             return applicationConstants.ExecutionMode.Accept(new GetBaseFolder(applicationConstants.Environment, programFolder));
         }
+        #region Create or load config-file
+
+        private static IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> LoadConfiguration<PersistedAppSpecificConfiguration>(
+            ISet<Type> knownTypes, GRYEnvironment evironment, ExecutionMode executionMode, string configurationFile, bool throwErrorIfConfigurationDoesNotExistInProduction,
+            PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> initialConfiguration)
+                where PersistedAppSpecificConfiguration : new()
+        {
+            if(throwErrorIfConfigurationDoesNotExistInProduction && evironment is Productive && !File.Exists(configurationFile))
+            {
+                throw new FileNotFoundException($"Configurationfile \"{configurationFile}\" does not exist.");
+            }
+            else
+            {
+                IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> result = executionMode.Accept(new GetPersistedAPIServerConfigurationVisitor<PersistedAppSpecificConfiguration>(configurationFile, initialConfiguration, knownTypes));
+                return result;
+            }
+        }
+        private class GetPersistedAPIServerConfigurationVisitor<PersistedApplicationSpecificConfiguration> :IExecutionModeVisitor<IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>>
+                where PersistedApplicationSpecificConfiguration : new()
+        {
+            private readonly MetaConfigurationSettings<PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>, IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>> _MetaConfiguration;
+            private readonly ISet<Type> _KnownTypes;
+
+            public GetPersistedAPIServerConfigurationVisitor(string file, PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> initialValue, ISet<Type> knownTypes)
+            {
+                this._MetaConfiguration = new MetaConfigurationSettings<PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>, IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>>()
+                {
+                    ConfigurationFormat = XML.Instance,
+                    File = file,
+                    InitialValue = initialValue
+                };
+                this._KnownTypes = knownTypes;
+            }
+
+            public IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> Handle(Analysis analysis)
+            {
+                return this._MetaConfiguration.InitialValue;
+            }
+
+            public IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> Handle(RunProgram runProgram)
+            {
+                return MetaConfigurationManager.GetConfiguration(this._MetaConfiguration, this._KnownTypes);
+            }
+        }
+        #endregion
     }
     /// <summary>
     /// Represents a container for all information which are required to start a WebAPI-server.
@@ -58,7 +106,6 @@ namespace GRYLibrary.Core.APIServer.Settings
     where PersistedApplicationSpecificConfiguration : new()
     {
         public APIServerInitializer() { }
-        public bool ThrowErrorIfConfigurationDoesNotExistInProduction { get; set; }
         public string BaseFolder { get; set; }
         public IApplicationConstants<ApplicationSpecificConstants> ApplicationConstants { get; set; }
         /// <summary>

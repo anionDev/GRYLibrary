@@ -75,9 +75,8 @@ namespace GRYLibrary.Core.APIServer
             {
                 this.CreateRequiredFolder();
                 this.RunMigrationIfRequired(logger, this._APIServerInitializer.BasicInformationFile);
-                IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration = this.LoadConfiguration(this._APIServerInitializer.ApplicationConstants.KnownTypes);
-                logger = this.GetApplicationLogger(persistedApplicationSpecificConfiguration);
-                WebApplication server = this.CreateWebApplicationWrapper(persistedApplicationSpecificConfiguration, logger, configurationInformation.CommandlineParameter, configurationInformation);
+                logger = this.GetApplicationLogger(configurationInformation.PersistedAPIServerConfiguration);
+                WebApplication server = this.CreateWebApplicationWrapper(configurationInformation.PersistedAPIServerConfiguration, logger, configurationInformation.CommandlineParameter, configurationInformation);
                 this._APIServerInitializer.PreRun();
                 this.RunAPIServer(server);
                 this._APIServerInitializer.PostRun();
@@ -339,49 +338,7 @@ namespace GRYLibrary.Core.APIServer
         }
         #endregion
 
-        #region Create or load config-file
-
-        private IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> LoadConfiguration(ISet<Type> knownTypes)
-        {
-            string configFile = this._APIServerInitializer.ApplicationConstants.GetConfigurationFile();
-            if(this._APIServerInitializer.ThrowErrorIfConfigurationDoesNotExistInProduction && this._APIServerInitializer.ApplicationConstants.Environment is Productive && !File.Exists(configFile))
-            {
-                throw new FileNotFoundException($"Configurationfile \"{configFile}\" does not exist.");
-            }
-            else
-            {
-                IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> result = this._APIServerInitializer.ApplicationConstants.ExecutionMode.Accept(new GetPersistedAPIServerConfigurationVisitor(configFile, this._APIServerInitializer.InitialApplicationConfiguration, knownTypes));
-                return result;
-            }
-        }
-        private class GetPersistedAPIServerConfigurationVisitor :IExecutionModeVisitor<IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>>
-        {
-            private readonly MetaConfigurationSettings<PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>, IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>> _MetaConfiguration;
-            private readonly ISet<Type> _KnownTypes;
-
-            public GetPersistedAPIServerConfigurationVisitor(string file, PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> initialValue, ISet<Type> knownTypes)
-            {
-                this._MetaConfiguration = new MetaConfigurationSettings<PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>, IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>>()
-                {
-                    ConfigurationFormat = XML.Instance,
-                    File = file,
-                    InitialValue = initialValue
-                };
-                this._KnownTypes = knownTypes;
-            }
-
-            public IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> Handle(Analysis analysis)
-            {
-                return this._MetaConfiguration.InitialValue;
-            }
-
-            public IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> Handle(RunProgram runProgram)
-            {
-                return MetaConfigurationManager.GetConfiguration(this._MetaConfiguration, this._KnownTypes);
-            }
-        }
-        #endregion
-
+     
         private void EnsureCertificateIsAvailableIfRequired(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration, IGeneralLogger logger)
         {
             string certFolder = this._APIServerInitializer.ApplicationConstants.GetCertificateFolder();
