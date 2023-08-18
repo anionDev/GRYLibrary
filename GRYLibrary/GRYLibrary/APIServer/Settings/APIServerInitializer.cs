@@ -57,9 +57,13 @@ namespace GRYLibrary.Core.APIServer.Settings
     public class APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
     where PersistedApplicationSpecificConfiguration : new()
     {
+        public APIServerInitializer() { }
         public bool ThrowErrorIfConfigurationDoesNotExistInProduction { get; set; }
         public string BaseFolder { get; set; }
         public IApplicationConstants<ApplicationSpecificConstants> ApplicationConstants { get; set; }
+        /// <summary>
+        /// Represents the default-value for the configuration which should be used when there is not already a persisted configuration which can be loaded.
+        /// </summary>
         public PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> InitialApplicationConfiguration { get; set; }
         public Action<ConfigurationInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>> Configure { get; set; }
         public Action PreRun { get; set; }
