@@ -2359,11 +2359,9 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static byte[] StreamToByteArray(Stream input)
         {
-            using(MemoryStream ms = new MemoryStream())
-            {
-                input.CopyTo(ms);
-                return ms.ToArray();
-            }
+            using MemoryStream ms = new MemoryStream();
+            input.CopyTo(ms);
+            return ms.ToArray();
         }
         public static SerializableDictionary<TKey, TValue> ToSerializableDictionary<TKey, TValue>(this IDictionary<TKey, TValue> dictionary)
         {

@@ -18,8 +18,6 @@ using GRYLibrary.Core.APIServer.Settings.Configuration;
 using GRYLibrary.Core.APIServer.Utilities;
 using GRYLibrary.Core.Miscellaneous;
 using GRYLibrary.Core.Miscellaneous.FilePath;
-using GRYLibrary.Core.Miscellaneous.MetaConfiguration;
-using GRYLibrary.Core.Miscellaneous.MetaConfiguration.ConfigurationFormats;
 using GRYLibrary.Core.Miscellaneous.Migration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -44,12 +42,6 @@ namespace GRYLibrary.Core.APIServer
         private APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> _APIServerInitializer;
         public static int WebAPIMain(CommandlineParameterType commandlineParameter, Action<ConfigurationInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>> apiServerInitializerConfigurator, GRYConsoleApplicationInitialInformation gryConsoleInitialInformation)
         {
-            (WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> server, ConfigurationInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> configInitializer) = CreateWebAPIServer(commandlineParameter, apiServerInitializerConfigurator, gryConsoleInitialInformation);
-            return server.Run(configInitializer);
-        }
-
-        private static (WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>, ConfigurationInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>) CreateWebAPIServer(CommandlineParameterType commandlineParameter, Action<ConfigurationInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>> apiServerInitializerConfigurator, GRYConsoleApplicationInitialInformation gryConsoleInitialInformation)
-        {
             APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> apiServerInitializer = APIServerInitializer.Create<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>(gryConsoleInitialInformation);
 
             ConfigurationInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> configurationInformation = new ConfigurationInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
@@ -59,49 +51,39 @@ namespace GRYLibrary.Core.APIServer
             };
 
             apiServerInitializerConfigurator(configurationInformation);
-            WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> result = new WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
+            WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> server = new WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
             {
                 _APIServerInitializer = apiServerInitializer
             };
-            result._APIServerInitializer.ApplicationConstants.Initialize(result._APIServerInitializer.BaseFolder);
-            return (result, configurationInformation);
+            server._APIServerInitializer.ApplicationConstants.Initialize(server._APIServerInitializer.BaseFolder);
+            return server.Run(configurationInformation);
         }
+
 
         public int Run(ConfigurationInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> configurationInformation)
         {
-            IGeneralLogger logger = GeneralLogger.CreateUsingConsole();
-            configurationInformation.Logger = logger;
+            IGeneralLogger consoleLogger = GeneralLogger.CreateUsingConsole();
+            configurationInformation.Logger = consoleLogger;
             try
             {
                 this.CreateRequiredFolder();
-                this.RunMigrationIfRequired(logger, this._APIServerInitializer.BasicInformationFile);
-                logger = this.GetApplicationLogger(configurationInformation.PersistedAPIServerConfiguration);
-                WebApplication server = this.CreateWebApplicationWrapper(configurationInformation.PersistedAPIServerConfiguration, logger, configurationInformation.CommandlineParameter, configurationInformation);
+                this.RunMigrationIfRequired(configurationInformation.Logger, this._APIServerInitializer.BasicInformationFile);
+                configurationInformation.Logger = this.GetApplicationLogger(configurationInformation.PersistedAPIServerConfiguration);
+                configurationInformation.Logger.Log($"Start {this._APIServerInitializer.ApplicationConstants.ApplicationName}", LogLevel.Information);
+                configurationInformation.Logger.Log($"Environment: {this._APIServerInitializer.ApplicationConstants.Environment}", LogLevel.Debug);
+                configurationInformation.Logger.Log($"Executionmode: {this._APIServerInitializer.ApplicationConstants.ExecutionMode}", LogLevel.Debug);
+                this.EnsureCertificateIsAvailableIfRequired(configurationInformation.PersistedAPIServerConfiguration, configurationInformation.Logger);
+                WebApplication webApplication = this.CreateWebApplication(configurationInformation.PersistedAPIServerConfiguration, configurationInformation.Logger, configurationInformation.CommandlineParameter, configurationInformation);
                 this._APIServerInitializer.PreRun();
-                this.RunAPIServer(server);
+                this.RunAPIServer(webApplication);
                 this._APIServerInitializer.PostRun();
                 return 0;
             }
             catch(Exception exception)
             {
-                logger.LogException(exception, "Fatal error occurred.");
+                configurationInformation.Logger.LogException(exception, "Fatal error occurred.");
                 return 1;
             }
-        }
-
-        private WebApplication CreateWebApplicationWrapper(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration, IGeneralLogger logger,
-            CommandlineParameterType commandlineParameter, ConfigurationInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> configurationInformation)
-        {
-            logger.Log($"Start {this._APIServerInitializer.ApplicationConstants.ApplicationName}", LogLevel.Information);
-            bool diagnosis = false;
-            if(diagnosis)
-            {
-                logger.Log($"Environment: {this._APIServerInitializer.ApplicationConstants.Environment}", LogLevel.Debug);
-                logger.Log($"Executionmode: {this._APIServerInitializer.ApplicationConstants.ExecutionMode}", LogLevel.Debug);
-            }
-            this.EnsureCertificateIsAvailableIfRequired(persistedApplicationSpecificConfiguration, logger);
-            WebApplication webApplication = this.CreateWebApplication(persistedApplicationSpecificConfiguration, logger, commandlineParameter, configurationInformation);
-            return webApplication;
         }
 
         private WebApplication CreateWebApplication(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration, IGeneralLogger logger,
@@ -159,7 +141,7 @@ namespace GRYLibrary.Core.APIServer
             #endregion
             #endregion
 
-            configurationInformation.PersistedAPIServerConfiguration=persistedApplicationSpecificConfiguration;
+            configurationInformation.PersistedAPIServerConfiguration = persistedApplicationSpecificConfiguration;
             configurationInformation.ServiceCollection = builder.Services;
 
             this._APIServerInitializer.Configure(configurationInformation);
@@ -338,7 +320,6 @@ namespace GRYLibrary.Core.APIServer
         }
         #endregion
 
-     
         private void EnsureCertificateIsAvailableIfRequired(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration, IGeneralLogger logger)
         {
             string certFolder = this._APIServerInitializer.ApplicationConstants.GetCertificateFolder();

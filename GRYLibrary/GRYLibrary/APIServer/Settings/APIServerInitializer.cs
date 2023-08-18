@@ -38,9 +38,9 @@ namespace GRYLibrary.Core.APIServer.Settings
             PersistedAppSpecificConfiguration initialConfig = new PersistedAppSpecificConfiguration();
             result.ApplicationConstants.KnownTypes.Add(typeof(PersistedAppSpecificConfiguration));
             result.InitialApplicationConfiguration = PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration>.Create(domain, initialConfig, environment, fallbackCertificatePasswordFileContentHex, fallbackCertificatePFXFileContentHex, result.ApplicationConstants.ApplicationName);
-            IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> persistedApplicationSpecificConfiguration =
-             LoadConfiguration(result.ApplicationConstants.KnownTypes, environment, executionMode, result.ApplicationConstants.GetConfigurationFile(), result.ApplicationConstants.ThrowErrorIfConfigurationDoesNotExistInProduction, result.InitialApplicationConfiguration);
             result.BaseFolder = GetDefaultBaseFolder(result.ApplicationConstants);
+            IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> persistedApplicationSpecificConfiguration =
+                  LoadConfiguration(result.ApplicationConstants.KnownTypes, environment, executionMode, result.ApplicationConstants.GetConfigurationFile(), result.ApplicationConstants.ThrowErrorIfConfigurationDoesNotExistInProduction, result.InitialApplicationConfiguration);
             result.Configure = (_) => { };
             result.PreRun = () => { };
             result.PostRun = () => { };
