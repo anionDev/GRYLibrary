@@ -34,6 +34,9 @@ using GRYLibrary.Core.Miscellaneous.ConsoleApplication;
 
 namespace GRYLibrary.Core.APIServer
 {
+    /// <summary>
+    /// Represents a webserver for a cloud-native HTTP-API-server
+    /// </summary>
     public class WebAPIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
         where PersistedApplicationSpecificConfiguration : new()
         where ApplicationSpecificConstants : new()
