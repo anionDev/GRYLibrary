@@ -31,7 +31,6 @@ using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using GRYLibrary.Core.Miscellaneous.ConsoleApplication;
-using Microsoft.Extensions.Hosting;
 
 namespace GRYLibrary.Core.APIServer
 {
@@ -88,18 +87,17 @@ namespace GRYLibrary.Core.APIServer
         public int Run(ConfigurationInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> configurationInformation,
              Action<ConfigurationInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>> apiServerInitializerConfigurator)
         {
-            IGeneralLogger consoleLogger = GeneralLogger.CreateUsingConsole();
-            configurationInformation.Logger = consoleLogger;
+            IGeneralLogger logger = GeneralLogger.CreateUsingConsole();
             try
             {
                 this.CreateRequiredFolder();
-                this.RunMigrationIfRequired(configurationInformation.Logger, this._APIServerInitializer.BasicInformationFile);
-                configurationInformation.Logger = this.GetApplicationLogger(configurationInformation.PersistedAPIServerConfiguration);
-                configurationInformation.Logger.Log($"Start {this._APIServerInitializer.ApplicationConstants.ApplicationName}", LogLevel.Information);
-                configurationInformation.Logger.Log($"Environment: {this._APIServerInitializer.ApplicationConstants.Environment}", LogLevel.Debug);
-                configurationInformation.Logger.Log($"Executionmode: {this._APIServerInitializer.ApplicationConstants.ExecutionMode}", LogLevel.Debug);
-                this.EnsureCertificateIsAvailableIfRequired(configurationInformation.PersistedAPIServerConfiguration, configurationInformation.Logger);
-                WebApplication webApplication = this.CreateWebApplication(configurationInformation.PersistedAPIServerConfiguration, configurationInformation.Logger, configurationInformation.CommandlineParameter, configurationInformation, apiServerInitializerConfigurator);
+                this.RunMigrationIfRequired(logger, this._APIServerInitializer.BasicInformationFile);
+                logger = this.GetApplicationLogger(configurationInformation.PersistedAPIServerConfiguration);
+                logger.Log($"Start {this._APIServerInitializer.ApplicationConstants.ApplicationName}", LogLevel.Information);
+                logger.Log($"Environment: {this._APIServerInitializer.ApplicationConstants.Environment}", LogLevel.Debug);
+                logger.Log($"Executionmode: {this._APIServerInitializer.ApplicationConstants.ExecutionMode}", LogLevel.Debug);
+                this.EnsureCertificateIsAvailableIfRequired(configurationInformation.PersistedAPIServerConfiguration, logger);
+                WebApplication webApplication = this.CreateWebApplication(configurationInformation.PersistedAPIServerConfiguration, logger, configurationInformation.CommandlineParameter, configurationInformation, apiServerInitializerConfigurator);
                 this._APIServerInitializer.PreRun();
                 this.RunAPIServer(webApplication);
                 this._APIServerInitializer.PostRun();
@@ -107,7 +105,7 @@ namespace GRYLibrary.Core.APIServer
             }
             catch(Exception exception)
             {
-                configurationInformation.Logger.LogException(exception, "Fatal error occurred.");
+                logger.LogException(exception, "Fatal error occurred.");
                 return 1;
             }
         }

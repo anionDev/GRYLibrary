@@ -98,7 +98,7 @@ namespace GRYLibrary.Core.APIServer.Settings
         #endregion
     }
     /// <summary>
-    /// Represents a container for all information which are required to start a WebAPI-server.
+    /// Represents a container for functional information which are required to start a WebAPI-server.
     /// </summary>
     public class APIServerInitializer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
     where PersistedApplicationSpecificConfiguration : new()
