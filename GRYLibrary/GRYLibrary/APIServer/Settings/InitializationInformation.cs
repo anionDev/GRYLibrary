@@ -8,7 +8,6 @@ namespace GRYLibrary.Core.APIServer.Settings
     {
         public InitializationInformation()
         {
-
         }
         public CommandlineParameterType CommandlineParameter { get; internal set; }
         public string BaseFolder { get; set; }
