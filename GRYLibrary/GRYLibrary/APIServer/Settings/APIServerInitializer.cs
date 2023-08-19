@@ -39,9 +39,7 @@ namespace GRYLibrary.Core.APIServer.Settings
             result.ApplicationConstants.KnownTypes.Add(typeof(PersistedAppSpecificConfiguration));
             result.InitialApplicationConfiguration = PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration>.Create(domain, initialConfig, environment, fallbackCertificatePasswordFileContentHex, fallbackCertificatePFXFileContentHex, result.ApplicationConstants.ApplicationName);
             result.BaseFolder = GetDefaultBaseFolder(result.ApplicationConstants);
-            IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> persistedApplicationSpecificConfiguration =
-                  LoadConfiguration(result.ApplicationConstants.KnownTypes, environment, executionMode, result.ApplicationConstants.GetConfigurationFile(), result.ApplicationConstants.ThrowErrorIfConfigurationDoesNotExistInProduction, result.InitialApplicationConfiguration);
-            result.Configure = (_) => { };
+            result.ApplicationConstants.Initialize(result.BaseFolder);
             result.PreRun = () => { };
             result.PostRun = () => { };
             result.Filter = new HashSet<FilterDescriptor>();
@@ -55,7 +53,7 @@ namespace GRYLibrary.Core.APIServer.Settings
         }
         #region Create or load config-file
 
-        private static IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> LoadConfiguration<PersistedAppSpecificConfiguration>(
+        internal static IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> LoadConfiguration<PersistedAppSpecificConfiguration>(
             ISet<Type> knownTypes, GRYEnvironment evironment, ExecutionMode executionMode, string configurationFile, bool throwErrorIfConfigurationDoesNotExistInProduction,
             PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> initialConfiguration)
                 where PersistedAppSpecificConfiguration : new()
@@ -112,7 +110,6 @@ namespace GRYLibrary.Core.APIServer.Settings
         /// Represents the default-value for the configuration which should be used when there is not already a persisted configuration which can be loaded.
         /// </summary>
         public PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> InitialApplicationConfiguration { get; set; }
-        public Action<ConfigurationInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>> Configure { get; set; }
         public Action PreRun { get; set; }
         public Action PostRun { get; set; }
         public AbstractFilePath BasicInformationFile { get; set; }
