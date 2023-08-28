@@ -31,7 +31,7 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
             this._SentenceBuilder = SentenceBuilder.Create();
             this._ProgramCanRunWithoutArguments = programCanRunWithoutArguments;
             this._ExecutionMode = executionMode;
-            this._GRYConsoleApplicationInitialInformation = new GRYConsoleApplicationInitialInformation(_ProgramName, _ProgramVersion, _ProgramDescription, _ExecutionMode, environment);
+            this._GRYConsoleApplicationInitialInformation = new GRYConsoleApplicationInitialInformation(this._ProgramName, this._ProgramVersion, this._ProgramDescription, this._ExecutionMode, environment);
         }
 
         public int Main(string[] arguments, Action<InitializationConfig> initializationConfiguration)
@@ -112,7 +112,7 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
 
         private int HandleSuccessfullyParsedArguments(CMDOptions options, Action<InitializationConfig> initializer)
         {
-            return this._Main(options, initializer, _GRYConsoleApplicationInitialInformation);
+            return this._Main(options, initializer, this._GRYConsoleApplicationInitialInformation);
         }
 
         public void WriteHelp(ParserResult<CMDOptions> argumentParserResult)

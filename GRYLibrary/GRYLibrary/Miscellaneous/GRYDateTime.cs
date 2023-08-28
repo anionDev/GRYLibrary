@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
-    public struct GRYDateTime : IEquatable<GRYDateTime>
+    /// <summary>
+    /// Represents a datetime without milliseconds.
+    /// </summary>
+    public struct GRYDateTime : IEquatable<GRYDateTime>, IComparable<GRYDateTime>, IComparable
     {
         internal static readonly string DateFormat = "yyyy-MM-dd HH:mm:ss";
         public int Year { get; set; }
@@ -23,11 +27,18 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static DateTime ToDateTime(GRYDateTime value)
         {
-            return new DateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second);
+            if (value == default)
+            {
+                return DateTime.MinValue;
+            }
+            else
+            {
+                return new DateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second);
+            }
         }
         public static GRYDateTime FromDateTime(DateTime value)
         {
-            return new GRYDateTime(value.Year, value.Month, value.Minute, value.Hour, value.Minute, value.Second);
+            return new GRYDateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second);
         }
         public static string ToString(GRYDateTime dateTime)
         {
@@ -45,7 +56,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public override string ToString()
         {
-            return ToDateTime(this).ToString();
+            return $"{Year.ToString().PadLeft(4, '0')}-{Month.ToString().PadLeft(2, '0')}-{Day.ToString().PadLeft(2, '0')} {Hour.ToString().PadLeft(2, '0')}:{Minute.ToString().PadLeft(2, '0')}:{Second.ToString().PadLeft(2, '0')}";
         }
         public string ToString(string format)
         {
@@ -65,6 +76,16 @@ namespace GRYLibrary.Core.Miscellaneous
                    this.Hour == other.Hour &&
                    this.Minute == other.Minute &&
                    this.Second == other.Second;
+        }
+
+        public int CompareTo(GRYDateTime other)
+        {
+            return ToDateTime(this).CompareTo(ToDateTime(other));
+        }
+
+        public int CompareTo(object obj)
+        {
+            return ToDateTime(this).CompareTo(obj);
         }
 
         public static bool operator ==(GRYDateTime left, GRYDateTime right)
