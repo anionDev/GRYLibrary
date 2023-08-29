@@ -23,6 +23,7 @@ namespace GRYLibrary.Core.Miscellaneous
             this.Hour = hour;
             this.Minute = minute;
             this.Second = second;
+            ToDateTime(this);//check if date is valid
         }
         public static DateTime ToDateTime(GRYDateTime value)
         {
