@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Runtime.CompilerServices;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
@@ -56,7 +55,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public override string ToString()
         {
-            return $"{Year.ToString().PadLeft(4, '0')}-{Month.ToString().PadLeft(2, '0')}-{Day.ToString().PadLeft(2, '0')} {Hour.ToString().PadLeft(2, '0')}:{Minute.ToString().PadLeft(2, '0')}:{Second.ToString().PadLeft(2, '0')}";
+            return $"{this.Year.ToString().PadLeft(4, '0')}-{this.Month.ToString().PadLeft(2, '0')}-{this.Day.ToString().PadLeft(2, '0')} {this.Hour.ToString().PadLeft(2, '0')}:{this.Minute.ToString().PadLeft(2, '0')}:{this.Second.ToString().PadLeft(2, '0')}";
         }
         public string ToString(string format)
         {

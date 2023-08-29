@@ -109,15 +109,15 @@ namespace GRYLibrary.Core.APIServer
                 return result;
             }
         }
-        private class GetPersistedAPIServerConfigurationVisitor<PersistedApplicationSpecificConfiguration> : IExecutionModeVisitor<IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>>
-                where PersistedApplicationSpecificConfiguration : new()
+        private class GetPersistedAPIServerConfigurationVisitor<PersistedAppSpecificConfiguration> : IExecutionModeVisitor<IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration>>
+                where PersistedAppSpecificConfiguration : new()
         {
-            private readonly MetaConfigurationSettings<PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>, IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>> _MetaConfiguration;
+            private readonly MetaConfigurationSettings<PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration>, IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration>> _MetaConfiguration;
             private readonly ISet<Type> _KnownTypes;
 
-            public GetPersistedAPIServerConfigurationVisitor(string file, PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> initialValue, ISet<Type> knownTypes)
+            public GetPersistedAPIServerConfigurationVisitor(string file, PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> initialValue, ISet<Type> knownTypes)
             {
-                this._MetaConfiguration = new MetaConfigurationSettings<PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>, IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>>()
+                this._MetaConfiguration = new MetaConfigurationSettings<PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration>, IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration>>()
                 {
                     ConfigurationFormat = XML.Instance,
                     File = file,
@@ -126,12 +126,12 @@ namespace GRYLibrary.Core.APIServer
                 this._KnownTypes = knownTypes;
             }
 
-            public IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> Handle(Analysis analysis)
+            public IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> Handle(Analysis analysis)
             {
                 return this._MetaConfiguration.InitialValue;
             }
 
-            public IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> Handle(RunProgram runProgram)
+            public IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> Handle(RunProgram runProgram)
             {
                 return MetaConfigurationManager.GetConfiguration(this._MetaConfiguration, this._KnownTypes);
             }
