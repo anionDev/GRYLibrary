@@ -33,7 +33,7 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
             {
                 if(line.StartsWith("-"))
                 {
-                    excludedItems.Add(line.Substring(1));
+                    excludedItems.Add(line[1..]);
                 }
                 else
                 {

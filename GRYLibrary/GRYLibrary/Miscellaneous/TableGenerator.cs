@@ -146,11 +146,11 @@ namespace GRYLibrary.Core.Miscellaneous
                     int minimumLengthForCut = 8;
                     if(maximalLength < minimumLengthForCut)
                     {
-                        return value.Substring(0, maximalLength);
+                        return value[..maximalLength];
                     }
                     else
                     {
-                        return value.Substring(0, maximalLength - 3) + "...";
+                        return value[..(maximalLength - 3)] + "...";
                     }
                 }
             }

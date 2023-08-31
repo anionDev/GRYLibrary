@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.Exceptions
 {
@@ -14,7 +10,7 @@ namespace GRYLibrary.Core.Exceptions
 
         private static string CalculateMessage(string errorId, string message)
         {
-            var result = $"Internal alrogithm error. Error-id: {errorId}";
+            string result = $"Internal alrogithm error. Error-id: {errorId}";
             if (message != null)
             {
                 result = $"{result}; Message: {message}";
