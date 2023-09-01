@@ -15,6 +15,9 @@ namespace GRYLibrary.Core.Miscellaneous
         public int Hour { get; set; }
         public int Minute { get; set; }
         public int Second { get; set; }
+        public static GRYDateTime GetNow() { return GRYDateTime.FromDateTime(DateTime.Now); }
+        public static GRYDateTime GetUtcNow() { return GRYDateTime.FromDateTime(DateTime.UtcNow); }
+
         public GRYDateTime(int year, int month, int day, int hour, int minute, int second)
         {
             this.Year = year;
@@ -23,6 +26,7 @@ namespace GRYLibrary.Core.Miscellaneous
             this.Hour = hour;
             this.Minute = minute;
             this.Second = second;
+            ToDateTime(this);//check if date is valid
         }
         public static DateTime ToDateTime(GRYDateTime value)
         {

@@ -16,7 +16,7 @@ namespace GRYLibrary.Core.Graph
         }
         private static string CalculateVertexName()
         {
-            return $"{nameof(Vertex)}_{Guid.NewGuid().ToString().Substring(0, 8)}";
+            return $"{nameof(Vertex)}_{Guid.NewGuid().ToString()[..8]}";
         }
 
         public int Degree()

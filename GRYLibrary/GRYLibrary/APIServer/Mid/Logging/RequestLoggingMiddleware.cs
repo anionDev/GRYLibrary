@@ -75,8 +75,10 @@ namespace GRYLibrary.Core.APIServer.Mid.RequestLogger
                     {
                         formatted = this.FormatLogEntrySummary(request);
                     }
-                    LogItem logItem = new LogItem(formatted, logLevel);
-                    logItem.LogTargets = logTargets;
+                    LogItem logItem = new LogItem(formatted, logLevel)
+                    {
+                        LogTargets = logTargets
+                    };
                     this._RequestLogger.AddLogEntry(logItem);
                 }
             }

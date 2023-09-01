@@ -22,8 +22,8 @@ namespace GRYLibrary.Tests.Testcases
         [TestMethod]
         public void TestCopyFileWithSpaceInFilename()
         {
-            using TemporaryDirectory temporaryDirectory = new();
             //arrange
+            using TemporaryDirectory temporaryDirectory = new();
             string file1name = "File 1.txt";
             string file1 = Path.Combine(temporaryDirectory.TemporaryDirectoryPath, file1name);
             Core.Miscellaneous.Utilities.EnsureFileExists(file1);
@@ -41,8 +41,8 @@ namespace GRYLibrary.Tests.Testcases
         [TestMethod]
         public void TestCopyFileUseUmlautsAndOtherCharacterFromOtherLanguages()
         {
-            using TemporaryDirectory temporaryDirectory = new();
             //arrange
+            using TemporaryDirectory temporaryDirectory = new();
             string file1name = "Sourcefile.txt";
             string file1 = Path.Combine(temporaryDirectory.TemporaryDirectoryPath, file1name);
             Core.Miscellaneous.Utilities.EnsureFileExists(file1);

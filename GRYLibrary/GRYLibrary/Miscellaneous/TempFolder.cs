@@ -7,7 +7,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public string Path { get; set; }
         public TempFolder()
         {
-            this.Path = System.IO.Path.Join(System.IO.Path.GetTempPath(), Guid.NewGuid().ToString().Substring(0, 8));
+            this.Path = System.IO.Path.Join(System.IO.Path.GetTempPath(), Guid.NewGuid().ToString()[..8]);
             Utilities.EnsureDirectoryExists(this.Path);
         }
         public void Dispose()

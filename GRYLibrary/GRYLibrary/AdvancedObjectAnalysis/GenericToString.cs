@@ -31,7 +31,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis
             string result = this.ToString(@object, new Dictionary<object, int>(new ReferenceEqualsComparer()), 0);
             if(result.Length > maxOutputLength)
             {
-                result = result.Substring(0, maxOutputLength - 3) + "...";
+                result = result[..(maxOutputLength - 3)] + "...";
             }
             return result;
         }
