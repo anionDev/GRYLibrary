@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
 {
-    public class PlaylistLoader :PlaylistFileHandler
+    public class PlaylistLoader : PlaylistFileHandler
     {
         public IDictionary<string, string> Replacements { get; set; } = new Dictionary<string, string>();
         public M3UHandler M3UHandler { get; set; } = new M3UHandler();
@@ -42,9 +42,9 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
             included = included.Except(excluded).ToHashSet();
             ISet<string> existingItems = new HashSet<string>();
             ISet<string> notExistingItems = new HashSet<string>();
-            foreach(string file in included)
+            foreach (string file in included)
             {
-                if(this.Exists(file))
+                if (this.Exists(file))
                 {
                     existingItems.Add(file);
                 }
@@ -53,7 +53,7 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
                     notExistingItems.Add(file);
                 }
             }
-            if(this.TreatEqualMetadataAsSameTrack)
+            if (this.TreatEqualMetadataAsSameTrack)
             {
                 existingItems = this.RemoveDuplicatesByMetadataCeck(existingItems);
             }
@@ -66,7 +66,7 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
             {
                 try
                 {
-                    if(this.IsLink(item))
+                    if (this.IsLink(item))
                     {
                         return item;
                     }
@@ -88,11 +88,12 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
 
         public override ISet<string> GetSongs(string playlistFile)
         {
-            return this.GetItemsAndNotExistingItems(playlistFile).songs;
+            (ISet<string> songs, ISet<string> notExistingSongs) result = this.GetItemsAndNotExistingItems(playlistFile);
+            return result.songs;
         }
         private bool Exists(string file)
         {
-            if(this.IsLink(file))
+            if (this.IsLink(file))
             {
                 return true;//TODO
             }
@@ -104,14 +105,14 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
 
         private string NormalizedItem(string item, string workingDirectory)
         {
-            if(item.Contains('*'))
+            if (item.Contains('*'))
             {
                 item = item.Split('*')[0];
             }
             item = this.Replace(item);
-            if(!this.IsLink(item))
+            if (!this.IsLink(item))
             {
-                if(Utilities.IsRelativeLocalFilePath(item))
+                if (Utilities.IsRelativeLocalFilePath(item))
                 {
                     item = workingDirectory.ResolveToFullPath();
                 }
@@ -123,13 +124,13 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
 
         private bool IsLink(string item)
         {
-            if(item.EndsWith(".mp3"))
+            if (item.EndsWith(".mp3"))
             {
-                if(item.StartsWith("https://"))
+                if (item.StartsWith("https://"))
                 {
                     return true;
                 }
-                if(item.StartsWith("http://"))//obsolete
+                if (item.StartsWith("http://"))//obsolete
                 {
                     return true;
                 }
@@ -143,7 +144,7 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
         }
         private string Replace(string item)
         {
-            foreach(KeyValuePair<string, string> replacement in this.Replacements)
+            foreach (KeyValuePair<string, string> replacement in this.Replacements)
             {
                 item = item.Replace(replacement.Key, replacement.Value);
             }
@@ -153,12 +154,12 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
         private ISet<string> LoadItems(IEnumerable<string> items, ISet<string> notExistingItems, string workingDirectory)
         {
             HashSet<string> result = new HashSet<string>();
-            foreach(string item in items)
+            foreach (string item in items)
             {
                 string normalizedItem = this.NormalizedItem(item, workingDirectory);
-                if(normalizedItem.EndsWith("/"))
+                if (normalizedItem.EndsWith("/"))
                 {
-                    if(Directory.Exists(normalizedItem))
+                    if (Directory.Exists(normalizedItem))
                     {
                         result.UnionWith(this.LoadItems(Utilities.GetFilesOfFolderRecursively(normalizedItem), notExistingItems, workingDirectory));
                     }
@@ -167,11 +168,11 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
                         notExistingItems.Add(normalizedItem);
                     }
                 }
-                else if(normalizedItem.EndsWith(".mp3"))
+                else if (normalizedItem.EndsWith(".mp3"))
                 {
                     result.Add(normalizedItem);
                 }
-                else if(this.IsSupportedPlaylistFile(normalizedItem))
+                else if (this.IsSupportedPlaylistFile(normalizedItem))
                 {
                     (ISet<string> songs, ISet<string> notExisting) = this.GetItemsAndNotExistingItems(normalizedItem);
                     result.UnionWith(songs);
@@ -190,11 +191,11 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
         }
         public PlaylistFileHandler GetHandlerForFile(string item)
         {
-            if(item.EndsWith(".m3u"))
+            if (item.EndsWith(".m3u"))
             {
                 return this.M3UHandler;
             }
-            if(item.EndsWith(".pls"))
+            if (item.EndsWith(".pls"))
             {
                 return this.PLSHandler;
             }
