@@ -19,9 +19,15 @@ namespace GRYLibrary.Core.Crypto
             string plainText = Utilities.ByteArrayToHexString(data);
             // Check arguments.
             if(plainText == null || plainText.Length <= 0)
+            {
                 throw new ArgumentNullException("plainText");
-            if(key == null || key.Length <= 0)
+            }
+
+            if (key == null || key.Length <= 0)
+            {
                 throw new ArgumentNullException("Key");
+            }
+
             byte[] encrypted;
             using(Aes aesAlg = Aes.Create())
             {
@@ -53,13 +59,21 @@ namespace GRYLibrary.Core.Crypto
             string cipherText = Utilities.ByteArrayToHexString(data);
             // Check arguments.
             if(cipherText == null || cipherText.Length <= 0)
+            {
                 throw new ArgumentNullException("cipherText");
-            if(key == null || key.Length <= 0)
+            }
+
+            if (key == null || key.Length <= 0)
+            {
                 throw new ArgumentNullException("Key");
+            }
+
             byte[] iv = data.Take(_IVLength).ToArray();
             data = data.Skip(_IVLength).ToArray();
             if(iv == null || iv.Length <= 0)
+            {
                 throw new ArgumentNullException("IV");
+            }
 
             // Declare the string used to hold
             // the decrypted text.

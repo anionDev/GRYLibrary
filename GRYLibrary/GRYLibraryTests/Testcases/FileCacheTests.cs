@@ -37,9 +37,9 @@ namespace GRYLibrary.Tests.Testcases
             File.WriteAllLines(tempFile.Path, new string[] { "k1;v1" });
             FileCache<TestSerializable, TestSerializable> fileCache = new FileCache<TestSerializable, TestSerializable>(tempFile.Path);
             fileCache.Load();
-            var k2 = new TestSerializable();
+            TestSerializable k2 = new TestSerializable();
             k2.DeserializeFromString("k2");
-            var v2 = new TestSerializable();
+            TestSerializable v2 = new TestSerializable();
             v2.DeserializeFromString("v2");
 
             ISet<string> expected = new HashSet<string>() { "k1;v1", "k2;v2" };
@@ -48,7 +48,7 @@ namespace GRYLibrary.Tests.Testcases
             fileCache.Set(k2, v2);
 
             // assert
-            var actual = File.ReadAllLines(tempFile.Path);
+            string[] actual = File.ReadAllLines(tempFile.Path);
             Assert.IsTrue(expected.SetEquals(actual));
         }
 
@@ -60,7 +60,7 @@ namespace GRYLibrary.Tests.Testcases
             File.WriteAllLines(tempFile.Path, new string[] { "k1;v1", "k2;v2" });
             FileCache<TestSerializable, TestSerializable> fileCache = new FileCache<TestSerializable, TestSerializable>(tempFile.Path);
             fileCache.Load();
-            var k2 = new TestSerializable();
+            TestSerializable k2 = new TestSerializable();
             k2.DeserializeFromString("k2");
 
             ISet<string> expected = new HashSet<string>() { "k1;v1" };
@@ -69,7 +69,7 @@ namespace GRYLibrary.Tests.Testcases
             fileCache.Remove(k2);
 
             // assert
-            var actual = File.ReadAllLines(tempFile.Path);
+            string[] actual = File.ReadAllLines(tempFile.Path);
             Assert.IsTrue(expected.SetEquals(actual));
         }
 

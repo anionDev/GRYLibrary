@@ -59,7 +59,7 @@
         <PackageReference Include="DNTCaptcha.Core" Version="4.8.1" />
         <PackageReference Include="ExtendedXmlSerializer" Version="3.7.11" />
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
-		<PackageReference Include="Keycloak.Net.Core" Version="1.0.21" />
+		<PackageReference Include="Keycloak.Net.Core" Version="1.0.22" />
         <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
         <PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="7.0.0" />
         <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />

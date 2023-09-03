@@ -10,7 +10,7 @@ namespace GRYLibrary.Core.Miscellaneous
     {
         public string CacheFile { get; set; }
         public Encoding Encoding { get; set; } = new UTF8Encoding(false);
-        private IDictionary<TKey, TValue> Cache = new Dictionary<TKey, TValue>();
+        private readonly IDictionary<TKey, TValue> Cache = new Dictionary<TKey, TValue>();
         public FileCache(string cacheFile)
         {
             this.CacheFile = cacheFile;
