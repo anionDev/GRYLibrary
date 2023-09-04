@@ -25,7 +25,7 @@ namespace GRYLibrary.Core.Graph
 
         private static string CalculateEdgeName()
         {
-            return $"{nameof(Edge)}_{Guid.NewGuid().ToString().Substring(0, 8)}";
+            return $"{nameof(Edge)}_{Guid.NewGuid().ToString()[..8]}";
         }
 
         public override bool Equals(object obj)
