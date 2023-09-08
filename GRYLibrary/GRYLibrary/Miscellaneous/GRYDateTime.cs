@@ -26,7 +26,7 @@ namespace GRYLibrary.Core.Miscellaneous
             this.Hour = hour;
             this.Minute = minute;
             this.Second = second;
-            ToDateTime(this);//check if date is valid
+            ToDateTime(this);//check if datetime is valid
         }
         public static DateTime ToDateTime(GRYDateTime value)
         {
@@ -38,6 +38,18 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 return new DateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second);
             }
+        }
+        public  GRYTime ToGRYTime()
+        {
+            return new GRYTime(this.Hour, this.Minute, this.Second);
+        }
+        public  GRYDate ToGRYDate()
+        {
+            return new GRYDate(this.Year, this.Month, this.Day);
+        }
+        public static GRYDateTime FromGRYDateAndTime(GRYDate date, GRYTime time)
+        {
+            return new GRYDateTime(date.Year, date.Month, date.Day, time.Hour, time.Minute, time.Second);
         }
         public static GRYDateTime FromDateTime(DateTime value)
         {
