@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
-    public class GenericComparer<T> :IComparer<T>, IEqualityComparer<T>
+    public class GenericComparer<T> : IComparer<T>, IEqualityComparer<T>
     {
         private readonly Func<T, T, bool> _Comparer;
         private readonly Func<T, int> _GetHashCode;

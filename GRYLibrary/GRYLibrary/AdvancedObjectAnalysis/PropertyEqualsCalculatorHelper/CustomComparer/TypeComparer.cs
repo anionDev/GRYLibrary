@@ -2,7 +2,7 @@
 
 namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper.CustomComparer
 {
-    public class TypeComparer :AbstractCustomComparer
+    public class TypeComparer : AbstractCustomComparer
     {
 
         public TypeComparer(PropertyEqualsCalculatorConfiguration cacheAndConfiguration) : base(cacheAndConfiguration)

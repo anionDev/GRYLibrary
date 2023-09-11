@@ -8,7 +8,5 @@ namespace GRYLibrary.Core.APIServer.Settings.Configuration
         public string GetCertificatePFXFile(string certificateFolder) { return this.CertificatePFXFile.GetPath(certificateFolder); }
         public AbstractFilePath CertificatePFXFile { get; set; } = default;
         public AbstractFilePath CertificatePasswordFile { get; set; } = default;
-        public string FallbackCertificatePasswordFileContentHex { get; set; } = default;
-        public string FallbackCertificatePFXFileContentHex { get; set; } = default;
     }
 }

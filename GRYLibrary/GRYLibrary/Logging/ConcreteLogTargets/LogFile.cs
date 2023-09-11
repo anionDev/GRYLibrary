@@ -6,7 +6,7 @@ using System.Text;
 
 namespace GRYLibrary.Core.Log.ConcreteLogTargets
 {
-    public sealed class LogFile :GRYLogTarget
+    public sealed class LogFile : GRYLogTarget
     {
         public LogFile() { }
         public AbstractFilePath File { get; set; }
@@ -19,7 +19,7 @@ namespace GRYLibrary.Core.Log.ConcreteLogTargets
             this._BasePath = logObject.BasePath;
             logItem.Format(logObject.Configuration, out string formattedMessage, out int _, out int _, out ConsoleColor _, this.Format, logItem.MessageId);
             this._Pool.Add(formattedMessage);
-            if(this.PreFlushPoolSize <= this._Pool.Count)
+            if (this.PreFlushPoolSize <= this._Pool.Count)
             {
                 this.Flush();
             }
@@ -28,15 +28,15 @@ namespace GRYLibrary.Core.Log.ConcreteLogTargets
         public void Flush()
         {
             string logfile = this.File.GetPath(this._BasePath);
-            if(string.IsNullOrWhiteSpace(logfile))
+            if (string.IsNullOrWhiteSpace(logfile))
             {
                 throw new NullReferenceException($"LogFile is not defined.");
             }
             Utilities.EnsureFileExists(logfile, true);
             string result = string.Empty;
-            for(int i = 0; i < this._Pool.Count; i++)
+            for (int i = 0; i < this._Pool.Count; i++)
             {
-                if(!(i == 0 && Utilities.FileIsEmpty(logfile)))
+                if (!(i == 0 && Utilities.FileIsEmpty(logfile)))
                 {
                     result += Environment.NewLine;
                 }

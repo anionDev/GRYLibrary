@@ -11,7 +11,7 @@ namespace GRYLibrary.Core.Miscellaneous
         Type PropertyValueType { get; }
     }
     [DataContract]
-    public class Property<T> :EventSender<Property<T>, PropertyChangedEvengArgument<T>>, IProperty
+    public class Property<T> : EventSender<Property<T>, PropertyChangedEvengArgument<T>>, IProperty
     {
         [DataMember]
         private string _PropertyName;
@@ -50,9 +50,9 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             get
             {
-                if(this.LockEnabled)
+                if (this.LockEnabled)
                 {
-                    lock(this.LockObject)
+                    lock (this.LockObject)
                     {
                         return this.GetValue();
                     }
@@ -64,9 +64,9 @@ namespace GRYLibrary.Core.Miscellaneous
             }
             set
             {
-                if(this.LockEnabled)
+                if (this.LockEnabled)
                 {
-                    lock(this.LockObject)
+                    lock (this.LockObject)
                     {
                         this.SetValue(value);
                     }
@@ -82,7 +82,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         private T GetValue()
         {
-            if(this.HasValue)
+            if (this.HasValue)
             {
                 return this._Value;
             }
@@ -94,7 +94,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         private void SetValue(T value)
         {
-            if((value == null) && !this.AllowNullAsValue)
+            if ((value == null) && !this.AllowNullAsValue)
             {
                 throw new ArgumentException("null is not allowed as value");
             }
@@ -104,14 +104,14 @@ namespace GRYLibrary.Core.Miscellaneous
             this._Value = newValue;
             DateTime changeDate = DateTime.Now;
             this.LastWriteTime = changeDate;
-            if(this.AddValuesToHistory)
+            if (this.AddValuesToHistory)
             {
                 this._History.Push(new KeyValuePair<DateTime, T>(changeDate, this._Value));
             }
             Argument<Property<T>, PropertyChangedEvengArgument<T>> argument = new(this, new PropertyChangedEvengArgument<T>(oldValue, newValue, changeDate));
             try
             {
-                if(this.NotifyAboutChanges)
+                if (this.NotifyAboutChanges)
                 {
                     this.Notify(argument);
                 }
@@ -128,7 +128,7 @@ namespace GRYLibrary.Core.Miscellaneous
             this.PropertyName = propertyName;
             this.ResetToInitialValue();
             this.AddValuesToHistory = addValuesToHistory;
-            if(!this.AddValuesToHistory)
+            if (!this.AddValuesToHistory)
             {
                 this.ResetHistory();
             }
@@ -154,10 +154,10 @@ namespace GRYLibrary.Core.Miscellaneous
         public T GetValueByTimestamp(DateTime dateTime)
         {
             Stack<KeyValuePair<DateTime, T>> history = this.History;
-            while(history.Count > 0)
+            while (history.Count > 0)
             {
                 KeyValuePair<DateTime, T> current = history.Pop();
-                if(current.Key < dateTime)
+                if (current.Key < dateTime)
                 {
                     return current.Value;
                 }

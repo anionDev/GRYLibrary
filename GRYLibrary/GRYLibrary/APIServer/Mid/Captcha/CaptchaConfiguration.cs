@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace GRYLibrary.Core.APIServer.Mid.Captcha
 {
-    public class CaptchaConfiguration :ICaptchaConfiguration
+    public class CaptchaConfiguration : ICaptchaConfiguration
     {
         public bool Enabled { get; set; } = true;
         public ushort Length { get; set; } = 8;
@@ -37,7 +37,7 @@ namespace GRYLibrary.Core.APIServer.Mid.Captcha
 </body>
 </html>";
 
-            public ISet<FilterDescriptor> GetFilter()
+        public ISet<FilterDescriptor> GetFilter()
         {
             return new HashSet<FilterDescriptor>();
         }

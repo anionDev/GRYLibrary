@@ -3,7 +3,7 @@ using System.Text;
 
 namespace GRYLibrary.Core.Miscellaneous.Healthcheck
 {
-    public sealed class Healthcheck :IDisposable
+    public sealed class Healthcheck : IDisposable
     {
         public string File { get; }
         public bool AddTimestamp { get; set; } = true;
@@ -16,7 +16,7 @@ namespace GRYLibrary.Core.Miscellaneous.Healthcheck
         {
             Utilities.EnsureFileExists(this.File);
             string text;
-            if(this.AddTimestamp)
+            if (this.AddTimestamp)
             {
                 text = Utilities.DateTimeToISO8601String(DateTime.Now) + ": ";
             }
@@ -25,7 +25,7 @@ namespace GRYLibrary.Core.Miscellaneous.Healthcheck
                 text = string.Empty;
             }
             text = text + Enum.GetName(typeof(HealthcheckValue), value);
-            if(!string.IsNullOrWhiteSpace(message))
+            if (!string.IsNullOrWhiteSpace(message))
             {
                 text = $"{text} ({message})";
             }

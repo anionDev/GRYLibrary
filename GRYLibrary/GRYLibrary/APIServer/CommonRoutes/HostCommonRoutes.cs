@@ -1,6 +1,6 @@
 ﻿namespace GRYLibrary.Core.APIServer.CommonRoutes
 {
-    public class HostCommonRoutes :CommonRoutesHostInformation
+    public class HostCommonRoutes : CommonRoutesHostInformation
     {
         #region Overhead
         public override void Accept(ICommonRoutesHostInformationVisitor visitor)

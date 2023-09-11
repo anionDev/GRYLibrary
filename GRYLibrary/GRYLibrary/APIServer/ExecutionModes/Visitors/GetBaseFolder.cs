@@ -4,7 +4,7 @@ using System.IO;
 
 namespace GRYLibrary.Core.APIServer.ExecutionModes.Visitors
 {
-    public class GetBaseFolder :IExecutionModeVisitor<string>
+    public class GetBaseFolder : IExecutionModeVisitor<string>
     {
         private readonly GRYEnvironment _TargetEnvironmentType;
         private readonly string _ProgramFolder;
@@ -28,7 +28,7 @@ namespace GRYLibrary.Core.APIServer.ExecutionModes.Visitors
         public static string GetBaseFolderForProjectInCommonProjectStructure(GRYEnvironment environment, string programFolder)
         {
             string workspaceFolderName = "Workspace";
-            if(environment is Development)
+            if (environment is Development)
             {
                 return Miscellaneous.Utilities.ResolveToFullPath($"../../{workspaceFolderName}", programFolder);
             }

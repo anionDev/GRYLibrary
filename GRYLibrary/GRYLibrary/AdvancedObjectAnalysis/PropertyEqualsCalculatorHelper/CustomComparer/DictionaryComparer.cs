@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper.CustomComparer
 {
-    public class DictionaryComparer :AbstractCustomComparer
+    public class DictionaryComparer : AbstractCustomComparer
     {
         internal DictionaryComparer(PropertyEqualsCalculatorConfiguration cacheAndConfiguration) : base(cacheAndConfiguration)
         {
@@ -18,17 +18,17 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper.
         }
         internal bool EqualsTyped<TKey, TValue>(IDictionary<TKey, TValue> dictionary1, IDictionary<TKey, TValue> dictionary2)
         {
-            if(dictionary1.Count != dictionary2.Count)
+            if (dictionary1.Count != dictionary2.Count)
             {
                 return false;
             }
-            foreach(TKey key in dictionary1.Keys)
+            foreach (TKey key in dictionary1.Keys)
             {
-                if(this.ContainsKey(dictionary2, key))
+                if (this.ContainsKey(dictionary2, key))
                 {
                     KeyValuePair<TKey, TValue> kvp1 = new(key, dictionary1[key]);
                     KeyValuePair<TKey, TValue> kvp2 = new(key, dictionary2[key]);
-                    if(!this._PropertyEqualsCalculator.Equals(kvp1, kvp2))
+                    if (!this._PropertyEqualsCalculator.Equals(kvp1, kvp2))
                     {
                         return false;
                     }
@@ -43,9 +43,9 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper.
 
         private bool ContainsKey<TKey, TValue>(IDictionary<TKey, TValue> dictionary, TKey key)
         {
-            foreach(KeyValuePair<TKey, TValue> kvp in dictionary)
+            foreach (KeyValuePair<TKey, TValue> kvp in dictionary)
             {
-                if(new PropertyEqualsCalculator(this.Configuration).Equals(kvp.Key, key))
+                if (new PropertyEqualsCalculator(this.Configuration).Equals(kvp.Key, key))
                 {
                     return true;
                 }

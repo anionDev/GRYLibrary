@@ -13,7 +13,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public int Minute { get; set; }
         public int Second { get; set; }
 
-        public GRYTime( int hour, int minute, int second)
+        public GRYTime(int hour, int minute, int second)
         {
             this.Hour = hour;
             this.Minute = minute;
@@ -28,12 +28,12 @@ namespace GRYLibrary.Core.Miscellaneous
             }
             else
             {
-                return new TimeOnly( value.Hour, value.Minute, value.Second);
+                return new TimeOnly(value.Hour, value.Minute, value.Second);
             }
         }
         public static GRYTime FromDateTime(TimeOnly value)
         {
-            return new GRYTime( value.Hour, value.Minute, value.Second);
+            return new GRYTime(value.Hour, value.Minute, value.Second);
         }
         public static string ToString(GRYTime dateTime)
         {
@@ -44,38 +44,38 @@ namespace GRYLibrary.Core.Miscellaneous
             return FromDateTime(TimeOnly.ParseExact(@string, TimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal));
         }
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return base.GetHashCode();
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return $"{this.Hour.ToString().PadLeft(2, '0')}:{this.Minute.ToString().PadLeft(2, '0')}:{this.Second.ToString().PadLeft(2, '0')}";
         }
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToTime(this).ToString(format);
         }
 
-        public override bool Equals(object obj)
+        public override readonly bool Equals(object obj)
         {
             return obj is GRYTime time && this.Equals(time);
         }
 
-        public bool Equals(GRYTime other)
+        public readonly bool Equals(GRYTime other)
         {
             return this.Hour == other.Hour &&
                    this.Minute == other.Minute &&
                    this.Second == other.Second;
         }
 
-        public int CompareTo(GRYTime other)
+        public readonly int CompareTo(GRYTime other)
         {
             return ToTime(this).CompareTo(ToTime(other));
         }
 
-        public int CompareTo(object obj)
+        public readonly int CompareTo(object obj)
         {
             return ToTime(this).CompareTo(obj);
         }

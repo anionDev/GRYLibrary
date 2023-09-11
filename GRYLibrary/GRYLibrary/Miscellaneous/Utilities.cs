@@ -63,11 +63,11 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             return OperatingSystem.OperatingSystem.GetCurrentOperatingSystem().Accept(new IsAdministratorVisitor());
         }
-        private class IsAdministratorVisitor :IOperatingSystemVisitor<bool>
+        private class IsAdministratorVisitor : IOperatingSystemVisitor<bool>
         {
             public bool Handle(OSX operatingSystem)
             {
-                if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     throw new NotImplementedException();
                 }
@@ -79,7 +79,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
             public bool Handle(Windows operatingSystem)
             {
-                if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
 
                     using WindowsIdentity identity = WindowsIdentity.GetCurrent();
@@ -94,7 +94,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
             public bool Handle(Linux operatingSystem)
             {
-                if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     throw new NotImplementedException();
                 }
@@ -122,7 +122,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static void Repeat<T>(this Action<uint> action, uint amountOfExecutions)
         {
-            for(uint i = 0; i < amountOfExecutions; i++)
+            for (uint i = 0; i < amountOfExecutions; i++)
             {
                 action(i);
             }
@@ -133,7 +133,7 @@ namespace GRYLibrary.Core.Miscellaneous
             return OperatingSystem.OperatingSystem.GetCurrentOperatingSystem().Accept(new NormalizePathVisitor(path));
         }
 
-        private class NormalizePathVisitor :IOperatingSystemVisitor<string>
+        private class NormalizePathVisitor : IOperatingSystemVisitor<string>
         {
             public readonly char WindowsPathSeparatorChar = Path.DirectorySeparatorChar;
             public readonly char LinuxAndOSXPathSeparatorChar = Path.AltDirectorySeparatorChar;
@@ -173,15 +173,15 @@ namespace GRYLibrary.Core.Miscellaneous
         /// </returns>
         public static bool ContainsSublist<T>(this IList<T> list, IList<T> subList, Func<T, string> serializableFunction, string separator = "-")
         {
-            if(list == null || subList == null)
+            if (list == null || subList == null)
             {
                 throw new ArgumentException($"Parameter {nameof(list)} and {nameof(subList)} may not be null");
             }
-            if(subList.Count > list.Count)
+            if (subList.Count > list.Count)
             {
                 return false;
             }
-            if(subList.Count == 0)
+            if (subList.Count == 0)
             {
                 return true;
             }
@@ -193,7 +193,7 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             List<T> result = new();
             int i = 0;
-            while(i < n)
+            while (i < n)
             {
                 i += 1;
                 result.AddRange(input);
@@ -229,7 +229,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public static byte[] ConcatBytesArraysWithLengthInformation(params byte[][] byteArrays)
         {
             byte[] result = Array.Empty<byte>();
-            foreach(byte[] byteArray in byteArrays)
+            foreach (byte[] byteArray in byteArrays)
             {
                 result = Concat(result, UnsignedInteger32BitToByteArray((uint)byteArray.Length), byteArray);
             }
@@ -238,12 +238,12 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public static uint[] ByteArrayToUnsignedInteger32BitArray(byte[] byteArray)
         {
-            if((byteArray.Length % 4) != 0)
+            if ((byteArray.Length % 4) != 0)
             {
                 throw new ArgumentException($"The argument for parameter {nameof(byteArray)} must have a length which is a multiple of 4.");
             }
             uint[] result = new uint[byteArray.Length / 4];
-            for(int i = 0; i < byteArray.Length / 4; i++)
+            for (int i = 0; i < byteArray.Length / 4; i++)
             {
                 result[i] = ByteArrayToUnsignedInteger32Bit(new byte[] { byteArray[4 * i], byteArray[(4 * i) + 1], byteArray[(4 * i) + 2], byteArray[(4 * i) + 3] });
             }
@@ -258,7 +258,7 @@ namespace GRYLibrary.Core.Miscellaneous
                 { nameof(error.Path), error.Path },
                 { nameof(error.Property), error.Property }
             };
-            if(error.HasLineInfo)
+            if (error.HasLineInfo)
             {
                 values.Add(nameof(error.LineNumber), error.LineNumber.ToString());
                 values.Add(nameof(error.LinePosition), error.LinePosition.ToString());
@@ -275,7 +275,7 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             Random random = new();
             int n = list.Count;
-            while(n > 1)
+            while (n > 1)
             {
                 n--;
                 int k = random.Next(n + 1);
@@ -290,9 +290,9 @@ namespace GRYLibrary.Core.Miscellaneous
         public static IEnumerable<PropertyInfo> GetPropertiesWhichHaveGetterAndSetter(Type type)
         {
             List<PropertyInfo> result = new();
-            foreach(PropertyInfo property in type.GetType().GetProperties())
+            foreach (PropertyInfo property in type.GetType().GetProperties())
             {
-                if(property.CanWrite && property.CanRead)
+                if (property.CanWrite && property.CanRead)
                 {
                     result.Add(property);
                 }
@@ -303,11 +303,11 @@ namespace GRYLibrary.Core.Miscellaneous
         public static IEnumerable<string> GetFilesOfFolderRecursively(string folder)
         {
             List<string> result = new();
-            foreach(string subfolder in Directory.GetDirectories(folder))
+            foreach (string subfolder in Directory.GetDirectories(folder))
             {
                 result.AddRange(GetFilesOfFolderRecursively(subfolder));
             }
-            foreach(string file in Directory.GetFiles(folder))
+            foreach (string file in Directory.GetFiles(folder))
             {
                 result.Add(file);
             }
@@ -316,7 +316,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public static bool IsValidXML(string xmlString)
         {
-            if(string.IsNullOrWhiteSpace(xmlString))
+            if (string.IsNullOrWhiteSpace(xmlString))
             {
                 return false;
             }
@@ -335,7 +335,7 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             int result = 0;
             IEnumerator enumerator = enumerable.GetEnumerator();
-            while(enumerator.MoveNext())
+            while (enumerator.MoveNext())
             {
                 result += 1;
             }
@@ -368,7 +368,7 @@ namespace GRYLibrary.Core.Miscellaneous
             string originalFilename = Path.GetFileName(file);
             string newFilename = ReplaceUnderscores(originalFilename, replacements);
             string result = Path.Combine(Path.GetDirectoryName(file), newFilename);
-            if(!newFilename.Equals(originalFilename))
+            if (!newFilename.Equals(originalFilename))
             {
                 File.Move(file, result);
             }
@@ -380,9 +380,9 @@ namespace GRYLibrary.Core.Miscellaneous
             string originalFoldername = new DirectoryInfo(folder).Name;
             string newFoldername = ReplaceUnderscores(originalFoldername, replacements);
             string result = Path.Combine(Path.GetDirectoryName(folder), newFoldername);
-            if(!newFoldername.Equals(originalFoldername))
+            if (!newFoldername.Equals(originalFoldername))
             {
-                if(Directory.Exists(result))
+                if (Directory.Exists(result))
                 {
                     MoveContentOfFoldersAcrossVolumes(folder, result);
                     DeleteFolder(folder);
@@ -397,7 +397,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public static string ReplaceUnderscores(string @string, IDictionary<string, string> replacements)
         {
-            foreach(System.Collections.Generic.KeyValuePair<string, string> replacement in replacements)
+            foreach (System.Collections.Generic.KeyValuePair<string, string> replacement in replacements)
             {
                 @string = @string.Replace($"__{replacement.Key}__", replacement.Value);
             }
@@ -409,25 +409,25 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static bool TypeIsPrimitive(Type type)
         {
-            if(type.IsGenericType)
+            if (type.IsGenericType)
             {
                 return false;
             }
             else
             {
-                if(type.IsPrimitive)
+                if (type.IsPrimitive)
                 {
                     return true;
                 }
-                if(typeof(string).Equals(type))
+                if (typeof(string).Equals(type))
                 {
                     return true;
                 }
-                if(type.IsValueType)
+                if (type.IsValueType)
                 {
                     return true;
                 }
-                if(TypeRepresentsType(type))
+                if (TypeRepresentsType(type))
                 {
                     return true;
                 }
@@ -459,26 +459,26 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             HashSet<Type> result = new() { type };
             result.UnionWith(type.GetInterfaces());
-            if(type.BaseType != null)
+            if (type.BaseType != null)
             {
                 result.UnionWith(GetTypeWithParentTypesAndInterfaces(type.BaseType));
             }
             return result;
         }
         public static IEqualityComparer<Type> TypeComparerIgnoringGenerics { get; } = new TypeComparerIgnoringGenericsType();
-        private class TypeComparerIgnoringGenericsType :IEqualityComparer<Type>
+        private class TypeComparerIgnoringGenericsType : IEqualityComparer<Type>
         {
             public bool Equals(Type x, Type y)
             {
-                if(!x.Name.Equals(y.Name))
+                if (!x.Name.Equals(y.Name))
                 {
                     return false;
                 }
-                if(!x.Namespace.Equals(y.Namespace))
+                if (!x.Namespace.Equals(y.Namespace))
                 {
                     return false;
                 }
-                if(!x.Assembly.Equals(y.Assembly))
+                if (!x.Assembly.Equals(y.Assembly))
                 {
                     return false;
                 }
@@ -499,7 +499,7 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             string originalContent = File.ReadAllText(file, encoding);
             string replacedContent = ReplaceUnderscores(originalContent, replacements);
-            if(!originalContent.Equals(replacedContent))
+            if (!originalContent.Equals(replacedContent))
             {
                 File.WriteAllText(file, replacedContent, encoding);
             }
@@ -507,7 +507,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public static void WriteToConsoleAsASCIITable(IList<IList<string>> columns)
         {
             string[] table = Generate(JaggedArrayToTwoDimensionalArray(EnumerableOfEnumerableToJaggedArray(columns)), new ASCIITable());
-            foreach(string line in table)
+            foreach (string line in table)
             {
                 Console.WriteLine(line);
             }
@@ -522,9 +522,9 @@ namespace GRYLibrary.Core.Miscellaneous
             int amountOfItemsInFirstDimension = items.Length;
             int amountOfItemsInSecondDimension = items.GroupBy(tArray => tArray.Length).Single().Key;
             T[,] result = new T[amountOfItemsInFirstDimension, amountOfItemsInSecondDimension];
-            for(int i = 0; i < amountOfItemsInFirstDimension; ++i)
+            for (int i = 0; i < amountOfItemsInFirstDimension; ++i)
             {
-                for(int j = 0; j < amountOfItemsInSecondDimension; ++j)
+                for (int j = 0; j < amountOfItemsInSecondDimension; ++j)
                 {
                     result[i, j] = items[i][j];
                 }
@@ -549,10 +549,10 @@ namespace GRYLibrary.Core.Miscellaneous
         public static IEnumerable<IEnumerable<T>> JaggedArrayToEnumerableOfEnumerable<T>(T[][] items)
         {
             List<List<T>> result = new();
-            foreach(T[] innerArray in items)
+            foreach (T[] innerArray in items)
             {
                 List<T> innerList = new();
-                foreach(T item in innerArray)
+                foreach (T item in innerArray)
                 {
                     innerList.Add(item);
                 }
@@ -569,10 +569,10 @@ namespace GRYLibrary.Core.Miscellaneous
             int columnsLastIndex = items.GetUpperBound(1);
             int numberOfColumns = columnsLastIndex + 1;
             T[][] result = new T[numberOfRows][];
-            for(int i = rowsFirstIndex; i <= rowsLastIndex; i++)
+            for (int i = rowsFirstIndex; i <= rowsLastIndex; i++)
             {
                 result[i] = new T[numberOfColumns];
-                for(int j = columnsFirstIndex; j <= columnsLastIndex; j++)
+                for (int j = columnsFirstIndex; j <= columnsLastIndex; j++)
                 {
                     result[i][j] = items[i, j];
                 }
@@ -583,18 +583,18 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             path = ResolveToFullPath(path);
             string directory = Path.GetDirectoryName(path);
-            if(createDirectoryIfRequired && !string.IsNullOrWhiteSpace(directory))
+            if (createDirectoryIfRequired && !string.IsNullOrWhiteSpace(directory))
             {
                 EnsureDirectoryExists(directory);
             }
-            if(!File.Exists(path))
+            if (!File.Exists(path))
             {
                 File.Create(path).Close();
             }
         }
         public static void EnsureDirectoryExists(string path)
         {
-            if(!Directory.Exists(path))
+            if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
             }
@@ -608,7 +608,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public const string ISO8601FormatForDateTimesInFullFormat = "yyyy-MM-ddTHH:mm:sszzz";
         public static string FormatTimestamp(DateTime timestamp, bool addMillisecondsInLogTimestamps)
         {
-            if(addMillisecondsInLogTimestamps)
+            if (addMillisecondsInLogTimestamps)
             {
                 return timestamp.ToString("o");//2023-05-01T11:44:53.4931284+02:00
             }
@@ -621,7 +621,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public static string DateTimeToISO8601String(DateTime dateTime, bool addMilliseconds = true)
         {
             string format;
-            if(addMilliseconds)
+            if (addMilliseconds)
             {
                 format = "yyyy-MM-dd'T'HH:mm:ss,fff";
             }
@@ -650,7 +650,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public static void EnsureDirectoryDoesNotExist(string path)
         {
-            if(Directory.Exists(path))
+            if (Directory.Exists(path))
             {
                 Directory.Delete(path, true);
             }
@@ -658,7 +658,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public static void EnsureFileDoesNotExist(string path)
         {
-            if(File.Exists(path))
+            if (File.Exists(path))
             {
                 File.Delete(path);
             }
@@ -666,7 +666,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public static bool IsSymbolicLink(string file)
         {
-            if(File.Exists(file))
+            if (File.Exists(file))
             {
                 return FileHasAttribute(file, FileAttributes.ReparsePoint);
             }
@@ -688,13 +688,13 @@ namespace GRYLibrary.Core.Miscellaneous
         public static void CopyFolderAcrossVolumes(string sourceFolder, string destinationFolder)
         {
             EnsureDirectoryExists(destinationFolder);
-            foreach(string file in Directory.GetFiles(sourceFolder))
+            foreach (string file in Directory.GetFiles(sourceFolder))
             {
                 string name = Path.GetFileName(file);
                 string destination = Path.Combine(destinationFolder, name);
                 File.Copy(file, destination);
             }
-            foreach(string folder in Directory.GetDirectories(sourceFolder))
+            foreach (string folder in Directory.GetDirectories(sourceFolder))
             {
                 string name = Path.GetFileName(folder);
                 string destination = Path.Combine(destinationFolder, name);
@@ -706,12 +706,12 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             ForEachFileAndDirectoryTransitively(folder, (string directory, object argument) =>
             {
-                if(DirectoryIsEmpty(directory))
+                if (DirectoryIsEmpty(directory))
                 {
                     Directory.Delete(directory);
                 }
             }, (string file, object argument) => { }, false, null, null);
-            if(deleteFolderItselfIfAlsoEmpty && DirectoryIsEmpty(folder))
+            if (deleteFolderItselfIfAlsoEmpty && DirectoryIsEmpty(folder))
             {
                 Directory.Delete(folder);
             }
@@ -725,7 +725,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public static void DeleteFolder(string folder, bool deleteSourceFolderCompletely = true)
         {
-            if(deleteSourceFolderCompletely)
+            if (deleteSourceFolderCompletely)
             {
                 Directory.Delete(folder, true);
             }
@@ -747,11 +747,11 @@ namespace GRYLibrary.Core.Miscellaneous
         public static void DeleteContentOfFolder(string folder)
         {
             DirectoryInfo directoryInfo = new(folder);
-            foreach(FileInfo file in directoryInfo.GetFiles())
+            foreach (FileInfo file in directoryInfo.GetFiles())
             {
                 file.Delete();
             }
-            foreach(DirectoryInfo subDirectoryInfo in directoryInfo.GetDirectories())
+            foreach (DirectoryInfo subDirectoryInfo in directoryInfo.GetDirectories())
             {
                 subDirectoryInfo.Delete(true);
             }
@@ -764,7 +764,7 @@ namespace GRYLibrary.Core.Miscellaneous
             return result.Item1;
         }
 
-        private class TryResolvePathByPathVariableVisitor :IOperatingSystemVisitor<(bool/*Success*/, string/*programWithFullPath*/)>
+        private class TryResolvePathByPathVariableVisitor : IOperatingSystemVisitor<(bool/*Success*/, string/*programWithFullPath*/)>
         {
             private readonly string _Programname;
 
@@ -784,18 +784,18 @@ namespace GRYLibrary.Core.Miscellaneous
                 string[] knownExtension = new string[] { ".exe", ".cmd", ".bat" };
                 string paths = Environment.ExpandEnvironmentVariables("%PATH%");
                 bool @break = false;
-                foreach(string path in paths.Split(';'))
+                foreach (string path in paths.Split(';'))
                 {
-                    foreach(string combined in GetCombinations(path, knownExtension, this._Programname))
+                    foreach (string combined in GetCombinations(path, knownExtension, this._Programname))
                     {
-                        if(File.Exists(combined))
+                        if (File.Exists(combined))
                         {
                             program = combined;
                             @break = true;
                             break;
                         }
                     }
-                    if(@break)
+                    if (@break)
                     {
                         break;
                     }
@@ -807,10 +807,10 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 string program = null;
                 string paths = Environment.ExpandEnvironmentVariables("%PATH%");// "$PATH" not used because of https://github.com/dotnet/runtime/issues/25792
-                foreach(string path in paths.Split(':'))
+                foreach (string path in paths.Split(':'))
                 {
                     string combined = Path.Combine(path, this._Programname);
-                    if(File.Exists(combined) && SpecialFileInformation.FileIsExecutable(program))
+                    if (File.Exists(combined) && SpecialFileInformation.FileIsExecutable(program))
                     {
                         program = combined;
                         break;
@@ -822,15 +822,15 @@ namespace GRYLibrary.Core.Miscellaneous
         private static IEnumerable<string> GetCombinations(string path, string[] knownExtensions, string program)
         {
             string programToLower = program.ToLower();
-            foreach(string extension in knownExtensions)
+            foreach (string extension in knownExtensions)
             {
-                if(programToLower.EndsWith(extension))
+                if (programToLower.EndsWith(extension))
                 {
                     return new string[] { Path.Combine(path, programToLower) };
                 }
             }
             List<string> result = new();
-            foreach(string extension in knownExtensions)
+            foreach (string extension in knownExtensions)
             {
                 result.Add(Path.Combine(path, program + extension));
             }
@@ -868,16 +868,16 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 try
                 {
-                    if(fileSelectorPredicate(sourceFile))
+                    if (fileSelectorPredicate(sourceFile))
                     {
                         string sourceFolderTrimmed = sourceFolder.Trim().TrimStart('/', '\\').TrimEnd('/', '\\');
                         string fileName = Path.GetFileName(sourceFile);
                         string fullTargetFolder = Path.Combine(targetFolder, Path.GetDirectoryName(sourceFile)[sourceFolderTrimmed.Length..].TrimStart('/', '\\'));
                         EnsureDirectoryExists(fullTargetFolder);
                         string targetFile = Path.Combine(fullTargetFolder, fileName);
-                        if(File.Exists(targetFile))
+                        if (File.Exists(targetFile))
                         {
-                            if(deleteAlreadyExistingFilesWithoutCopy)
+                            if (deleteAlreadyExistingFilesWithoutCopy)
                             {
                                 File.Delete(sourceFile);
                             }
@@ -889,13 +889,13 @@ namespace GRYLibrary.Core.Miscellaneous
                         }
                     }
                 }
-                catch(Exception exception)
+                catch (Exception exception)
                 {
                     errorHandler(exception);
                 }
             }
             ForEachFileAndDirectoryTransitively(sourceFolder, (directory, obj) => { /*TODO ensure directory exists in target-folder*/}, fileAction, false, null, null);
-            if(deleteAlreadyExistingFilesWithoutCopy)
+            if (deleteAlreadyExistingFilesWithoutCopy)
             {
                 RemoveContentOfFolder(sourceFolder);
             }
@@ -907,7 +907,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public static void ForEachFileAndDirectoryTransitively(string directory, Action<string, object> directoryAction, Action<string, object> fileAction, bool ignoreErrors = false, object argumentForFileAction = null, object argumentForDirectoryAction = null)
         {
-            foreach(string file in Directory.GetFiles(directory))
+            foreach (string file in Directory.GetFiles(directory))
             {
                 try
                 {
@@ -915,13 +915,13 @@ namespace GRYLibrary.Core.Miscellaneous
                 }
                 catch
                 {
-                    if(!ignoreErrors)
+                    if (!ignoreErrors)
                     {
                         throw;
                     }
                 }
             }
-            foreach(string subDirectory in Directory.GetDirectories(directory))
+            foreach (string subDirectory in Directory.GetDirectories(directory))
             {
                 ForEachFileAndDirectoryTransitively(subDirectory, directoryAction, fileAction, ignoreErrors, argumentForFileAction, argumentForDirectoryAction);
                 try
@@ -930,7 +930,7 @@ namespace GRYLibrary.Core.Miscellaneous
                 }
                 catch
                 {
-                    if(!ignoreErrors)
+                    if (!ignoreErrors)
                     {
                         throw;
                     }
@@ -941,11 +941,11 @@ namespace GRYLibrary.Core.Miscellaneous
         public static void RemoveContentOfFolder(string folder)
         {
             DirectoryInfo directoryInfo = new(folder);
-            foreach(FileInfo fileInfo in directoryInfo.GetFiles())
+            foreach (FileInfo fileInfo in directoryInfo.GetFiles())
             {
                 fileInfo.Delete();
             }
-            foreach(DirectoryInfo subDirectoryInfo in directoryInfo.GetDirectories())
+            foreach (DirectoryInfo subDirectoryInfo in directoryInfo.GetDirectories())
             {
                 subDirectoryInfo.Delete(true);
             }
@@ -964,7 +964,7 @@ namespace GRYLibrary.Core.Miscellaneous
                 {
                     result.Add(new Tuple<Func<T>, T, Exception>(function, function(), null));
                 }
-                catch(Exception exception)
+                catch (Exception exception)
                 {
                     result.Add(new Tuple<Func<T>, T, Exception>(function, default, exception));
                 }
@@ -1000,16 +1000,16 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 get
                 {
-                    lock(this._LockObject)
+                    lock (this._LockObject)
                     {
                         return this._Result;
                     }
                 }
                 set
                 {
-                    lock(this._LockObject)
+                    lock (this._LockObject)
                     {
-                        if(!this.ResultSet)
+                        if (!this.ResultSet)
                         {
                             this._Result = value;
                             this.ResultSet = true;
@@ -1021,14 +1021,14 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 get
                 {
-                    lock(this._LockObject)
+                    lock (this._LockObject)
                     {
                         return this._ResultSet;
                     }
                 }
                 set
                 {
-                    lock(this._LockObject)
+                    lock (this._LockObject)
                     {
                         this._ResultSet = value;
                     }
@@ -1036,7 +1036,7 @@ namespace GRYLibrary.Core.Miscellaneous
             }
             public T RunAllConcurrentAndReturnFirstResult(ISet<Func<T>> functions)
             {
-                if(functions.Count == 0)
+                if (functions.Count == 0)
                 {
                     throw new ArgumentException($"Argument '{nameof(functions)}' does not contain any function.");
                 }
@@ -1055,7 +1055,7 @@ namespace GRYLibrary.Core.Miscellaneous
                     }
                 }));
                 WaitUntilConditionIsTrue(() => this.ResultSet || this._AmountOfRunningFunctions == 0);
-                if(this._AmountOfRunningFunctions == 0 && !this.ResultSet)
+                if (this._AmountOfRunningFunctions == 0 && !this.ResultSet)
                 {
                     throw new Exception("No result was calculated");
                 }
@@ -1067,7 +1067,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static void WaitUntilConditionIsTrue(Func<bool> condition)
         {
-            while(!condition())
+            while (!condition())
             {
                 Thread.Sleep(50);
             }
@@ -1080,7 +1080,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public static dynamic ToDynamic(this object value)
         {
             IDictionary<string, object> dictionary = new ExpandoObject();
-            foreach(PropertyDescriptor property in TypeDescriptor.GetProperties(value.GetType()))
+            foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(value.GetType()))
             {
                 dictionary.Add(property.Name, property.GetValue(value));
             }
@@ -1105,13 +1105,13 @@ namespace GRYLibrary.Core.Miscellaneous
         public static object Cast(object @object, Type targetType, IList<object> customConversions)
         {
             Type typeOfObject = @object.GetType();
-            if(typeOfObject.Equals(targetType))
+            if (typeOfObject.Equals(targetType))
             {
                 return @object;
             }
-            foreach(object customConversion in customConversions)
+            foreach (object customConversion in customConversions)
             {
-                if(TypeComparerIgnoringGenerics.Equals(typeOfObject, (Type)customConversion/*.GetTypeWhichIsApplicable()*/))
+                if (TypeComparerIgnoringGenerics.Equals(typeOfObject, (Type)customConversion/*.GetTypeWhichIsApplicable()*/))
                 {
                     // return customConversion.Convert(@object,typeOfObject);
                 }
@@ -1127,9 +1127,9 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static long GetTotalFreeSpace(string driveName)
         {
-            foreach(DriveInfo drive in DriveInfo.GetDrives())
+            foreach (DriveInfo drive in DriveInfo.GetDrives())
             {
-                if(drive.IsReady && drive.Name == driveName)
+                if (drive.IsReady && drive.Name == driveName)
                 {
                     return drive.TotalFreeSpace;
                 }
@@ -1154,17 +1154,17 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             string rawCmd = Environment.CommandLine;
             string[] args = Environment.GetCommandLineArgs();
-            if(args.Count() == 1)
+            if (args.Count() == 1)
             {
                 return string.Empty;
             }
             string exe = args[0];
             string quotedExe = "\"" + exe + "\"";
-            if(rawCmd.StartsWith(exe))
+            if (rawCmd.StartsWith(exe))
             {
                 rawCmd = rawCmd[(exe.Length + 1)..];
             }
-            else if(rawCmd.StartsWith(quotedExe))
+            else if (rawCmd.StartsWith(quotedExe))
             {
                 rawCmd = rawCmd[(quotedExe.Length + 1)..];
             }
@@ -1190,7 +1190,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public static void AppendLineToFile(string file, string content, Encoding encoding)
         {
             string stringToAppend;
-            if(AppendFileDoesNeedNewLineCharacter(file))
+            if (AppendFileDoesNeedNewLineCharacter(file))
             {
                 stringToAppend = "\n";
             }
@@ -1201,7 +1201,7 @@ namespace GRYLibrary.Core.Miscellaneous
             stringToAppend = stringToAppend + content;
             File.AppendAllText(file, stringToAppend, encoding);
         }
-        private class IsAbsoluteLocalFilePathVisitor :IOperatingSystemVisitor<bool>
+        private class IsAbsoluteLocalFilePathVisitor : IOperatingSystemVisitor<bool>
         {
             private readonly string _Path;
 
@@ -1217,7 +1217,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
             public bool Handle(Windows operatingSystem)
             {
-                if(this._Path.StartsWith("/") || this._Path.StartsWith(@"\"))
+                if (this._Path.StartsWith("/") || this._Path.StartsWith(@"\"))
                 {
                     return true;
                 }
@@ -1233,7 +1233,7 @@ namespace GRYLibrary.Core.Miscellaneous
                     bool c2 = colonCount == 1 && (this._Path.Length <= 1 || (this._Path.Length > 1 && this._Path[1] != ':'));
                     bool c3 = this._Path.Any(c =>
                     {
-                        if(invalidFileNameChars.Contains(c))
+                        if (invalidFileNameChars.Contains(c))
                         {
                             return true;
                         }
@@ -1246,7 +1246,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
                     bool isInvalid = c1 || c2 || c3 || c4;
 
-                    if(isInvalid)
+                    if (isInvalid)
                     {
                         throw new ArgumentException($"'{this._Path}' is invalid as path.");
                     }
@@ -1264,13 +1264,13 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static bool IsAbsoluteLocalFilePath(string path)
         {
-            if(string.IsNullOrWhiteSpace(path))
+            if (string.IsNullOrWhiteSpace(path))
             {
                 throw new ArgumentException("No path given.");
             }
             else
             {
-                if(path.Length != path.TrimStart().Length)
+                if (path.Length != path.TrimStart().Length)
                 {
                     throw new NotSupportedException($"Leading whitespaces like in '{path}' are not supported");
                 }
@@ -1283,24 +1283,24 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static string GetAbsolutePath(string basePath, string relativePath)
         {
-            if(basePath == null && relativePath == null)
+            if (basePath == null && relativePath == null)
             {
                 Path.GetFullPath(".");
             }
-            if(relativePath == null)
+            if (relativePath == null)
             {
                 return basePath.Trim();
             }
-            if(basePath == null)
+            if (basePath == null)
             {
                 basePath = Path.GetFullPath(".");
             }
             relativePath = relativePath.Trim();
             basePath = basePath.Trim();
             string finalPath;
-            if(!Path.IsPathRooted(relativePath) || @"\".Equals(Path.GetPathRoot(relativePath)))
+            if (!Path.IsPathRooted(relativePath) || @"\".Equals(Path.GetPathRoot(relativePath)))
             {
-                if(relativePath.StartsWith(Path.DirectorySeparatorChar.ToString()))
+                if (relativePath.StartsWith(Path.DirectorySeparatorChar.ToString()))
                 {
                     finalPath = Path.Combine(Path.GetPathRoot(basePath), relativePath.TrimStart(Path.DirectorySeparatorChar));
                 }
@@ -1321,13 +1321,13 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static bool DirectoryDoesNotContainFiles(string path)
         {
-            if(Directory.GetFiles(path).Length > 0)
+            if (Directory.GetFiles(path).Length > 0)
             {
                 return false;
             }
-            foreach(string subFolder in Directory.GetDirectories(path))
+            foreach (string subFolder in Directory.GetDirectories(path))
             {
-                if(!DirectoryDoesNotContainFiles(subFolder))
+                if (!DirectoryDoesNotContainFiles(subFolder))
                 {
                     return false;
                 }
@@ -1350,7 +1350,7 @@ namespace GRYLibrary.Core.Miscellaneous
         private const char Backslash = '\\';
         public static string EnsurePathStartsWithSlash(this string path)
         {
-            if(path.StartsWith(Slash.ToString()))
+            if (path.StartsWith(Slash.ToString()))
             {
                 return path;
             }
@@ -1361,7 +1361,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static string EnsurePathStartsWithBackslash(this string path)
         {
-            if(path.StartsWith(Slash.ToString()))
+            if (path.StartsWith(Slash.ToString()))
             {
                 return path;
             }
@@ -1372,7 +1372,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static string EnsurePathStartsWithoutSlash(this string path)
         {
-            if(path.StartsWith(Slash.ToString()))
+            if (path.StartsWith(Slash.ToString()))
             {
                 return path.TrimStart(Slash);
             }
@@ -1383,7 +1383,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static string EnsurePathStartsWithoutBackslash(this string path)
         {
-            if(path.StartsWith(Backslash.ToString()))
+            if (path.StartsWith(Backslash.ToString()))
             {
                 return path.TrimStart(Slash);
             }
@@ -1394,7 +1394,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static string EnsurePathEndsWithSlash(this string path)
         {
-            if(path.EndsWith(Slash.ToString()))
+            if (path.EndsWith(Slash.ToString()))
             {
                 return path;
             }
@@ -1405,7 +1405,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static string EnsurePathEndsWithBackslash(this string path)
         {
-            if(path.EndsWith(Backslash.ToString()))
+            if (path.EndsWith(Backslash.ToString()))
             {
                 return path;
             }
@@ -1416,7 +1416,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static string EnsurePathEndsWithoutSlash(this string path)
         {
-            if(path.EndsWith(Slash.ToString()))
+            if (path.EndsWith(Slash.ToString()))
             {
                 return path.TrimEnd(Slash);
             }
@@ -1427,7 +1427,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static string EnsurePathEndsWithoutBackslash(this string path)
         {
-            if(path.EndsWith(Backslash.ToString()))
+            if (path.EndsWith(Backslash.ToString()))
             {
                 return path.TrimEnd(Backslash);
             }
@@ -1449,7 +1449,7 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             string result = path;
             bool changed = true;
-            while(changed)
+            while (changed)
             {
                 string old = result;
                 result = result.TrimStart(SingleQuote).TrimEnd(SingleQuote).TrimStart(DoubleQuote).TrimEnd(DoubleQuote);
@@ -1460,13 +1460,13 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public static bool StartsWith<T>(T[] entireArray, T[] start)
         {
-            if(start.Count() > entireArray.Count())
+            if (start.Count() > entireArray.Count())
             {
                 return false;
             }
-            for(int i = 0; i < start.Length; i++)
+            for (int i = 0; i < start.Length; i++)
             {
-                if(!entireArray[i].Equals(start[i]))
+                if (!entireArray[i].Equals(start[i]))
                 {
                     return false;
                 }
@@ -1489,13 +1489,13 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public static byte[] HexStringToByteArray(string hexString)
         {
-            if(hexString.Length % 2 == 1)
+            if (hexString.Length % 2 == 1)
             {
                 throw new ArgumentException($"Parameter {nameof(hexString)} may not have an odd amount of characters");
             }
             hexString = hexString.ToUpper();
             byte[] result = new byte[hexString.Length >> 1];
-            for(int i = 0; i < hexString.Length >> 1; ++i)
+            for (int i = 0; i < hexString.Length >> 1; ++i)
             {
                 result[i] = (byte)((GetHexValue(hexString[i << 1]) << 4) + GetHexValue(hexString[(i << 1) + 1]));
             }
@@ -1519,7 +1519,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public static T[] Concat<T>(params T[][] arrays)
         {
             T[] result = Array.Empty<T>();
-            foreach(T[] array in arrays)
+            foreach (T[] array in arrays)
             {
                 result = Concat2Arrays(result, array);
             }
@@ -1534,7 +1534,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static bool StringToBoolean(string value)
         {
-            if(string.IsNullOrWhiteSpace(value))
+            if (string.IsNullOrWhiteSpace(value))
             {
                 return false;
             }
@@ -1550,7 +1550,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static void AssertCondition(bool condition, string message = EmptyString)
         {
-            if(!condition)
+            if (!condition)
             {
                 throw new AssertionException("Assertion failed. Condition is false." + (string.IsNullOrWhiteSpace(message) ? string.Empty : " " + message));
             }
@@ -1580,12 +1580,12 @@ namespace GRYLibrary.Core.Miscellaneous
         public static void WriteCSVFile(string file, Encoding encoding, IList<string[]> content, string[] headLines, string separator = ";")
         {
             List<string[]> contentAdjusted = content.ToList();
-            if(headLines != null)
+            if (headLines != null)
             {
                 contentAdjusted.Insert(0, headLines);
             }
             EscapeForCSV(headLines);
-            foreach(string[] line in content)
+            foreach (string[] line in content)
             {
                 EscapeForCSV(headLines);
             }
@@ -1595,14 +1595,14 @@ namespace GRYLibrary.Core.Miscellaneous
 
         internal static void EscapeForCSV(string[] line)
         {
-            for(int i = 0; i < line.Length; i++)
+            for (int i = 0; i < line.Length; i++)
             {
                 line[i] = EscapeForCSV(line[i]);
             }
         }
         internal static string EscapeForCSV(string item)
         {
-            if(item.Contains('"'))
+            if (item.Contains('"'))
             {
                 item = item.Replace("\"", "\"\"");
                 item = $"\"{item}\"";
@@ -1620,21 +1620,21 @@ namespace GRYLibrary.Core.Miscellaneous
             string[] lines = File.ReadAllLines(file, encoding);
             List<string> headlineValues = new();
             bool isFirstLine = true;
-            for(int i = 0; i < lines.Length; i++)
+            for (int i = 0; i < lines.Length; i++)
             {
                 string line = lines[i].Trim();
-                if(!(treatHashAsComment && line.StartsWith("#")))
+                if (!(treatHashAsComment && line.StartsWith("#")))
                 {
-                    if(isFirstLine && firstLineContainsHeadlines)
+                    if (isFirstLine && firstLineContainsHeadlines)
                     {
                         headlineValues.AddRange(line.Split(new string[] { separator }, StringSplitOptions.None).Select(item => NormalizeCSVItemForReading(item, trimValues)));
                     }
                     else
                     {
-                        if(!string.IsNullOrEmpty(line))
+                        if (!string.IsNullOrEmpty(line))
                         {
                             List<string> innerList = new();
-                            if(line.Contains(separator))
+                            if (line.Contains(separator))
                             {
                                 innerList.AddRange(line.Split(new string[] { separator }, StringSplitOptions.None).Select(item => NormalizeCSVItemForReading(item, trimValues)));
                             }
@@ -1648,7 +1648,7 @@ namespace GRYLibrary.Core.Miscellaneous
                     isFirstLine = false;
                 }
             }
-            if(firstLineContainsHeadlines)
+            if (firstLineContainsHeadlines)
             {
                 headLines = headlineValues.ToArray();
             }
@@ -1661,11 +1661,11 @@ namespace GRYLibrary.Core.Miscellaneous
 
         private static string NormalizeCSVItemForReading(string value, bool trimValues)
         {
-            if(trimValues)
+            if (trimValues)
             {
                 value = value.Trim();
             }
-            if(value.StartsWith("\"") && value.EndsWith("\""))
+            if (value.StartsWith("\"") && value.EndsWith("\""))
             {
                 value = value[1..];
                 value = value.Remove(value.Length - 1);
@@ -1683,7 +1683,7 @@ namespace GRYLibrary.Core.Miscellaneous
             Thread workerThread = new(action);
             workerThread.Start();
             bool terminatedInGivenTimeSpan = workerThread.Join(timeout);
-            if(!terminatedInGivenTimeSpan)
+            if (!terminatedInGivenTimeSpan)
             {
                 workerThread.Interrupt();
             }
@@ -1704,7 +1704,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public static string ResolveToFullPath(this string path, string baseDirectory)
         {
             path = path.Trim();
-            if(Path.IsPathFullyQualified(path))
+            if (Path.IsPathFullyQualified(path))
             {
                 return path;
             }
@@ -1763,12 +1763,12 @@ namespace GRYLibrary.Core.Miscellaneous
                 List<object> events = new();
                 XDocument xDocument = xmlDocument.XMLDocumentToXDocument();
                 xDocument.Validate(schemaSet, (o, eventArgument) => events.Add(eventArgument));
-                foreach(object @event in events)
+                foreach (object @event in events)
                 {
                     errorMessages.Add(@event);
                 }
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 errorMessages.Add(exception);
             }
@@ -1868,7 +1868,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public static string UintToBinaryString(uint binaryString, bool padLeft = true)
         {
             string result = Convert.ToString(binaryString, 2);
-            if(padLeft)
+            if (padLeft)
             {
                 result = result.PadLeft(32, '0');
             }
@@ -1908,7 +1908,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static void AddMountPointForVolume(Guid volumeId, string mountPoint)
         {
-            if(mountPoint.Length > 3)
+            if (mountPoint.Length > 3)
             {
                 EnsureDirectoryExists(mountPoint);
             }
@@ -1916,7 +1916,7 @@ namespace GRYLibrary.Core.Miscellaneous
             externalProgramExecutor.LogObject = GRYLog.Create();
             externalProgramExecutor.LogObject.Configuration.Enabled = false;
             externalProgramExecutor.Run();
-            if(externalProgramExecutor.ExitCode != 0)
+            if (externalProgramExecutor.ExitCode != 0)
             {
                 throw new Exception($"Exitcode of mountvol was {externalProgramExecutor.ExitCode}. StdOut:" + string.Join(Environment.NewLine, externalProgramExecutor.AllStdOutLines) + "; StdErr:" + string.Join(Environment.NewLine, externalProgramExecutor.AllStdErrLines));
             }
@@ -1927,24 +1927,24 @@ namespace GRYLibrary.Core.Miscellaneous
             externalProgramExecutor.LogObject = GRYLog.Create();
             externalProgramExecutor.LogObject.Configuration.Enabled = false;
             externalProgramExecutor.Run();
-            if(externalProgramExecutor.ExitCode != 0)
+            if (externalProgramExecutor.ExitCode != 0)
             {
                 throw new Exception($"Exitcode of mountvol was {externalProgramExecutor.ExitCode}. StdErr:" + string.Join(Environment.NewLine, externalProgramExecutor.AllStdErrLines));
             }
             HashSet<Guid> result = new();
-            for(int i = 0; i < externalProgramExecutor.AllStdOutLines.Length - 1; i++)
+            for (int i = 0; i < externalProgramExecutor.AllStdOutLines.Length - 1; i++)
             {
                 string rawLine = externalProgramExecutor.AllStdOutLines[i];
                 try
                 {
                     string line = rawLine.Trim(); //line looks like "\\?\Volume{80aa12de-7392-4051-8cd2-f28bf56dc9d3}\"
                     string prefix = @"\\?\Volume{";
-                    if(line.StartsWith(prefix))
+                    if (line.StartsWith(prefix))
                     {
                         line = line[prefix.Length..]; //remove "\\?\Volume{"
                         line = line[0..^2]; //remove "}\"
                         string nextLine = externalProgramExecutor.AllStdOutLines[i + 1].Trim();
-                        if(Directory.Exists(nextLine) || nextLine.StartsWith("***"))
+                        if (Directory.Exists(nextLine) || nextLine.StartsWith("***"))
                         {
                             result.Add(Guid.Parse(line));
                         }
@@ -1960,7 +1960,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public static ISet<string> GetAllMountPointsOfAllAvailableVolumes()
         {
             HashSet<string> result = new();
-            foreach(Guid volumeId in GetAvailableVolumeIds())
+            foreach (Guid volumeId in GetAvailableVolumeIds())
             {
                 result.UnionWith(GetMountPoints(volumeId));
             }
@@ -1974,24 +1974,24 @@ namespace GRYLibrary.Core.Miscellaneous
             externalProgramExecutor.LogObject = GRYLog.Create();
             externalProgramExecutor.LogObject.Configuration.Enabled = false;
             externalProgramExecutor.Run();
-            if(externalProgramExecutor.ExitCode != 0)
+            if (externalProgramExecutor.ExitCode != 0)
             {
                 throw new Exception($"Exitcode of mountvol was {externalProgramExecutor.ExitCode}. StdErr:" + string.Join(Environment.NewLine, externalProgramExecutor.AllStdErrLines));
             }
 
-            for(int indexOfCurrentLine = 0; indexOfCurrentLine < externalProgramExecutor.AllStdOutLines.Length - 1; indexOfCurrentLine++)
+            for (int indexOfCurrentLine = 0; indexOfCurrentLine < externalProgramExecutor.AllStdOutLines.Length - 1; indexOfCurrentLine++)
             {
                 string line = externalProgramExecutor.AllStdOutLines[indexOfCurrentLine].Trim();
-                if(line.StartsWith($"\\\\?\\Volume{{{volumeId}}}\\"))
+                if (line.StartsWith($"\\\\?\\Volume{{{volumeId}}}\\"))
                 {
                     int indexOfNextLine = indexOfCurrentLine + 1;
                     bool tryNextLine = true;
-                    while(tryNextLine)
+                    while (tryNextLine)
                     {
-                        if(indexOfNextLine <= externalProgramExecutor.AllStdOutLines.Length - 1)
+                        if (indexOfNextLine <= externalProgramExecutor.AllStdOutLines.Length - 1)
                         {
                             string nextLine = externalProgramExecutor.AllStdOutLines[indexOfNextLine].Trim();
-                            if(!nextLine.StartsWith(@"\\?\") && Directory.Exists(nextLine))
+                            if (!nextLine.StartsWith(@"\\?\") && Directory.Exists(nextLine))
                             {
                                 result.Add(nextLine);
                             }
@@ -2013,7 +2013,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static void RemoveAllMountPointsOfVolume(Guid volumeId)
         {
-            foreach(string mountPoint in GetMountPoints(volumeId))
+            foreach (string mountPoint in GetMountPoints(volumeId))
             {
                 RemoveMountPointOfVolume(mountPoint);
             }
@@ -2023,26 +2023,26 @@ namespace GRYLibrary.Core.Miscellaneous
             using ExternalProgramExecutor externalProgramExecutor = new("mountvol", $"{mountPoint} /d");
             externalProgramExecutor.Configuration.WaitingState = new RunSynchronously() { ThrowErrorIfExitCodeIsNotZero = false };
             externalProgramExecutor.Run();
-            if(externalProgramExecutor.ExitCode != 0)
+            if (externalProgramExecutor.ExitCode != 0)
             {
                 throw new Exception($"Exitcode of mountvol was {externalProgramExecutor.ExitCode}. StdErr:{Environment.NewLine}" + string.Join(Environment.NewLine, externalProgramExecutor.AllStdErrLines));
             }
-            if(mountPoint.Length > 3)//if mountpoint is something like "C:\Folder\MyMountPoint" (and not something like "H:\") then remove the folder "MyMountPoint"
+            if (mountPoint.Length > 3)//if mountpoint is something like "C:\Folder\MyMountPoint" (and not something like "H:\") then remove the folder "MyMountPoint"
             {
                 EnsureDirectoryDoesNotExist(mountPoint);
             }
         }
         public static Guid GetVolumeIdByMountPoint(string mountPoint)
         {
-            if(!mountPoint.EndsWith("\\"))
+            if (!mountPoint.EndsWith("\\"))
             {
                 mountPoint += "\\";
             }
-            foreach(Guid volumeId in GetAvailableVolumeIds())
+            foreach (Guid volumeId in GetAvailableVolumeIds())
             {
-                foreach(string currentMountPoint in GetMountPoints(volumeId))
+                foreach (string currentMountPoint in GetMountPoints(volumeId))
                 {
-                    if(currentMountPoint.Equals(mountPoint))
+                    if (currentMountPoint.Equals(mountPoint))
                     {
                         return volumeId;
                     }
@@ -2070,9 +2070,9 @@ namespace GRYLibrary.Core.Miscellaneous
         private static T[] PadHelper<T>(T[] array, int length, T fillItem, bool PadLeft)
         {
             T[] result = array;
-            while(array.Length <= length)
+            while (array.Length <= length)
             {
-                if(PadLeft)
+                if (PadLeft)
                 {
                     Concat(new T[] { fillItem }, result);
                 }
@@ -2088,25 +2088,25 @@ namespace GRYLibrary.Core.Miscellaneous
         /// </param>
         public static uint ByteArrayToUnsignedInteger32Bit(byte[] value, Endianness endianness = Endianness.BigEndian)
         {
-            if(value.Length != 4)
+            if (value.Length != 4)
             {
                 throw new ArgumentException($"Length of parameter {nameof(value)} must be 4.");
             }
-            if(endianness == Endianness.BigEndian)
+            if (endianness == Endianness.BigEndian)
             {
                 return (((uint)value[0]) << 24)
                      + (((uint)value[1]) << 16)
                      + (((uint)value[2]) << 08)
                      + (((uint)value[3]) << 00);
             }
-            if(endianness == Endianness.MixedEndian)
+            if (endianness == Endianness.MixedEndian)
             {
                 return (((uint)value[1]) << 24)
                      + (((uint)value[0]) << 16)
                      + (((uint)value[3]) << 08)
                      + (((uint)value[2]) << 00);
             }
-            if(endianness == Endianness.LittleEndian)
+            if (endianness == Endianness.LittleEndian)
             {
                 return (((uint)value[4]) << 24)
                      + (((uint)value[3]) << 16)
@@ -2121,7 +2121,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public static byte[] UnsignedInteger32BitToByteArray(uint value, Endianness endianness = Endianness.BigEndian)
         {
             byte[] result = new byte[4];
-            if(endianness == Endianness.BigEndian)
+            if (endianness == Endianness.BigEndian)
             {
                 result[0] = (byte)((value & 0xff000000) >> 24);
                 result[1] = (byte)((value & 0x00ff0000) >> 16);
@@ -2129,7 +2129,7 @@ namespace GRYLibrary.Core.Miscellaneous
                 result[3] = (byte)((value & 0x000000ff) >> 00);
                 return result;
             }
-            if(endianness == Endianness.MixedEndian)
+            if (endianness == Endianness.MixedEndian)
             {
                 result[0] = (byte)((value & 0x00ff0000) >> 24);
                 result[1] = (byte)((value & 0xff000000) >> 16);
@@ -2137,7 +2137,7 @@ namespace GRYLibrary.Core.Miscellaneous
                 result[3] = (byte)((value & 0x0000ff00) >> 00);
                 return result;
             }
-            if(endianness == Endianness.LittleEndian)
+            if (endianness == Endianness.LittleEndian)
             {
                 result[0] = (byte)((value & 0x000000ff) >> 24);
                 result[1] = (byte)((value & 0x0000ff00) >> 16);
@@ -2152,11 +2152,11 @@ namespace GRYLibrary.Core.Miscellaneous
         /// </param>
         public static ulong ByteArrayToUnsignedInteger64Bit(byte[] value, Endianness endianness = Endianness.BigEndian)
         {
-            if(value.Length != 8)
+            if (value.Length != 8)
             {
                 throw new ArgumentException($"Length of parameter {nameof(value)} must be 8.");
             }
-            if(endianness == Endianness.BigEndian)
+            if (endianness == Endianness.BigEndian)
             {
                 return (((ulong)value[0]) << 56)
                      + (((ulong)value[1]) << 48)
@@ -2167,7 +2167,7 @@ namespace GRYLibrary.Core.Miscellaneous
                      + (((ulong)value[6]) << 08)
                      + (((ulong)value[7]) << 00);
             }
-            if(endianness == Endianness.MixedEndian)
+            if (endianness == Endianness.MixedEndian)
             {
                 return (((ulong)value[1]) << 56)
                      + (((ulong)value[0]) << 48)
@@ -2178,7 +2178,7 @@ namespace GRYLibrary.Core.Miscellaneous
                      + (((ulong)value[7]) << 08)
                      + (((ulong)value[6]) << 00);
             }
-            if(endianness == Endianness.LittleEndian)
+            if (endianness == Endianness.LittleEndian)
             {
                 return (((ulong)value[7]) << 56)
                      + (((ulong)value[6]) << 48)
@@ -2197,7 +2197,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public static byte[] UnsignedInteger64BitToByteArray(ulong value, Endianness endianness = Endianness.BigEndian)
         {
             byte[] result = new byte[8];
-            if(endianness == Endianness.BigEndian)
+            if (endianness == Endianness.BigEndian)
             {
                 result[0] = (byte)((value & 0xff00000000000000) >> 56);
                 result[1] = (byte)((value & 0x00ff000000000000) >> 48);
@@ -2209,7 +2209,7 @@ namespace GRYLibrary.Core.Miscellaneous
                 result[7] = (byte)((value & 0x00000000000000ff) >> 00);
                 return result;
             }
-            if(endianness == Endianness.MixedEndian)
+            if (endianness == Endianness.MixedEndian)
             {
                 result[0] = (byte)((value & 0x00ff000000000000) >> 56);
                 result[1] = (byte)((value & 0xff00000000000000) >> 48);
@@ -2221,7 +2221,7 @@ namespace GRYLibrary.Core.Miscellaneous
                 result[7] = (byte)((value & 0x000000000000ff00) >> 00);
                 return result;
             }
-            if(endianness == Endianness.LittleEndian)
+            if (endianness == Endianness.LittleEndian)
             {
                 result[0] = (byte)((value & 0x00000000000000ff) >> 56);
                 result[1] = (byte)((value & 0x000000000000ff00) >> 48);
@@ -2243,7 +2243,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static string NullSafeToString(object @object)
         {
-            if(@object == null)
+            if (@object == null)
             {
                 return "null";
             }
@@ -2271,15 +2271,15 @@ namespace GRYLibrary.Core.Miscellaneous
             obj = TreatNullHelper(obj, treatEmptyAsNull);
             return NullSafeHelper(@this, obj, (obj1, obj2) =>
             {
-                if(obj1.Count() != obj2.Count())
+                if (obj1.Count() != obj2.Count())
                 {
                     return false;
                 }
                 List<T> obj1Copy = new(obj1);
                 List<T> obj2Copy = new(obj2);
-                for(int i = 0; i < obj1.Count(); i++)
+                for (int i = 0; i < obj1.Count(); i++)
                 {
-                    if(!RemoveItemOnlyOnce(obj2Copy, obj1Copy[i]))
+                    if (!RemoveItemOnlyOnce(obj2Copy, obj1Copy[i]))
                     {
                         return false;
                     }
@@ -2289,9 +2289,9 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         private static IEnumerable<T> TreatNullHelper<T>(IEnumerable<T> items, bool treatEmptyAsNull)
         {
-            if(treatEmptyAsNull && items != null)
+            if (treatEmptyAsNull && items != null)
             {
-                if(items.Any())
+                if (items.Any())
                 {
                     return items;
                 }
@@ -2309,13 +2309,13 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             bool thisIsNull = object1 == null;
             bool objIsNull = object2 == null;
-            if(thisIsNull ^ objIsNull)
+            if (thisIsNull ^ objIsNull)
             {
                 return false;
             }
             else
             {
-                if(thisIsNull && objIsNull)
+                if (thisIsNull && objIsNull)
                 {
                     return true;
                 }
@@ -2328,7 +2328,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public static bool RemoveItemOnlyOnce<T>(this IList<T> list, T item)
         {
             int index = list.IndexOf(item);
-            if(index > -1)
+            if (index > -1)
             {
                 list.RemoveAt(index);
                 return true;
@@ -2366,7 +2366,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public static SerializableDictionary<TKey, TValue> ToSerializableDictionary<TKey, TValue>(this IDictionary<TKey, TValue> dictionary)
         {
             SerializableDictionary<TKey, TValue> result = new();
-            foreach(System.Collections.Generic.KeyValuePair<TKey, TValue> kvp in dictionary)
+            foreach (System.Collections.Generic.KeyValuePair<TKey, TValue> kvp in dictionary)
             {
                 result.Add(kvp.Key, kvp.Value);
             }
@@ -2380,7 +2380,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static bool IsDefault(object @object)
         {
-            if(@object == null)
+            if (@object == null)
             {
                 return true;
             }
@@ -2391,7 +2391,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static object GetDefault(Type type)
         {
-            if(type.IsValueType)
+            if (type.IsValueType)
             {
                 return Activator.CreateInstance(type);
             }
@@ -2403,15 +2403,15 @@ namespace GRYLibrary.Core.Miscellaneous
         public static Tuple<string, string, string> ResolvePathOfProgram(string program, string argument, string workingDirectory)
         {
             // adapt working directory if required
-            if(string.IsNullOrWhiteSpace(workingDirectory))
+            if (string.IsNullOrWhiteSpace(workingDirectory))
             {
                 workingDirectory = Directory.GetCurrentDirectory();
             }
 
             // resolve program
-            if(HasPath(program))
+            if (HasPath(program))
             {
-                if(IsRelativeLocalFilePath(program))
+                if (IsRelativeLocalFilePath(program))
                 {
                     program = ResolveToFullPath(program, workingDirectory);
                 }
@@ -2419,13 +2419,13 @@ namespace GRYLibrary.Core.Miscellaneous
             else
             {
                 string cwdWithProgram = Path.Combine(workingDirectory, program);
-                if(File.Exists(cwdWithProgram))
+                if (File.Exists(cwdWithProgram))
                 {
                     program = cwdWithProgram;
                 }
                 else
                 {
-                    if(TryResolvePathByPathVariable(program, out string programWithFullPath))
+                    if (TryResolvePathByPathVariable(program, out string programWithFullPath))
                     {
                         program = programWithFullPath;
                     }
@@ -2437,16 +2437,16 @@ namespace GRYLibrary.Core.Miscellaneous
             }
 
             // check program
-            if(File.Exists(program))
+            if (File.Exists(program))
             {
-                if(SpecialFileInformation.FileIsExecutable(program))
+                if (SpecialFileInformation.FileIsExecutable(program))
                 {
                     // nothing to do
                 }
                 else
                 {
                     // adapt argument
-                    if(OperatingSystem.OperatingSystem.GetCurrentOperatingSystem() is Windows)
+                    if (OperatingSystem.OperatingSystem.GetCurrentOperatingSystem() is Windows)
                     {
                         argument = $"\"{program}\" {argument}";
                         program = SpecialFileInformation.GetDefaultProgramToOpenFile(Path.GetExtension(program));
@@ -2474,14 +2474,14 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
         {
-            foreach(T item in source)
+            foreach (T item in source)
             {
                 action(item);
             }
         }
         public static void ForEach(this IEnumerable source, Action<object> action)
         {
-            foreach(object item in source)
+            foreach (object item in source)
             {
                 action(item);
             }
@@ -2490,34 +2490,34 @@ namespace GRYLibrary.Core.Miscellaneous
         public static bool ImprovedReferenceEquals(object item1, object item2)
         {
             bool itemHasValueType = HasValueType(item1);
-            if(itemHasValueType != HasValueType(item2))
+            if (itemHasValueType != HasValueType(item2))
             {
                 return false;
             }
             bool item1IsDefault = IsDefault(item1);
             bool item2IsDefault = IsDefault(item2);
-            if(item1IsDefault && item2IsDefault)
+            if (item1IsDefault && item2IsDefault)
             {
                 return true;
             }
-            if(item1IsDefault && !item2IsDefault)
+            if (item1IsDefault && !item2IsDefault)
             {
                 return false;
             }
-            if(!item1IsDefault && item2IsDefault)
+            if (!item1IsDefault && item2IsDefault)
             {
                 return false;
             }
-            if(!itemHasValueType)
+            if (!itemHasValueType)
             {
                 return ReferenceEquals(item1, item2);
             }
             Type type = item1.GetType();
-            if(!TypeComparerIgnoringGenerics.Equals(type, item2.GetType()))//TODO ignore generics here when type is keyvaluepair
+            if (!TypeComparerIgnoringGenerics.Equals(type, item2.GetType()))//TODO ignore generics here when type is keyvaluepair
             {
                 return false;
             }
-            if(EnumerableTools.TypeIsKeyValuePair(type))
+            if (EnumerableTools.TypeIsKeyValuePair(type))
             {
                 System.Collections.Generic.KeyValuePair<object, object> kvp1 = EnumerableTools.ObjectToKeyValuePairUnsafe<object, object>(item1);
                 System.Collections.Generic.KeyValuePair<object, object> kvp2 = EnumerableTools.ObjectToKeyValuePairUnsafe<object, object>(item2);
@@ -2532,7 +2532,7 @@ namespace GRYLibrary.Core.Miscellaneous
         private static (string, string) GetBaseTypeInformation(Type type)
         {
             string name = type.Name;
-            if(name.Contains('`'))
+            if (name.Contains('`'))
             {
                 name = name.Split('`')[0];
             }
@@ -2541,7 +2541,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public static bool HasValueType(object @object)
         {
-            if(@object == null)
+            if (@object == null)
             {
                 return false;
             }
@@ -2566,11 +2566,11 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static string ToOnlyFirstCharToUpper(this string input)
         {
-            if(string.IsNullOrEmpty(input))
+            if (string.IsNullOrEmpty(input))
             {
                 return input;
             }
-            if(input.Length == 1)
+            if (input.Length == 1)
             {
                 return input.ToUpper();
             }
@@ -2592,21 +2592,21 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static string ToOnlyFirstCharOfEveryWordToUpper(this string input, Func<char, bool> printCharUppercaseDependentOnPreviousChar)
         {
-            if(string.IsNullOrWhiteSpace(input))
+            if (string.IsNullOrWhiteSpace(input))
             {
                 return input;
             }
             char[] splitted = input.ToCharArray();
             char lastChar = default;
-            for(int i = 0; i < splitted.Length; i++)
+            for (int i = 0; i < splitted.Length; i++)
             {
-                if(i == 0)
+                if (i == 0)
                 {
                     splitted[i] = splitted[i].ToString().ToUpper().First();
                 }
-                if(i > 0)
+                if (i > 0)
                 {
-                    if(printCharUppercaseDependentOnPreviousChar(lastChar))
+                    if (printCharUppercaseDependentOnPreviousChar(lastChar))
                     {
                         splitted[i] = splitted[i].ToString().ToUpper().First();
                     }
@@ -2621,9 +2621,9 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static bool IsAllUpper(this string input)
         {
-            for(int i = 0; i < input.Length; i++)
+            for (int i = 0; i < input.Length; i++)
             {
-                if(char.IsLetter(input[i]) && !char.IsUpper(input[i]))
+                if (char.IsLetter(input[i]) && !char.IsUpper(input[i]))
                 {
                     return false;
                 }
@@ -2633,9 +2633,9 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public static bool IsAllLower(this string input)
         {
-            for(int i = 0; i < input.Length; i++)
+            for (int i = 0; i < input.Length; i++)
             {
-                if(char.IsLetter(input[i]) && !char.IsLower(input[i]))
+                if (char.IsLetter(input[i]) && !char.IsLower(input[i]))
                 {
                     return false;
                 }
@@ -2677,12 +2677,12 @@ namespace GRYLibrary.Core.Miscellaneous
             bool enabled = true;
             SupervisedThread thread = SupervisedThread.Create(() =>
             {
-                while(enabled)
+                while (enabled)
                 {
                     try
                     {
                         Thread.Sleep(updateInterval);
-                        if(subject.HasObservers)
+                        if (subject.HasObservers)
                         {
                             subject.OnNext(valueFunction());
                         }
@@ -2700,50 +2700,50 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static Encoding GetEncodingByIdentifier(string encodingIdentifier)
         {
-            if(encodingIdentifier == "utf-8")
+            if (encodingIdentifier == "utf-8")
             {
                 return new UTF8Encoding(false);
             }
-            if(encodingIdentifier == "utf-8-bom")
+            if (encodingIdentifier == "utf-8-bom")
             {
                 return new UTF8Encoding(true);
             }
-            if(encodingIdentifier == "utf-16")
+            if (encodingIdentifier == "utf-16")
             {
                 return new UnicodeEncoding(false, false);
             }
-            if(encodingIdentifier == "utf-16-bom")
+            if (encodingIdentifier == "utf-16-bom")
             {
                 return new UnicodeEncoding(false, true);
             }
-            if(encodingIdentifier == "utf-16-be")
+            if (encodingIdentifier == "utf-16-be")
             {
                 return new UnicodeEncoding(true, false);
             }
-            if(encodingIdentifier == "utf-16-be-bom")
+            if (encodingIdentifier == "utf-16-be-bom")
             {
                 return new UnicodeEncoding(true, true);
             }
-            if(encodingIdentifier == "utf-32")
+            if (encodingIdentifier == "utf-32")
             {
                 return new UTF32Encoding(false, false);
             }
-            if(encodingIdentifier == "utf-32-bom")
+            if (encodingIdentifier == "utf-32-bom")
             {
                 return new UTF32Encoding(false, true);
             }
-            if(encodingIdentifier == "utf-32-be")
+            if (encodingIdentifier == "utf-32-be")
             {
                 return new UTF32Encoding(true, false);
             }
-            if(encodingIdentifier == "utf-32-be-bom")
+            if (encodingIdentifier == "utf-32-be-bom")
             {
                 return new UTF32Encoding(true, true);
             }
             return Encoding.GetEncoding(encodingIdentifier);
         }
         private static readonly IOperatingSystemVisitor<bool> _DarkModeEnabledVisitor = new GetDarkModeEnabledVisitor();
-        private class SetDarkModeEnabledVisitor :IOperatingSystemVisitor
+        private class SetDarkModeEnabledVisitor : IOperatingSystemVisitor
         {
             private readonly bool _Enabled;
 
@@ -2759,7 +2759,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
             public void Handle(Windows operatingSystem)
             {
-                if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     using RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize", true);
 
@@ -2773,7 +2773,7 @@ namespace GRYLibrary.Core.Miscellaneous
                 throw new NotImplementedException();
             }
         }
-        private class GetDarkModeEnabledVisitor :IOperatingSystemVisitor<bool>
+        private class GetDarkModeEnabledVisitor : IOperatingSystemVisitor<bool>
         {
             public bool Handle(OSX operatingSystem)
             {
@@ -2782,7 +2782,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
             public bool Handle(Windows operatingSystem)
             {
-                if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     try
                     {
@@ -2845,7 +2845,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public static T CreateOrLoadConfigurationFile<T, TBase>(string configurationFile, T initialValue, Action<string, T> createInitialFile, Func<string, T> loadExistingFile) where T : TBase, new()
         {
             T configuration;
-            if(File.Exists(configurationFile))
+            if (File.Exists(configurationFile))
             {
                 configuration = loadExistingFile(configurationFile);
             }
@@ -2860,7 +2860,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static ExecutionMode GetExecutionMode()
         {
-            if(Assembly.GetEntryAssembly().GetName().Name == "dotnet-swagger")
+            if (Assembly.GetEntryAssembly().GetName().Name == "dotnet-swagger")
             {
                 return Analysis.Instance;
             }

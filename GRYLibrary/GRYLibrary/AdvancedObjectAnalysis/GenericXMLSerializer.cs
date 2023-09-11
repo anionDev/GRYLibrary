@@ -55,7 +55,7 @@ namespace GRYLibrary.Core.AdvancedXMLSerialysis
         public string Serialize(object/*T*/ @object)
         {
             using MemoryStream memoryStream = new();
-            using(XmlWriter xmlWriter = XmlWriter.Create(memoryStream, this.GetXmlWriterSettings()))
+            using (XmlWriter xmlWriter = XmlWriter.Create(memoryStream, this.GetXmlWriterSettings()))
             {
                 this.Serialize(@object, xmlWriter);
             }
@@ -63,20 +63,20 @@ namespace GRYLibrary.Core.AdvancedXMLSerialysis
         }
         public void Serialize(object/*T*/ @object, XmlWriter writer)
         {
-            if(@object == null)
+            if (@object == null)
             {
                 //TODO
             }
-            if(!Utilities.IsAssignableFrom(@object, this._T))
+            if (!Utilities.IsAssignableFrom(@object, this._T))
             {
                 throw new ArgumentException($"Can only serialize objects of type {@object.GetType().FullName} but the given object has the type {this._T.FullName}");
             }
             object objectForRealSerialization = GRYSObject.Create(@object, this.SerializationConfiguration);
             IEnumerable<(object, Type)> allReferencedObjects = new PropertyIterator().IterateOverObjectTransitively(objectForRealSerialization);
             HashSet<Type> extraTypes = new();
-            foreach((object, Type) referencedObject in allReferencedObjects)
+            foreach ((object, Type) referencedObject in allReferencedObjects)
             {
-                if(referencedObject.Item1 is not null and IGRYSerializable extraTypesProvider)
+                if (referencedObject.Item1 is not null and IGRYSerializable extraTypesProvider)
                 {
                     extraTypes.UnionWith(extraTypesProvider.GetExtraTypesWhichAreRequiredForSerialization());
                 }
@@ -116,35 +116,35 @@ namespace GRYLibrary.Core.AdvancedXMLSerialysis
         {
             bool thisIsNull = thisObject == null;
             bool deserializedObjectIsNull = deserializedObject == null;
-            if(thisIsNull && deserializedObjectIsNull)
+            if (thisIsNull && deserializedObjectIsNull)
             {
                 return;
             }
-            if(thisIsNull && !deserializedObjectIsNull)
+            if (thisIsNull && !deserializedObjectIsNull)
             {
                 throw new NullReferenceException();
             }
-            if(!thisIsNull && deserializedObjectIsNull)
+            if (!thisIsNull && deserializedObjectIsNull)
             {
                 throw new NullReferenceException();
             }
-            if(!thisIsNull && !deserializedObjectIsNull)
+            if (!thisIsNull && !deserializedObjectIsNull)
             {
                 Type type = thisObject.GetType();
-                if(EnumerableTools.TypeIsEnumerable(type))
+                if (EnumerableTools.TypeIsEnumerable(type))
                 {
-                    foreach(object item in deserializedObject as IEnumerable)
+                    foreach (object item in deserializedObject as IEnumerable)
                     {
                         EnumerableTools.AddItemToEnumerable(thisObject, new object[] { item });
                     }
                 }
                 else
                 {
-                    foreach(FieldInfo field in type.GetFields().Where((field) => this.SerializationConfiguration.FieldSelector(field)))
+                    foreach (FieldInfo field in type.GetFields().Where((field) => this.SerializationConfiguration.FieldSelector(field)))
                     {
                         field.SetValue(thisObject, field.GetValue(deserializedObject));
                     }
-                    foreach(PropertyInfo property in type.GetProperties().Where((property) => this.SerializationConfiguration.PropertySelector(property)))
+                    foreach (PropertyInfo property in type.GetProperties().Where((property) => this.SerializationConfiguration.PropertySelector(property)))
                     {
                         property.SetValue(thisObject, property.GetValue(deserializedObject));
                     }
@@ -152,7 +152,7 @@ namespace GRYLibrary.Core.AdvancedXMLSerialysis
             }
         }
     }
-    public class GenericXMLSerializer<T> :GenericXMLSerializer
+    public class GenericXMLSerializer<T> : GenericXMLSerializer
     {
         public T DeserializeTyped(string serializedObject)
         {

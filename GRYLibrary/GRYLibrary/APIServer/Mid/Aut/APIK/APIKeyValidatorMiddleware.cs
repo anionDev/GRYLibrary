@@ -2,7 +2,7 @@
 
 namespace GRYLibrary.Core.APIServer.Mid.Aut.APIK
 {
-    public abstract class APIKeyValidatorMiddleware :AuthorizationMiddleware
+    public abstract class APIKeyValidatorMiddleware : AuthorizationMiddleware
     {
         protected readonly IAPIKeyValidatorConfiguration _APIKeyValidatorSettings;
         public APIKeyValidatorMiddleware(RequestDelegate next, IAPIKeyValidatorConfiguration apiKeyValidatorSettings) : base(next, apiKeyValidatorSettings)
@@ -17,7 +17,7 @@ namespace GRYLibrary.Core.APIServer.Mid.Aut.APIK
         public override bool IsAuthorized(HttpContext context)
         {
             (bool provided, string apiKey) = this.TryGetAPIKey(context);
-            if(provided)
+            if (provided)
             {
                 context.Items["APIKey"] = apiKey;
                 return this.APIKeyIsAuthorized(apiKey, context);

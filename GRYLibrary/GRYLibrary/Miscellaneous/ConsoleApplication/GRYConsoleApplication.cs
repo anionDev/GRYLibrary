@@ -41,7 +41,7 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
             {
                 string title = $"{this._ProgramName} (v{this._ProgramVersion})";
                 Console.Title = title;
-                if(arguments == null)
+                if (arguments == null)
                 {
                     throw Utilities.CreateNullReferenceExceptionDueToParameter(nameof(arguments));
                 }
@@ -49,11 +49,11 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
                 string workingDirectory = Directory.GetCurrentDirectory();
                 try
                 {
-                    if(this._ExecutionMode is Analysis)
+                    if (this._ExecutionMode is Analysis)
                     {
                         arguments = Array.Empty<string>();
                     }
-                    if(arguments.Length == 0 && !this._ProgramCanRunWithoutArguments)
+                    if (arguments.Length == 0 && !this._ProgramCanRunWithoutArguments)
                     {
                         this._Log.Log($"{this._ProgramName} v{this._ProgramVersion}");
                         this._Log.Log($"Run '{this._ProgramName} --help' to get help about the usage.");
@@ -61,7 +61,7 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
                     else
                     {
                         ParserResult<CMDOptions> parserResult = new Parser(settings => settings.CaseInsensitiveEnumValues = true).ParseArguments<CMDOptions>(arguments);
-                        if(ShowHelp(arguments))
+                        if (ShowHelp(arguments))
                         {
                             this.WriteHelp(parserResult);
                             result = 0;
@@ -82,12 +82,12 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
                         }
                     }
                 }
-                catch(Exception exception)
+                catch (Exception exception)
                 {
                     this._Log.Log($"Fatal error occurred while processing argument.", exception);
                 }
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 this._Log.Log($"Fatal error occurred", exception);
                 result = 2;
@@ -100,10 +100,10 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
         {
             int amountOfErrors = errors.Count();
             this._Log.Log($"Argument '{argumentsAsString}' could not be parsed successfully.", LogLevel.Error);
-            if(0 < amountOfErrors)
+            if (0 < amountOfErrors)
             {
                 this._Log.Log($"The following error{(amountOfErrors == 1 ? string.Empty : "s")} occurred:", LogLevel.Error);
-                foreach(Error error in errors)
+                foreach (Error error in errors)
                 {
                     this._Log.Log($"{error.Tag}: {this._SentenceBuilder.FormatError(error)}", LogLevel.Error);
                 }
@@ -118,7 +118,7 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
         public void WriteHelp(ParserResult<CMDOptions> argumentParserResult)
         {
             this._Log.Log(HelpText.AutoBuild(argumentParserResult).ToString());
-            if(this._ProgramDescription is not null)
+            if (this._ProgramDescription is not null)
             {
                 this._Log.Log(string.Empty);
                 this._Log.Log(this._ProgramDescription);
@@ -127,7 +127,7 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
 
         public static bool ShowHelp(string[] commandlineArguments)
         {
-            if(commandlineArguments.Length != 1)
+            if (commandlineArguments.Length != 1)
             {
                 return false;
             }

@@ -14,28 +14,28 @@ namespace GRYLibrary.Core.Miscellaneous
     public class GRYMigration
     {
         internal static Encoding Encoding { get; set; } = new UTF8Encoding(false);
-        public static void MigrateIfRequired(AbstractFilePath basicInformationFile,string appName, Version3 currentVersion, IGeneralLogger logger, string baseFolder, GRYEnvironment targetEnvironmentType, ExecutionMode executionMode, IDictionary<object, object> customValues,
+        public static void MigrateIfRequired(AbstractFilePath basicInformationFile, string appName, Version3 currentVersion, IGeneralLogger logger, string baseFolder, GRYEnvironment targetEnvironmentType, ExecutionMode executionMode, IDictionary<object, object> customValues,
           ISet<MigrationMetaInformation> migrations)
         {
             string informationFile = basicInformationFile.GetPath(baseFolder);
-            if(File.Exists(informationFile))
+            if (File.Exists(informationFile))
             {
                 ApplicationInformation appInformation = GetInformationFromFile(informationFile);
                 Utilities.AssertCondition(appInformation.ApplicationName == appName);
                 Version3 existingVersion = appInformation.GetCodeUnitVersion();
-                if(migrations.Count > 0)
+                if (migrations.Count > 0)
                 {
                     Utilities.AssertCondition(existingVersion <= currentVersion);
-                    if(existingVersion != currentVersion)
+                    if (existingVersion != currentVersion)
                     {
                         List<MigrationMetaInformation> orderedMigrations = migrations.ToList();
                         orderedMigrations.Sort((x, y) =>
                         {
-                            if(x.SourceVersion < y.SourceVersion)
+                            if (x.SourceVersion < y.SourceVersion)
                             {
                                 return -1;
                             }
-                            else if(x.SourceVersion > y.SourceVersion)
+                            else if (x.SourceVersion > y.SourceVersion)
                             {
                                 return 1;
                             }
@@ -44,18 +44,18 @@ namespace GRYLibrary.Core.Miscellaneous
                                 return 0;
                             }
                         });
-                        for(int i = 0; i < orderedMigrations.Count; i++)
+                        for (int i = 0; i < orderedMigrations.Count; i++)
                         {
                             MigrationMetaInformation migration = orderedMigrations[i];
                             Utilities.AssertCondition(migration.SourceVersion <= migration.TargetVersion);
                             bool isLastMigration = i == orderedMigrations.Count - 1;
-                            if(!isLastMigration)
+                            if (!isLastMigration)
                             {
                                 MigrationMetaInformation nextMigration = orderedMigrations[i + 1];
                                 Utilities.AssertCondition(migration.TargetVersion <= nextMigration.SourceVersion);
                             }
                         }
-                        foreach(MigrationMetaInformation orderedMigration in orderedMigrations)
+                        foreach (MigrationMetaInformation orderedMigration in orderedMigrations)
                         {
                             bool migrationIfRequired = existingVersion < orderedMigration.SourceVersion;
                             logger.Log($"Start migration from version {orderedMigration.SourceVersion} to {orderedMigration.TargetVersion}.", Microsoft.Extensions.Logging.LogLevel.Information);
@@ -66,7 +66,7 @@ namespace GRYLibrary.Core.Miscellaneous
                                 WriteInformationToFile(informationFile, appName, existingVersion);
                                 logger.Log($"Finished migration from version {orderedMigration.SourceVersion} to {orderedMigration.TargetVersion}.", Microsoft.Extensions.Logging.LogLevel.Information);
                             }
-                            catch(Exception exception)
+                            catch (Exception exception)
                             {
                                 logger.LogException(exception, $"Error while migration.");
                             }

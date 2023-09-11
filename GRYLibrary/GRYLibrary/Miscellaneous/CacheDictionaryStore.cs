@@ -15,7 +15,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public TValue GetValue(TKey key, THelper helper)
         {
-            if(!this._Cache.ContainsKey(key))
+            if (!this._Cache.ContainsKey(key))
             {
                 this._Cache.Add(key, this._GetFunction(key, helper));
             }

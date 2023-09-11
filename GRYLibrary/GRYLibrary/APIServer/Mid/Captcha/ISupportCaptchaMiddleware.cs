@@ -1,6 +1,6 @@
 ﻿namespace GRYLibrary.Core.APIServer.Mid.Captcha
 {
-    public interface ISupportCaptchaMiddleware :ISupportedMiddleware
+    public interface ISupportCaptchaMiddleware : ISupportedMiddleware
     {
         ICaptchaConfiguration ConfigurationForCaptchaMiddleware { get; set; }
     }

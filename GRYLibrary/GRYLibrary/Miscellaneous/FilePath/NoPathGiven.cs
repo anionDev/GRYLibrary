@@ -3,7 +3,7 @@ using System.IO;
 
 namespace GRYLibrary.Core.Miscellaneous.FilePath
 {
-    public class NoPathGiven :AbstractFilePath
+    public class NoPathGiven : AbstractFilePath
     {
         public override string FilePath { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
 

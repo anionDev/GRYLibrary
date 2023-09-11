@@ -11,15 +11,15 @@ namespace GRYLibrary.Core.Miscellaneous.FilePath
 
         public static AbstractFilePath FromString(string logFile)
         {
-            if(string.IsNullOrWhiteSpace(logFile))
+            if (string.IsNullOrWhiteSpace(logFile))
             {
                 return new NoPathGiven();
             }
-            if(Utilities.IsAbsoluteLocalFilePath(logFile))
+            if (Utilities.IsAbsoluteLocalFilePath(logFile))
             {
                 return new AbsoluteFilePath() { FilePath = logFile };
             }
-            if(Utilities.IsRelativeLocalFilePath(logFile))
+            if (Utilities.IsRelativeLocalFilePath(logFile))
             {
                 return new RelativeFilePath() { FilePath = logFile };
             }

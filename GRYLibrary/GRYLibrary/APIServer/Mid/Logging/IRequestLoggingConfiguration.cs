@@ -2,7 +2,7 @@
 
 namespace GRYLibrary.Core.APIServer.Mid.Logging
 {
-    public interface IRequestLoggingConfiguration :IMiddlewareConfiguration
+    public interface IRequestLoggingConfiguration : IMiddlewareConfiguration
     {
         public bool AddMillisecondsInLogTimestamps { get; set; }
         public bool LogClientIP { get; set; }

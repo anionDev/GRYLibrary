@@ -1,6 +1,6 @@
 ﻿namespace GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems
 {
-    public class Windows :OperatingSystem
+    public class Windows : OperatingSystem
     {
         private Windows() { }
         public static OperatingSystem Instance { get; } = new Windows();

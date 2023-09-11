@@ -16,7 +16,7 @@ namespace GRYLibrary.Core.APIServer.Mid.RequestLogger
     /// <summary>
     /// Represents a middleware which logs the requests.
     /// </summary>
-    public class RequestLoggingMiddleware :AbstractMiddleware
+    public class RequestLoggingMiddleware : AbstractMiddleware
     {
         private readonly IGeneralLogger _RequestLogger;
         private readonly IGeneralLogger _Logger;
@@ -63,11 +63,11 @@ namespace GRYLibrary.Core.APIServer.Mid.RequestLogger
         {
             try
             {
-                if(this.ShouldBeLogged(request))
+                if (this.ShouldBeLogged(request))
                 {
                     LogLevel logLevel = this.GetLogLevel(request);
                     string formatted;
-                    if(logFullRequest)
+                    if (logFullRequest)
                     {
                         formatted = this.FormatLogEntryFull(request, this._RequestLoggingSettings.MaximalLengthofBodies);
                     }
@@ -82,7 +82,7 @@ namespace GRYLibrary.Core.APIServer.Mid.RequestLogger
                     this._RequestLogger.AddLogEntry(logItem);
                 }
             }
-            catch(System.Exception exception)
+            catch (System.Exception exception)
             {
                 this._RequestLogger.LogException(exception, "Error while logging request.");
             }
@@ -139,9 +139,9 @@ namespace GRYLibrary.Core.APIServer.Mid.RequestLogger
         }
         public virtual string FormatIPAddress(IPAddress clientIP)
         {
-            if(this._RequestLoggingSettings.LogClientIP)
+            if (this._RequestLoggingSettings.LogClientIP)
             {
-                if(clientIP == null)
+                if (clientIP == null)
                 {
                     return "(IP-address not available)";
                 }

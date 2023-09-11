@@ -6,7 +6,7 @@ namespace GRYLibrary.Core.APIServer.Mid.Exception
     /// <summary>
     /// Represents a middleware which handles exceptions.
     /// </summary>
-    public class ExceptionManagerMiddleware :AbstractMiddleware
+    public class ExceptionManagerMiddleware : AbstractMiddleware
     {
         private readonly IExceptionManagerConfiguration _ExceptionManagerSettings;
         /// <inheritdoc/>
@@ -22,7 +22,7 @@ namespace GRYLibrary.Core.APIServer.Mid.Exception
                 // TODO if response.statuscode is 500 then log requestbody
                 return this._Next(context);
             }
-            catch(System.Exception)
+            catch (System.Exception)
             {
                 // TODO log exception and requestbody, return 500
                 throw;

@@ -44,38 +44,38 @@ namespace GRYLibrary.Core.Miscellaneous
             return FromDate(DateOnly.ParseExact(@string, DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal));
         }
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return base.GetHashCode();
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return $"{this.Year.ToString().PadLeft(4, '0')}-{this.Month.ToString().PadLeft(2, '0')}-{this.Day.ToString().PadLeft(2, '0')}";
         }
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToDate(this).ToString(format);
         }
 
-        public override bool Equals(object obj)
+        public override readonly bool Equals(object obj)
         {
             return obj is GRYDate time && this.Equals(time);
         }
 
-        public bool Equals(GRYDate other)
+        public readonly bool Equals(GRYDate other)
         {
             return this.Year == other.Year &&
                    this.Month == other.Month &&
                    this.Day == other.Day;
         }
 
-        public int CompareTo(GRYDate other)
+        public readonly int CompareTo(GRYDate other)
         {
             return ToDate(this).CompareTo(ToDate(other));
         }
 
-        public int CompareTo(object obj)
+        public readonly int CompareTo(object obj)
         {
             return ToDate(this).CompareTo(obj);
         }

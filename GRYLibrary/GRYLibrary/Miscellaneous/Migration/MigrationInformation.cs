@@ -6,11 +6,11 @@ namespace GRYLibrary.Core.Miscellaneous.Migration
 {
     public class MigrationInformation
     {
-     public  Version3 BaseVersion { get;private set; }
-     public  string BaseFolder { get; private set; }
-     public  GRYEnvironment TargetEnvironmentType { get; private set; }
-     public  ExecutionMode ExecutionMode { get; private set; }
-     public  IDictionary<object, object> CustomValues { get; private set; }
+        public Version3 BaseVersion { get; private set; }
+        public string BaseFolder { get; private set; }
+        public GRYEnvironment TargetEnvironmentType { get; private set; }
+        public ExecutionMode ExecutionMode { get; private set; }
+        public IDictionary<object, object> CustomValues { get; private set; }
 
         public MigrationInformation(Version3 baseVersion, string baseFolder, GRYEnvironment targetEnvironmentType, ExecutionMode executionMode, IDictionary<object, object> customValues)
         {

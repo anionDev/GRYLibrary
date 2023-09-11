@@ -39,11 +39,11 @@ namespace GRYLibrary.Core.Miscellaneous
                 return new DateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second);
             }
         }
-        public  GRYTime ToGRYTime()
+        public readonly GRYTime ToGRYTime()
         {
             return new GRYTime(this.Hour, this.Minute, this.Second);
         }
-        public  GRYDate ToGRYDate()
+        public readonly GRYDate ToGRYDate()
         {
             return new GRYDate(this.Year, this.Month, this.Day);
         }
@@ -64,26 +64,26 @@ namespace GRYLibrary.Core.Miscellaneous
             return FromDateTime(DateTime.ParseExact(@string, DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal));
         }
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return base.GetHashCode();
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return $"{this.Year.ToString().PadLeft(4, '0')}-{this.Month.ToString().PadLeft(2, '0')}-{this.Day.ToString().PadLeft(2, '0')} {this.Hour.ToString().PadLeft(2, '0')}:{this.Minute.ToString().PadLeft(2, '0')}:{this.Second.ToString().PadLeft(2, '0')}";
         }
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToDateTime(this).ToString(format);
         }
 
-        public override bool Equals(object obj)
+        public override readonly bool Equals(object obj)
         {
             return obj is GRYDateTime time && this.Equals(time);
         }
 
-        public bool Equals(GRYDateTime other)
+        public readonly bool Equals(GRYDateTime other)
         {
             return this.Year == other.Year &&
                    this.Month == other.Month &&
@@ -93,12 +93,12 @@ namespace GRYLibrary.Core.Miscellaneous
                    this.Second == other.Second;
         }
 
-        public int CompareTo(GRYDateTime other)
+        public readonly int CompareTo(GRYDateTime other)
         {
             return ToDateTime(this).CompareTo(ToDateTime(other));
         }
 
-        public int CompareTo(object obj)
+        public readonly int CompareTo(object obj)
         {
             return ToDateTime(this).CompareTo(obj);
         }
@@ -111,6 +111,14 @@ namespace GRYLibrary.Core.Miscellaneous
         public static bool operator !=(GRYDateTime left, GRYDateTime right)
         {
             return !(left == right);
+        }
+        public static GRYDateTime operator +(GRYDateTime left, TimeSpan right)
+        {
+            return GRYDateTime.FromDateTime(GRYDateTime.ToDateTime(left) + right);
+        }
+        public static GRYDateTime operator -(GRYDateTime left, TimeSpan right)
+        {
+            return GRYDateTime.FromDateTime(GRYDateTime.ToDateTime(left) - right);
         }
 
         public static bool operator <(GRYDateTime left, GRYDateTime right)

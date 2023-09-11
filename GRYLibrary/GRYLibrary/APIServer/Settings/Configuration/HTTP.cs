@@ -1,6 +1,6 @@
 ﻿namespace GRYLibrary.Core.APIServer.Settings.Configuration
 {
-    public class HTTP :Protocol
+    public class HTTP : Protocol
     {
         public static HTTP Create()
         {

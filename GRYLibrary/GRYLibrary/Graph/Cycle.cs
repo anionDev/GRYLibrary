@@ -12,15 +12,15 @@ namespace GRYLibrary.Core.Graph
         public Cycle(IList<Edge> edgesList)
         {
             List<Edge> edges = edgesList.ToList();
-            if(edges.Count == 0)
+            if (edges.Count == 0)
             {
                 throw new InvalidGraphStructureException("A cycle can not be empty.");
             }
-            if(new HashSet<Edge>(edges).Count < edges.Count)
+            if (new HashSet<Edge>(edges).Count < edges.Count)
             {
                 throw new InvalidGraphStructureException("A cycle can not contain two equal edges.");
             }
-            if(!RepresentsCycle(edges))
+            if (!RepresentsCycle(edges))
             {
                 throw new InvalidGraphStructureException("The given edge-list is not cyclic.");
             }
@@ -29,17 +29,17 @@ namespace GRYLibrary.Core.Graph
         public override bool Equals(object obj)
         {
             Cycle cycle = obj as Cycle;
-            if(cycle == null)
+            if (cycle == null)
             {
                 return false;
             }
             int edgesCount = this._Edges.Count;
-            if(this._Edges.Count != cycle._Edges.Count)
+            if (this._Edges.Count != cycle._Edges.Count)
             {
                 return false;
             }
             int indexOfStartItemInCycle2;
-            if(cycle._Edges.Contains(this._Edges[0]))
+            if (cycle._Edges.Contains(this._Edges[0]))
             {
                 indexOfStartItemInCycle2 = cycle._Edges.IndexOf(this._Edges[0]);
             }
@@ -47,11 +47,11 @@ namespace GRYLibrary.Core.Graph
             {
                 return false;
             }
-            for(int indexOfStartItemInCycle1 = 0; indexOfStartItemInCycle1 < edgesCount; indexOfStartItemInCycle1++)
+            for (int indexOfStartItemInCycle1 = 0; indexOfStartItemInCycle1 < edgesCount; indexOfStartItemInCycle1++)
             {
                 Edge edgeInCycle1 = this._Edges[indexOfStartItemInCycle1];
                 Edge edgeInCycle2 = cycle._Edges[(indexOfStartItemInCycle2 + indexOfStartItemInCycle1) % edgesCount];
-                if(!edgeInCycle1.Equals(edgeInCycle2))
+                if (!edgeInCycle1.Equals(edgeInCycle2))
                 {
                     return false;
                 }
@@ -65,9 +65,9 @@ namespace GRYLibrary.Core.Graph
 
         public static bool RepresentsCycle(IList<Edge> edges)
         {
-            if(edges.Count > 0)
+            if (edges.Count > 0)
             {
-                if(new HashSet<Edge>(edges).Count != edges.Count)
+                if (new HashSet<Edge>(edges).Count != edges.Count)
                 {
                     return false;
                 }
@@ -81,11 +81,11 @@ namespace GRYLibrary.Core.Graph
 
         private static bool EdgesAreCyclic(IList<Edge> edges)
         {
-            for(int i = 0; i < edges.Count; i++)
+            for (int i = 0; i < edges.Count; i++)
             {
                 Edge edge1 = edges[i];
                 Edge edge2 = edges[(i + 1) % edges.Count];
-                if(!AtLeastOneOutputOfEdge1LeadsToInputOfEdge1(edge1, edge2))
+                if (!AtLeastOneOutputOfEdge1LeadsToInputOfEdge1(edge1, edge2))
                 {
                     return false;
                 }

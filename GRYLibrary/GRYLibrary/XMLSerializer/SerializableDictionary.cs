@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 namespace GRYLibrary.Core.XMLSerializer
 {
     [XmlRoot("Dictionary")]
-    public class SerializableDictionary<TKey, TValue> :Dictionary<TKey, TValue>, IXmlSerializable
+    public class SerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, IXmlSerializable
     {
         private readonly XmlSerializer _KeySerializer;
         private readonly XmlSerializer _ValueSerializer;
@@ -15,7 +15,7 @@ namespace GRYLibrary.Core.XMLSerializer
         }
         public SerializableDictionary(IDictionary<TKey, TValue> values) : this()
         {
-            foreach(System.Collections.Generic.KeyValuePair<TKey, TValue> kvp in values)
+            foreach (System.Collections.Generic.KeyValuePair<TKey, TValue> kvp in values)
             {
                 this.Add(kvp.Key, kvp.Value);
             }
@@ -25,13 +25,13 @@ namespace GRYLibrary.Core.XMLSerializer
         {
             bool isEmptyElement = reader.IsEmptyElement;
             reader.Read();
-            if(isEmptyElement)
+            if (isEmptyElement)
             {
                 return;
             }
             else
             {
-                while(reader.NodeType != System.Xml.XmlNodeType.EndElement)
+                while (reader.NodeType != System.Xml.XmlNodeType.EndElement)
                 {
                     reader.ReadStartElement("Item");
                     reader.ReadStartElement("Key");
@@ -51,7 +51,7 @@ namespace GRYLibrary.Core.XMLSerializer
         public void WriteXml(System.Xml.XmlWriter writer)
         {
 
-            foreach(TKey key in this.Keys)
+            foreach (TKey key in this.Keys)
             {
                 writer.WriteStartElement("Item");
 

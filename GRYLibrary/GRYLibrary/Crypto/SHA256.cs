@@ -2,7 +2,7 @@
 
 namespace GRYLibrary.Core.Crypto
 {
-    public class SHA256 :HashAlgorithm
+    public class SHA256 : HashAlgorithm
     {
         public override byte[] Hash(byte[] data)
         {

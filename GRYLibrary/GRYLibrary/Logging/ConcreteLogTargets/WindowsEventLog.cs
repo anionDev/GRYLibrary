@@ -8,14 +8,14 @@ using System.Runtime.Versioning;
 namespace GRYLibrary.Core.Log.ConcreteLogTargets
 {
     [SupportedOSPlatform("windows")]
-    public sealed class WindowsEventLog :GRYLogTarget
+    public sealed class WindowsEventLog : GRYLogTarget
     {
         public WindowsEventLog() { }
         protected override void ExecuteImplementation(LogItem logItem, GRYLog logObject)
         {
             using EventLog eventLog = new(Utilities.GetNameOfCurrentExecutable()) { Source = logObject.Configuration.Name };
             string messageId;
-            if(string.IsNullOrWhiteSpace(logItem.MessageId))
+            if (string.IsNullOrWhiteSpace(logItem.MessageId))
             {
                 messageId = string.Empty;
             }
@@ -28,27 +28,27 @@ namespace GRYLibrary.Core.Log.ConcreteLogTargets
 
         private static EventLogEntryType ConvertLogLevel(LogLevel logLevel)
         {
-            if(logLevel == LogLevel.Trace)
+            if (logLevel == LogLevel.Trace)
             {
                 return EventLogEntryType.Information;
             }
-            if(logLevel == LogLevel.Debug)
+            if (logLevel == LogLevel.Debug)
             {
                 return EventLogEntryType.Information;
             }
-            if(logLevel == LogLevel.Information)
+            if (logLevel == LogLevel.Information)
             {
                 return EventLogEntryType.Information;
             }
-            if(logLevel == LogLevel.Warning)
+            if (logLevel == LogLevel.Warning)
             {
                 return EventLogEntryType.Warning;
             }
-            if(logLevel == LogLevel.Error)
+            if (logLevel == LogLevel.Error)
             {
                 return EventLogEntryType.Error;
             }
-            if(logLevel == LogLevel.Critical)
+            if (logLevel == LogLevel.Critical)
             {
                 return EventLogEntryType.Error;
             }

@@ -6,7 +6,7 @@ namespace GRYLibrary.Core.APIServer.Mid.Blacklist
     /// <summary>
     /// Represents a blacklist which blocks all requests from blacklisted sources.
     /// </summary>
-    public class BlacklistMiddleware :AbstractMiddleware
+    public class BlacklistMiddleware : AbstractMiddleware
     {
         private readonly IBlacklistConfiguration _BlacklistProvider;
         /// <inheritdoc/>
