@@ -24,7 +24,7 @@ namespace GRYLibrary.Core.APIServer.ExecutionModes.Visitors
 
         public string Handle(RunProgram runProgram)
         {
-            return GetBaseFolderForProjectInCommonProjectStructure(this._TargetEnvironmentType, this._ProgramFolder, _ExecutionMode);
+            return GetBaseFolderForProjectInCommonProjectStructure(this._TargetEnvironmentType, this._ProgramFolder, this._ExecutionMode);
         }
 
         public static string GetBaseFolderForProjectInCommonProjectStructure(GRYEnvironment environment, string programFolder, ExecutionMode executionMode)
