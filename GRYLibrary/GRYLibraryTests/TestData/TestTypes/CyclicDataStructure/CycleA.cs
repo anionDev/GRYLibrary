@@ -8,7 +8,7 @@ using System.Xml.Schema;
 namespace GRYLibrary.Tests.TestData.TestTypes.CyclicDataStructure
 {
     [Serializable]
-    public class CycleA :IGRYSerializable
+    public class CycleA : IGRYSerializable
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public CycleB B { get; set; }

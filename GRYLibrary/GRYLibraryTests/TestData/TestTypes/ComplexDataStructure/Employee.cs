@@ -4,7 +4,7 @@ using System;
 
 namespace GRYLibrary.Tests.TestData.TestTypes.ComplexDataStructure
 {
-    public class Employee :IPerson
+    public class Employee : IPerson
     {
         public string Forename { get; set; }
         public string Surname { get; set; }

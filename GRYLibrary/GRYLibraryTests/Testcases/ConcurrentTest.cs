@@ -15,11 +15,11 @@ namespace GRYLibrary.Tests.Testcases
             testFunctionDetails.Add(new Tuple<int, int>(3, 21));
             testFunctionDetails.Add(new Tuple<int, int>(1, resultValueOfFirstResult));
             testFunctionDetails.Add(new Tuple<int, int>(2, 97));
-            for(int i = 0; i < 100; i++)
+            for (int i = 0; i < 100; i++)
             {
                 testFunctionDetails.Add(new Tuple<int, int>(2, 100 + i));
             }
-            for(int i = 0; i < 100; i++)
+            for (int i = 0; i < 100; i++)
             {
                 testFunctionDetails.Add(new Tuple<int, int>(600, 200 + i));
             }
@@ -31,11 +31,11 @@ namespace GRYLibrary.Tests.Testcases
         private ISet<Func<T>> GetTestFunction<T>(ISet<Tuple<int, T>> functionDetails)
         {
             ISet<Func<T>> result = new HashSet<Func<T>>();
-            foreach(Tuple<int, T> item in functionDetails)
+            foreach (Tuple<int, T> item in functionDetails)
             {
                 result.Add(() =>
                 {
-                    for(int i = 0; i < item.Item1; i++)
+                    for (int i = 0; i < item.Item1; i++)
                     {
                         System.Threading.Thread.Sleep(1000);
                     }

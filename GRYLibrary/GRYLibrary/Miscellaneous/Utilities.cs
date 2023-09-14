@@ -661,20 +661,20 @@ namespace GRYLibrary.Core.Miscellaneous
         /// </example>
         public static DateTime ParseDateAmericanFormat(string input)
         {
-            var regexStr = @"^(\d?\d)\/(\d?\d)\/(\d?\d?\d?\d) (\d?\d):(\d?\d):(\d?\d) (AM|PM)$";
-            var regex = new Regex(regexStr);
-            var match = regex.Match(input);
+            string regexStr = @"^(\d?\d)\/(\d?\d)\/(\d?\d?\d?\d) (\d?\d):(\d?\d):(\d?\d) (AM|PM)$";
+            Regex regex = new Regex(regexStr);
+            Match match = regex.Match(input);
             if (match.Captures.Count < 1)
             {
                 throw new ArgumentException($"Input \"{input}\" does not match regex \"{regexStr}\".");
             }
             else if (match.Captures.Count == 1)
             {
-                string Pad(string value, int length)
+                static string Pad(string value, int length)
                 {
                     return value.PadLeft(length, '0');
                 }
-                var c = (Match)match.Captures[0];
+                Match c = (Match)match.Captures[0];
                 string s = $"{Pad(c.Groups[1].Value, 2)}/{Pad(c.Groups[2].Value, 2)}/{Pad(c.Groups[3].Value, 4)} {Pad(c.Groups[4].Value, 2)}:{Pad(c.Groups[5].Value, 2)}:{Pad(c.Groups[6].Value, 2)} {c.Groups[7].Value}";
                 return DateTime.ParseExact(s, "MM/dd/yyyy hh:mm:ss tt", CultureInfo.InvariantCulture);
             }
@@ -2862,7 +2862,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public static T CreateOrLoadXMLConfigurationFile<T, TBase>(string configurationFile, T initialValue, ISet<Type> knownTypes) where T : TBase, new()
         {
             SimpleObjectPersistence<T> simpleObjectPersistence = new SimpleObjectPersistence<T>();
-            // simpleObjectPersistence.Serializer.KnownTypes.UnionWith(knownTypes);
+            //TODO simpleObjectPersistence.Serializer.KnownTypes.UnionWith(knownTypes);
             return CreateOrLoadConfigurationFile<T, TBase>(configurationFile, initialValue,
                 (configurationFile, initialValue) =>
                 {
