@@ -651,7 +651,7 @@ namespace GRYLibrary.Core.Miscellaneous
         /// <summary>
         /// This function parses a datetime-string.
         /// </summary>
-        /// <param name="date">This string is expected to be in the format "MM/dd/yyyy hh:mm:ss tt".</param>
+        /// <param name="input">This string is expected to be in the format "MM/dd/yyyy hh:mm:ss tt".</param>
         /// <remarks>
         /// The difference in comparison to <see cref="DateTime.ParseExact(string, string, IFormatProvider?)"/> is that this function does not require leading zeros.
         /// So "5" is allowed as hour for example.
@@ -1585,11 +1585,11 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             return input.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).Select(line => line.Replace("\r", string.Empty).Replace("\n", string.Empty)).ToArray();
         }
-        public static void AssertCondition(bool condition, string message = EmptyString)
+        public static void AssertCondition(bool condition, string messageForFailedAssertion = EmptyString)
         {
             if (!condition)
             {
-                throw new AssertionException("Assertion failed. Condition is false." + (string.IsNullOrWhiteSpace(message) ? string.Empty : " " + message));
+                throw new AssertionException("Assertion failed. Condition is false." + (string.IsNullOrWhiteSpace(messageForFailedAssertion) ? string.Empty : " " + messageForFailedAssertion));
             }
         }
         public static void FormatCSVFile(string file, string separator = ";", bool firstLineContainsHeadlines = false)
@@ -2390,9 +2390,22 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static DateTime GetTimeFromInternet(TimeZoneInfo timezone, string format, string domain, int port, int begin, int length)
         {
-            using StreamReader streamReader = new(new TcpClient(domain, port).GetStream());
+            using TcpClient tcpClient = new TcpClient(domain, port);
+            using StreamReader streamReader = new(tcpClient.GetStream());
             DateTime originalDateTime = DateTime.ParseExact(streamReader.ReadToEnd().Substring(begin, length), format, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
             return TimeZoneInfo.ConvertTime(originalDateTime, timezone);
+        }
+        /// <returns>
+        /// If Development-configuration: This function returns <see cref="DateTime.Now"/> using the timezone of the current machine.
+        /// Any else configuration: This function returns <see cref="DateTime.UtcNow"/> which is more appropriate for productive usage.
+        /// </returns>
+        public static DateTime GetNow()
+        {
+#if Development
+            return DateTime.Now;
+#else
+            return DateTime.UtcNow;
+#endif
         }
         public static byte[] StreamToByteArray(Stream input)
         {

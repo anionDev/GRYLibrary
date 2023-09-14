@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 
 namespace GRYLibrary.Core.Log
 {
@@ -28,7 +29,7 @@ namespace GRYLibrary.Core.Log
 
         public LogLevel LogLevel { get; internal set; }
         public Exception Exception { get; }
-        public DateTime MomentOfLogEntry { get; } = DateTime.Now;
+        public DateTime MomentOfLogEntry { get; } = GUtilities.GetNow();
         public ISet<GRYLogTarget> LogTargets { get; set; } = GRYLogTarget.GetAll();
         public string MessageId { get; }
         public string PlainMessage
@@ -51,31 +52,31 @@ namespace GRYLibrary.Core.Log
         }
 
         #region Constructors
-        public LogItem(string message, string messageId = null) : this(() => message, DateTime.Now, messageId)
+        public LogItem(string message, string messageId = null) : this(() => message, GUtilities.GetNow(), messageId)
         {
         }
-        public LogItem(string message, LogLevel logLevel) : this(() => message, DateTime.Now, logLevel, null)
-        {
-        }
-
-        public LogItem(string message, Exception exception, string messageId = null) : this(() => message, DateTime.Now, LogLevel.Error, exception, messageId)
-        {
-        }
-        public LogItem(string message, LogLevel logLevel, Exception exception, string messageId = null) : this(() => message, DateTime.Now, logLevel, exception, messageId)
-        {
-        }
-        public LogItem(Func<string> getMessageFunction, string messageId = null) : this(getMessageFunction, DateTime.Now, LogLevel.Information, messageId)
-        {
-        }
-        public LogItem(Func<string> getMessageFunction, LogLevel logLevel, string messageId = null) : this(getMessageFunction, DateTime.Now, logLevel, null, messageId)
+        public LogItem(string message, LogLevel logLevel) : this(() => message, GUtilities.GetNow(), logLevel, null)
         {
         }
 
-        public LogItem(Func<string> getMessageFunction, Exception exception, string messageId = null) : this(getMessageFunction, DateTime.Now, LogLevel.Error, exception, messageId)
+        public LogItem(string message, Exception exception, string messageId = null) : this(() => message, GUtilities.GetNow(), LogLevel.Error, exception, messageId)
+        {
+        }
+        public LogItem(string message, LogLevel logLevel, Exception exception, string messageId = null) : this(() => message, GUtilities.GetNow(), logLevel, exception, messageId)
+        {
+        }
+        public LogItem(Func<string> getMessageFunction, string messageId = null) : this(getMessageFunction, GUtilities.GetNow(), LogLevel.Information, messageId)
+        {
+        }
+        public LogItem(Func<string> getMessageFunction, LogLevel logLevel, string messageId = null) : this(getMessageFunction, GUtilities.GetNow(), logLevel, null, messageId)
         {
         }
 
-        public LogItem(Func<string> getMessageFunction, LogLevel logLevel, Exception exception, string messageId) : this(getMessageFunction, DateTime.Now, logLevel, exception, messageId)
+        public LogItem(Func<string> getMessageFunction, Exception exception, string messageId = null) : this(getMessageFunction, GUtilities.GetNow(), LogLevel.Error, exception, messageId)
+        {
+        }
+
+        public LogItem(Func<string> getMessageFunction, LogLevel logLevel, Exception exception, string messageId) : this(getMessageFunction, GUtilities.GetNow(), logLevel, exception, messageId)
         {
         }
         public LogItem(string message, DateTime dateTime, string messageId = null) : this(() => message, dateTime, messageId)

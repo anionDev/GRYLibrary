@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
@@ -102,7 +103,7 @@ namespace GRYLibrary.Core.Miscellaneous
             T newValue = value;
             this.Unset = false;
             this._Value = newValue;
-            DateTime changeDate = DateTime.Now;
+            DateTime changeDate = GUtilities.GetNow();
             this.LastWriteTime = changeDate;
             if (this.AddValuesToHistory)
             {

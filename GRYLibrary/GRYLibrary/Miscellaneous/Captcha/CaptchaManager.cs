@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 
 namespace GRYLibrary.Core.Miscellaneous.Captcha
 {
@@ -28,7 +29,7 @@ namespace GRYLibrary.Core.Miscellaneous.Captcha
         }
         internal static DateTime GetCurrentTime()
         {
-            return DateTime.Now;
+            return GUtilities.GetNow();
         }
 
         public bool TrySolve(string captchaId, string userInput, out string accessKey, out string failMessage)

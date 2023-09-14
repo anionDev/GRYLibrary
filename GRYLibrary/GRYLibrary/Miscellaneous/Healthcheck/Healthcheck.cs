@@ -18,7 +18,7 @@ namespace GRYLibrary.Core.Miscellaneous.Healthcheck
             string text;
             if (this.AddTimestamp)
             {
-                text = Utilities.DateTimeToISO8601String(DateTime.Now) + ": ";
+                text = Utilities.DateTimeToISO8601String(Utilities.GetNow()) + ": ";
             }
             else
             {

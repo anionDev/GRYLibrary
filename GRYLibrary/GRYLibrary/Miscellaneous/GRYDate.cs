@@ -12,6 +12,8 @@ namespace GRYLibrary.Core.Miscellaneous
         public int Year { get; set; }
         public int Month { get; set; }
         public int Day { get; set; }
+        public static GRYDate GetCurrentDate() { return GRYDateTime.GetCurrentDateTime().ToGRYDate(); }
+        public static GRYDate GetCurrentDateInUTC() { return GRYDateTime.GetCurrentDateTimeInUTC().ToGRYDate(); }
 
         public GRYDate(int year, int month, int day)
         {

@@ -12,6 +12,8 @@ namespace GRYLibrary.Core.Miscellaneous
         public int Hour { get; set; }
         public int Minute { get; set; }
         public int Second { get; set; }
+        public static GRYTime GetCurrentTime() { return GRYDateTime.GetCurrentDateTime().ToGRYTime(); }
+        public static GRYTime GetCurrentTimeInUTC() { return GRYDateTime.GetCurrentDateTimeInUTC().ToGRYTime(); }
 
         public GRYTime(int hour, int minute, int second)
         {
