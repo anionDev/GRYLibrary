@@ -648,6 +648,43 @@ namespace GRYLibrary.Core.Miscellaneous
             return $"{time.Hour.ToString().PadLeft(2, '0')}:{time.Minute.ToString().PadLeft(2, '0')}:{time.Second.ToString().PadLeft(2, '0')}";
         }
 
+        /// <summary>
+        /// This function parses a datetime-string.
+        /// </summary>
+        /// <param name="date">This string is expected to be in the format "MM/dd/yyyy hh:mm:ss tt".</param>
+        /// <remarks>
+        /// The difference in comparison to <see cref="DateTime.ParseExact(string, string, IFormatProvider?)"/> is that this function does not require leading zeros.
+        /// So "5" is allowed as hour for example.
+        /// </remarks>
+        /// <example>
+        /// "4/3/2017 7:4:53 PM" is a valid string (representing the date "2017-03-04T19:4:53" in ISO8601-format).
+        /// </example>
+        public static DateTime ParseDateAmericanFormat(string input)
+        {
+            var regexStr = @"^(\d?\d)\/(\d?\d)\/(\d?\d?\d?\d) (\d?\d):(\d?\d):(\d?\d) (AM|PM)$";
+            var regex = new Regex(regexStr);
+            var match = regex.Match(input);
+            if (match.Captures.Count < 1)
+            {
+                throw new ArgumentException($"Input \"{input}\" does not match regex \"{regexStr}\".");
+            }
+            else if (match.Captures.Count == 1)
+            {
+                string Pad(string value, int length)
+                {
+                    return value.PadLeft(length, '0');
+                }
+                var c = (Match)match.Captures[0];
+                string s = $"{Pad(c.Groups[1].Value, 2)}/{Pad(c.Groups[2].Value, 2)}/{Pad(c.Groups[3].Value, 4)} {Pad(c.Groups[4].Value, 2)}:{Pad(c.Groups[5].Value, 2)}:{Pad(c.Groups[6].Value, 2)} {c.Groups[7].Value}";
+                return DateTime.ParseExact(s, "MM/dd/yyyy hh:mm:ss tt", CultureInfo.InvariantCulture);
+            }
+            else
+            {
+                throw new InternalAlgorithmException();
+            }
+        }
+
+
         public static void EnsureDirectoryDoesNotExist(string path)
         {
             if (Directory.Exists(path))

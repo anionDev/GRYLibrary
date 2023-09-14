@@ -661,8 +661,8 @@ namespace GRYLibrary.Tests.Testcases
 
             // assert
             Assert.IsTrue(expected.SequenceEqual(actual));
-
         }
+
         [TestMethod]
         public void TypeComparerIgnoringGenericsTest()
         {
@@ -729,6 +729,20 @@ namespace GRYLibrary.Tests.Testcases
             Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"..\X.mp3"));
             Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@".\X\Y.mp3"));
             Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"..\X\Y.mp3"));
+        }
+
+        [TestMethod]
+        public void TestParseDateAmericanFormat()
+        {
+            // arrange
+            string input = "4/3/2017 7:2:53 PM";
+            DateTime expected = new DateTime(2017, 4, 3, 19, 2, 53);
+
+            // act
+            DateTime actual = Core.Miscellaneous.Utilities.ParseDateAmericanFormat(input);
+
+            // assert
+            Assert.AreEqual(expected, actual);
         }
     }
 }
