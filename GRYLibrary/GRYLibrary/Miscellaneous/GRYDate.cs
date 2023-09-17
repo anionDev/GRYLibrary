@@ -43,7 +43,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static GRYDate FromString(string @string)
         {
-            return FromDate(DateOnly.ParseExact(@string, DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal));
+            return FromDate(DateOnly.ParseExact(@string, DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None));
         }
 
         public override readonly int GetHashCode()

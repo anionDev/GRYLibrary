@@ -81,7 +81,6 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
-
                     using WindowsIdentity identity = WindowsIdentity.GetCurrent();
                     WindowsPrincipal principal = new(identity);
                     return principal.IsInRole(WindowsBuiltInRole.Administrator);
@@ -1585,10 +1584,14 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             return input.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).Select(line => line.Replace("\r", string.Empty).Replace("\n", string.Empty)).ToArray();
         }
-        public static void AssertCondition(bool condition, string messageForFailedAssertion = EmptyString)
+        public static void AssertCondition(bool condition, string messageForFailedAssertion = EmptyString, bool @break = false)
         {
             if (!condition)
             {
+                if (@break && Debugger.IsAttached)
+                {
+                    Debugger.Break();
+                }
                 throw new AssertionException("Assertion failed. Condition is false." + (string.IsNullOrWhiteSpace(messageForFailedAssertion) ? string.Empty : " " + messageForFailedAssertion));
             }
         }
@@ -2392,7 +2395,7 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             using TcpClient tcpClient = new TcpClient(domain, port);
             using StreamReader streamReader = new(tcpClient.GetStream());
-            DateTime originalDateTime = DateTime.ParseExact(streamReader.ReadToEnd().Substring(begin, length), format, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
+            DateTime originalDateTime = DateTime.ParseExact(streamReader.ReadToEnd().Substring(begin, length), format, CultureInfo.InvariantCulture, DateTimeStyles.None);
             return TimeZoneInfo.ConvertTime(originalDateTime, timezone);
         }
         /// <returns>
