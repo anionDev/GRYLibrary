@@ -515,10 +515,10 @@ namespace GRYLibrary.Core.Miscellaneous
             List<IList<string>> result = new List<IList<string>>();
             if (csvString != EmptyString)
             {
-                foreach (var line in csvString.Split(Environment.NewLine))
+                foreach (string line in csvString.Split(Environment.NewLine))
                 {
-                    var lineAsList = new List<string>();
-                    foreach (var cell in line.Split(";"))
+                    List<string> lineAsList = new List<string>();
+                    foreach (string cell in line.Split(";"))
                     {
                         lineAsList.Add(cell);
                     }
