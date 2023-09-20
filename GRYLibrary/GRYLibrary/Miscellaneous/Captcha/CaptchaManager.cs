@@ -34,9 +34,8 @@ namespace GRYLibrary.Core.Miscellaneous.Captcha
 
         public bool TrySolve(string captchaId, string userInput, out string accessKey, out string failMessage)
         {
-            if (this._Captchas.ContainsKey(captchaId))
+            if (this._Captchas.TryGetValue(captchaId, out CaptchaInstance captcha))
             {
-                CaptchaInstance captcha = this._Captchas[captchaId];
                 if (captcha.ExpectedUserInput == userInput)
                 {
                     DateTime now = GetCurrentTime();

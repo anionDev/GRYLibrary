@@ -47,7 +47,6 @@ namespace GRYLibrary.Core.Miscellaneous
         #region Constants
         public const string EmptyString = "";
         public const string SpecialCharacterTestString = "<SpecialCharacterTest>äöüßÄÖÜÆÑçéý &← /\\*#^°'`´\" ?|§@$€%-_²⁶₇¬∀∈∑∜∫∰≈≪ﬁ.Доброе утро صبح به خیر शुभ प्रभात 좋은 아침 സുപ്രഭാതം おはようございます ហ្គុនមូហ្កិន</SpecialCharacterTest>";
-
         #endregion
 
         public static (T[], T[]) Split<T>(T[] source, int index)
@@ -511,6 +510,64 @@ namespace GRYLibrary.Core.Miscellaneous
                 Console.WriteLine(line);
             }
         }
+        public static IList<IList<string>> CSVStringToEntryList(string csvString)
+        {
+            List<IList<string>> result = new List<IList<string>>();
+            if (csvString != EmptyString)
+            {
+                foreach (var line in csvString.Split(Environment.NewLine))
+                {
+                    var lineAsList = new List<string>();
+                    foreach (var cell in line.Split(";"))
+                    {
+                        lineAsList.Add(cell);
+                    }
+                    result.Add(lineAsList);
+                }
+            }
+            return result;
+        }
+        public static string EntryListToCSVString(IList<IList<string>> entryList)
+        {
+            return string.Join(Environment.NewLine, entryList.Select(line => string.Join(";", line)));
+        }
+        public static string PadCSV(string csvString)
+        {
+            return EntryListToCSVString(PadTable(CSVStringToEntryList(csvString)));
+        }
+        public static IList<IList<string>> PadTable(IList<IList<string>> table)
+        {
+            List<IList<string>> result = new List<IList<string>>();
+            if (table.Count == 0)
+            {
+                return result;
+            }
+            AssertCondition(table.Select(lines => lines.Count).ToHashSet().Count == 1,@break:true);
+            int columnAmount = table.First().Count;
+            uint[] columnWidths = Enumerable.Repeat((uint)0, columnAmount).ToArray();
+
+            //collect column-widths
+            foreach (IList<string> line in table)
+            {
+                for (int i = 0; i < columnAmount; i++)
+                {
+                    if (columnWidths[i] < line[i].Length)
+                    {
+                        columnWidths[i] = (uint)line[i].Length;
+                    }
+                }
+            }
+            foreach (IList<string> line in table)
+            {
+                List<string> cells = new List<string>();
+                for (int i = 0; i < columnAmount; i++)
+                {
+                    cells.Add(line[i].PadRight((int)columnWidths[i], ' '));
+                }
+                result.Add(cells);
+            }
+            return result;
+        }
 
         public static T[][] EnumerableOfEnumerableToJaggedArray<T>(IEnumerable<IEnumerable<T>> items)
         {
@@ -633,6 +690,10 @@ namespace GRYLibrary.Core.Miscellaneous
         public static string DateTimeToUserFriendlyString(DateTime dateTime)
         {
             return DateTimeToISO8601String(dateTime, false);
+        }
+        public static string DateTimeToUserFriendlyString(GRYDateTime dateTime)
+        {
+            return DateTimeToISO8601String(GRYDateTime.ToDateTime(dateTime), false);
         }
         public static string DateTimeForFilename(DateTime dateTime)
         {
@@ -1584,6 +1645,14 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             return input.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).Select(line => line.Replace("\r", string.Empty).Replace("\n", string.Empty)).ToArray();
         }
+
+        /// <summary>
+        /// Throws an exception if <paramref name="condition"/>==false.
+        /// </summary>
+        /// <remarks>
+        /// The purpose of this function is to verify assertions at runtime.
+        /// It is not supposed to be used for unit-test-assertions.
+        /// </remarks>
         public static void AssertCondition(bool condition, string messageForFailedAssertion = EmptyString, bool @break = false)
         {
             if (!condition)

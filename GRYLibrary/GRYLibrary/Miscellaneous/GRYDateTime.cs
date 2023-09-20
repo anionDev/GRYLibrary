@@ -28,7 +28,7 @@ namespace GRYLibrary.Core.Miscellaneous
             this.Second = second;
             ToDateTime(this);//check if datetime is valid
         }
-        public static DateTime ToDateTime(GRYDateTime value)
+        public static DateTime ToDateTime(GRYDateTime value)//TODO this function should not be static
         {
             if (value == default)
             {
