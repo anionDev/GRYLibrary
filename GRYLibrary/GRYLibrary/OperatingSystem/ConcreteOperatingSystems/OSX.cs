@@ -1,6 +1,6 @@
 ﻿namespace GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems
 {
-    public class OSX :OperatingSystem
+    public class OSX : OperatingSystem
     {
         private OSX() { }
         public static OperatingSystem Instance { get; } = new OSX();

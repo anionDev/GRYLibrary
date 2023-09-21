@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 
 namespace GRYLibrary.Core.Crypto
 {
-    public class AES256 :SymmetricEncryptionAlgorithm
+    public class AES256 : SymmetricEncryptionAlgorithm
     {
         #region AES
         private const int _IVLength = 16;
@@ -18,7 +18,7 @@ namespace GRYLibrary.Core.Crypto
         {
             string plainText = Utilities.ByteArrayToHexString(data);
             // Check arguments.
-            if(plainText == null || plainText.Length <= 0)
+            if (plainText == null || plainText.Length <= 0)
             {
                 throw new ArgumentNullException("plainText");
             }
@@ -29,20 +29,20 @@ namespace GRYLibrary.Core.Crypto
             }
 
             byte[] encrypted;
-            using(Aes aesAlg = Aes.Create())
+            using (Aes aesAlg = Aes.Create())
             {
                 aesAlg.Key = key;
                 ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
 
-                if(aesAlg.IV.Length != _IVLength)
+                if (aesAlg.IV.Length != _IVLength)
                 {
                     throw new ArgumentException($"Expected IV-length {_IVLength} but was {aesAlg.IV.Length}.");
                 }
-                using(MemoryStream msEncrypt = new MemoryStream())
+                using (MemoryStream msEncrypt = new MemoryStream())
                 {
-                    using(CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
                     {
-                        using(StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                        using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
                         {
                             swEncrypt.Write(plainText);
                         }
@@ -58,7 +58,7 @@ namespace GRYLibrary.Core.Crypto
         {
             string cipherText = Utilities.ByteArrayToHexString(data);
             // Check arguments.
-            if(cipherText == null || cipherText.Length <= 0)
+            if (cipherText == null || cipherText.Length <= 0)
             {
                 throw new ArgumentNullException("cipherText");
             }
@@ -70,7 +70,7 @@ namespace GRYLibrary.Core.Crypto
 
             byte[] iv = data.Take(_IVLength).ToArray();
             data = data.Skip(_IVLength).ToArray();
-            if(iv == null || iv.Length <= 0)
+            if (iv == null || iv.Length <= 0)
             {
                 throw new ArgumentNullException("IV");
             }
@@ -81,7 +81,7 @@ namespace GRYLibrary.Core.Crypto
 
             // Create an Aes object
             // with the specified key and IV.
-            using(Aes aesAlg = Aes.Create())
+            using (Aes aesAlg = Aes.Create())
             {
                 aesAlg.Key = key;
                 aesAlg.IV = iv;
@@ -89,11 +89,11 @@ namespace GRYLibrary.Core.Crypto
                 ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
 
                 // Create the streams used for decryption.
-                using(MemoryStream msDecrypt = new MemoryStream(data))
+                using (MemoryStream msDecrypt = new MemoryStream(data))
                 {
-                    using(CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
                     {
-                        using(StreamReader srDecrypt = new StreamReader(csDecrypt))
+                        using (StreamReader srDecrypt = new StreamReader(csDecrypt))
                         {
 
                             // Read the decrypted bytes from the decrypting stream
@@ -110,7 +110,7 @@ namespace GRYLibrary.Core.Crypto
         {
             using RijndaelManaged algorithmImplementation = new();
             algorithmImplementation.GenerateIV();
-            if(algorithmImplementation.IV.Length != _AESBlockLength)
+            if (algorithmImplementation.IV.Length != _AESBlockLength)
             {
                 throw new InvalidDataException($"Expected length of IV to be {_AESBlockLength} but was {algorithmImplementation.IV.Length}");
             }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GRYLibrary.Core.Graph
 {
-    public class DirectedEdge :Edge
+    public class DirectedEdge : Edge
     {
         public Vertex Source { get; private set; }
         public Vertex Target { get; private set; }
@@ -33,16 +33,16 @@ namespace GRYLibrary.Core.Graph
         }
         public override bool Equals(object obj)
         {
-            if(!base.Equals(obj))
+            if (!base.Equals(obj))
             {
                 return false;
             }
             DirectedEdge typedObject = (DirectedEdge)obj;
-            if(!this.Source.Equals(typedObject.Source))
+            if (!this.Source.Equals(typedObject.Source))
             {
                 return false;
             }
-            if(!this.Target.Equals(typedObject.Target))
+            if (!this.Target.Equals(typedObject.Target))
             {
                 return false;
             }
@@ -79,11 +79,11 @@ namespace GRYLibrary.Core.Graph
 
         public override IEnumerable<Vertex> GetOtherConnectedVerticesVisitor(Vertex vertex)
         {
-            if(this.Source.Equals(vertex))
+            if (this.Source.Equals(vertex))
             {
                 return new Vertex[] { this.Target };
             }
-            if(this.Target.Equals(vertex))
+            if (this.Target.Equals(vertex))
             {
                 return new Vertex[] { this.Source };
             }

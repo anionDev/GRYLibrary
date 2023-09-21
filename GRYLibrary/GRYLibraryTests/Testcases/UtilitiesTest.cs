@@ -15,13 +15,13 @@ using System.Numerics;
 using System.Reflection;
 using System.Text;
 using System.Xml.Serialization;
+using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 
 namespace GRYLibrary.Tests.Testcases
 {
     [TestClass]
     public class UtilitiesTest
     {
-
         [TestMethod]
         public void TestResolvePathOfProgram()
         {
@@ -32,7 +32,7 @@ namespace GRYLibrary.Tests.Testcases
             string argument = originalArgument;
 
             // act
-            Tuple<string, string, string> result = Core.Miscellaneous.Utilities.ResolvePathOfProgram(program, argument, null);
+            Tuple<string, string, string> result = GUtilities.ResolvePathOfProgram(program, argument, null);
 
             // assert
             Assert.IsTrue(Path.IsPathFullyQualified(result.Item1));
@@ -47,9 +47,9 @@ namespace GRYLibrary.Tests.Testcases
             try
             {
                 Assert.IsFalse(File.Exists(testFile));
-                Core.Miscellaneous.Utilities.EnsureFileExists(testFile);
+                GUtilities.EnsureFileExists(testFile);
                 Assert.IsTrue(File.Exists(testFile));
-                Core.Miscellaneous.Utilities.EnsureFileExists(testFile);
+                GUtilities.EnsureFileExists(testFile);
                 Assert.IsTrue(File.Exists(testFile));
             }
             finally
@@ -61,11 +61,11 @@ namespace GRYLibrary.Tests.Testcases
         public void UtilitiesTestEnsureFileDoesNotExist()
         {
             string testFile = "file";
-            Core.Miscellaneous.Utilities.EnsureFileExists(testFile);
+            GUtilities.EnsureFileExists(testFile);
             Assert.IsTrue(File.Exists(testFile));
-            Core.Miscellaneous.Utilities.EnsureFileDoesNotExist(testFile);
+            GUtilities.EnsureFileDoesNotExist(testFile);
             Assert.IsFalse(File.Exists(testFile));
-            Core.Miscellaneous.Utilities.EnsureFileDoesNotExist(testFile);
+            GUtilities.EnsureFileDoesNotExist(testFile);
             Assert.IsFalse(File.Exists(testFile));
         }
         [TestMethod]
@@ -75,9 +75,9 @@ namespace GRYLibrary.Tests.Testcases
             try
             {
                 Assert.IsFalse(Directory.Exists(testDir));
-                Core.Miscellaneous.Utilities.EnsureDirectoryExists(testDir);
+                GUtilities.EnsureDirectoryExists(testDir);
                 Assert.IsTrue(Directory.Exists(testDir));
-                Core.Miscellaneous.Utilities.EnsureDirectoryExists(testDir);
+                GUtilities.EnsureDirectoryExists(testDir);
                 Assert.IsTrue(Directory.Exists(testDir));
             }
             finally
@@ -89,11 +89,11 @@ namespace GRYLibrary.Tests.Testcases
         public void UtilitiesTestEnsureDirectoryDoesNotExist()
         {
             string testDir = "dir";
-            Core.Miscellaneous.Utilities.EnsureDirectoryExists(testDir);
+            GUtilities.EnsureDirectoryExists(testDir);
             Assert.IsTrue(Directory.Exists(testDir));
-            Core.Miscellaneous.Utilities.EnsureDirectoryDoesNotExist(testDir);
+            GUtilities.EnsureDirectoryDoesNotExist(testDir);
             Assert.IsFalse(Directory.Exists(testDir));
-            Core.Miscellaneous.Utilities.EnsureDirectoryDoesNotExist(testDir);
+            GUtilities.EnsureDirectoryDoesNotExist(testDir);
             Assert.IsFalse(Directory.Exists(testDir));
         }
         [TestMethod]
@@ -101,9 +101,9 @@ namespace GRYLibrary.Tests.Testcases
         {
             string dir = "dir";
             string testFile = dir + "/file";
-            Core.Miscellaneous.Utilities.EnsureFileExists(testFile, true);
+            GUtilities.EnsureFileExists(testFile, true);
             Assert.IsTrue(File.Exists(testFile));
-            Core.Miscellaneous.Utilities.EnsureDirectoryDoesNotExist(dir);
+            GUtilities.EnsureDirectoryDoesNotExist(dir);
             Assert.IsFalse(Directory.Exists(testFile));
         }
         [TestMethod]
@@ -118,17 +118,17 @@ namespace GRYLibrary.Tests.Testcases
             string file4 = baseDir + "dir3/file4";
             try
             {
-                Core.Miscellaneous.Utilities.EnsureFileExists(file1, true);
-                Core.Miscellaneous.Utilities.EnsureFileExists(file2, true);
-                Core.Miscellaneous.Utilities.EnsureFileExists(file3, true);
-                Core.Miscellaneous.Utilities.EnsureFileExists(file4, true);
+                GUtilities.EnsureFileExists(file1, true);
+                GUtilities.EnsureFileExists(file2, true);
+                GUtilities.EnsureFileExists(file3, true);
+                GUtilities.EnsureFileExists(file4, true);
 
-                IEnumerable<string> result = Core.Miscellaneous.Utilities.GetFilesOfFolderRecursively(baseDir);
+                IEnumerable<string> result = GUtilities.GetFilesOfFolderRecursively(baseDir);
                 Assert.AreEqual(4, result.Count());
             }
             finally
             {
-                Core.Miscellaneous.Utilities.EnsureDirectoryDoesNotExist(baseDir);
+                GUtilities.EnsureDirectoryDoesNotExist(baseDir);
             }
         }
         [TestMethod]
@@ -136,7 +136,7 @@ namespace GRYLibrary.Tests.Testcases
         {
             string input = "5fe3eb8e-39dc-469c-a9cd-ea740e90d338";
             Guid inputId = Guid.Parse(input);
-            Guid result = Core.Miscellaneous.Utilities.IncrementGuid(inputId);
+            Guid result = GUtilities.IncrementGuid(inputId);
             Assert.AreEqual("5fe3eb8e-39dc-469c-a9cd-ea740e90d339", result.ToString());
         }
         [TestMethod]
@@ -144,7 +144,7 @@ namespace GRYLibrary.Tests.Testcases
         {
             string input = "0003eb8e-39dc-469c-a9cd-00740e90d338";
             Guid inputId = Guid.Parse(input);
-            Guid result = Core.Miscellaneous.Utilities.IncrementGuid(inputId);
+            Guid result = GUtilities.IncrementGuid(inputId);
             Assert.AreEqual("0003eb8e-39dc-469c-a9cd-00740e90d339", result.ToString());
         }
         [TestMethod]
@@ -152,7 +152,7 @@ namespace GRYLibrary.Tests.Testcases
         {
             string input = "0003eb8e-39dc-469c-a9cd-90740e90d338";
             Guid inputId = Guid.Parse(input);
-            Guid result = Core.Miscellaneous.Utilities.IncrementGuid(inputId, BigInteger.Parse("100000000000", NumberStyles.HexNumber));
+            Guid result = GUtilities.IncrementGuid(inputId, BigInteger.Parse("100000000000", NumberStyles.HexNumber));
             Assert.AreEqual("0003eb8e-39dc-469c-a9cd-a0740e90d338", result.ToString());
         }
         [TestMethod]
@@ -160,7 +160,7 @@ namespace GRYLibrary.Tests.Testcases
         {
             string input = "5fe3eb8e-39dc-469c-a9cd-ea740e90d338";
             Guid inputId = Guid.Parse(input);
-            Guid result = Core.Miscellaneous.Utilities.IncrementGuid(inputId);
+            Guid result = GUtilities.IncrementGuid(inputId);
             Assert.AreNotEqual(input, result.ToString());
         }
         [Ignore]
@@ -202,35 +202,35 @@ namespace GRYLibrary.Tests.Testcases
         [TestMethod]
         public void IsPrimitiveTest()
         {
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ObjectIsPrimitive(true));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ObjectIsPrimitive(false));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ObjectIsPrimitive(3));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ObjectIsPrimitive(0));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ObjectIsPrimitive("somestring"));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ObjectIsPrimitive(1.5));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ObjectIsPrimitive(Guid.NewGuid()));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ObjectIsPrimitive(default(Guid)));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ObjectIsPrimitive(default(int)));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ObjectIsPrimitive(default(bool)));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.ObjectIsPrimitive(new Exception()));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.ObjectIsPrimitive(new Uri("https://example.org")));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.ObjectIsPrimitive(new ArraySegment<int>()));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.ObjectIsPrimitive(new ArrayList()));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.ObjectIsPrimitive(new LinkedList<int>()));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.ObjectIsPrimitive(new object()));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ObjectIsPrimitive(typeof(int)));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ObjectIsPrimitive(typeof(object)));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ObjectIsPrimitive(typeof(ArrayList)));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ObjectIsPrimitive(typeof(IList<>)));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ObjectIsPrimitive(typeof(IList<Func<Uri>>)));
+            Assert.IsTrue(GUtilities.ObjectIsPrimitive(true));
+            Assert.IsTrue(GUtilities.ObjectIsPrimitive(false));
+            Assert.IsTrue(GUtilities.ObjectIsPrimitive(3));
+            Assert.IsTrue(GUtilities.ObjectIsPrimitive(0));
+            Assert.IsTrue(GUtilities.ObjectIsPrimitive("somestring"));
+            Assert.IsTrue(GUtilities.ObjectIsPrimitive(1.5));
+            Assert.IsTrue(GUtilities.ObjectIsPrimitive(Guid.NewGuid()));
+            Assert.IsTrue(GUtilities.ObjectIsPrimitive(default(Guid)));
+            Assert.IsTrue(GUtilities.ObjectIsPrimitive(default(int)));
+            Assert.IsTrue(GUtilities.ObjectIsPrimitive(default(bool)));
+            Assert.IsFalse(GUtilities.ObjectIsPrimitive(new Exception()));
+            Assert.IsFalse(GUtilities.ObjectIsPrimitive(new Uri("https://example.org")));
+            Assert.IsFalse(GUtilities.ObjectIsPrimitive(new ArraySegment<int>()));
+            Assert.IsFalse(GUtilities.ObjectIsPrimitive(new ArrayList()));
+            Assert.IsFalse(GUtilities.ObjectIsPrimitive(new LinkedList<int>()));
+            Assert.IsFalse(GUtilities.ObjectIsPrimitive(new object()));
+            Assert.IsTrue(GUtilities.ObjectIsPrimitive(typeof(int)));
+            Assert.IsTrue(GUtilities.ObjectIsPrimitive(typeof(object)));
+            Assert.IsTrue(GUtilities.ObjectIsPrimitive(typeof(ArrayList)));
+            Assert.IsTrue(GUtilities.ObjectIsPrimitive(typeof(IList<>)));
+            Assert.IsTrue(GUtilities.ObjectIsPrimitive(typeof(IList<Func<Uri>>)));
         }
         [TestMethod]
         public void TypeRepresentsTypeTest()
         {
-            Assert.IsFalse(Core.Miscellaneous.Utilities.TypeRepresentsType(typeof(object)));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.TypeRepresentsType(typeof(List<Type>)));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.TypeRepresentsType(typeof(Type)));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.TypeRepresentsType(typeof(TypeInfo)));
+            Assert.IsFalse(GUtilities.TypeRepresentsType(typeof(object)));
+            Assert.IsFalse(GUtilities.TypeRepresentsType(typeof(List<Type>)));
+            Assert.IsTrue(GUtilities.TypeRepresentsType(typeof(Type)));
+            Assert.IsTrue(GUtilities.TypeRepresentsType(typeof(TypeInfo)));
         }
         [TestMethod]
         public void IsDictionaryEntryTest()
@@ -437,51 +437,51 @@ namespace GRYLibrary.Tests.Testcases
         {
             List<object> list = new() { 3, 4, 5 };
             IEnumerable listAsEnumerable = list;
-            Assert.AreEqual(list.Count, Core.Miscellaneous.Utilities.Count(listAsEnumerable));
+            Assert.AreEqual(list.Count, GUtilities.Count(listAsEnumerable));
         }
         [TestMethod]
         public void IsAssignableFromTest()
         {
-            Assert.IsTrue(Core.Miscellaneous.Utilities.IsAssignableFrom(new SimpleDataStructure1(), typeof(SimpleDataStructure1)));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.IsAssignableFrom(new SimpleDataStructure1(), typeof(IXmlSerializable)));
+            Assert.IsTrue(GUtilities.IsAssignableFrom(new SimpleDataStructure1(), typeof(SimpleDataStructure1)));
+            Assert.IsTrue(GUtilities.IsAssignableFrom(new SimpleDataStructure1(), typeof(IXmlSerializable)));
         }
         [Ignore]
         [TestMethod]
         public void ReferenceEqualsWithCommonValuesTest()
         {
             Guid guid1 = Guid.NewGuid();
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ImprovedReferenceEquals(guid1, guid1));
+            Assert.IsTrue(GUtilities.ImprovedReferenceEquals(guid1, guid1));
             Guid guid2 = Guid.NewGuid();
-            Assert.IsFalse(Core.Miscellaneous.Utilities.ImprovedReferenceEquals(guid1, guid2));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ImprovedReferenceEquals(Guid.Parse("33257693-bcee-4afd-a648-dd45ee06695d"), Guid.Parse("33257693-bcee-4afd-a648-dd45ee06695d")));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.ImprovedReferenceEquals(Guid.Parse("33257693-bcee-4afd-a648-dd45ee06695d"), Guid.Parse("22257693-bcee-4afd-a648-dd45ee066922")));
+            Assert.IsFalse(GUtilities.ImprovedReferenceEquals(guid1, guid2));
+            Assert.IsTrue(GUtilities.ImprovedReferenceEquals(Guid.Parse("33257693-bcee-4afd-a648-dd45ee06695d"), Guid.Parse("33257693-bcee-4afd-a648-dd45ee06695d")));
+            Assert.IsFalse(GUtilities.ImprovedReferenceEquals(Guid.Parse("33257693-bcee-4afd-a648-dd45ee06695d"), Guid.Parse("22257693-bcee-4afd-a648-dd45ee066922")));
             object @object = new();
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ImprovedReferenceEquals(@object, @object));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.ImprovedReferenceEquals(@object, new object()));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.ImprovedReferenceEquals(@object, "string"));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ImprovedReferenceEquals(5, 5));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ImprovedReferenceEquals("string", "string"));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.ImprovedReferenceEquals("string", "string2"));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.ImprovedReferenceEquals(5, 6));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.ImprovedReferenceEquals(5, null));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.ImprovedReferenceEquals(null, "string"));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.ImprovedReferenceEquals(0, new object()));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.ImprovedReferenceEquals(0, null));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ImprovedReferenceEquals(new System.Collections.Generic.KeyValuePair<int, string>(5, "s"), new System.Collections.Generic.KeyValuePair<int, string>(5, "s")));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.ImprovedReferenceEquals(new System.Collections.Generic.KeyValuePair<int, string>(5, "s1"), new System.Collections.Generic.KeyValuePair<int, string>(5, "s2")));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.ImprovedReferenceEquals(new System.Collections.Generic.KeyValuePair<int, string>(5, "s"), new System.Collections.Generic.KeyValuePair<int, string>(6, "s")));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ImprovedReferenceEquals(new System.Collections.Generic.KeyValuePair<int, string>(5, null), new System.Collections.Generic.KeyValuePair<int, object>(5, null)));
+            Assert.IsTrue(GUtilities.ImprovedReferenceEquals(@object, @object));
+            Assert.IsFalse(GUtilities.ImprovedReferenceEquals(@object, new object()));
+            Assert.IsFalse(GUtilities.ImprovedReferenceEquals(@object, "string"));
+            Assert.IsTrue(GUtilities.ImprovedReferenceEquals(5, 5));
+            Assert.IsTrue(GUtilities.ImprovedReferenceEquals("string", "string"));
+            Assert.IsFalse(GUtilities.ImprovedReferenceEquals("string", "string2"));
+            Assert.IsFalse(GUtilities.ImprovedReferenceEquals(5, 6));
+            Assert.IsFalse(GUtilities.ImprovedReferenceEquals(5, null));
+            Assert.IsFalse(GUtilities.ImprovedReferenceEquals(null, "string"));
+            Assert.IsFalse(GUtilities.ImprovedReferenceEquals(0, new object()));
+            Assert.IsFalse(GUtilities.ImprovedReferenceEquals(0, null));
+            Assert.IsTrue(GUtilities.ImprovedReferenceEquals(new System.Collections.Generic.KeyValuePair<int, string>(5, "s"), new System.Collections.Generic.KeyValuePair<int, string>(5, "s")));
+            Assert.IsFalse(GUtilities.ImprovedReferenceEquals(new System.Collections.Generic.KeyValuePair<int, string>(5, "s1"), new System.Collections.Generic.KeyValuePair<int, string>(5, "s2")));
+            Assert.IsFalse(GUtilities.ImprovedReferenceEquals(new System.Collections.Generic.KeyValuePair<int, string>(5, "s"), new System.Collections.Generic.KeyValuePair<int, string>(6, "s")));
+            Assert.IsTrue(GUtilities.ImprovedReferenceEquals(new System.Collections.Generic.KeyValuePair<int, string>(5, null), new System.Collections.Generic.KeyValuePair<int, object>(5, null)));
         }
         [TestMethod]
         public void ReferenceEqualsCycleTest1()
         {
             CycleA cycle = CycleA.GetRandom();
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ImprovedReferenceEquals(cycle, cycle));
+            Assert.IsTrue(GUtilities.ImprovedReferenceEquals(cycle, cycle));
         }
         [TestMethod]
         public void ReferenceEqualsCycleTest2()
         {
-            Assert.IsFalse(Core.Miscellaneous.Utilities.ImprovedReferenceEquals(CycleA.GetRandom(), CycleA.GetRandom()));
+            Assert.IsFalse(GUtilities.ImprovedReferenceEquals(CycleA.GetRandom(), CycleA.GetRandom()));
         }
         [TestMethod]
         public void ReferenceEqualsCycleTest3()
@@ -514,28 +514,28 @@ namespace GRYLibrary.Tests.Testcases
             wt7.Item1 = kvp1;
             wt8.Item1 = kvp1;
 
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ImprovedReferenceEquals(kvp1, kvp1));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ImprovedReferenceEquals(kvp2, kvp2));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ImprovedReferenceEquals(kvp3, kvp3));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ImprovedReferenceEquals(kvp4, kvp4));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ImprovedReferenceEquals(kvp5, kvp5));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ImprovedReferenceEquals(kvp6, kvp6));
+            Assert.IsTrue(GUtilities.ImprovedReferenceEquals(kvp1, kvp1));
+            Assert.IsTrue(GUtilities.ImprovedReferenceEquals(kvp2, kvp2));
+            Assert.IsTrue(GUtilities.ImprovedReferenceEquals(kvp3, kvp3));
+            Assert.IsTrue(GUtilities.ImprovedReferenceEquals(kvp4, kvp4));
+            Assert.IsTrue(GUtilities.ImprovedReferenceEquals(kvp5, kvp5));
+            Assert.IsTrue(GUtilities.ImprovedReferenceEquals(kvp6, kvp6));
 
-            Assert.IsFalse(Core.Miscellaneous.Utilities.ImprovedReferenceEquals(kvp2, kvp3));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.ImprovedReferenceEquals(kvp1, kvp3));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.ImprovedReferenceEquals(kvp1, kvp4));
+            Assert.IsFalse(GUtilities.ImprovedReferenceEquals(kvp2, kvp3));
+            Assert.IsFalse(GUtilities.ImprovedReferenceEquals(kvp1, kvp3));
+            Assert.IsFalse(GUtilities.ImprovedReferenceEquals(kvp1, kvp4));
         }
 
         [TestMethod]
         public void EnsurePathHasNoLeadingOrTrailingQuotesTest()
         {
-            Assert.AreEqual("a", Core.Miscellaneous.Utilities.EnsurePathHasNoLeadingOrTrailingQuotes("'\"'\"a\"'\"'"));
+            Assert.AreEqual("a", GUtilities.EnsurePathHasNoLeadingOrTrailingQuotes("'\"'\"a\"'\"'"));
         }
         [TestMethod]
         public void EnsurePathDoesNotHaveLeadingOrTrailingSlashOrBackslashTest()
         {
-            Assert.AreEqual("a", Core.Miscellaneous.Utilities.EnsurePathEndsWithoutSlashOrBackslash("a/"));
-            Assert.AreEqual("a", Core.Miscellaneous.Utilities.EnsurePathEndsWithoutSlashOrBackslash("a\\"));
+            Assert.AreEqual("a", GUtilities.EnsurePathEndsWithoutSlashOrBackslash("a/"));
+            Assert.AreEqual("a", GUtilities.EnsurePathEndsWithoutSlashOrBackslash("a\\"));
         }
         [TestMethod]
         public void HexStringToByteArrayTest()
@@ -545,7 +545,7 @@ namespace GRYLibrary.Tests.Testcases
             byte[] expected = new byte[] { 222 };
 
             // act
-            byte[] actual = Core.Miscellaneous.Utilities.HexStringToByteArray(input);
+            byte[] actual = GUtilities.HexStringToByteArray(input);
 
             // assert
             Assert.IsTrue(expected.SequenceEqual(actual));
@@ -558,7 +558,7 @@ namespace GRYLibrary.Tests.Testcases
             string expected = "DE";
 
             // act
-            string actual = Core.Miscellaneous.Utilities.ByteArrayToHexString(input);
+            string actual = GUtilities.ByteArrayToHexString(input);
 
             // assert
             Assert.IsTrue(expected.SequenceEqual(actual));
@@ -572,7 +572,7 @@ namespace GRYLibrary.Tests.Testcases
             uint expected = 9;
 
             // act
-            uint actual = Core.Miscellaneous.Utilities.BinaryStringToUint(input);
+            uint actual = GUtilities.BinaryStringToUint(input);
 
             // assert
             Assert.AreEqual(expected, actual);
@@ -586,7 +586,7 @@ namespace GRYLibrary.Tests.Testcases
             uint expected = 746;
 
             // act
-            uint actual = Core.Miscellaneous.Utilities.BinaryStringToUint(input);
+            uint actual = GUtilities.BinaryStringToUint(input);
 
             // assert
             Assert.AreEqual(expected, actual);
@@ -600,7 +600,7 @@ namespace GRYLibrary.Tests.Testcases
             uint expected = 4222263894;
 
             // act
-            uint actual = Core.Miscellaneous.Utilities.BinaryStringToUint(input);
+            uint actual = GUtilities.BinaryStringToUint(input);
 
             // assert
             Assert.AreEqual(expected, actual);
@@ -614,7 +614,7 @@ namespace GRYLibrary.Tests.Testcases
             string expected = "11111011101010101010001001010110";
 
             // act
-            string actual = Core.Miscellaneous.Utilities.UintToBinaryString(input);
+            string actual = GUtilities.UintToBinaryString(input);
 
             // assert
             Assert.AreEqual(expected, actual);
@@ -623,18 +623,18 @@ namespace GRYLibrary.Tests.Testcases
         [TestMethod]
         public void GetEncodingTest()
         {
-            Assert.AreEqual(new ASCIIEncoding(), Core.Miscellaneous.Utilities.GetEncodingByIdentifier("us-ascii"));
-            Assert.AreEqual(new UTF8Encoding(false), Core.Miscellaneous.Utilities.GetEncodingByIdentifier("utf-8"));
-            Assert.AreEqual(new UTF8Encoding(true), Core.Miscellaneous.Utilities.GetEncodingByIdentifier("utf-8-bom"));
-            Assert.AreEqual(new UnicodeEncoding(false, false), Core.Miscellaneous.Utilities.GetEncodingByIdentifier("utf-16"));
-            Assert.AreEqual(new UnicodeEncoding(false, true), Core.Miscellaneous.Utilities.GetEncodingByIdentifier("utf-16-bom"));
-            Assert.AreEqual(new UnicodeEncoding(true, false), Core.Miscellaneous.Utilities.GetEncodingByIdentifier("utf-16-be"));
-            Assert.AreEqual(new UnicodeEncoding(true, true), Core.Miscellaneous.Utilities.GetEncodingByIdentifier("utf-16-be-bom"));
-            Assert.AreEqual(new UTF32Encoding(false, false), Core.Miscellaneous.Utilities.GetEncodingByIdentifier("utf-32"));
-            Assert.AreEqual(new UTF32Encoding(false, true), Core.Miscellaneous.Utilities.GetEncodingByIdentifier("utf-32-bom"));
-            Assert.AreEqual(new UTF32Encoding(true, false), Core.Miscellaneous.Utilities.GetEncodingByIdentifier("utf-32-be"));
-            Assert.AreEqual(new UTF32Encoding(true, true), Core.Miscellaneous.Utilities.GetEncodingByIdentifier("utf-32-be-bom"));
-            Assert.AreEqual(Encoding.GetEncoding("iso-8859-1"), Core.Miscellaneous.Utilities.GetEncodingByIdentifier("iso-8859-1"));
+            Assert.AreEqual(new ASCIIEncoding(), GUtilities.GetEncodingByIdentifier("us-ascii"));
+            Assert.AreEqual(new UTF8Encoding(false), GUtilities.GetEncodingByIdentifier("utf-8"));
+            Assert.AreEqual(new UTF8Encoding(true), GUtilities.GetEncodingByIdentifier("utf-8-bom"));
+            Assert.AreEqual(new UnicodeEncoding(false, false), GUtilities.GetEncodingByIdentifier("utf-16"));
+            Assert.AreEqual(new UnicodeEncoding(false, true), GUtilities.GetEncodingByIdentifier("utf-16-bom"));
+            Assert.AreEqual(new UnicodeEncoding(true, false), GUtilities.GetEncodingByIdentifier("utf-16-be"));
+            Assert.AreEqual(new UnicodeEncoding(true, true), GUtilities.GetEncodingByIdentifier("utf-16-be-bom"));
+            Assert.AreEqual(new UTF32Encoding(false, false), GUtilities.GetEncodingByIdentifier("utf-32"));
+            Assert.AreEqual(new UTF32Encoding(false, true), GUtilities.GetEncodingByIdentifier("utf-32-bom"));
+            Assert.AreEqual(new UTF32Encoding(true, false), GUtilities.GetEncodingByIdentifier("utf-32-be"));
+            Assert.AreEqual(new UTF32Encoding(true, true), GUtilities.GetEncodingByIdentifier("utf-32-be-bom"));
+            Assert.AreEqual(Encoding.GetEncoding("iso-8859-1"), GUtilities.GetEncodingByIdentifier("iso-8859-1"));
         }
 
         [TestMethod]
@@ -644,7 +644,7 @@ namespace GRYLibrary.Tests.Testcases
             uint expected = 4222263891;
 
             // act
-            uint actual = Core.Miscellaneous.Utilities.ByteArrayToUnsignedInteger32Bit(Core.Miscellaneous.Utilities.UnsignedInteger32BitToByteArray(expected));
+            uint actual = GUtilities.ByteArrayToUnsignedInteger32Bit(GUtilities.UnsignedInteger32BitToByteArray(expected));
 
             // assert
             Assert.AreEqual(expected, actual);
@@ -657,18 +657,18 @@ namespace GRYLibrary.Tests.Testcases
             byte[] expected = new byte[] { 1, 34, 241, 25 };
 
             // act
-            byte[] actual = Core.Miscellaneous.Utilities.UnsignedInteger32BitToByteArray(Core.Miscellaneous.Utilities.ByteArrayToUnsignedInteger32Bit(expected));
+            byte[] actual = GUtilities.UnsignedInteger32BitToByteArray(GUtilities.ByteArrayToUnsignedInteger32Bit(expected));
 
             // assert
             Assert.IsTrue(expected.SequenceEqual(actual));
-
         }
+
         [TestMethod]
         public void TypeComparerIgnoringGenericsTest()
         {
             // assert
-            Assert.IsTrue(Core.Miscellaneous.Utilities.TypeComparerIgnoringGenerics.Equals(typeof(System.Collections.Generic.KeyValuePair<Hashtable, ulong>), typeof(System.Collections.Generic.KeyValuePair<int, string>)));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.TypeComparerIgnoringGenerics.Equals(typeof(HashSet<int>), typeof(List<int>)));
+            Assert.IsTrue(GUtilities.TypeComparerIgnoringGenerics.Equals(typeof(System.Collections.Generic.KeyValuePair<Hashtable, ulong>), typeof(System.Collections.Generic.KeyValuePair<int, string>)));
+            Assert.IsFalse(GUtilities.TypeComparerIgnoringGenerics.Equals(typeof(HashSet<int>), typeof(List<int>)));
 
         }
         [TestMethod]
@@ -681,7 +681,7 @@ namespace GRYLibrary.Tests.Testcases
             //  dynamic x = (dynamic)testObject;
             //   System.Collections.Generic.KeyValuePair<int, int> actualObjectDirectCasted = (System.Collections.Generic.KeyValuePair<int, int>)x;
 
-            object actualObject = Core.Miscellaneous.Utilities.Cast(testObject, expectedObject.GetType());
+            object actualObject = GUtilities.Cast(testObject, expectedObject.GetType());
 
 
             Assert.AreNotEqual(testObject, actualObject);
@@ -690,45 +690,59 @@ namespace GRYLibrary.Tests.Testcases
         [TestMethod]
         public void DateAndTimeToStringTest()
         {
-            Assert.AreEqual("2022-02-27_15-05-00", Core.Miscellaneous.Utilities.DateTimeForFilename(new DateTime(2022, 02, 27, 15, 05, 00)));
-            Assert.AreEqual("2022-02-27T15:05:00,120", Core.Miscellaneous.Utilities.DateTimeToISO8601String(new DateTime(2022, 02, 27, 15, 05, 00, 120)));
-            Assert.AreEqual("2022-02-27T15:05:00", Core.Miscellaneous.Utilities.DateTimeToUserFriendlyString(new DateTime(2022, 02, 27, 15, 05, 00)));
-            Assert.AreEqual("2022-02-27", Core.Miscellaneous.Utilities.DateToUserFriendlyString(new DateOnly(2022, 02, 27)));
-            Assert.AreEqual("15:05:00", Core.Miscellaneous.Utilities.TimeToUserFriendlyString(new TimeOnly(15, 05, 00)));
+            Assert.AreEqual("2022-02-27_15-05-00", GUtilities.DateTimeForFilename(new DateTime(2022, 02, 27, 15, 05, 00)));
+            Assert.AreEqual("2022-02-27T15:05:00,120", GUtilities.DateTimeToISO8601String(new DateTime(2022, 02, 27, 15, 05, 00, 120)));
+            Assert.AreEqual("2022-02-27T15:05:00", GUtilities.DateTimeToUserFriendlyString(new DateTime(2022, 02, 27, 15, 05, 00)));
+            Assert.AreEqual("2022-02-27", GUtilities.DateToUserFriendlyString(new DateOnly(2022, 02, 27)));
+            Assert.AreEqual("15:05:00", GUtilities.TimeToUserFriendlyString(new TimeOnly(15, 05, 00)));
         }
 
         [TestMethod]
         public void TestIsAbsolutePath()
         {
             //TODO run this testcases with all available operating-system-types
-            Assert.IsTrue(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"X:\"));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"X:\Y\"));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"X:\Y\Z"));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"X:\Y\Z.mp3"));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"X:/Y/Z"));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"X:/Y/Z.mp3"));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"/X"));
-            Assert.IsTrue(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"/X/Y.mp3"));
+            Assert.IsTrue(GUtilities.IsAbsoluteLocalFilePath(@"X:\"));
+            Assert.IsTrue(GUtilities.IsAbsoluteLocalFilePath(@"X:\Y\"));
+            Assert.IsTrue(GUtilities.IsAbsoluteLocalFilePath(@"X:\Y\Z"));
+            Assert.IsTrue(GUtilities.IsAbsoluteLocalFilePath(@"X:\Y\Z.mp3"));
+            Assert.IsTrue(GUtilities.IsAbsoluteLocalFilePath(@"X:/Y/Z"));
+            Assert.IsTrue(GUtilities.IsAbsoluteLocalFilePath(@"X:/Y/Z.mp3"));
+            Assert.IsTrue(GUtilities.IsAbsoluteLocalFilePath(@"/X"));
+            Assert.IsTrue(GUtilities.IsAbsoluteLocalFilePath(@"/X/Y.mp3"));
 
-            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"example/test"));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@".git"));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@".x/y.txt"));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"x/y.txt"));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"x"));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"."));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@".."));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"./"));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"../"));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@".\"));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"..\"));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"./X"));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"../X"));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@".\X"));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"..\X"));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@".\X.mp3"));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"..\X.mp3"));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@".\X\Y.mp3"));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.IsAbsoluteLocalFilePath(@"..\X\Y.mp3"));
+            Assert.IsFalse(GUtilities.IsAbsoluteLocalFilePath(@"example/test"));
+            Assert.IsFalse(GUtilities.IsAbsoluteLocalFilePath(@".git"));
+            Assert.IsFalse(GUtilities.IsAbsoluteLocalFilePath(@".x/y.txt"));
+            Assert.IsFalse(GUtilities.IsAbsoluteLocalFilePath(@"x/y.txt"));
+            Assert.IsFalse(GUtilities.IsAbsoluteLocalFilePath(@"x"));
+            Assert.IsFalse(GUtilities.IsAbsoluteLocalFilePath(@"."));
+            Assert.IsFalse(GUtilities.IsAbsoluteLocalFilePath(@".."));
+            Assert.IsFalse(GUtilities.IsAbsoluteLocalFilePath(@"./"));
+            Assert.IsFalse(GUtilities.IsAbsoluteLocalFilePath(@"../"));
+            Assert.IsFalse(GUtilities.IsAbsoluteLocalFilePath(@".\"));
+            Assert.IsFalse(GUtilities.IsAbsoluteLocalFilePath(@"..\"));
+            Assert.IsFalse(GUtilities.IsAbsoluteLocalFilePath(@"./X"));
+            Assert.IsFalse(GUtilities.IsAbsoluteLocalFilePath(@"../X"));
+            Assert.IsFalse(GUtilities.IsAbsoluteLocalFilePath(@".\X"));
+            Assert.IsFalse(GUtilities.IsAbsoluteLocalFilePath(@"..\X"));
+            Assert.IsFalse(GUtilities.IsAbsoluteLocalFilePath(@".\X.mp3"));
+            Assert.IsFalse(GUtilities.IsAbsoluteLocalFilePath(@"..\X.mp3"));
+            Assert.IsFalse(GUtilities.IsAbsoluteLocalFilePath(@".\X\Y.mp3"));
+            Assert.IsFalse(GUtilities.IsAbsoluteLocalFilePath(@"..\X\Y.mp3"));
+        }
+
+        [TestMethod]
+        public void TestParseDateAmericanFormat()
+        {
+            // arrange
+            string input = "4/3/2017 7:2:53 PM";
+            DateTime expected = new DateTime(2017, 4, 3, 19, 2, 53);
+
+            // act
+            DateTime actual = GUtilities.ParseDateAmericanFormat(input);
+
+            // assert
+            Assert.AreEqual(expected, actual);
         }
     }
 }

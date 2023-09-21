@@ -17,11 +17,11 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public PercentValue(decimal value)
         {
-            if(value < 0)
+            if (value < 0)
             {
                 this.Value = 0;
             }
-            else if(value > 1)
+            else if (value > 1)
             {
                 this.Value = 1;
             }
@@ -32,11 +32,11 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static PercentValue CreateByPercentValue(int percentValue)
         {
-            if(percentValue < 0)
+            if (percentValue < 0)
             {
                 return ZeroPercent;
             }
-            else if(percentValue > 100)
+            else if (percentValue > 100)
             {
                 return HundredPercent;
             }

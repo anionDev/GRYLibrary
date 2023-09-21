@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
 {
-    public class PLSHandler :PlaylistFileHandler
+    public class PLSHandler : PlaylistFileHandler
     {
         public override void AddItemsToPlaylist(string playlistFile, IEnumerable<string> newItems)
         {

@@ -2,7 +2,7 @@
 
 namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper
 {
-    public abstract class GRYEqualityComparer<T> :IEqualityComparer<T>
+    public abstract class GRYEqualityComparer<T> : IEqualityComparer<T>
     {
         protected readonly GRYEqualityComparer<object> _PropertyEqualsCalculator;
         internal PropertyEqualsCalculatorConfiguration Configuration { get; set; }
@@ -11,7 +11,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper
         protected GRYEqualityComparer(PropertyEqualsCalculatorConfiguration configuration)
         {
             this.Configuration = configuration;
-            if(this is PropertyEqualsCalculator)
+            if (this is PropertyEqualsCalculator)
             {
                 this._PropertyEqualsCalculator = (PropertyEqualsCalculator)(object)this;
             }

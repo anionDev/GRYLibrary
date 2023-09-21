@@ -60,7 +60,7 @@ namespace GRYLibrary.Tests.Testcases
             }
         }
         #region TestClass
-        public class SerializeTestClass :SerializeTestBaseClass, ISerializeTestInterface
+        public class SerializeTestClass : SerializeTestBaseClass, ISerializeTestInterface
         {
             public string TestStringFromInterface { get; set; }
             public double TestDouble { get; set; }
@@ -90,7 +90,7 @@ namespace GRYLibrary.Tests.Testcases
             }
             public override bool Equals(object obj)
             {
-                if(!base.Equals(obj))
+                if (!base.Equals(obj))
                 {
                     return false;
                 }
@@ -138,9 +138,9 @@ namespace GRYLibrary.Tests.Testcases
                 bool testAttribute1IsNull1 = this.TestAttribute1 == null;
                 bool testAttribute1IsNull2 = typedObject.TestAttribute1 == null;
 
-                if(testAttribute1IsNull1 == testAttribute1IsNull2)
+                if (testAttribute1IsNull1 == testAttribute1IsNull2)
                 {
-                    if(!testAttribute1IsNull1 && !this.TestAttribute1.Equals(typedObject.TestAttribute1))
+                    if (!testAttribute1IsNull1 && !this.TestAttribute1.Equals(typedObject.TestAttribute1))
                     {
                         return false;
                     }

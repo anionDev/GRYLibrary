@@ -1,7 +1,7 @@
 ﻿namespace GRYLibrary.Core.APIServer.Mid.Aut
 {
-    public interface ISupportAuthorizationMiddleware :ISupportedMiddleware
+    public interface ISupportAuthorizationMiddleware : ISupportedMiddleware
     {
-        IAuthorizationConfiguration ConfigurationForAuthorizationMiddleware { get;  }
+        IAuthorizationConfiguration ConfigurationForAuthorizationMiddleware { get; }
     }
 }

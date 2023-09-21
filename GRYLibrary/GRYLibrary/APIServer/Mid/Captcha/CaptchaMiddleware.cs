@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.APIServer.Mid.Captcha
 {
-    public class CaptchaMiddleware :AbstractMiddleware
+    public class CaptchaMiddleware : AbstractMiddleware
     {
         private readonly CaptchaManager _CaptchaManager;
         private readonly ICaptchaConfiguration _CaptchaMiddlewareSettings;
@@ -23,7 +23,7 @@ namespace GRYLibrary.Core.APIServer.Mid.Captcha
         /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
         {
-            if(this.UserHasAlreadySolvedTheCaptcha(this._CaptchaMiddlewareSettings, context))
+            if (this.UserHasAlreadySolvedTheCaptcha(this._CaptchaMiddlewareSettings, context))
             {
                 return this._Next(context);
             }
@@ -33,12 +33,12 @@ namespace GRYLibrary.Core.APIServer.Mid.Captcha
                 string message = string.Empty;
                 string captchaIdKey = "captchaId";
                 string captchaValueKey = "captchaValue";
-                if(this.UserTriesToSolveCaptcha(context))
+                if (this.UserTriesToSolveCaptcha(context))
                 {
                     string captchaId = context.Request.Query[captchaIdKey];
                     string captchaValue = context.Request.Query[captchaValueKey];
                     bool result = this.TrySolve(captchaId, captchaValue, out string accessKey, out string failMessage);
-                    if(result)
+                    if (result)
                     {
                         List<KeyValuePair<string, string>> query = context.Request.Query.SelectMany(x => x.Value, (col, value) => new KeyValuePair<string, string>(col.Key, value)).ToList();
                         query.RemoveAll(queryParameter => queryParameter.Key == captchaIdKey || queryParameter.Key == captchaValueKey);
@@ -68,7 +68,7 @@ namespace GRYLibrary.Core.APIServer.Mid.Captcha
                     { "captchaidquerykey", captchaIdKey },
                     { "captchavaluequerykey", captchaValueKey }
                 };
-                IDictionary< string, bool> booleanReplacements = new Dictionary<string, bool>(); 
+                IDictionary<string, bool> booleanReplacements = new Dictionary<string, bool>();
                 IDictionary<string, Func<string>> variables = new Dictionary<string, Func<string>>();
                 ReplacementTools.ReplaceVariables(html, replacements, booleanReplacements, variables);
                 context.Response.BodyWriter.WriteAsync(encoding.GetBytes(html));
@@ -109,7 +109,7 @@ namespace GRYLibrary.Core.APIServer.Mid.Captcha
         {
             CaptchaGenerationSettings result = new CaptchaGenerationSettings()
             {
-                Alphabet = this._CaptchaMiddlewareSettings. Alphabet,
+                Alphabet = this._CaptchaMiddlewareSettings.Alphabet,
                 ExpireDurationOfCaptcha = this._CaptchaMiddlewareSettings.ExpireDurationOfCaptcha,
                 Length = this._CaptchaMiddlewareSettings.Length,
                 ExpireDurationOfAccessToken = this._CaptchaMiddlewareSettings.ExpireDurationOfAccessToken

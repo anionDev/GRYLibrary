@@ -38,7 +38,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public void LoadObjectFromFile()
         {
-            if(!System.IO.File.Exists(this.File) || Utilities.FileIsEmpty(this.File))
+            if (!System.IO.File.Exists(this.File) || Utilities.FileIsEmpty(this.File))
             {
                 this.ResetObject();
             }

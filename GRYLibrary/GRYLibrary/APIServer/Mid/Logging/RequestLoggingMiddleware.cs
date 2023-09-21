@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using GRYLibrary.Core.APIServer.Utilities;
 using GRYLibrary.Core.APIServer.Mid.Logging;
 using GRYLibrary.Core.APIServer.Settings;
+using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 using System.Collections.Generic;
 using GRYLibrary.Core.Log;
 using System.Text;
@@ -16,7 +17,7 @@ namespace GRYLibrary.Core.APIServer.Mid.RequestLogger
     /// <summary>
     /// Represents a middleware which logs the requests.
     /// </summary>
-    public class RequestLoggingMiddleware :AbstractMiddleware
+    public class RequestLoggingMiddleware : AbstractMiddleware
     {
         private readonly IGeneralLogger _RequestLogger;
         private readonly IGeneralLogger _Logger;
@@ -33,7 +34,7 @@ namespace GRYLibrary.Core.APIServer.Mid.RequestLogger
         /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
         {
-            DateTime moment = DateTime.Now;
+            DateTime moment = GUtilities.GetNow();
             (byte[] requestBodyB, byte[] responseBodyB) = Tools.ExecuteAndGetBody(this._Next, context);
 
             string requestBody = this.BytesToString(requestBodyB);
@@ -55,7 +56,7 @@ namespace GRYLibrary.Core.APIServer.Mid.RequestLogger
             }
             catch
             {
-                return $"Hex-encoded-content: {Miscellaneous.Utilities.ByteArrayToHexString(content)}";
+                return $"Hex-encoded-content: {GUtilities.ByteArrayToHexString(content)}";
             }
         }
 
@@ -63,11 +64,11 @@ namespace GRYLibrary.Core.APIServer.Mid.RequestLogger
         {
             try
             {
-                if(this.ShouldBeLogged(request))
+                if (this.ShouldBeLogged(request))
                 {
                     LogLevel logLevel = this.GetLogLevel(request);
                     string formatted;
-                    if(logFullRequest)
+                    if (logFullRequest)
                     {
                         formatted = this.FormatLogEntryFull(request, this._RequestLoggingSettings.MaximalLengthofBodies);
                     }
@@ -82,9 +83,9 @@ namespace GRYLibrary.Core.APIServer.Mid.RequestLogger
                     this._RequestLogger.AddLogEntry(logItem);
                 }
             }
-            catch(System.Exception exception)
+            catch (System.Exception exception)
             {
-                this._RequestLogger.LogException(exception, "Error while logging request.");
+                this._Logger.LogException(exception, "Error while logging request.");
             }
         }
 
@@ -139,9 +140,9 @@ namespace GRYLibrary.Core.APIServer.Mid.RequestLogger
         }
         public virtual string FormatIPAddress(IPAddress clientIP)
         {
-            if(this._RequestLoggingSettings.LogClientIP)
+            if (this._RequestLoggingSettings.LogClientIP)
             {
-                if(clientIP == null)
+                if (clientIP == null)
                 {
                     return "(IP-address not available)";
                 }

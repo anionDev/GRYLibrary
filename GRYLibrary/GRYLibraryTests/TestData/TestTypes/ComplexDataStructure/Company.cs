@@ -9,7 +9,7 @@ using System.Xml.Schema;
 
 namespace GRYLibrary.Tests.TestData.TestTypes.ComplexDataStructure
 {
-    public class Company :IGRYSerializable
+    public class Company : IGRYSerializable
     {
         public Employee Manager { get; set; }
 

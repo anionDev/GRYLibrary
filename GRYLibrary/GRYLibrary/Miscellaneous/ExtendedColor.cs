@@ -46,7 +46,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public string GetARGBString(bool withNumberSign = false)
         {
-            if(withNumberSign)
+            if (withNumberSign)
             {
                 return "#" + this._ARGBStringValue;
             }
@@ -57,7 +57,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public string GetRGBString(bool withNumberSign = false)
         {
-            if(withNumberSign)
+            if (withNumberSign)
             {
                 return "#" + this._RGBStringValue;
             }
@@ -68,7 +68,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public override bool Equals(object @object)
         {
-            if(@object is ExtendedColor color)
+            if (@object is ExtendedColor color)
             {
                 return this.ColorCode == color.ColorCode;
             }
@@ -108,23 +108,23 @@ namespace GRYLibrary.Core.Miscellaneous
             int q = Convert.ToInt32(dValue * (1 - (f * dSaturation)));
             int t = Convert.ToInt32(dValue * (1 - ((1 - f) * dSaturation)));
 
-            if(hi == 0)
+            if (hi == 0)
             {
                 return Color.FromArgb(255, v, t, p);
             }
-            else if(hi == 1)
+            else if (hi == 1)
             {
                 return Color.FromArgb(255, q, v, p);
             }
-            else if(hi == 2)
+            else if (hi == 2)
             {
                 return Color.FromArgb(255, p, v, t);
             }
-            else if(hi == 3)
+            else if (hi == 3)
             {
                 return Color.FromArgb(255, p, q, v);
             }
-            else if(hi == 4)
+            else if (hi == 4)
             {
                 return Color.FromArgb(255, t, p, v);
             }

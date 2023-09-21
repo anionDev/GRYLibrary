@@ -7,7 +7,7 @@ using System.Xml.Schema;
 
 namespace GRYLibrary.Tests.TestData.TestTypes.SimpleDataStructure
 {
-    public class SimpleDataStructure3 :IGRYSerializable
+    public class SimpleDataStructure3 : IGRYSerializable
     {
         public string Property4 { get; set; }
         public List<SimpleDataStructure2> Property5 { get; set; }

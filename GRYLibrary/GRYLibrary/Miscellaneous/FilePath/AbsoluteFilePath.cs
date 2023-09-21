@@ -2,7 +2,7 @@
 
 namespace GRYLibrary.Core.Miscellaneous.FilePath
 {
-    public class AbsoluteFilePath :AbstractFilePath
+    public class AbsoluteFilePath : AbstractFilePath
     {
         private string _FilePath;
         public override string FilePath
@@ -13,7 +13,7 @@ namespace GRYLibrary.Core.Miscellaneous.FilePath
             }
             set
             {
-                if(!Utilities.IsAbsoluteLocalFilePath(value))
+                if (!Utilities.IsAbsoluteLocalFilePath(value))
                 {
                     throw new ArgumentException($"Expected absolute path but was not an absolute path: '{value}'.");
                 }

@@ -17,12 +17,12 @@ namespace GRYLibrary.Tests.TestData.TestTypes.ComplexDataStructure
         {
             Order result = new();
             Random random = new();
-            foreach(Product product in products)
+            foreach (Product product in products)
             {
                 Enumerable.Range(0, random.Next(4)).ForEach(index => result.OrderItems.Add(OrderItem.GetRandom(product)));
             }
             result.PaymentMethod = PaymentMethod.GetRandom();
-            if(random.NextDouble() < 0.5)
+            if (random.NextDouble() < 0.5)
             {
                 result.Buyer = PrivateCustomer.GetRandom();
             }

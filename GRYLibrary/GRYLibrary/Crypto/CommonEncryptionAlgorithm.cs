@@ -2,7 +2,7 @@
 
 namespace GRYLibrary.Core.Crypto
 {
-    public abstract class CommonEncryptionAlgorithm :EncryptionAlgorithm
+    public abstract class CommonEncryptionAlgorithm : EncryptionAlgorithm
     {
         /// <summary>
         /// Use this function to encrypt data.

@@ -1,6 +1,6 @@
 ﻿namespace GRYLibrary.Core.APIServer.ExecutionModes
 {
-    public class RunProgram :ExecutionMode
+    public class RunProgram : ExecutionMode
     {
         public static RunProgram Instance { get; } = new RunProgram();
         private RunProgram() { }

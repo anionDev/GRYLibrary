@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
-    public class Version3 :IEquatable<Version3>
+    public class Version3 : IEquatable<Version3>
     {
         public ulong Major { get; set; }
         public ulong Minor { get; set; }
@@ -49,17 +49,17 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public static bool operator <(Version3 left, Version3 right)
         {
-            if(left.Major < right.Major)
+            if (left.Major < right.Major)
             {
                 return true;
             }
-            else if(left.Major == right.Major)
+            else if (left.Major == right.Major)
             {
-                if(left.Minor < right.Minor)
+                if (left.Minor < right.Minor)
                 {
                     return true;
                 }
-                else if(left.Minor == right.Minor)
+                else if (left.Minor == right.Minor)
                 {
                     return left.Patch < right.Patch;
                 }

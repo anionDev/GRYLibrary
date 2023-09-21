@@ -10,7 +10,7 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             string oldVersion = input;
             string newVersion = ReplaceVariablesOneTime(input, replacements, booleanReplacements, variables);
-            while(oldVersion != newVersion)
+            while (oldVersion != newVersion)
             {
                 oldVersion = newVersion;
                 newVersion = ReplaceVariablesOneTime(input, replacements, booleanReplacements, variables);
@@ -25,16 +25,16 @@ namespace GRYLibrary.Core.Miscellaneous
 
         private static string ReplaceVariablesOneTime(string input, IDictionary<string, string> replacements, IDictionary<string, bool> booleanReplacements, IDictionary<string, Func<string>> variables)
         {
-            foreach(KeyValuePair<string, string> replacement in replacements)
+            foreach (KeyValuePair<string, string> replacement in replacements)
             {
                 input = ReplaceStringVariable(input, replacement.Key, replacement.Value);
             }
-            foreach(KeyValuePair<string, bool> booleanReplacement in booleanReplacements)
+            foreach (KeyValuePair<string, bool> booleanReplacement in booleanReplacements)
             {
                 input = ReplaceBooleanVariable(input, booleanReplacement.Key, booleanReplacement.Value);
                 input = ReplaceBooleanVariable(input, $"!{booleanReplacement.Key}", !booleanReplacement.Value);
             }
-            foreach(KeyValuePair<string, Func<string>> variable in variables)
+            foreach (KeyValuePair<string, Func<string>> variable in variables)
             {
                 input = ReplaceFuncVariable(input, variable.Key, variable.Value);
             }
@@ -44,7 +44,7 @@ namespace GRYLibrary.Core.Miscellaneous
         private static string ReplaceFuncVariable(string input, string key, Func<string> value)
         {
             string str = $"__{key}__";
-            if(input.Contains(str))
+            if (input.Contains(str))
             {
                 input = input.Replace(str, value());
             }
@@ -54,7 +54,7 @@ namespace GRYLibrary.Core.Miscellaneous
         private static string ReplaceBooleanVariable(string input, string variableName, bool enabled)
         {
             string result = input;
-            if(enabled)
+            if (enabled)
             {
                 result = Regex.Replace(result, @$"__\[{variableName}\]__", string.Empty);
                 result = Regex.Replace(result, @$"__\[\/{variableName}\]__", string.Empty);

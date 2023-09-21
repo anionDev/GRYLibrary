@@ -10,7 +10,7 @@ namespace GRYLibrary.Core.Miscellaneous.MetaConfiguration
         {
             return configuration.ConfigurationFormat.Accept(new HandleConfigurationVisitor<T, TBase>(configuration, knownTypes));
         }
-        private class HandleConfigurationVisitor<T, TBase> :IConfigurationFormatVisitor<T> where T : TBase, new()
+        private class HandleConfigurationVisitor<T, TBase> : IConfigurationFormatVisitor<T> where T : TBase, new()
         {
             private readonly MetaConfigurationSettings<T, TBase> _Configuration;
             private readonly ISet<Type> _KnownTypes;

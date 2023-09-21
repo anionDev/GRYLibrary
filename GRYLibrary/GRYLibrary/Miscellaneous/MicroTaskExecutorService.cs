@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
-    public sealed class MicroTaskExecutorService<T> :IDisposable
+    public sealed class MicroTaskExecutorService<T> : IDisposable
     {
         public bool IsRunning { get; private set; }
         private bool _Enabled;
@@ -13,7 +13,7 @@ namespace GRYLibrary.Core.Miscellaneous
         private readonly Func<IEnumerable<T>> _GetActions;
         private readonly TimeSpan _WaitInterval = TimeSpan.FromMilliseconds(50);
         private readonly object _Lock = new object();
-        public MicroTaskExecutorService(Func<IEnumerable<T>> getActions,Action<T> action)
+        public MicroTaskExecutorService(Func<IEnumerable<T>> getActions, Action<T> action)
         {
             this._Action = action;
             this._GetActions = getActions;
@@ -23,9 +23,9 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public void Start()
         {
-            lock(this._Lock)
+            lock (this._Lock)
             {
-                if(!this.IsRunning)
+                if (!this.IsRunning)
                 {
                     this._Enabled = true;
                     this.IsRunning = true;
@@ -36,25 +36,25 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         private void Do()
         {
-            while(this.IsRunning)
+            while (this.IsRunning)
             {
-                lock(this._Lock)
+                lock (this._Lock)
                 {
-                    if(!this.IsStillEnabled())
+                    if (!this.IsStillEnabled())
                     {
                         return;
                     }
 
                     IEnumerable<T> actions = this._GetActions();
-                    if(actions.Count() == 0)
+                    if (actions.Count() == 0)
                     {
                         Thread.Sleep(this._WaitInterval);
                     }
                     else
                     {
-                        foreach(T microaction in actions)
+                        foreach (T microaction in actions)
                         {
-                            if(this.IsStillEnabled())
+                            if (this.IsStillEnabled())
                             {
                                 this._Action(microaction);
                             }
@@ -70,9 +70,9 @@ namespace GRYLibrary.Core.Miscellaneous
 
         private bool IsStillEnabled()
         {
-            lock(this._Lock)
+            lock (this._Lock)
             {
-                if(this._Enabled)
+                if (this._Enabled)
                 {
                     return true;
                 }
@@ -89,10 +89,10 @@ namespace GRYLibrary.Core.Miscellaneous
         /// </remarks>
         public void Stop()
         {
-            lock(this._Lock)
+            lock (this._Lock)
             {
                 this._Enabled = false;
-                while(this.IsRunning)
+                while (this.IsRunning)
                 {
                     Thread.Sleep(this._WaitInterval);
                 }

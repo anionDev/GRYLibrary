@@ -2,7 +2,7 @@
 
 namespace GRYLibrary.Core.Miscellaneous.CustomDisposables
 {
-    public class CustomDisposable :IDisposable
+    public class CustomDisposable : IDisposable
     {
         public Action DisposeAction { get; set; }
         public CustomDisposable() : this(() => { })

@@ -5,7 +5,7 @@ using GRYLibrary.Core.Log;
 namespace GRYLibrary.Core.APIServer.Utilities
 {
 
-    public class GetLoggerVisitor :IExecutionModeVisitor<IGeneralLogger>
+    public class GetLoggerVisitor : IExecutionModeVisitor<IGeneralLogger>
     {
         private readonly GRYLogConfiguration _LogConfiguration;
         private readonly string _BaseFolder;

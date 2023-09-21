@@ -49,12 +49,6 @@ namespace GRYLibrary.Core.APIServer
         private APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> _Configuration;
         public static int APIMain(CommandlineParameterType commandlineParameter, Action<APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>> configurationInitializer, GRYConsoleApplicationInitialInformation gryConsoleApplicationInitialInformation)
         {
-            #region Obsolete
-            string domain = default;//TODO set value (this value can probably be derived by the environment-variable and a development-certificate-name)
-            string fallbackCertificatePasswordFileContentHex = default;//TODO set value and make sure it is not a fallback anymore
-            string fallbackCertificatePFXFileContentHex = default;//TODO set value and make sure it is not a fallback anymore
-            #endregion
-
             #region Initialize default configuration-values
             APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> apiServerConfiguration = new APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>();
             configurationInitializer(apiServerConfiguration);
@@ -66,7 +60,7 @@ namespace GRYLibrary.Core.APIServer
             apiServerConfiguration.InitializationInformation.BaseFolder = GetDefaultBaseFolder(apiServerConfiguration.InitializationInformation.ApplicationConstants);
             apiServerConfiguration.InitializationInformation.ApplicationConstants.Initialize(apiServerConfiguration.InitializationInformation.BaseFolder);
             apiServerConfiguration.InitializationInformation.ApplicationConstants.KnownTypes.Add(typeof(PersistedApplicationSpecificConfiguration));
-            apiServerConfiguration.InitializationInformation.InitialApplicationConfiguration = PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>.Create(domain, new PersistedApplicationSpecificConfiguration(), gryConsoleApplicationInitialInformation.Environment, fallbackCertificatePasswordFileContentHex, fallbackCertificatePFXFileContentHex, apiServerConfiguration.InitializationInformation.ApplicationConstants.ApplicationName);
+            apiServerConfiguration.InitializationInformation.InitialApplicationConfiguration = PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>.Create(new PersistedApplicationSpecificConfiguration(), gryConsoleApplicationInitialInformation.Environment, apiServerConfiguration.InitializationInformation.ApplicationConstants.ApplicationName, apiServerConfiguration.InitializationInformation.ApplicationConstants.GetCertificateFolder());
             apiServerConfiguration.InitializationInformation.BasicInformationFile = AbstractFilePath.FromString("./BasicApplicationInformation.xml");
             #endregion
 
@@ -89,7 +83,7 @@ namespace GRYLibrary.Core.APIServer
         private static string GetDefaultBaseFolder<AppConstantsType>(IApplicationConstants<AppConstantsType> applicationConstants)
         {
             string programFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            return applicationConstants.ExecutionMode.Accept(new GetBaseFolder(applicationConstants.Environment, programFolder));
+            return applicationConstants.ExecutionMode.Accept(new GetBaseFolder(applicationConstants.Environment, programFolder, applicationConstants.ExecutionMode));
         }
 
         #region Create or load config-file
@@ -149,7 +143,7 @@ namespace GRYLibrary.Core.APIServer
                 logger.Log($"Start {this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName}", LogLevel.Information);
                 logger.Log($"Environment: {this._Configuration.InitializationInformation.ApplicationConstants.Environment}", LogLevel.Debug);
                 logger.Log($"Executionmode: {this._Configuration.InitializationInformation.ApplicationConstants.ExecutionMode}", LogLevel.Debug);
-                this.EnsureCertificateIsAvailableIfRequired(persistedAPIServerConfiguration, logger);
+                this.EnsureCertificateIsAvailableIfRequired(persistedAPIServerConfiguration);
                 WebApplication webApplication = this.CreateWebApplication(config, logger, persistedAPIServerConfiguration);
                 this._Configuration.FunctionalInformation.PreRun();
                 this.RunAPIServer(webApplication);
@@ -402,39 +396,20 @@ namespace GRYLibrary.Core.APIServer
         }
         #endregion
 
-        private void EnsureCertificateIsAvailableIfRequired(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration, IGeneralLogger logger)
+        private void EnsureCertificateIsAvailableIfRequired(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration)
         {
             string certFolder = this._Configuration.InitializationInformation.ApplicationConstants.GetCertificateFolder();
             if (persistedApplicationSpecificConfiguration.ServerConfiguration.Protocol is HTTPS https)
             {
                 string pfxFile = https.TLSCertificateInformation.CertificatePFXFile.GetPath(certFolder);
-                string passwordFile = https.TLSCertificateInformation.CertificatePasswordFile.GetPath(certFolder);
-                if (!File.Exists(https.TLSCertificateInformation.CertificatePFXFile.GetPath(certFolder)))
+                if (!File.Exists(pfxFile))
                 {
-                    if (this._Configuration.InitializationInformation.ApplicationConstants.Environment is Productive)
-                    {
-                        logger.Log($"'{pfxFile}' does not exist. Fallback-certificate will be used instead. It is recommended to replace it by a valid certificate as soon as possible.", LogLevel.Warning);
-                    }
-
-                    if (https.TLSCertificateInformation.FallbackCertificatePasswordFileContentHex == null)
-                    {
-                        throw new ArgumentNullException($"{nameof(TLSCertificateInformation.FallbackCertificatePasswordFileContentHex)} is not allowed to be null if {nameof(HTTPS)} is used and no valid certificate is given.");
-                    }
-                    else
-                    {
-                        Miscellaneous.Utilities.EnsureFileExists(passwordFile, true);
-                        File.WriteAllBytes(passwordFile, Miscellaneous.Utilities.HexStringToByteArray(https.TLSCertificateInformation.FallbackCertificatePasswordFileContentHex));
-                    }
-
-                    if (https.TLSCertificateInformation.FallbackCertificatePasswordFileContentHex == null)
-                    {
-                        throw new ArgumentNullException($"{nameof(TLSCertificateInformation.FallbackCertificatePFXFileContentHex)} is not allowed to be null if {nameof(HTTPS)} is used and no valid certificate is given.");
-                    }
-                    else
-                    {
-                        Miscellaneous.Utilities.EnsureFileExists(pfxFile, true);
-                        File.WriteAllBytes(pfxFile, Miscellaneous.Utilities.HexStringToByteArray(https.TLSCertificateInformation.FallbackCertificatePFXFileContentHex));
-                    }
+                    throw new FileNotFoundException($"\"{pfxFile}\" does not exist.");
+                }
+                string passwordFile = https.TLSCertificateInformation.CertificatePasswordFile.GetPath(certFolder);
+                if (!File.Exists(passwordFile))
+                {
+                    throw new FileNotFoundException($"\"{passwordFile}\" does not exist.");
                 }
             }
         }
@@ -453,6 +428,7 @@ namespace GRYLibrary.Core.APIServer
         {
             Miscellaneous.Utilities.EnsureDirectoryExists(this._Configuration.InitializationInformation.ApplicationConstants.GetConfigurationFolder());
             Miscellaneous.Utilities.EnsureDirectoryExists(this._Configuration.InitializationInformation.ApplicationConstants.GetLogFolder());
+            Miscellaneous.Utilities.EnsureDirectoryExists(this._Configuration.InitializationInformation.ApplicationConstants.GetCertificateFolder());
         }
 
         private void RunAPIServer(WebApplication server)

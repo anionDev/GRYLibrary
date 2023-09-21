@@ -9,14 +9,14 @@ namespace GRYLibrary.Core.Streams
         private readonly ISet<StreamPipe> _Connections = new HashSet<StreamPipe>();
         public void AddPipe(StreamPipe connection)
         {
-            if(this._Connections.Add(connection))
+            if (this._Connections.Add(connection))
             {
                 connection.Start();
             };
         }
         public void RemovePipe(StreamPipe connection)
         {
-            if(this._Connections.Remove(connection))
+            if (this._Connections.Remove(connection))
             {
                 connection.Stop();
             };
@@ -36,7 +36,7 @@ namespace GRYLibrary.Core.Streams
             }
             public override bool Equals(object obj)
             {
-                if((StreamPipe)obj is StreamPipe typedObject)
+                if ((StreamPipe)obj is StreamPipe typedObject)
                 {
                     return typedObject.Source.Equals(this.Source) && typedObject.Target.Equals(this.Target);
                 }
@@ -48,7 +48,7 @@ namespace GRYLibrary.Core.Streams
             private bool _Started = false;
             internal void Start()
             {
-                if(!this._Started)
+                if (!this._Started)
                 {
                     this._Started = true;
                     throw new System.NotImplementedException();
@@ -56,7 +56,7 @@ namespace GRYLibrary.Core.Streams
             }
             internal void Stop()
             {
-                if(this._Started)
+                if (this._Started)
                 {
                     this._Started = false;
                     throw new System.NotImplementedException();

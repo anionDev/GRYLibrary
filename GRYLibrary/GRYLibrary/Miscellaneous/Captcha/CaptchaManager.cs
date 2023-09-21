@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 
 namespace GRYLibrary.Core.Miscellaneous.Captcha
 {
@@ -17,7 +18,7 @@ namespace GRYLibrary.Core.Miscellaneous.Captcha
         public CaptchaInstance GetNewCaptcha(CaptchaGenerationSettings settings)
         {
             CaptchaInstance result = new CaptchaInstance(settings);
-            if(this._Captchas.TryAdd(result.Id, result))
+            if (this._Captchas.TryAdd(result.Id, result))
             {
                 return result;
             }
@@ -28,22 +29,22 @@ namespace GRYLibrary.Core.Miscellaneous.Captcha
         }
         internal static DateTime GetCurrentTime()
         {
-            return DateTime.Now;
+            return GUtilities.GetNow();
         }
 
         public bool TrySolve(string captchaId, string userInput, out string accessKey, out string failMessage)
         {
-            if(this._Captchas.ContainsKey(captchaId))
+            if (this._Captchas.ContainsKey(captchaId))
             {
                 CaptchaInstance captcha = this._Captchas[captchaId];
-                if(captcha.ExpectedUserInput == userInput)
+                if (captcha.ExpectedUserInput == userInput)
                 {
                     DateTime now = GetCurrentTime();
-                    if(now < captcha.ValidUntil)
+                    if (now < captcha.ValidUntil)
                     {
                         failMessage = null;
                         accessKey = Guid.NewGuid().ToString();
-                        if(this._AccessKeys.TryAdd(accessKey, captcha.AccessTokenValidUntil))
+                        if (this._AccessKeys.TryAdd(accessKey, captcha.AccessTokenValidUntil))
                         {
                             return true;
                         }
@@ -73,18 +74,18 @@ namespace GRYLibrary.Core.Miscellaneous.Captcha
         internal bool UserHasAlreadySolvedTheCaptcha(string accessToken, out string failMessage)
         {
             failMessage = null;
-            if(accessToken is null)
+            if (accessToken is null)
             {
                 failMessage = "No accesstoken provided";
             }
             else
             {
-                if(this._AccessKeys.ContainsKey(accessToken))
+                if (this._AccessKeys.ContainsKey(accessToken))
                 {
-                    if(this._AccessKeys.TryGetValue(accessToken, out DateTime validUntil))
+                    if (this._AccessKeys.TryGetValue(accessToken, out DateTime validUntil))
                     {
                         DateTime now = GetCurrentTime();
-                        if(now < validUntil)
+                        if (now < validUntil)
                         {
                             return true;
                         }

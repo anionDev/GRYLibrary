@@ -3,7 +3,7 @@ using System;
 
 namespace GRYLibrary.Core.Crypto
 {
-    public class ECC :AsymmetricEncryptionAlgorithm
+    public class ECC : AsymmetricEncryptionAlgorithm
     {
         public Curve Curve { get; set; } = Curve.Curve25519;
         /// <inheritdoc/>

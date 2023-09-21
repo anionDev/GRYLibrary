@@ -12,7 +12,7 @@ namespace GRYLibrary.Core.Log
     [XmlInclude(typeof(LogFile))]
     [XmlInclude(typeof(Observer))]
     [XmlInclude(typeof(WindowsEventLog))]
-    public abstract class GRYLogTarget :IDisposable
+    public abstract class GRYLogTarget : IDisposable
     {
         public GRYLogLogFormat Format { get; set; } = GRYLogLogFormat.GRYLogFormat;
 
@@ -57,7 +57,7 @@ namespace GRYLibrary.Core.Log
                 new Observer(),
                 new Syslog()
             };
-            if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 result.Add(new WindowsEventLog());
             }

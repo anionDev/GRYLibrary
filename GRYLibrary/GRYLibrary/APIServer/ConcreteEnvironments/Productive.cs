@@ -1,6 +1,6 @@
 ﻿namespace GRYLibrary.Core.APIServer.ConcreteEnvironments
 {
-    public class Productive :GRYEnvironment
+    public class Productive : GRYEnvironment
     {
         public static Productive Instance { get; } = new Productive();
         private Productive()

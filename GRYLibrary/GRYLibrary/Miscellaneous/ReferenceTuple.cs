@@ -2,7 +2,7 @@
 
 namespace GRYLibrary.Core.Miscellaneous
 {
-    public class ReferenceTuple :IEquatable<ReferenceTuple>
+    public class ReferenceTuple : IEquatable<ReferenceTuple>
     {
         public object Item1 { get; set; }
         public object Item2 { get; set; }

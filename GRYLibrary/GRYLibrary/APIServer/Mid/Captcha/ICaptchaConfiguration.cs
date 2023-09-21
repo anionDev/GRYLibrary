@@ -2,7 +2,7 @@
 
 namespace GRYLibrary.Core.APIServer.Mid.Captcha
 {
-    public interface ICaptchaConfiguration :IMiddlewareConfiguration
+    public interface ICaptchaConfiguration : IMiddlewareConfiguration
     {
         public string Encoding { get; set; }
         public ushort Length { get; set; }

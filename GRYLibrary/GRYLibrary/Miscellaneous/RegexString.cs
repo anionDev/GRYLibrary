@@ -14,7 +14,7 @@ namespace GRYLibrary.Core.Miscellaneous
             }
             set
             {
-                if(this._Regex.IsMatch(value))
+                if (this._Regex.IsMatch(value))
                 {
                     this._Value = value;
                 }

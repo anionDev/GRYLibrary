@@ -6,7 +6,7 @@ namespace GRYLibrary.Core.APIServer.Mid.Counter
     /// <summary>
     /// Represents a middleware which counts requests for paid Web-APIs.
     /// </summary>
-    public class RequestCounterMiddleware :AbstractMiddleware
+    public class RequestCounterMiddleware : AbstractMiddleware
     {
         private readonly IRequestCounterConfiguration _RequestCounterSettings;
         /// <inheritdoc/>

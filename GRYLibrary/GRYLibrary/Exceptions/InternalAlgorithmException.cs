@@ -4,6 +4,10 @@ namespace GRYLibrary.Core.Exceptions
 {
     public class InternalAlgorithmException : Exception
     {
+        public InternalAlgorithmException() : base()
+        {
+        }
+
         public InternalAlgorithmException(string errorId, string message = null) : base(CalculateMessage(errorId, message))
         {
         }

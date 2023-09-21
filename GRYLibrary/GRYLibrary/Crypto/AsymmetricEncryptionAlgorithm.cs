@@ -1,6 +1,6 @@
 ﻿namespace GRYLibrary.Core.Crypto
 {
-    public abstract class AsymmetricEncryptionAlgorithm :CommonEncryptionAlgorithm
+    public abstract class AsymmetricEncryptionAlgorithm : CommonEncryptionAlgorithm
     {
         /// <summary>
         /// Generates a valid key-pair for this asymmetric encryption algorithm.

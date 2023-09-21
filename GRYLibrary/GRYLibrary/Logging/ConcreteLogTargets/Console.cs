@@ -6,14 +6,14 @@ using System.IO;
 
 namespace GRYLibrary.Core.Log.ConcreteLogTargets
 {
-    public sealed class Console :GRYLogTarget
+    public sealed class Console : GRYLogTarget
     {
         public bool WriteWarningsToStdErr { get; set; } = true;
         public Console() { }
         protected override void ExecuteImplementation(LogItem logItem, GRYLog logObject)
         {
             TextWriter output;
-            if(logItem.IsErrorEntry() || (this.WriteWarningsToStdErr && logItem.LogLevel == LogLevel.Warning))
+            if (logItem.IsErrorEntry() || (this.WriteWarningsToStdErr && logItem.LogLevel == LogLevel.Warning))
             {
                 output = System.Console.Error;
             }
@@ -32,7 +32,7 @@ namespace GRYLibrary.Core.Log.ConcreteLogTargets
         }
         private void WriteWithColorToConsole(string message, TextWriter output, LogLevel logLevel, GRYLog logObject)
         {
-            if(message.Length > 0)
+            if (message.Length > 0)
             {
                 try
                 {

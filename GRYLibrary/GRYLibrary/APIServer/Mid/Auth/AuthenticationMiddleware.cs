@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.APIServer.Mid.Auth
 {
-    public abstract class AuthenticationMiddleware :AbstractMiddleware
+    public abstract class AuthenticationMiddleware : AbstractMiddleware
     {
         private readonly IAuthenticationConfiguration _Configuration;
         protected AuthenticationMiddleware(RequestDelegate next, IAuthenticationConfiguration configuration) : base(next)
@@ -17,7 +17,7 @@ namespace GRYLibrary.Core.APIServer.Mid.Auth
         public abstract bool IsAuthenticated(HttpContext context);
         public override Task Invoke(HttpContext context)
         {
-            if(this.IsAuthenticatedInternal(context))
+            if (this.IsAuthenticatedInternal(context))
             {
                 return this._Next(context);
             }
@@ -29,9 +29,9 @@ namespace GRYLibrary.Core.APIServer.Mid.Auth
         }
         public virtual bool IsAuthenticatedInternal(HttpContext context)
         {
-            if(this.AuthenticatedIsRequired(context))
+            if (this.AuthenticatedIsRequired(context))
             {
-                if(this.IsAuthenticated(context))
+                if (this.IsAuthenticated(context))
                 {
                     return true;
                 }

@@ -44,11 +44,11 @@ namespace GRYLibrary.Core.APIServer.Settings
         public IList<Type> CustomMiddlewares { get; set; }
         public ISet<Type> KnownTypes { get; set; }
     }
-    public interface IApplicationConstants<AppSpecificConstants> :IApplicationConstants
+    public interface IApplicationConstants<AppSpecificConstants> : IApplicationConstants
     {
         public AppSpecificConstants ApplicationSpecificConstants { get; set; }
     }
-    public class ApplicationConstants<AppSpecificConstants> :IApplicationConstants<AppSpecificConstants>
+    public class ApplicationConstants<AppSpecificConstants> : IApplicationConstants<AppSpecificConstants>
     {
         public ApplicationConstants(string applicationName, string appDescription, Version3 applicationVersion, ExecutionMode executionMode, GRYEnvironment environment, AppSpecificConstants applicationSpecificConstants)
         {

@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 
 namespace GRYLibrary.Tests.TestData.TestTypes.XMLSerializableType
 {
-    public class TypeWithDictionaryGeneric<T, U> :IXmlSerializable
+    public class TypeWithDictionaryGeneric<T, U> : IXmlSerializable
     {
         public Dictionary<T, U> Dictionary { get; set; }
 

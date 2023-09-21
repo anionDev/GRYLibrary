@@ -8,13 +8,13 @@ namespace GRYLibrary.Core.Graph
     /// <summary>
     /// Represents an undirected <see cref="Edge"/>. Currently an <see cref="UndirectedEdge"/> can only have exactly two connected <see cref="Vertex"/>-objects.
     /// </summary>
-    public class UndirectedEdge :Edge
+    public class UndirectedEdge : Edge
     {
         public IList<Vertex> ConnectedVertices { get; private set; }
         public UndirectedEdge() { }
         public UndirectedEdge(IEnumerable<Vertex> connectedVertices, string name, double weight = 1) : base(name, weight)
         {
-            if(connectedVertices.Count() != 2)
+            if (connectedVertices.Count() != 2)
             {
                 throw new Exception($"An {nameof(UndirectedEdge)}-object must have exactly 2 connected vertices");
             }
@@ -41,12 +41,12 @@ namespace GRYLibrary.Core.Graph
         }
         public override bool Equals(object obj)
         {
-            if(!base.Equals(obj))
+            if (!base.Equals(obj))
             {
                 return false;
             }
             UndirectedEdge typedObject = (UndirectedEdge)obj;
-            if(!this.ConnectedVertices.NullSafeEnumerableEquals(typedObject.ConnectedVertices))
+            if (!this.ConnectedVertices.NullSafeEnumerableEquals(typedObject.ConnectedVertices))
             {
                 return false;
             }
@@ -83,10 +83,10 @@ namespace GRYLibrary.Core.Graph
 
         public override IEnumerable<Vertex> GetOtherConnectedVerticesVisitor(Vertex vertex)
         {
-            if(this.ConnectedVertices.Contains(vertex))
+            if (this.ConnectedVertices.Contains(vertex))
             {
                 List<Vertex> result = this.ConnectedVertices.ToList();
-                if(!result.RemoveItemOnlyOnce(vertex))
+                if (!result.RemoveItemOnlyOnce(vertex))
                 {
                     throw new Exception();
                 }

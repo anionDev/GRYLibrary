@@ -17,7 +17,7 @@ namespace GRYLibrary.Tests.Testcases.GraphTests
                 graph.IsConnected();
                 Assert.Fail();
             }
-            catch(InvalidOperationException)
+            catch (InvalidOperationException)
             {
                 //test passed
             }
