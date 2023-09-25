@@ -39,7 +39,6 @@ using System.Xml.Linq;
 using System.Xml.Schema;
 using System.Xml.Xsl;
 using static GRYLibrary.Core.Miscellaneous.TableGenerator;
-using YamlDotNet.Core.Tokens;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
