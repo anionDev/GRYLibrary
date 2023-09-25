@@ -50,7 +50,7 @@ namespace GRYLibrary.Core.Miscellaneous
         private void Save()
         {
             List<string> lines = new List<string>();
-            List<KeyValuePair< TKey, TValue>> kvps= this.Cache.ToList();
+            List<KeyValuePair<TKey, TValue>> kvps = this.Cache.ToList();
             if (this.Sorter != null)
             {
                 kvps.Sort(this.Sorter);
@@ -61,6 +61,6 @@ namespace GRYLibrary.Core.Miscellaneous
             }
             File.WriteAllLines(this.CacheFile, lines);
         }
-        public IComparer<KeyValuePair<TKey, TValue>> Sorter { get;  set; }   
+        public IComparer<KeyValuePair<TKey, TValue>> Sorter { get; set; }
     }
 }

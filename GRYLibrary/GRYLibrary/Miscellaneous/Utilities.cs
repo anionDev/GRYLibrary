@@ -39,6 +39,7 @@ using System.Xml.Linq;
 using System.Xml.Schema;
 using System.Xml.Xsl;
 using static GRYLibrary.Core.Miscellaneous.TableGenerator;
+using YamlDotNet.Core.Tokens;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
@@ -542,7 +543,7 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 return result;
             }
-            AssertCondition(table.Select(lines => lines.Count).ToHashSet().Count == 1,@break:true);
+            AssertCondition(table.Select(lines => lines.Count).ToHashSet().Count == 1, @break: true);
             int columnAmount = table.First().Count;
             uint[] columnWidths = Enumerable.Repeat((uint)0, columnAmount).ToArray();
 
@@ -2987,6 +2988,27 @@ namespace GRYLibrary.Core.Miscellaneous
                 return Analysis.Instance;
             }
             return RunProgram.Instance;
+        }
+
+        public static string DecimalToString(decimal amount)
+        {
+            var result = amount.ToString(CultureInfo.InvariantCulture);
+            if (result.Contains('.'))
+            {
+                while (result.EndsWith("0"))
+                {
+                    result = result.Remove(result.Length - 1);
+                }
+                if (result.EndsWith("."))
+                {
+                    result = result + "0";
+                }
+            }
+            else
+            {
+                result = result + ".0";
+            }
+            return result;
         }
     }
 }

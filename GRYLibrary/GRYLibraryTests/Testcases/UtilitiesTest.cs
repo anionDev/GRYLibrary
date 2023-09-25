@@ -744,5 +744,61 @@ namespace GRYLibrary.Tests.Testcases
             // assert
             Assert.AreEqual(expected, actual);
         }
+
+        [TestMethod]
+        public void DecimalToStringTest1()
+        {
+            // arrange
+            decimal input = 4.000m;
+            string expected = "4.0";
+
+            // act
+            string actual = GUtilities.DecimalToString(input);
+
+            // assert
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void DecimalToStringTest2()
+        {
+            // arrange
+            decimal input = 4.05000m;
+            string expected = "4.05";
+
+            // act
+            string actual = GUtilities.DecimalToString(input);
+
+            // assert
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void DecimalToStringTest3()
+        {
+            // arrange
+            decimal input = 4.05m;
+            string expected = "4.05";
+
+            // act
+            string actual = GUtilities.DecimalToString(input);
+
+            // assert
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void DecimalToStringTest4()
+        {
+            // arrange
+            decimal input = 4m;
+            string expected = "4.0";
+
+            // act
+            string actual = GUtilities.DecimalToString(input);
+
+            // assert
+            Assert.AreEqual(expected, actual);
+        }
     }
 }
