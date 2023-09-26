@@ -661,7 +661,8 @@ namespace GRYLibrary.Core.Miscellaneous
             return $"{Math.Floor(timespan.TotalHours).ToString().PadLeft(2, '0')}:{timespan.Minutes.ToString().PadLeft(2, '0')}:{timespan.Seconds.ToString().PadLeft(2, '0')}";
         }
 
-        public const string ISO8601FormatForDateTimesInFullFormat = "yyyy-MM-ddTHH:mm:sszzz";
+        public const string FormatForDateTimesInFullFormatISO8601 = "yyyy-MM-ddTHH:mm:sszzz";
+        public const string FormatForDateTimesInFullFormatSimple = "yyyy-MM-dd HH:mm:ss";
         public static string FormatTimestamp(DateTime timestamp, bool addMillisecondsInLogTimestamps)
         {
             if (addMillisecondsInLogTimestamps)
@@ -670,7 +671,7 @@ namespace GRYLibrary.Core.Miscellaneous
             }
             else
             {
-                return timestamp.ToString(ISO8601FormatForDateTimesInFullFormat);//2023-05-01T11:44:53+02:00
+                return timestamp.ToString(FormatForDateTimesInFullFormatISO8601);//2023-05-01T11:44:53+02:00
             }
         }
 

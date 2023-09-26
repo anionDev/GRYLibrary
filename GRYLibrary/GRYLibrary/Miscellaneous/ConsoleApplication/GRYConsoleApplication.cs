@@ -5,6 +5,7 @@ using GRYLibrary.Core.APIServer.ExecutionModes;
 using GRYLibrary.Core.Log;
 using Microsoft.Extensions.Logging;
 using System;
+using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 using System.Collections.Generic;
 using System.IO;
 
@@ -39,7 +40,14 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
             int result = 1;
             try
             {
-                Console.Clear();
+                try
+                {
+                    Console.Clear();
+                }
+                catch
+                {
+                    GUtilities.NoOperation();
+                }
                 string title = $"{this._ProgramName} (v{this._ProgramVersion})";
                 Console.Title = title;
                 if (arguments == null)
