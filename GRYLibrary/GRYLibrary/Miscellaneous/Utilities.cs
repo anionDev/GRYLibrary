@@ -2992,7 +2992,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public static string DecimalToString(decimal amount)
         {
-            var result = amount.ToString(CultureInfo.InvariantCulture);
+            string result = amount.ToString(CultureInfo.InvariantCulture);
             if (result.Contains('.'))
             {
                 while (result.EndsWith("0"))

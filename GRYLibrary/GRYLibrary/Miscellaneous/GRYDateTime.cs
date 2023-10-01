@@ -15,8 +15,8 @@ namespace GRYLibrary.Core.Miscellaneous
         public int Hour { get; set; }
         public int Minute { get; set; }
         public int Second { get; set; }
-        public static GRYDateTime GetCurrentDateTime() { return GRYDateTime.FromDateTime(DateTime.Now); }
-        public static GRYDateTime GetCurrentDateTimeInUTC() { return GRYDateTime.FromDateTime(DateTime.UtcNow); }
+        public static GRYDateTime GetCurrentDateTime() { return FromDateTime(DateTime.Now); }
+        public static GRYDateTime GetCurrentDateTimeInUTC() { return FromDateTime(DateTime.UtcNow); }
 
         public GRYDateTime(int year, int month, int day, int hour, int minute, int second)
         {
@@ -114,11 +114,11 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static GRYDateTime operator +(GRYDateTime left, TimeSpan right)
         {
-            return GRYDateTime.FromDateTime(GRYDateTime.ToDateTime(left) + right);
+            return FromDateTime(ToDateTime(left) + right);
         }
         public static GRYDateTime operator -(GRYDateTime left, TimeSpan right)
         {
-            return GRYDateTime.FromDateTime(GRYDateTime.ToDateTime(left) - right);
+            return FromDateTime(ToDateTime(left) - right);
         }
 
         public static bool operator <(GRYDateTime left, GRYDateTime right)

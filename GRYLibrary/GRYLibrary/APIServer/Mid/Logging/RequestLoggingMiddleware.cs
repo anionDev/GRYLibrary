@@ -132,7 +132,7 @@ namespace GRYLibrary.Core.APIServer.Mid.RequestLogger
         }
         public virtual string FormatTimestamp(DateTime timestamp)
         {
-            return Miscellaneous.Utilities.FormatTimestamp(timestamp, this._RequestLoggingSettings.AddMillisecondsInLogTimestamps);
+            return GUtilities.FormatTimestamp(timestamp, this._RequestLoggingSettings.AddMillisecondsInLogTimestamps);
         }
         public virtual string Truncate(string value, uint maxLength)
         {
