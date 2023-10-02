@@ -35,6 +35,7 @@ using GRYLibrary.Core.APIServer.ExecutionModes.Visitors;
 using System.Reflection;
 using GRYLibrary.Core.Miscellaneous.MetaConfiguration.ConfigurationFormats;
 using GRYLibrary.Core.Miscellaneous.MetaConfiguration;
+using GRYLibrary.Core.APIServer.Binder;
 
 namespace GRYLibrary.Core.APIServer
 {
@@ -284,6 +285,7 @@ namespace GRYLibrary.Core.APIServer
                     swaggerOptions.SwaggerDoc(ServerConfiguration.APISpecificationDocumentName, openAPIInfo);
                     string xmlFilename = $"{this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName}.xml";
                     swaggerOptions.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+                    //TODO add support for swaggerOptions.MapType<SomeType>(() => ...);
                 });
             }
             builder.Services.AddLogging(c => c.ClearProviders());

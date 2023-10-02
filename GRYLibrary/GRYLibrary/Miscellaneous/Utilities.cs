@@ -39,6 +39,7 @@ using System.Xml.Linq;
 using System.Xml.Schema;
 using System.Xml.Xsl;
 using static GRYLibrary.Core.Miscellaneous.TableGenerator;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
@@ -2159,6 +2160,51 @@ namespace GRYLibrary.Core.Miscellaneous
                 }
             }
             throw new KeyNotFoundException($"No volume could be found which provides the volume accessible at {mountPoint}");
+        }
+        public static Func<ModelBindingContext, Task> GenericModelBinder(Func<string, object> parser, string targetTypeName, bool allowDefault)
+        {
+            return (ModelBindingContext bindingContext) =>
+            {
+                //see https://learn.microsoft.com/de-de/aspnet/core/mvc/advanced/custom-model-binding?view=aspnetcore-7.0
+                if (bindingContext == null)
+                {
+                    throw new ArgumentNullException(nameof(bindingContext));
+                }
+                var modelName = bindingContext.ModelName;
+                var values = bindingContext.ValueProvider.GetValue("moment");
+                var values2 = bindingContext.ValueProvider.GetValue("{moment}");
+                var valueProviderResult = bindingContext.ValueProvider.GetValue(modelName);
+                if (valueProviderResult == ValueProviderResult.None)
+                {
+                    return Task.CompletedTask;
+                }
+                bindingContext.ModelState.SetModelValue(modelName, valueProviderResult);
+                var value = valueProviderResult.FirstValue;
+                if (string.IsNullOrEmpty(value))
+                {
+                    if (allowDefault)
+                    {
+                        bindingContext.Result = default;
+                    }
+                    else
+                    {
+                        bindingContext.ModelState.TryAddModelError(modelName, $"No value given to parse to {targetTypeName}.");
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        object model = parser(value);
+                        bindingContext.Result = ModelBindingResult.Success(model);
+                    }
+                    catch
+                    {
+                        bindingContext.ModelState.TryAddModelError(modelName, $"\"{value}\" can not be parsed to {targetTypeName}.");
+                    }
+                }
+                return Task.CompletedTask;
+            };
         }
 
         public static T[] PadLeft<T>(T[] array, int length)
