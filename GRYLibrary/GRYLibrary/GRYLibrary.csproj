@@ -12,7 +12,7 @@
         <Copyright>Copyright © 2023 Marius Göcke</Copyright>
         <Description>GRYLibrary is a collection with some useful .NET classes and functions which are very easy (re)usable.</Description>
         <PackageProjectUrl>https://github.com/anionDev/GRYLibrary</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/anionDev/GRYLibrary</RepositoryUrl>
+        <RepositoryUrl>https://github.com/anionDev/GRYLibrary.git</RepositoryUrl>
         <RootNamespace>GRYLibrary.Core</RootNamespace>
         <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
         <Nullable>disable</Nullable>

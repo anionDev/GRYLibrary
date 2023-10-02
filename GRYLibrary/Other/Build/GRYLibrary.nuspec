@@ -15,7 +15,7 @@
             <group targetFramework="net7" />
         </dependencies>
         <projectUrl>https://github.com/anionDev/GRYLibrary</projectUrl>
-        <repository type="git" url="https://github.com/anionDev/GRYLibrary" branch="main" commit="$commitid$" />
+        <repository type="git" url="https://github.com/anionDev/GRYLibrary.git" branch="main" commit="$commitid$" />
         <icon>images\GRYLibraryIcon.png</icon>
     </metadata>
     <files>
