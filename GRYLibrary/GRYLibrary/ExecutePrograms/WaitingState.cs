@@ -9,12 +9,12 @@ namespace GRYLibrary.Core.ExecutePrograms
     }
     public interface IWaitingStateVisitor
     {
-        void Handle(RunAsynchronously runAsynchronously);
-        void Handle(RunSynchronously runSynchronously);
+        void Handle(RunAsynchronously waitingStateVisitor);
+        void Handle(RunSynchronously waitingStateVisitor);
     }
     public interface IWaitingStateVisitor<T>
     {
-        T Handle(RunAsynchronously runAsynchronously);
-        T Handle(RunSynchronously runSynchronously);
+        T Handle(RunAsynchronously waitingStateVisitor);
+        T Handle(RunSynchronously waitingStateVisitor);
     }
 }

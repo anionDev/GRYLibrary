@@ -37,7 +37,7 @@ namespace GRYLibrary.Core.Miscellaneous
         private void Execute()
         {
             this._Running = true;
-            if(this.LogOverhead)
+            if (this.LogOverhead)
             {
                 this.LogObject?.Log(string.Format("Start action with id {0} and name \"{1}\"", this.Id.ToString(), this.Name.ToString()));
             }
@@ -45,7 +45,7 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 this.Action();
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 this.LogObject?.Log(string.Format("Error occurred while executing action with id {0} and name \"{1}\"", this.Id.ToString(), this.Name.ToString()), exception);
             }
@@ -53,7 +53,7 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 this._Running = false;
             }
-            if(this.LogOverhead)
+            if (this.LogOverhead)
             {
                 this.LogObject?.Log(string.Format("Finished action with id {0} and name \"{1}\" started", this.Id.ToString(), this.Name.ToString()));
             }
@@ -61,7 +61,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public void Start()
         {
-            if(!this._Running)
+            if (!this._Running)
             {
                 this._Thread = new System.Threading.Thread(this.Execute)
                 {
@@ -72,7 +72,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public void Abort()
         {
-            if(this._Running)
+            if (this._Running)
             {
                 this._Thread.Interrupt();
             }

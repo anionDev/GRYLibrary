@@ -30,7 +30,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public GRYLog LogObject { get; set; } = null;
         public void Start()
         {
-            if(!this.IsRunning)
+            if (!this.IsRunning)
             {
                 this.IsRunning = true;
                 new Thread(this.Manage).Start();
@@ -42,15 +42,15 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 this.LogObject?.Log($"Start executing queued actions.");
                 bool enabled = true;
-                while(enabled)
+                while (enabled)
                 {
-                    if(!this.InfiniteMode)
+                    if (!this.InfiniteMode)
                     {
                         enabled = false;
                     }
-                    while(!this.IsFinished())
+                    while (!this.IsFinished())
                     {
-                        while(this.NewThreadCanBeStarted())
+                        while (this.NewThreadCanBeStarted())
                         {
                             Tuple<string, Action> dequeuedAction = this._ActionQueue.Dequeue();
                             Thread thread = new(() => this.ExecuteTask(dequeuedAction))
@@ -88,7 +88,7 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 action.Item2();
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 this.LogObject?.Log($"Error in action {action.Item1}.", exception);
             }

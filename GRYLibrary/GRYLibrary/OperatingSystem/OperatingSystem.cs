@@ -10,15 +10,15 @@ namespace GRYLibrary.Core.OperatingSystem
         public abstract T Accept<T>(IOperatingSystemVisitor<T> visitor);
         public static OperatingSystem GetCurrentOperatingSystem()
         {
-            if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 return Windows.Instance;
             }
-            if(RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 return OSX.Instance;
             }
-            if(RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
                 return Linux.Instance;
             }

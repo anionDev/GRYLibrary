@@ -1,6 +1,6 @@
 ﻿namespace GRYLibrary.Core.APIServer.Mid.WAF
 {
-    public interface IWebApplicationFirewallConfiguration :IMiddlewareConfiguration
+    public interface IWebApplicationFirewallConfiguration : IMiddlewareConfiguration
     {
     }
 }

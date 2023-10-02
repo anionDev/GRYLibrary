@@ -1,4 +1,5 @@
-﻿using GRYLibrary.Core.Log.ConcreteLogTargets;
+﻿using GRYLibrary.Core.GeneralPurposeLogger;
+using GRYLibrary.Core.Log.ConcreteLogTargets;
 using GRYLibrary.Core.Miscellaneous;
 using Microsoft.Extensions.Logging;
 using System;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.Log
 {
-    public sealed class GRYLog :IDisposable, ILogger
+    public sealed class GRYLog : IDisposable, ILogger, IGeneralLogger
     {
         public GRYLogConfiguration Configuration { get; set; }
         /// <summary>
@@ -31,9 +32,9 @@ namespace GRYLibrary.Core.Log
         {
             get
             {
-                foreach(GRYLogTarget target in this.Configuration.LogTargets)
+                foreach (GRYLogTarget target in this.Configuration.LogTargets)
                 {
-                    if(target.Enabled)
+                    if (target.Enabled)
                     {
                         return true;
                     }
@@ -41,16 +42,16 @@ namespace GRYLibrary.Core.Log
                 return false;
             }
         }
-        private GRYLog()
+        private GRYLog() : this(new GRYLogConfiguration())
         {
-            this.Configuration = new GRYLogConfiguration();
         }
         private GRYLog(GRYLogConfiguration configuration)
         {
-            lock(_LockObject)
+            lock (_LockObject)
             {
                 this._ConsoleDefaultColor = System.Console.ForegroundColor;
                 this.Configuration = configuration;
+                this.AddLogEntry = this.Log;
                 this._Initialized = true;
             }
         }
@@ -73,11 +74,11 @@ namespace GRYLibrary.Core.Log
 
         public override bool Equals(object obj)
         {
-            if(obj is not GRYLog typedObject)
+            if (obj is not GRYLog typedObject)
             {
                 return false;
             }
-            if(!this.Configuration.Equals(typedObject.Configuration))
+            if (!this.Configuration.Equals(typedObject.Configuration))
             {
                 return false;
             }
@@ -87,6 +88,8 @@ namespace GRYLibrary.Core.Log
         /// Will only be used if <see cref="GRYLogConfiguration.StoreProcessedLogItemsInternally"/> is set to true.ls -la
         /// </remarks>
         public IList<LogItem> ProcessedLogItems { get; set; } = new List<LogItem>();
+        public Action<LogItem> AddLogEntry { get; set; }
+
         public int GetAmountOfErrors()
         {
             return this._AmountOfErrors;
@@ -108,7 +111,7 @@ namespace GRYLibrary.Core.Log
             string appDrive = Path.GetPathRoot(System.Reflection.Assembly.GetEntryAssembly().Location);
             string cDrive = "C:\\";
             this.LogDriveStatistics(cDrive);
-            if(!appDrive.Equals(cDrive))
+            if (!appDrive.Equals(cDrive))
             {
                 this.LogDriveStatistics(appDrive);
             }
@@ -130,12 +133,12 @@ namespace GRYLibrary.Core.Log
 
         private bool LineShouldBePrinted(string message)
         {
-            if(message == null)
+            if (message == null)
             {
                 return false;
             }
 
-            if(this.Configuration.PrintEmptyLines)
+            if (this.Configuration.PrintEmptyLines)
             {
                 return true;
             }
@@ -188,7 +191,7 @@ namespace GRYLibrary.Core.Log
         }
         public void Log(LogItem logitem)
         {
-            if(this.Configuration.WriteLogEntriesAsynchronous)
+            if (this.Configuration.WriteLogEntriesAsynchronous)
             {
                 new Task(() => this.LogImplementation(logitem)).Start();
             }
@@ -201,60 +204,60 @@ namespace GRYLibrary.Core.Log
         {
             try
             {
-                if(LogLevel.None == logItem.LogLevel)
+                if (LogLevel.None == logItem.LogLevel)
                 {
                     return;
                 }
-                lock(_LockObject)
+                lock (_LockObject)
                 {
-                    if(!this._Initialized)
+                    if (!this._Initialized)
                     {
                         return;
                     }
-                    if(!this.Configuration.Enabled)
+                    if (!this.Configuration.Enabled)
                     {
                         return;
                     }
-                    if(!this.IsEnabled(logItem.LogLevel))
+                    if (!this.IsEnabled(logItem.LogLevel))
                     {
                         return;
                     }
-                    if(!this.LineShouldBePrinted(logItem.PlainMessage))
+                    if (!this.LineShouldBePrinted(logItem.PlainMessage))
                     {
                         return;
                     }
-                    if(this.Configuration.StoreProcessedLogItemsInternally)
+                    if (this.Configuration.StoreProcessedLogItemsInternally)
                     {
                         this.ProcessedLogItems.Add(logItem);
                     }
-                    if(logItem.PlainMessage.Contains(Environment.NewLine) && this.Configuration.LogEveryLineOfLogEntryInNewLine)
+                    if (logItem.PlainMessage.Contains(Environment.NewLine) && this.Configuration.LogEveryLineOfLogEntryInNewLine)
                     {
-                        foreach(string line in logItem.PlainMessage.Split(new string[] { Environment.NewLine }, StringSplitOptions.None))
+                        foreach (string line in logItem.PlainMessage.Split(new string[] { Environment.NewLine }, StringSplitOptions.None))
                         {
                             this.Log(new LogItem(line, logItem.LogLevel, logItem.Exception));
                         }
                         return;
                     }
-                    if(this.Configuration.PrintErrorsAsInformation && logItem.LogLevel.Equals(LogLevel.Error))
+                    if (this.Configuration.PrintErrorsAsInformation && logItem.LogLevel.Equals(LogLevel.Error))
                     {
                         logItem.LogLevel = LogLevel.Information;
                     }
-                    if(this.IsErrorLogLevel(logItem.LogLevel))
+                    if (this.IsErrorLogLevel(logItem.LogLevel))
                     {
                         this._AmountOfErrors += 1;
                     }
-                    if(this.IsWarningLogLevel(logItem.LogLevel))
+                    if (this.IsWarningLogLevel(logItem.LogLevel))
                     {
                         this._AmountOfWarnings += 1;
                     }
-                    foreach(GRYLogTarget logTarget in this.Configuration.LogTargets)
+                    foreach (GRYLogTarget logTarget in this.Configuration.LogTargets)
                     {
-                        if(logTarget.Enabled)
+                        if (logTarget.Enabled)
                         {
-                            if(logItem.LogTargets.Contains(logTarget))
+                            if (logItem.LogTargets.Contains(logTarget))
                             {
 
-                                if(logTarget.LogLevels.Contains(logItem.LogLevel))
+                                if (logTarget.LogLevels.Contains(logItem.LogLevel))
                                 {
                                     logTarget.Execute(logItem, this);
                                 }
@@ -263,7 +266,7 @@ namespace GRYLibrary.Core.Log
                     }
                 }
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 ErrorOccurred?.Invoke(exception, logItem);
             }
@@ -285,7 +288,7 @@ namespace GRYLibrary.Core.Log
             {
                 List<T> itemsAsList = items.ToList();
                 uint amountOfItems = (uint)itemsAsList.Count;
-                for(uint currentIndex = 0; currentIndex < itemsAsList.Count; currentIndex++)
+                for (uint currentIndex = 0; currentIndex < itemsAsList.Count; currentIndex++)
                 {
                     try
                     {
@@ -303,7 +306,7 @@ namespace GRYLibrary.Core.Log
 
         public void LogProgress(uint enumerator, uint denominator)
         {
-            if(enumerator < 0 || denominator < 0 || denominator < enumerator)
+            if (enumerator < 0 || denominator < 0 || denominator < enumerator)
             {
                 throw new ArgumentException($"Can not log progress for {nameof(enumerator)}={enumerator} and {nameof(denominator)}={denominator}. Both values must be nonnegative and {nameof(denominator)} must be greater than {nameof(enumerator)}.");
             }
@@ -322,17 +325,17 @@ namespace GRYLibrary.Core.Log
             Stopwatch stopWatch = new();
             try
             {
-                using(this.UseSubNamespace(subNamespaceForLog))
+                using (this.UseSubNamespace(subNamespaceForLog))
                 {
                     stopWatch.Start();
                     action();
                     stopWatch.Stop();
                 }
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 this.Log($"An exception occurred while executing action '{nameOfAction}'.", LogLevel.Error, exception, 0x78200002.ToString());
-                if(!preventThrowingExceptions)
+                if (!preventThrowingExceptions)
                 {
                     throw;
                 }
@@ -348,7 +351,7 @@ namespace GRYLibrary.Core.Log
             Stopwatch stopWatch = new();
             try
             {
-                using(this.UseSubNamespace(subNamespaceForLog))
+                using (this.UseSubNamespace(subNamespaceForLog))
                 {
                     stopWatch.Start();
                     TResult result = action();
@@ -356,10 +359,10 @@ namespace GRYLibrary.Core.Log
                     return result;
                 }
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 this.Log($"An exception occurred while executing action '{nameOfAction}'.", LogLevel.Error, exception, 0x78200003.ToString());
-                if(preventThrowingExceptions)
+                if (preventThrowingExceptions)
                 {
                     return defaultValue;
                 }

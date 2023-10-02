@@ -2,7 +2,7 @@
 
 namespace GRYLibrary.Tests.TestData.TestTypes.ComplexDataStructure.PaymentMethods
 {
-    public class Bitcoin :PaymentMethod
+    public class Bitcoin : PaymentMethod
     {
         public string TargetAddressForPayment { get; set; }
         #region Overhead

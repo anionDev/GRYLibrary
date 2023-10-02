@@ -9,7 +9,7 @@ namespace GRYLibrary.Core.APIServer.ConcreteEnvironments
         public abstract T Accept<T>(IEnvironmentVisitor<T> visitor);
         public override bool Equals(object obj)
         {
-            if(obj == null)
+            if (obj == null)
             {
                 return false;
             }
@@ -31,19 +31,19 @@ namespace GRYLibrary.Core.APIServer.ConcreteEnvironments
 
         public static GRYEnvironment Parse(string environment)
         {
-            if(environment == null)
+            if (environment == null)
             {
                 throw new ArgumentException($"Value for parameter {nameof(environment)} is null.");
             }
-            else if(nameof(Development) == environment)
+            else if (nameof(Development) == environment)
             {
                 return Development.Instance;
             }
-            else if(nameof(QualityCheck) == environment)
+            else if (nameof(QualityCheck) == environment)
             {
                 return QualityCheck.Instance;
             }
-            else if(nameof(Productive) == environment)
+            else if (nameof(Productive) == environment)
             {
                 return Productive.Instance;
             }

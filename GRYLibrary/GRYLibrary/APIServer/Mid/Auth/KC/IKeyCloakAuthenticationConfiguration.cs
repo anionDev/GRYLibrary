@@ -1,6 +1,6 @@
 ﻿namespace GRYLibrary.Core.APIServer.Mid.Auth.KC
 {
-    public interface IKeyCloakAuthenticationConfiguration :IAuthenticationConfiguration
+    public interface IKeyCloakAuthenticationConfiguration : IAuthenticationConfiguration
     {
     }
 }

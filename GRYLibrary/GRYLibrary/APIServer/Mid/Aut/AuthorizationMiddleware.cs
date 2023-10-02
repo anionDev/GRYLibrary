@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.APIServer.Mid.Aut
 {
-    public abstract class AuthorizationMiddleware :AbstractMiddleware
+    public abstract class AuthorizationMiddleware : AbstractMiddleware
     {
         private readonly IAuthorizationConfiguration _AuthorizationConfiguration;
-        protected AuthorizationMiddleware(RequestDelegate next,IAuthorizationConfiguration authorizationConfiguration) : base(next)
+        protected AuthorizationMiddleware(RequestDelegate next, IAuthorizationConfiguration authorizationConfiguration) : base(next)
         {
             this._AuthorizationConfiguration = authorizationConfiguration;
         }
@@ -17,7 +17,7 @@ namespace GRYLibrary.Core.APIServer.Mid.Aut
         public abstract bool IsAuthorized(HttpContext context);
         public override Task Invoke(HttpContext context)
         {
-            if(this.IsAuthorizedInternal(context))
+            if (this.IsAuthorizedInternal(context))
             {
                 return this._Next(context);
             }
@@ -29,9 +29,9 @@ namespace GRYLibrary.Core.APIServer.Mid.Aut
         }
         public virtual bool IsAuthorizedInternal(HttpContext context)
         {
-            if(this.AuthorizationIsRequired(context))
+            if (this.AuthorizationIsRequired(context))
             {
-                if(this.IsAuthorized(context))
+                if (this.IsAuthorized(context))
                 {
                     return true;
                 }

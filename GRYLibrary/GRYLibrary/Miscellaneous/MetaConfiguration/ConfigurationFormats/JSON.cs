@@ -1,6 +1,6 @@
 ﻿namespace GRYLibrary.Core.Miscellaneous.MetaConfiguration.ConfigurationFormats
 {
-    public class JSON :IConfigurationFormat
+    public class JSON : IConfigurationFormat
     {
         public static JSON Instance { get; } = new JSON();
         private JSON() { }

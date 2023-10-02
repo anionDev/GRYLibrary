@@ -1,6 +1,6 @@
 ﻿namespace GRYLibrary.Core.Miscellaneous.MetaConfiguration.ConfigurationFormats
 {
-    public class XML :IConfigurationFormat
+    public class XML : IConfigurationFormat
     {
         public static XML Instance { get; } = new XML();
         private XML() { }

@@ -2,7 +2,7 @@
 
 namespace GRYLibrary.Core.APIServer.Services.KeyCloak
 {
-    public class KeyCloakService :IKeyCloakService
+    public class KeyCloakService : IKeyCloakService
     {
         public IKeyCloakServiceSettings Settings { get; }
         public KeycloakClient KeycloakClient { get; private set; }

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace GRYLibrary.Core.Graph
 {
-    public sealed class DirectedGraph :Graph
+    public sealed class DirectedGraph : Graph
     {
         public override ISet<Edge> Edges => new HashSet<Edge>(this._DirectedEdges);
         public ISet<Edge> DirectedEdges => new HashSet<Edge>(this._DirectedEdges);
@@ -25,11 +25,11 @@ namespace GRYLibrary.Core.Graph
         public UndirectedGraph ToUndirectedGraph()
         {
             UndirectedGraph result = new();
-            foreach(Vertex vertex in this.Vertices)
+            foreach (Vertex vertex in this.Vertices)
             {
                 result.AddVertex(new Vertex(vertex.Name));
             }
-            foreach(DirectedEdge edge in this._DirectedEdges)
+            foreach (DirectedEdge edge in this._DirectedEdges)
             {
                 result.AddEdge(edge.ToUndirectedEdge(result.GetVertex(edge.Source.Name), result.GetVertex(edge.Target.Name)));
             }
@@ -44,13 +44,13 @@ namespace GRYLibrary.Core.Graph
         public override ISet<Vertex> GetDirectSuccessors(Vertex vertex, bool doNotWalkAgainstDirectedEdges = true)
         {
             HashSet<Vertex> result = new();
-            foreach(DirectedEdge edge in vertex.GetConnectedEdges())
+            foreach (DirectedEdge edge in vertex.GetConnectedEdges())
             {
-                if(edge.Source.Equals(vertex))
+                if (edge.Source.Equals(vertex))
                 {
                     result.Add(edge.Target);
                 }
-                if(edge.Target.Equals(vertex) && !doNotWalkAgainstDirectedEdges)
+                if (edge.Target.Equals(vertex) && !doNotWalkAgainstDirectedEdges)
                 {
                     result.Add(edge.Source);
                 }
@@ -66,9 +66,9 @@ namespace GRYLibrary.Core.Graph
         public ISet<Vertex> GetDirectPredecessors(Vertex vertex)
         {
             HashSet<Vertex> result = new();
-            foreach(DirectedEdge edge in vertex.GetConnectedEdges())
+            foreach (DirectedEdge edge in vertex.GetConnectedEdges())
             {
-                if(edge.Target.Equals(vertex))
+                if (edge.Target.Equals(vertex))
                 {
                     result.Add(edge.Source);
                 }
@@ -77,9 +77,9 @@ namespace GRYLibrary.Core.Graph
         }
         public bool HasIncomingEdge(Vertex vertex)
         {
-            foreach(DirectedEdge edge in vertex.GetConnectedEdges())
+            foreach (DirectedEdge edge in vertex.GetConnectedEdges())
             {
-                if(edge.Target.Equals(edge))
+                if (edge.Target.Equals(edge))
                 {
                     return true;
                 }
@@ -94,9 +94,9 @@ namespace GRYLibrary.Core.Graph
         public ISet<DirectedEdge> GetIncomingEdges(Vertex vertex)
         {
             HashSet<DirectedEdge> result = new();
-            foreach(DirectedEdge edge in vertex.GetConnectedEdges())
+            foreach (DirectedEdge edge in vertex.GetConnectedEdges())
             {
-                if(edge.Target.Equals(vertex))
+                if (edge.Target.Equals(vertex))
                 {
                     result.Add(edge);
                 }
@@ -106,9 +106,9 @@ namespace GRYLibrary.Core.Graph
         public ISet<DirectedEdge> GetOutgoingEdges(Vertex vertex)
         {
             HashSet<DirectedEdge> result = new();
-            foreach(DirectedEdge edge in vertex.GetConnectedEdges())
+            foreach (DirectedEdge edge in vertex.GetConnectedEdges())
             {
-                if(edge.Source.Equals(vertex))
+                if (edge.Source.Equals(vertex))
                 {
                     result.Add(edge);
                 }
@@ -120,11 +120,11 @@ namespace GRYLibrary.Core.Graph
         {
             DirectedGraph graph = new();
             Tuple<IList<DirectedEdge>, IList<Vertex>> items = ParseAdjacencyMatrix(adjacencyMatrix);
-            foreach(Vertex item in items.Item2)
+            foreach (Vertex item in items.Item2)
             {
                 graph._Vertices.Add(item);
             }
-            foreach(DirectedEdge item in items.Item1)
+            foreach (DirectedEdge item in items.Item1)
             {
                 graph._DirectedEdges.Add(item);
             }
@@ -132,20 +132,20 @@ namespace GRYLibrary.Core.Graph
         }
         private static Tuple<IList<DirectedEdge>, IList<Vertex>> ParseAdjacencyMatrix(double[,] adjacencyMatrix)
         {
-            if(adjacencyMatrix.GetLength(0) != adjacencyMatrix.GetLength(1))
+            if (adjacencyMatrix.GetLength(0) != adjacencyMatrix.GetLength(1))
             {
                 throw new Exception("The row-count must be equal to the column-count.");
             }
             IList<Vertex> vertices = new List<Vertex>();
-            for(int i = 0; i < adjacencyMatrix.GetLength(0); i++)
+            for (int i = 0; i < adjacencyMatrix.GetLength(0); i++)
             {
                 Vertex newVertex = new("Vertex_" + (i + 1).ToString());
                 vertices.Add(newVertex);
             }
             IList<DirectedEdge> edges = new List<DirectedEdge>();
-            for(int i = 0; i < adjacencyMatrix.GetLength(0); i++)
+            for (int i = 0; i < adjacencyMatrix.GetLength(0); i++)
             {
-                for(int j = 0; j < adjacencyMatrix.GetLength(1); j++)
+                for (int j = 0; j < adjacencyMatrix.GetLength(1); j++)
                 {
                     DirectedEdge newEdge = new(vertices[i], vertices[j], nameof(Edge) + "_" + (i + 1).ToString() + "_" + (j + 1).ToString())
                     {
@@ -160,7 +160,7 @@ namespace GRYLibrary.Core.Graph
         /// <inheritdoc/>
         public override void AddEdge(Edge edge)
         {
-            if(edge is not DirectedEdge)
+            if (edge is not DirectedEdge)
             {
                 throw new InvalidEdgeTypeException($"{nameof(DirectedGraph)}-objects can only have edges of type {nameof(DirectedEdge)}");
             }
@@ -172,7 +172,7 @@ namespace GRYLibrary.Core.Graph
         /// <inheritdoc/>
         public override void RemoveEdge(Edge edge)
         {
-            if(edge is DirectedEdge)
+            if (edge is DirectedEdge)
             {
                 this._DirectedEdges.Remove((DirectedEdge)edge);
                 this.OnEdgeRemoved(edge);

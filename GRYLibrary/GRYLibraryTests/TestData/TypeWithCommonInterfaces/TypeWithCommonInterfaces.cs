@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 
 namespace GRYLibrary.Tests.TestData.TypeWithCommonInterfaces
 {
-    public class TypeWithCommonInterfaces :IXmlSerializable
+    public class TypeWithCommonInterfaces : IXmlSerializable
     {
         public IList<object> List { get; set; }
         public IList<object> List2 { get; set; } = null;

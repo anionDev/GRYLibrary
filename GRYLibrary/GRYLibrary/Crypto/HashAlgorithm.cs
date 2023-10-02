@@ -2,7 +2,7 @@
 
 namespace GRYLibrary.Core.Crypto
 {
-    public abstract class HashAlgorithm :CryptographyAlgorithm
+    public abstract class HashAlgorithm : CryptographyAlgorithm
     {
         public abstract byte[] Hash(byte[] data);
         public string Hash(string data)

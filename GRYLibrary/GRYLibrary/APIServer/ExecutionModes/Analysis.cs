@@ -1,6 +1,6 @@
 ﻿namespace GRYLibrary.Core.APIServer.ExecutionModes
 {
-    public class Analysis :ExecutionMode
+    public class Analysis : ExecutionMode
     {
         public static Analysis Instance { get; } = new Analysis();
         private Analysis() { }

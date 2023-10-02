@@ -37,7 +37,7 @@ namespace GRYLibrary.Core.APIServer.Mid.Logging
 
         internal string GetFormattedQuery()
         {
-            if(this.Query.Count == 0)
+            if (this.Query.Count == 0)
             {
                 return string.Empty;
             }

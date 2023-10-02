@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper
 {
-    public class ReferenceEqualsComparer :IEqualityComparer<object>
+    public class ReferenceEqualsComparer : IEqualityComparer<object>
     {
         public new bool Equals(object item1, object item2)
         {

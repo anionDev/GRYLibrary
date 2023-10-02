@@ -13,7 +13,7 @@ namespace GRYLibrary.Core.Log
     /// <summary>
     /// Represents a log-configuration for <see cref="GRYLog"/>.
     /// </summary>
-    public interface IGRYLogConfiguration :IDisposable
+    public interface IGRYLogConfiguration : IDisposable
     {
         public List<GRYLogTarget> LogTargets { get; set; }
         public bool WriteLogEntriesAsynchronous { get; set; }
@@ -32,7 +32,7 @@ namespace GRYLibrary.Core.Log
         public bool StoreProcessedLogItemsInternally { get; set; }
     }
     /// <inheritdoc cref="IGRYLogConfiguration"/>
-    public sealed class GRYLogConfiguration :IGRYLogConfiguration
+    public sealed class GRYLogConfiguration : IGRYLogConfiguration
     {
         public List<GRYLogTarget> LogTargets { get; set; }
         public bool WriteLogEntriesAsynchronous { get; set; }
@@ -50,7 +50,7 @@ namespace GRYLibrary.Core.Log
         }
         public GRYLogConfiguration(bool initializeWithDefaultValues = false)
         {
-            if(initializeWithDefaultValues)
+            if (initializeWithDefaultValues)
             {
                 this.Initliaze();
             }
@@ -67,7 +67,7 @@ namespace GRYLibrary.Core.Log
             this.PrintEmptyLines = false;
             this.PrintErrorsAsInformation = false;
             this.Name = string.Empty;
-            this.DateFormat = Miscellaneous.Utilities.ISO8601FormatForDateTimesInFullFormat;
+            this.DateFormat = Miscellaneous.Utilities.FormatForDateTimesInFullFormatSimple;
             this.LoggedMessageTypesConfiguration = new List<SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>>
             {
                 new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Trace, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Trace), ConsoleColor = ConsoleColor.Gray }),
@@ -84,9 +84,9 @@ namespace GRYLibrary.Core.Log
 
         public LoggedMessageTypeConfiguration GetLoggedMessageTypesConfigurationByLogLevel(LogLevel logLevel)
         {
-            foreach(SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration> obj in this.LoggedMessageTypesConfiguration)
+            foreach (SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration> obj in this.LoggedMessageTypesConfiguration)
             {
-                if(obj.Key == logLevel)
+                if (obj.Key == logLevel)
                 {
                     return obj.Value;
                 }
@@ -96,20 +96,20 @@ namespace GRYLibrary.Core.Log
 
         public void AddSystemLog()
         {
-            if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 this.LogTargets.Add(new WindowsEventLog());
             }
-            if(RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
                 this.LogTargets.Add(new Syslog());
             }
         }
         public Target GetLogTarget<Target>() where Target : GRYLogTarget
         {
-            foreach(GRYLogTarget gryLogTarget in this.LogTargets)
+            foreach (GRYLogTarget gryLogTarget in this.LogTargets)
             {
-                if(gryLogTarget is Target target)
+                if (gryLogTarget is Target target)
                 {
                     return target;
                 }
@@ -118,14 +118,14 @@ namespace GRYLibrary.Core.Log
         }
         public void SetEnabledOfAllLogTargets(bool newEnabledValue)
         {
-            foreach(GRYLogTarget item in this.LogTargets)
+            foreach (GRYLogTarget item in this.LogTargets)
             {
                 item.Enabled = newEnabledValue;
             }
         }
         public void Dispose()
         {
-            foreach(GRYLogTarget target in this.LogTargets)
+            foreach (GRYLogTarget target in this.LogTargets)
             {
                 target.Dispose();
             }
@@ -137,16 +137,16 @@ namespace GRYLibrary.Core.Log
         public static GRYLogConfiguration GetCommonConfiguration(AbstractFilePath logFile = null, bool verbose = false)
         {
             GRYLogConfiguration result = new GRYLogConfiguration(true);
-            if(logFile != null)
+            if (logFile != null)
             {
                 LogFile filelog = result.GetLogTarget<LogFile>();
                 filelog.File = logFile;
                 filelog.Enabled = true;
             }
-            foreach(GRYLogTarget logTarget in result.LogTargets)
+            foreach (GRYLogTarget logTarget in result.LogTargets)
             {
                 logTarget.Format = GRYLogLogFormat.GRYLogFormat;
-                if(verbose)
+                if (verbose)
                 {
                     logTarget.LogLevels.Add(LogLevel.Debug);
                 }

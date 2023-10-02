@@ -10,7 +10,7 @@ namespace GRYLibrary.Core.APIServer.CommonRoutes
 {
     [ApiController]
     [Route($"{ServerConfiguration.APIRoutePrefix}/Other/Resources/Information")]
-    public class CommonRoutesController :Controller
+    public class CommonRoutesController : Controller
     {
         private readonly IApplicationConstants _Configuration;
         private readonly ICommonRoutesInformation _CommonRoutesInformation;

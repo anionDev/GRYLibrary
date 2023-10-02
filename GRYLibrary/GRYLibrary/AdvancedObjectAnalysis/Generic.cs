@@ -21,28 +21,28 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis
         private static readonly Dictionary<object, int> _ObjectReferenceHashCodeCache = new(new ReferenceEqualsComparer());
         public static int GenericGetHashCode(object @object)
         {
-            if(@object == null)
+            if (@object == null)
             {
                 return 684835431;
             }
             Type type = @object.GetType();
-            if(PrimitiveComparer.TypeIsTreatedAsPrimitive(type))
+            if (PrimitiveComparer.TypeIsTreatedAsPrimitive(type))
             {
                 Utilities.NoOperation();
             }
-            else if(EnumerableTools.TypeIsSet(type))
+            else if (EnumerableTools.TypeIsSet(type))
             {
                 type = typeof(ISet<>);
             }
-            else if(EnumerableTools.TypeIsList(type))
+            else if (EnumerableTools.TypeIsList(type))
             {
                 type = typeof(IList<>);
             }
-            else if(EnumerableTools.TypeIsDictionary(type))
+            else if (EnumerableTools.TypeIsDictionary(type))
             {
                 type = typeof(IDictionary<,>);
             }
-            else if(EnumerableTools.TypeIsEnumerable(type))
+            else if (EnumerableTools.TypeIsEnumerable(type))
             {
                 type = typeof(IEnumerable);
             }
@@ -50,7 +50,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis
             {
                 Utilities.NoOperation();
             }
-            if(!_ObjectReferenceHashCodeCache.ContainsKey(type))
+            if (!_ObjectReferenceHashCodeCache.ContainsKey(type))
             {
                 _ObjectReferenceHashCodeCache.Add(type, _IdGenerator.GenerateNewId());
             }
@@ -92,7 +92,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis
         public static string GenericSerialize(object @object)
         {
             using StringWriter stringWriter = new();
-            using(XmlWriter xmlWriter = XmlWriter.Create(stringWriter))
+            using (XmlWriter xmlWriter = XmlWriter.Create(stringWriter))
             {
                 GenericWriteXml(@object, xmlWriter);
             }

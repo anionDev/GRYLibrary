@@ -9,15 +9,15 @@ using System.Linq;
 
 namespace GRYLibrary.Core.APIServer.Mid.Aut.APIK
 {
-    public class APIKeyValidatorFilter :IOperationFilter
+    public class APIKeyValidatorFilter : IOperationFilter
     {
         public const string QueryParameterName = "APIKey";
         public static (bool provided, string apiKey) TryGetAPIKey(HttpContext context)
         {
             bool apiKeyIsGiven = context.Request.Headers.TryGetValue(QueryParameterName, out StringValues values);
-            if(apiKeyIsGiven)
+            if (apiKeyIsGiven)
             {
-                if(values.Count == 1)
+                if (values.Count == 1)
                 {
                     return (true, values.First());
                 }
@@ -27,9 +27,9 @@ namespace GRYLibrary.Core.APIServer.Mid.Aut.APIK
 
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            if(!context.MethodInfo.DeclaringType.Assembly.Equals(typeof(CommonRoutesController).Assembly))
+            if (!context.MethodInfo.DeclaringType.Assembly.Equals(typeof(CommonRoutesController).Assembly))
             {
-                if(operation.Parameters == null)
+                if (operation.Parameters == null)
                 {
                     operation.Parameters = new List<OpenApiParameter>();
                 }

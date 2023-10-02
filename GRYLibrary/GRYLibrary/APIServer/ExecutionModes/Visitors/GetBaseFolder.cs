@@ -4,13 +4,15 @@ using System.IO;
 
 namespace GRYLibrary.Core.APIServer.ExecutionModes.Visitors
 {
-    public class GetBaseFolder :IExecutionModeVisitor<string>
+    public class GetBaseFolder : IExecutionModeVisitor<string>
     {
         private readonly GRYEnvironment _TargetEnvironmentType;
+        private readonly ExecutionMode _ExecutionMode;
         private readonly string _ProgramFolder;
-        public GetBaseFolder(GRYEnvironment targetEnvironmentType, string programFolder)
+        public GetBaseFolder(GRYEnvironment targetEnvironmentType, string programFolder, ExecutionMode executionMode)
         {
             this._TargetEnvironmentType = targetEnvironmentType;
+            this._ExecutionMode = executionMode;
             this._ProgramFolder = programFolder;
         }
         public string Handle(Analysis analysis)
@@ -22,19 +24,19 @@ namespace GRYLibrary.Core.APIServer.ExecutionModes.Visitors
 
         public string Handle(RunProgram runProgram)
         {
-            return GetBaseFolderForProjectInCommonProjectStructure(this._TargetEnvironmentType, this._ProgramFolder);
+            return GetBaseFolderForProjectInCommonProjectStructure(this._TargetEnvironmentType, this._ProgramFolder, this._ExecutionMode);
         }
 
-        public static string GetBaseFolderForProjectInCommonProjectStructure(GRYEnvironment environment, string programFolder)
+        public static string GetBaseFolderForProjectInCommonProjectStructure(GRYEnvironment environment, string programFolder, ExecutionMode executionMode)
         {
             string workspaceFolderName = "Workspace";
-            if(environment is Development)
+            if (environment is Development || executionMode is Analysis)
             {
-                return Miscellaneous.Utilities.ResolveToFullPath($"../../{workspaceFolderName}", programFolder);
+                return Miscellaneous.Utilities.ResolveToFullPath($"../../{workspaceFolderName}", programFolder);//runing locally
             }
             else
             {
-                return $"/{workspaceFolderName}";
+                return $"/{workspaceFolderName}";//running in container
             }
         }
     }

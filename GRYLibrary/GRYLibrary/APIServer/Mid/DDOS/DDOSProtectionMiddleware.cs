@@ -6,7 +6,7 @@ namespace GRYLibrary.Core.APIServer.Mid.DDOS
     /// <summary>
     /// Represents a DDOS-proection.
     /// </summary>
-    public class DDOSProtectionMiddleware :AbstractMiddleware
+    public class DDOSProtectionMiddleware : AbstractMiddleware
     {
         private readonly IDDOSProtectionConfiguration _DDOSProtectionSettings;
         /// <inheritdoc/>

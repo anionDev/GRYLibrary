@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GRYLibrary.Core.APIServer.Mid.Blacklist
 {
-    public class BlacklistConfiguration :IBlacklistConfiguration
+    public class BlacklistConfiguration : IBlacklistConfiguration
     {
         public bool Enabled { get; set; } = true;
 

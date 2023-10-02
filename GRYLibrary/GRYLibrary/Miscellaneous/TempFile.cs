@@ -2,20 +2,21 @@
 
 namespace GRYLibrary.Core.Miscellaneous
 {
-    public sealed class TempFile :IDisposable
+    public sealed class TempFile : IDisposable
     {
         public string Path { get; set; }
-        public TempFile():this(null)
+        public TempFile() : this(Guid.NewGuid().ToString()[..8], "txt")
         {
-            this.Path = System.IO.Path.Join(System.IO.Path.GetTempPath(), Guid.NewGuid().ToString()[..8]);
-            Utilities.EnsureFileExists(this.Path);
         }
-        public TempFile(string extension)
+        public TempFile(string extensionWithoutDot) : this(Guid.NewGuid().ToString()[..8], extensionWithoutDot)
         {
-            this.Path = System.IO.Path.Join(System.IO.Path.GetTempPath(), Guid.NewGuid().ToString()[..8]);
-            if(extension != null)
+        }
+        public TempFile(string filename, string extensionWithoutDot)
+        {
+            this.Path = System.IO.Path.Join(System.IO.Path.GetTempPath(), filename);
+            if (extensionWithoutDot != null)
             {
-                this.Path = $"{this.Path}.{extension}";
+                this.Path = $"{this.Path}.{extensionWithoutDot}";
             }
             Utilities.EnsureFileExists(this.Path);
         }

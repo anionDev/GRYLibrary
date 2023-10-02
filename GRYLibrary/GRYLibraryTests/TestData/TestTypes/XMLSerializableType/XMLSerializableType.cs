@@ -10,7 +10,7 @@ using System.Xml.Serialization;
 
 namespace GRYLibrary.Tests.TestData.TestTypes.XMLSerializableType
 {
-    public class XMLSerializableType :IXmlSerializable
+    public class XMLSerializableType : IXmlSerializable
     {
         public XMLSerializableType() { }
         public CycleA Cyle { get; set; }

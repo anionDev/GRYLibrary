@@ -3,7 +3,7 @@ using System;
 
 namespace GRYLibrary.Core.AdvancedObjectAnalysis.PropertyEqualsCalculatorHelper.CustomComparer
 {
-    public class TupleComparer :AbstractCustomComparer
+    public class TupleComparer : AbstractCustomComparer
     {
         internal TupleComparer(PropertyEqualsCalculatorConfiguration cacheAndConfiguration) : base(cacheAndConfiguration)
         {

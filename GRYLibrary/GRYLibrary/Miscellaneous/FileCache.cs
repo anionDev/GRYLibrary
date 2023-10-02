@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace GRYLibrary.Core.Miscellaneous
@@ -49,11 +50,17 @@ namespace GRYLibrary.Core.Miscellaneous
         private void Save()
         {
             List<string> lines = new List<string>();
-            foreach (KeyValuePair<TKey, TValue> kvp in this.Cache)
+            List<KeyValuePair<TKey, TValue>> kvps = this.Cache.ToList();
+            if (this.Sorter != null)
+            {
+                kvps.Sort(this.Sorter);
+            }
+            foreach (KeyValuePair<TKey, TValue> kvp in kvps)
             {
                 lines.Add($"{kvp.Key.SerializeToString()};{kvp.Value.SerializeToString()}");
             }
             File.WriteAllLines(this.CacheFile, lines);
         }
+        public IComparer<KeyValuePair<TKey, TValue>> Sorter { get; set; }
     }
 }

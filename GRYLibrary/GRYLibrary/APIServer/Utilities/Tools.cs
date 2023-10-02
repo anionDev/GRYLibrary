@@ -18,7 +18,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
             byte[] requestBody = GetRequestBody(context);
             byte[] responseBody;
             Stream originalResponseBody = context.Response.Body;
-            using(MemoryStream intermediateResponseBody = new MemoryStream())
+            using (MemoryStream intermediateResponseBody = new MemoryStream())
             {
                 context.Response.Body = intermediateResponseBody;
 
@@ -28,7 +28,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
                 //read response body
                 intermediateResponseBody.Position = 0;
                 responseBody = Miscellaneous.Utilities.StreamToByteArray(intermediateResponseBody);
-                if(responseBodyUpdater != null)
+                if (responseBodyUpdater != null)
                 {
                     responseBody = responseBodyUpdater(responseBody);
                 }

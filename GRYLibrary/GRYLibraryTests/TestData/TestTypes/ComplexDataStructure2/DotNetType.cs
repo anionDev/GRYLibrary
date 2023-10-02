@@ -2,7 +2,7 @@
 
 namespace GRYLibrary.Tests.TestData.TestTypes.ComplexDataStructure2
 {
-    public class DotNetType :ModelType
+    public class DotNetType : ModelType
     {
         public Type Type { get; set; }
         #region Overhead

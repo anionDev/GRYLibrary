@@ -60,17 +60,17 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static ByteArray operator -(ByteArray first, ByteArray second)
         {
-            if(first._Data.Length != second._Data.Length)
+            if (first._Data.Length != second._Data.Length)
             {
                 throw new ArgumentException("Subtraction of Byte-Arrays is only possible for Byte-Arrays of same length.");
             }
             byte[] result = new byte[first._Data.Length];
-            for(int i = 0; i < result.Length; i++)
+            for (int i = 0; i < result.Length; i++)
             {
                 byte x = first._Data[i];
                 byte y = second._Data[i];
                 int z = x - y;
-                if(z < 0)
+                if (z < 0)
                 {
                     z += 256;
                 }
@@ -98,13 +98,13 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public bool StartsWith(ByteArray value)
         {
-            if(value._Data.LongLength > this._Data.LongLength)
+            if (value._Data.LongLength > this._Data.LongLength)
             {
                 return false;
             }
-            for(long i = 0; i < value._Data.LongLength; i++)
+            for (long i = 0; i < value._Data.LongLength; i++)
             {
-                if(this._Data[i] != value._Data[i])
+                if (this._Data[i] != value._Data[i])
                 {
                     return false;
                 }

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace GRYLibrary.Core.APIServer.Mid.Auth.KC
 {
-    public class KeyCloakAuthentication :AuthenticationMiddleware
+    public class KeyCloakAuthentication : AuthenticationMiddleware
     {
         private readonly IKeyCloakAuthenticationConfiguration _AuthenticationMiddlewareSettings;
         private readonly IKeyCloakService _KeyCloakService;

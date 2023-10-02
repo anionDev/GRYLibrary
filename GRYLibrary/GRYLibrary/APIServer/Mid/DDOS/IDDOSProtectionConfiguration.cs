@@ -1,6 +1,6 @@
 ﻿namespace GRYLibrary.Core.APIServer.Mid.DDOS
 {
-    public interface IDDOSProtectionConfiguration :IMiddlewareConfiguration
+    public interface IDDOSProtectionConfiguration : IMiddlewareConfiguration
     {
     }
 }

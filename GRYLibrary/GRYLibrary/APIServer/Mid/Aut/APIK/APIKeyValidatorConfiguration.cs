@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace GRYLibrary.Core.APIServer.Mid.Aut.APIK
 {
-    public abstract class APIKeyValidatorConfiguration :IAPIKeyValidatorConfiguration
+    public abstract class APIKeyValidatorConfiguration : IAPIKeyValidatorConfiguration
     {
         public bool Enabled { get; set; } = true;
 

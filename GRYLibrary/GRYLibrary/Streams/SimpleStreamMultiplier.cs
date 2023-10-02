@@ -11,9 +11,9 @@ namespace GRYLibrary.Core.Streams
         {
             byte[] buffer = new byte[maximalAmountOfBytesToRead];
             int amountOfReadBytes = this.Source.Read(buffer, 0, buffer.Length);
-            if(0 < amountOfReadBytes)
+            if (0 < amountOfReadBytes)
             {
-                foreach(Stream destination in this.Destinations)
+                foreach (Stream destination in this.Destinations)
                 {
                     destination.Write(buffer, 0, amountOfReadBytes);
                 }

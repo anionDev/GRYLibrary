@@ -53,11 +53,11 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             FileSelector result = new();
             List<string> list = new();
-            if(deepSearch)
+            if (deepSearch)
             {
                 Utilities.ForEachFileAndDirectoryTransitively(folder, null, (string file, object argument) =>
                 {
-                    if(filter(file))
+                    if (filter(file))
                     {
                         list.Add(file);
                     }
@@ -65,9 +65,9 @@ namespace GRYLibrary.Core.Miscellaneous
             }
             else
             {
-                foreach(string file in Directory.GetFiles(folder))
+                foreach (string file in Directory.GetFiles(folder))
                 {
-                    if(filter(file))
+                    if (filter(file))
                     {
                         list.Add(Normalize(file));
                     }

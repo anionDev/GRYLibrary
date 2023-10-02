@@ -26,7 +26,7 @@ namespace GRYLibrary.Tests.Testcases
             {
                 property.Value = null;
             }
-            catch(ArgumentException)
+            catch (ArgumentException)
             {
                 //expected
             }

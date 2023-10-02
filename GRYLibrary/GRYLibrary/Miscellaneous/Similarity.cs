@@ -8,13 +8,13 @@ namespace GRYLibrary.Core.Miscellaneous
     {
         public static PercentValue CalculateCombinedSimilarity(string string1, string string2)
         {
-            if(string1 == null || string2 == null)
+            if (string1 == null || string2 == null)
             {
                 throw new NullReferenceException();
             }
             else
             {
-                if(string1.Equals(string2))
+                if (string1.Equals(string2))
                 {
                     return PercentValue.HundredPercent;
                 }
@@ -32,32 +32,32 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static int CalculateLevenshteinDistance(string string1, string string2)
         {
-            if(string.IsNullOrEmpty(string1) && string.IsNullOrEmpty(string2))
+            if (string.IsNullOrEmpty(string1) && string.IsNullOrEmpty(string2))
             {
                 return 0;
             }
-            if(string.IsNullOrEmpty(string1))
+            if (string.IsNullOrEmpty(string1))
             {
                 return string2.Length;
             }
-            if(string.IsNullOrEmpty(string2))
+            if (string.IsNullOrEmpty(string2))
             {
                 return string1.Length;
             }
             int lengthA = string1.Length;
             int lengthB = string2.Length;
             int[,] distance = new int[lengthA + 1, lengthB + 1];
-            for(int i = 0; i <= lengthA; distance[i, 0] = i++)
+            for (int i = 0; i <= lengthA; distance[i, 0] = i++)
             {
             }
 
-            for(int j = 0; j <= lengthB; distance[0, j] = j++)
+            for (int j = 0; j <= lengthB; distance[0, j] = j++)
             {
             }
 
-            for(int i = 1; i <= lengthA; i++)
+            for (int i = 1; i <= lengthA; i++)
             {
-                for(int j = 1; j <= lengthB; j++)
+                for (int j = 1; j <= lengthB; j++)
                 {
                     int cost = string2[j - 1] == string1[i - 1] ? 0 : 1;
                     distance[i, j] = Math.Min(Math.Min(distance[i - 1, j] + 1, distance[i, j - 1] + 1), distance[i - 1, j - 1] + cost);
@@ -69,12 +69,12 @@ namespace GRYLibrary.Core.Miscellaneous
         public static PercentValue CalculateLevenshteinSimilarity(string string1, string string2)
         {
             int levenshteinDistance = CalculateLevenshteinDistance(string1, string2);
-            if(levenshteinDistance == 0)
+            if (levenshteinDistance == 0)
             {
                 return PercentValue.HundredPercent;
             }
             int maxLength = Math.Max(string1.Length, string2.Length);
-            if(levenshteinDistance == maxLength)
+            if (levenshteinDistance == maxLength)
             {
                 return PercentValue.ZeroPercent;
             }
@@ -87,7 +87,7 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             int length1 = string1.Length;
             int length2 = string2.Length;
-            if((length1 == 0 && length2 > 0) || (length2 == 0 && length1 > 0))
+            if ((length1 == 0 && length2 > 0) || (length2 == 0 && length1 > 0))
             {
                 return PercentValue.ZeroPercent;
             }
@@ -95,15 +95,15 @@ namespace GRYLibrary.Core.Miscellaneous
             IDictionary<string, int> b = CalculateSimilarityHelperConvert(CalculateSimilarityHelperGetCharFrequencyMap(string2));
             HashSet<string> intersection = CalculateSimilarityHelperGetIntersectionOfCharSet(a.Keys, b.Keys);
             double dotProduct = 0, magnitudeA = 0, magnitudeB = 0;
-            foreach(string item in intersection)
+            foreach (string item in intersection)
             {
                 dotProduct += a[item] * b[item];
             }
-            foreach(string k in a.Keys)
+            foreach (string k in a.Keys)
             {
                 magnitudeA += Math.Pow(a[k], 2);
             }
-            foreach(string k in b.Keys)
+            foreach (string k in b.Keys)
             {
                 magnitudeB += Math.Pow(b[k], 2);
             }
@@ -120,9 +120,9 @@ namespace GRYLibrary.Core.Miscellaneous
         private static string CalculateSimilarityHelperGetIntersection(string string1, string string2)
         {
             IList<char> list = new List<char>();
-            foreach(char character in string1)
+            foreach (char character in string1)
             {
-                if(string2.Contains(character))
+                if (string2.Contains(character))
                 {
                     list.Add(character);
                 }
@@ -133,9 +133,9 @@ namespace GRYLibrary.Core.Miscellaneous
         private static IDictionary<char, int> CalculateSimilarityHelperGetCharFrequencyMap(string str)
         {
             Dictionary<char, int> result = new();
-            foreach(char chr in str)
+            foreach (char chr in str)
             {
-                if(result.ContainsKey(chr))
+                if (result.ContainsKey(chr))
                 {
                     result[chr] = result[chr] + 1;
                 }
@@ -160,7 +160,7 @@ namespace GRYLibrary.Core.Miscellaneous
         private static IDictionary<string, int> CalculateSimilarityHelperConvert(IDictionary<char, int> dictionary)
         {
             IDictionary<string, int> result = new Dictionary<string, int>();
-            foreach(KeyValuePair<char, int> obj in dictionary)
+            foreach (KeyValuePair<char, int> obj in dictionary)
             {
                 result.Add(obj.Key.ToString(), obj.Value);
             }

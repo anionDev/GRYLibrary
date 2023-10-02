@@ -4,7 +4,7 @@ using System.IO;
 
 namespace GRYLibrary.Core.GeneralPurposeLogger
 {
-    public class GeneralLogger :IGeneralLogger
+    public class GeneralLogger : IGeneralLogger
     {
         public Action<LogItem> AddLogEntry { get; set; }
         public static GeneralLogger CreateUsingGRYLog(GRYLogConfiguration configuration, out GRYLog logger)

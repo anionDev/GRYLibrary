@@ -3,7 +3,7 @@ using System.IO;
 
 namespace GRYLibrary.Core.Miscellaneous.FilePath
 {
-    public class RelativeFilePath :AbstractFilePath
+    public class RelativeFilePath : AbstractFilePath
     {
         private string _FilePath;
         public override string FilePath
@@ -14,7 +14,7 @@ namespace GRYLibrary.Core.Miscellaneous.FilePath
             }
             set
             {
-                if(!Utilities.IsRelativeLocalFilePath(value))
+                if (!Utilities.IsRelativeLocalFilePath(value))
                 {
                     throw new ArgumentException($"Expected relative path but was not a relative path: '{value}'.");
                 }

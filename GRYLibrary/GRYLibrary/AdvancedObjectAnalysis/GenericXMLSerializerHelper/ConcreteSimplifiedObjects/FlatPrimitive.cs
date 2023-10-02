@@ -6,7 +6,7 @@ namespace GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper.Conc
     /// Represents a SimplifiedPrimitive for <see cref="GRYSObject"/>
     /// </summary>
     [XmlRoot(ElementName = "FP")]
-    public class FlatPrimitive :FlatObject
+    public class FlatPrimitive : FlatObject
     {
         public FlatPrimitive()
         {

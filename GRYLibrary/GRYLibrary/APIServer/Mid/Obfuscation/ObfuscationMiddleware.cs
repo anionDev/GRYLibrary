@@ -8,7 +8,7 @@ namespace GRYLibrary.Core.APIServer.Mid.Obfuscation
     /// <summary>
     /// Represents a middleware which removes some not required information of responses for security purposes.
     /// </summary>
-    public class ObfuscationMiddleware :AbstractMiddleware
+    public class ObfuscationMiddleware : AbstractMiddleware
     {
         private readonly IObfuscationConfiguration _ObfuscationSettings;
         private readonly IApplicationConstants _AppConstants;
@@ -21,21 +21,21 @@ namespace GRYLibrary.Core.APIServer.Mid.Obfuscation
         /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
         {
-            if(this._AppConstants.Environment is Productive)
+            if (this._AppConstants.Environment is Productive)
             {
                 bool clearResponseBody;
                 int responseStatusCode;
-                if(context.Response.StatusCode == 401)
+                if (context.Response.StatusCode == 401)
                 {
                     clearResponseBody = true;
                     responseStatusCode = context.Response.StatusCode;
                 }
-                else if(context.Response.StatusCode == 403)
+                else if (context.Response.StatusCode == 403)
                 {
                     clearResponseBody = true;
                     responseStatusCode = context.Response.StatusCode;
                 }
-                else if(context.Response.StatusCode % 100 == 2)
+                else if (context.Response.StatusCode % 100 == 2)
                 {
                     responseStatusCode = 200;
                     clearResponseBody = false;
@@ -46,7 +46,7 @@ namespace GRYLibrary.Core.APIServer.Mid.Obfuscation
                     responseStatusCode = 400;
                 }
                 context.Response.StatusCode = responseStatusCode; //TODO check why this does not work properly
-                if(clearResponseBody)
+                if (clearResponseBody)
                 {
                     //TODO
                 }

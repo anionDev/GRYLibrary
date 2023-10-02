@@ -2,7 +2,7 @@
 
 namespace GRYLibrary.Core.Miscellaneous
 {
-    public class TempFolder :IDisposable
+    public class TempFolder : IDisposable
     {
         public string Path { get; set; }
         public TempFolder()

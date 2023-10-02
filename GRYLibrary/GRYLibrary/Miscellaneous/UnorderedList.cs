@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
-    public class UnorderedList<T> :IList<T>, IEquatable<UnorderedList<T>>
+    public class UnorderedList<T> : IList<T>, IEquatable<UnorderedList<T>>
     {
         private readonly IList<T> _Items = new List<T>();
         public int Count => this._Items.Count;
@@ -33,9 +33,9 @@ namespace GRYLibrary.Core.Miscellaneous
         private ISet<WriteableTuple<T, ulong>> GetItemsWithCount(UnorderedList<T> items)
         {
             Dictionary<T, ulong> result = new Dictionary<T, ulong>();
-            foreach(T item in items)
+            foreach (T item in items)
             {
-                if(result.ContainsKey(item))
+                if (result.ContainsKey(item))
                 {
                     result[item] = result[item] + 1;
                 }
