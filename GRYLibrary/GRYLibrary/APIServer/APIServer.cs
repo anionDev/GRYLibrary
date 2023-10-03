@@ -47,6 +47,7 @@ namespace GRYLibrary.Core.APIServer
         where ApplicationSpecificConstants : new()
         where CommandlineParameterType : class, ICommandlineParameter
     {
+        //TODO integrate prometheus-net (https://github.com/prometheus-net/prometheus-net#best-practices-and-usage) for metrics and healthcheck
         private APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> _Configuration;
         public static int APIMain(CommandlineParameterType commandlineParameter, Action<APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>> configurationInitializer, GRYConsoleApplicationInitialInformation gryConsoleApplicationInitialInformation)
         {
