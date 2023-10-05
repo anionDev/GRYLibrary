@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
     <metadata minClientVersion="2.12">
         <id>GRYLibrary</id>
-        <version>0.12.60</version>
+        <version>0.12.61</version>
         <title>GRYLibrary</title>
         <authors>Marius Göcke</authors>
         <owners>Marius Göcke</owners>
@@ -15,7 +15,7 @@
             <group targetFramework="net7" />
         </dependencies>
         <projectUrl>https://github.com/anionDev/GRYLibrary</projectUrl>
-        <repository type="git" url="https://github.com/anionDev/GRYLibrary" branch="main" commit="$commitid$" />
+        <repository type="git" url="https://github.com/anionDev/GRYLibrary.git" branch="main" commit="$commitid$" />
         <icon>images\GRYLibraryIcon.png</icon>
     </metadata>
     <files>

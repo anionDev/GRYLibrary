@@ -22,7 +22,8 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
         private readonly SentenceBuilder _SentenceBuilder;
         private readonly bool _ProgramCanRunWithoutArguments;
         private readonly GRYConsoleApplicationInitialInformation _GRYConsoleApplicationInitialInformation;
-        public GRYConsoleApplication(Func<CMDOptions, Action<InitializationConfig>, GRYConsoleApplicationInitialInformation, int> main, string programName, string programVersion, string programDescription, bool programCanRunWithoutArguments, ExecutionMode executionMode, GRYEnvironment environment)
+        private readonly bool _ResetConsoleColorToDefaultvalues;
+        public GRYConsoleApplication(Func<CMDOptions, Action<InitializationConfig>, GRYConsoleApplicationInitialInformation, int> main, string programName, string programVersion, string programDescription, bool programCanRunWithoutArguments, ExecutionMode executionMode, GRYEnvironment environment, bool resetConsoleColorToDefaultvalues)
         {
             this._Main = main;
             this._ProgramName = programName;
@@ -32,6 +33,7 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
             this._SentenceBuilder = SentenceBuilder.Create();
             this._ProgramCanRunWithoutArguments = programCanRunWithoutArguments;
             this._ExecutionMode = executionMode;
+            this._ResetConsoleColorToDefaultvalues = resetConsoleColorToDefaultvalues;
             this._GRYConsoleApplicationInitialInformation = new GRYConsoleApplicationInitialInformation(this._ProgramName, this._ProgramVersion, this._ProgramDescription, this._ExecutionMode, environment);
         }
 
@@ -43,6 +45,19 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
                 try
                 {
                     Console.Clear();
+                    if (_ResetConsoleColorToDefaultvalues)
+                    {
+                        if (GUtilities.DarkModeEnabled)
+                        {
+                            System.Console.BackgroundColor = ConsoleColor.Black;
+                            System.Console.ForegroundColor = ConsoleColor.White;
+                        }
+                        else
+                        {
+                            System.Console.BackgroundColor = ConsoleColor.White;
+                            System.Console.ForegroundColor = ConsoleColor.Black;
+                        }
+                    }
                 }
                 catch
                 {
