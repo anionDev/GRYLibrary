@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 
-namespace GRYLibrary.Core.APIServer.Utilities
+namespace GRYLibrary.Core.APIServer.CommonDBTypes
 {
+    [PrimaryKey(nameof(APIKeyValue))]
     public class APIKey
     {
         public string APIKeyValue { get; set; }
