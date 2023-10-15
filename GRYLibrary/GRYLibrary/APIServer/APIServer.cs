@@ -415,11 +415,6 @@ namespace GRYLibrary.Core.APIServer
             }
         }
 
-        private void RunMigrationIfRequired(IGeneralLogger logger, AbstractFilePath basicInformationFile, MigrateInstanceInformation migrateInstanceInformation)
-        {
-            GRYMigration.MigrateIfRequired(basicInformationFile, this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName, this._Configuration.InitializationInformation.ApplicationConstants.ApplicationVersion, logger, this._Configuration.InitializationInformation.BaseFolder, this._Configuration.InitializationInformation.ApplicationConstants.Environment, this._Configuration.InitializationInformation.ApplicationConstants.ExecutionMode, migrateInstanceInformation);
-        }
-
         private IGeneralLogger GetApplicationLogger(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration)
         {
             return this._Configuration.InitializationInformation.ApplicationConstants.ExecutionMode.Accept(new GetLoggerVisitor(persistedApplicationSpecificConfiguration.ApplicationLogConfiguration, this._Configuration.InitializationInformation.ApplicationConstants.GetLogFolder(), "Server"));

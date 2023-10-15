@@ -5,7 +5,9 @@ namespace GRYLibrary.Core.APIServer.Mid.Aut
 {
     public abstract class AuthorizationMiddleware : AbstractMiddleware
     {
+#pragma warning disable IDE0052 // Remove unread private members
         private readonly IAuthorizationConfiguration _AuthorizationConfiguration;
+#pragma warning restore IDE0052 // Remove unread private members
         protected AuthorizationMiddleware(RequestDelegate next, IAuthorizationConfiguration authorizationConfiguration) : base(next)
         {
             this._AuthorizationConfiguration = authorizationConfiguration;
