@@ -14,8 +14,11 @@ namespace GRYLibrary.Core.Miscellaneous
     public class GRYMigration
     {
         internal static Encoding Encoding { get; set; } = new UTF8Encoding(false);
-        public static void MigrateIfRequired(AbstractFilePath basicInformationFile, string appName, Version3 currentVersion, IGeneralLogger logger, string baseFolder, GRYEnvironment targetEnvironmentType, ExecutionMode executionMode, IDictionary<object, object> customValues,
-          ISet<MigrationMetaInformation> migrations)
+        public static void MigrateIfRequired(
+            AbstractFilePath basicInformationFile, string appName, Version3 currentVersion, IGeneralLogger logger, 
+            string baseFolder, GRYEnvironment targetEnvironmentType, ExecutionMode executionMode,
+            MigrateInstanceInformation migrateInstanceInformation
+        )
         {
             string informationFile = basicInformationFile.GetPath(baseFolder);
             if (File.Exists(informationFile))
@@ -23,12 +26,12 @@ namespace GRYLibrary.Core.Miscellaneous
                 ApplicationInformation appInformation = GetInformationFromFile(informationFile);
                 Utilities.AssertCondition(appInformation.ApplicationName == appName);
                 Version3 existingVersion = appInformation.GetCodeUnitVersion();
-                if (migrations.Count > 0)
+                if (migrateInstanceInformation.MetaMigrations.Count > 0)
                 {
                     Utilities.AssertCondition(existingVersion <= currentVersion);
                     if (existingVersion != currentVersion)
                     {
-                        List<MigrationMetaInformation> orderedMigrations = migrations.ToList();
+                        List<MigrationMetaInformation> orderedMigrations = migrateInstanceInformation.MetaMigrations.ToList();
                         orderedMigrations.Sort((x, y) =>
                         {
                             if (x.SourceVersion < y.SourceVersion)
@@ -61,7 +64,7 @@ namespace GRYLibrary.Core.Miscellaneous
                             logger.Log($"Start migration from version {orderedMigration.SourceVersion} to {orderedMigration.TargetVersion}.", Microsoft.Extensions.Logging.LogLevel.Information);
                             try
                             {
-                                orderedMigration.Migration(new MigrationInformation(orderedMigration.SourceVersion, baseFolder, targetEnvironmentType, executionMode, customValues));
+                                orderedMigration.Migration(new MigrationInformation(orderedMigration.SourceVersion, baseFolder, targetEnvironmentType, executionMode, migrateInstanceInformation.CustomValues));
                                 existingVersion = orderedMigration.TargetVersion;
                                 WriteInformationToFile(informationFile, appName, existingVersion);
                                 logger.Log($"Finished migration from version {orderedMigration.SourceVersion} to {orderedMigration.TargetVersion}.", Microsoft.Extensions.Logging.LogLevel.Information);
