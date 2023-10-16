@@ -15,22 +15,32 @@ namespace GRYLibrary.Core.APIServer.ExecutionModes.Visitors
             this._ExecutionMode = executionMode;
             this._ProgramFolder = programFolder;
         }
-        public string Handle(Analysis analysis)
-        {
-            string result = Path.Join(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Miscellaneous.Utilities.EnsureDirectoryExists(result);
-            return result;
-        }
 
         public string Handle(RunProgram runProgram)
         {
             return GetBaseFolderForProjectInCommonProjectStructure(this._TargetEnvironmentType, this._ProgramFolder, this._ExecutionMode);
         }
 
+        public string Handle(TestRun testRun)
+        {
+            return this.GetTempFolder();
+        }
+        public string Handle(Analysis analysis)
+        {
+            return this.GetTempFolder();
+        }
+
+        private string GetTempFolder()
+        {
+            string result = Path.Join(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Miscellaneous.Utilities.EnsureDirectoryExists(result);
+            return result;
+        }
+
         public static string GetBaseFolderForProjectInCommonProjectStructure(GRYEnvironment environment, string programFolder, ExecutionMode executionMode)
         {
             string workspaceFolderName = "Workspace";
-            if (environment is Development || executionMode is Analysis)
+            if (environment is Development || executionMode is not RunProgram)
             {
                 return Miscellaneous.Utilities.ResolveToFullPath($"../../{workspaceFolderName}", programFolder);//runing locally
             }

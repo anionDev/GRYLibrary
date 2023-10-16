@@ -129,6 +129,11 @@ namespace GRYLibrary.Core.APIServer
                 //TODO add option to define config-file-migrations here
                 return MetaConfigurationManager.GetConfiguration(this._MetaConfiguration, this._KnownTypes);
             }
+
+            public IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> Handle(TestRun testRun)
+            {
+                return this._MetaConfiguration.InitialValue;
+            }
         }
         #endregion
 
@@ -392,6 +397,11 @@ namespace GRYLibrary.Core.APIServer
                 {
                     return this._HostAPISpecificationForInNonDevelopmentEnvironment;
                 }
+            }
+
+            public bool Handle(TestRun testRun)
+            {
+                return true;
             }
         }
         #endregion

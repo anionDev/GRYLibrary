@@ -2,12 +2,13 @@
 {
     public class HTTPS : Protocol
     {
+        public const ushort DefaultPort = 443;
         public TLSCertificateInformation TLSCertificateInformation { get; set; }
         public static HTTPS Create(TLSCertificateInformation tlsCertificateInformation)
         {
             HTTPS result = new HTTPS
             {
-                Port = 443,
+                Port = DefaultPort,
                 TLSCertificateInformation = tlsCertificateInformation
             };
             return result;

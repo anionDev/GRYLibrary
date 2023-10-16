@@ -7,10 +7,19 @@ namespace GRYLibrary.Core.GenericAPIClient
 {
     public class GenericAPIClient : IGenericAPIClient
     {
+        private readonly HttpClient _HTTPClient;
         public IGenericAPIClientConfiguration Configuration { get; set; }
         public GenericAPIClient(IGenericAPIClientConfiguration configuration)
         {
             this.Configuration = configuration;
+            if (this.Configuration.HttpClientHandler == null)
+            {
+                this._HTTPClient = new HttpClient();
+            }
+            else
+            {
+                this._HTTPClient = new HttpClient(handler: this.Configuration.HttpClientHandler);
+            }
         }
 
         public async Task<decimal> GetAsDecimalAsync(string route)
@@ -23,7 +32,6 @@ namespace GRYLibrary.Core.GenericAPIClient
         }
         public async Task<string> SendAsStringAsync(string route, HttpMethod method)
         {
-            using HttpClient httpClient = new HttpClient();
             HttpResponseMessage response;
             using (var requestMessage = new HttpRequestMessage(method, $"{this.Configuration.APIAddress}/{route}"))
             {
@@ -31,10 +39,15 @@ namespace GRYLibrary.Core.GenericAPIClient
                 {
                     requestMessage.Headers.Authorization = new AuthenticationHeaderValue("APIKey", this.Configuration.APIKey);
                 }
-                response = await httpClient.SendAsync(requestMessage);
+                response = await this._HTTPClient.SendAsync(requestMessage);
             }
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
+        }
+
+        public void Dispose()
+        {
+            this._HTTPClient.Dispose();
         }
     }
 }

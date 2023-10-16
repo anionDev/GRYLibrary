@@ -3027,11 +3027,15 @@ namespace GRYLibrary.Core.Miscellaneous
             }
             return configuration;
         }
-        public static ExecutionMode GetExecutionMode()
+        public static ExecutionMode GetExecutionMode(string[] commandlineArguments)
         {
             if (Assembly.GetEntryAssembly().GetName().Name == "dotnet-swagger")
             {
                 return Analysis.Instance;
+            }
+            if (commandlineArguments.Contains("--TestRun"))
+            {
+                return TestRun.Instance;
             }
             return RunProgram.Instance;
         }
