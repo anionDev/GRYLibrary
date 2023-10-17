@@ -2170,16 +2170,16 @@ namespace GRYLibrary.Core.Miscellaneous
                 {
                     throw new ArgumentNullException(nameof(bindingContext));
                 }
-                var modelName = bindingContext.ModelName;
-                var values = bindingContext.ValueProvider.GetValue("moment");
-                var values2 = bindingContext.ValueProvider.GetValue("{moment}");
-                var valueProviderResult = bindingContext.ValueProvider.GetValue(modelName);
+                string modelName = bindingContext.ModelName;
+                ValueProviderResult values = bindingContext.ValueProvider.GetValue("moment");
+                ValueProviderResult values2 = bindingContext.ValueProvider.GetValue("{moment}");
+                ValueProviderResult valueProviderResult = bindingContext.ValueProvider.GetValue(modelName);
                 if (valueProviderResult == ValueProviderResult.None)
                 {
                     return Task.CompletedTask;
                 }
                 bindingContext.ModelState.SetModelValue(modelName, valueProviderResult);
-                var value = valueProviderResult.FirstValue;
+                string value = valueProviderResult.FirstValue;
                 if (string.IsNullOrEmpty(value))
                 {
                     if (allowDefault)
@@ -3027,11 +3027,15 @@ namespace GRYLibrary.Core.Miscellaneous
             }
             return configuration;
         }
-        public static ExecutionMode GetExecutionMode()
+        public static ExecutionMode GetExecutionMode(string[] commandlineArguments)
         {
             if (Assembly.GetEntryAssembly().GetName().Name == "dotnet-swagger")
             {
                 return Analysis.Instance;
+            }
+            if (commandlineArguments.Contains("--TestRun"))
+            {
+                return TestRun.Instance;
             }
             return RunProgram.Instance;
         }

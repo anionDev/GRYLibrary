@@ -12,7 +12,19 @@ namespace GRYLibrary.Core.GenericAPIClient
         {
             this.Configuration = configuration;
         }
-
+        protected HttpClient GetHTTPClient()
+        {
+            HttpClient httpClient;
+            if (this.Configuration.HttpClientHandler == null)
+            {
+                httpClient = new HttpClient();
+            }
+            else
+            {
+                httpClient = new HttpClient(handler: this.Configuration.HttpClientHandler);
+            }
+            return httpClient;
+        }
         public async Task<decimal> GetAsDecimalAsync(string route)
         {
             return decimal.Parse(await this.GetAsStringAsync(route), CultureInfo.InvariantCulture);
@@ -23,18 +35,23 @@ namespace GRYLibrary.Core.GenericAPIClient
         }
         public async Task<string> SendAsStringAsync(string route, HttpMethod method)
         {
-            using HttpClient httpClient = new HttpClient();
+            using HttpClient client = this.GetHTTPClient();
             HttpResponseMessage response;
-            using (var requestMessage = new HttpRequestMessage(method, $"{this.Configuration.APIAddress}/{route}"))
+            using (HttpRequestMessage requestMessage = new HttpRequestMessage(method, $"{this.Configuration.APIAddress}/{route}"))
             {
                 if (this.Configuration.APIKey != null)
                 {
                     requestMessage.Headers.Authorization = new AuthenticationHeaderValue("APIKey", this.Configuration.APIKey);
                 }
-                response = await httpClient.SendAsync(requestMessage);
+                response = await client.SendAsync(requestMessage);
             }
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
+        }
+
+        public virtual void Dispose()
+        {
+            Miscellaneous.Utilities.NoOperation();
         }
     }
 }

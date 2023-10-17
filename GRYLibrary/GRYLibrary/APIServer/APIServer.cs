@@ -18,7 +18,6 @@ using GRYLibrary.Core.APIServer.Settings.Configuration;
 using GRYLibrary.Core.APIServer.Utilities;
 using GRYLibrary.Core.Miscellaneous;
 using GRYLibrary.Core.Miscellaneous.FilePath;
-using GRYLibrary.Core.Miscellaneous.Migration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -129,6 +128,11 @@ namespace GRYLibrary.Core.APIServer
             {
                 //TODO add option to define config-file-migrations here
                 return MetaConfigurationManager.GetConfiguration(this._MetaConfiguration, this._KnownTypes);
+            }
+
+            public IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> Handle(TestRun testRun)
+            {
+                return this._MetaConfiguration.InitialValue;
             }
         }
         #endregion
@@ -393,6 +397,11 @@ namespace GRYLibrary.Core.APIServer
                 {
                     return this._HostAPISpecificationForInNonDevelopmentEnvironment;
                 }
+            }
+
+            public bool Handle(TestRun testRun)
+            {
+                return true;
             }
         }
         #endregion

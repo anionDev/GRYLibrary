@@ -13,10 +13,12 @@
     {
         void Handle(Analysis analysis);
         void Handle(RunProgram runProgram);
+        void Handle(TestRun testRun);
     }
     public interface IExecutionModeVisitor<T>
     {
         T Handle(Analysis analysis);
         T Handle(RunProgram runProgram);
+        T Handle(TestRun testRun);
     }
 }

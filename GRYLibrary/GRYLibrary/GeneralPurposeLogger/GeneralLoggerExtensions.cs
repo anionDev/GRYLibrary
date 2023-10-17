@@ -51,7 +51,7 @@ namespace GRYLibrary.Core.GeneralPurposeLogger
 
         public static GRYLog SetupLogger(GRYLogConfiguration configuration, string basePath, string subnamespace)
          {
-            var result = GRYLog.Create(configuration);
+            GRYLog result = GRYLog.Create(configuration);
             result.UseSubNamespace(subnamespace);
             result.BasePath = basePath;
             return result;
