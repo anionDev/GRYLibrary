@@ -67,7 +67,7 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
                 Console.Title = title;
                 if (arguments == null)
                 {
-                    throw Utilities.CreateNullReferenceExceptionDueToParameter(nameof(arguments));
+                    throw GUtilities.CreateNullReferenceExceptionDueToParameter(nameof(arguments));
                 }
                 string argumentsAsString = string.Join(' ', arguments);
                 string workingDirectory = Directory.GetCurrentDirectory();

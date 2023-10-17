@@ -37,7 +37,7 @@ namespace GRYLibrary.Core.GenericAPIClient
         {
             using HttpClient client = this.GetHTTPClient();
             HttpResponseMessage response;
-            using (var requestMessage = new HttpRequestMessage(method, $"{this.Configuration.APIAddress}/{route}"))
+            using (HttpRequestMessage requestMessage = new HttpRequestMessage(method, $"{this.Configuration.APIAddress}/{route}"))
             {
                 if (this.Configuration.APIKey != null)
                 {

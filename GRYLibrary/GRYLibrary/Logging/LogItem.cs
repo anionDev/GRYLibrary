@@ -249,14 +249,14 @@ namespace GRYLibrary.Core.Log
             else
             {
                 result.Add("Stack-trace:");
-                result.AddRange(Utilities.SplitOnNewLineCharacter(exception.StackTrace));
+                result.AddRange(GUtilities.SplitOnNewLineCharacter(exception.StackTrace));
             }
             return result;
         }
 
         private static IList<string> FormatStackInnerException(Exception exception, uint indentationLevel)
         {
-            return Utilities.SplitOnNewLineCharacter(GetExceptionMessage(exception.InnerException, null, indentationLevel + 1, "Inner exception")).ToList();
+            return GUtilities.SplitOnNewLineCharacter(GetExceptionMessage(exception.InnerException, null, indentationLevel + 1, "Inner exception")).ToList();
         }
     }
 }

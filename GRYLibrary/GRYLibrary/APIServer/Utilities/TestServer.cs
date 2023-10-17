@@ -13,7 +13,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
             this.APIKey = apiKey;
 
 
-            var process = new Process
+            Process process = new Process
             {
                 StartInfo = new ProcessStartInfo()
                 {

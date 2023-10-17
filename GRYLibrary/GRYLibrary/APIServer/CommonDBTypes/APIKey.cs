@@ -12,7 +12,7 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
         public string Description { get; set; }
         public static bool IsValid(IEnumerable<APIKey> apiKeys, string apiKeyValue, DateTime dateTime)
         {
-            foreach (var apiKey in apiKeys)
+            foreach (APIKey apiKey in apiKeys)
             {
                 if (apiKey.APIKeyValue == apiKeyValue)
                 {
