@@ -55,10 +55,6 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             return new GRYDateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second);
         }
-        public static string ToString(GRYDateTime dateTime)
-        {
-            return ToDateTime(dateTime).ToString(DateFormat);
-        }
         public static GRYDateTime FromString(string @string)
         {
             return FromDateTime(DateTime.ParseExact(@string, DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None));
@@ -73,9 +69,9 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             return $"{this.Year.ToString().PadLeft(4, '0')}-{this.Month.ToString().PadLeft(2, '0')}-{this.Day.ToString().PadLeft(2, '0')} {this.Hour.ToString().PadLeft(2, '0')}:{this.Minute.ToString().PadLeft(2, '0')}:{this.Second.ToString().PadLeft(2, '0')}";
         }
-        public readonly string ToString(string format)
+        public readonly string ToURLEncodedString()
         {
-            return ToDateTime(this).ToString(format);
+            return this.ToString().Replace(" ", "%20").Replace(":", "%3A");
         }
 
         public override readonly bool Equals(object obj)

@@ -2,11 +2,16 @@
 {
     public class HTTP : Protocol
     {
+        public const ushort DefaultPort=80;
         public static HTTP Create()
+        {
+            return Create(DefaultPort);
+        }
+        public static HTTP Create(ushort port)
         {
             HTTP result = new HTTP
             {
-                Port = 80
+                Port = port
             };
             return result;
         }

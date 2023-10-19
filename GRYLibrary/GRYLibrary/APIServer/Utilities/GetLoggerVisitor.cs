@@ -28,5 +28,10 @@ namespace GRYLibrary.Core.APIServer.Utilities
             logger.UseSubNamespace(this._LoggerName);
             return result;
         }
+
+        public IGeneralLogger Handle(TestRun testRun)
+        {
+            return GeneralLogger.CreateUsingConsole();
+        }
     }
 }

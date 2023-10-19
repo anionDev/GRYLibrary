@@ -8,6 +8,7 @@ namespace GRYLibrary.Core.Miscellaneous.MetaConfiguration
     {
         public static T GetConfiguration<T, TBase>(MetaConfigurationSettings<T, TBase> configuration, ISet<Type> knownTypes) where T : TBase, new()
         {
+            //TODO run migration from MetaConfigurationSettings here if required
             return configuration.ConfigurationFormat.Accept(new HandleConfigurationVisitor<T, TBase>(configuration, knownTypes));
         }
         private class HandleConfigurationVisitor<T, TBase> : IConfigurationFormatVisitor<T> where T : TBase, new()

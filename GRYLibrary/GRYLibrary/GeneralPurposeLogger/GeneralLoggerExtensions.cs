@@ -49,17 +49,11 @@ namespace GRYLibrary.Core.GeneralPurposeLogger
             logger.AddLogEntry(logItem);
         }
 
-        public static T SetupLoggerService<I, T>(GRYLogConfiguration configuration, string basePath, string subnamespace)
-            where T : I, new()
-            where I : IServiceLogger
-        {
-            T result = new T
-            {
-                Logger = GRYLog.Create(configuration)
-            };
-            result.Logger.UseSubNamespace(subnamespace);
-            result.AddLogEntry = result.Logger.AddLogEntry;
-            result.Logger.BasePath = basePath;
+        public static GRYLog SetupLogger(GRYLogConfiguration configuration, string basePath, string subnamespace)
+         {
+            GRYLog result = GRYLog.Create(configuration);
+            result.UseSubNamespace(subnamespace);
+            result.BasePath = basePath;
             return result;
         }
     }

@@ -18,7 +18,6 @@ using GRYLibrary.Core.APIServer.Settings.Configuration;
 using GRYLibrary.Core.APIServer.Utilities;
 using GRYLibrary.Core.Miscellaneous;
 using GRYLibrary.Core.Miscellaneous.FilePath;
-using GRYLibrary.Core.Miscellaneous.Migration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,7 +34,6 @@ using GRYLibrary.Core.APIServer.ExecutionModes.Visitors;
 using System.Reflection;
 using GRYLibrary.Core.Miscellaneous.MetaConfiguration.ConfigurationFormats;
 using GRYLibrary.Core.Miscellaneous.MetaConfiguration;
-using GRYLibrary.Core.APIServer.Binder;
 
 namespace GRYLibrary.Core.APIServer
 {
@@ -51,8 +49,9 @@ namespace GRYLibrary.Core.APIServer
         private APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> _Configuration;
         public static int APIMain(CommandlineParameterType commandlineParameter, Action<APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>> configurationInitializer, GRYConsoleApplicationInitialInformation gryConsoleApplicationInitialInformation)
         {
-            #region Initialize default configuration-values
             APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> apiServerConfiguration = new APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>();
+
+            #region Initialize default configuration-values
             configurationInitializer(apiServerConfiguration);
             apiServerConfiguration.InitializationInformation = new InitializationInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
             {
@@ -64,9 +63,7 @@ namespace GRYLibrary.Core.APIServer
             apiServerConfiguration.InitializationInformation.ApplicationConstants.KnownTypes.Add(typeof(PersistedApplicationSpecificConfiguration));
             apiServerConfiguration.InitializationInformation.InitialApplicationConfiguration = PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>.Create(new PersistedApplicationSpecificConfiguration(), gryConsoleApplicationInitialInformation.Environment, apiServerConfiguration.InitializationInformation.ApplicationConstants.ApplicationName, apiServerConfiguration.InitializationInformation.ApplicationConstants.GetCertificateFolder());
             apiServerConfiguration.InitializationInformation.BasicInformationFile = AbstractFilePath.FromString("./BasicApplicationInformation.xml");
-            #endregion
 
-            #region Run initialization-function
             apiServerConfiguration.SetInitialzationInformationAction(apiServerConfiguration.InitializationInformation);
             #endregion
 
@@ -129,7 +126,13 @@ namespace GRYLibrary.Core.APIServer
 
             public IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> Handle(RunProgram runProgram)
             {
+                //TODO add option to define config-file-migrations here
                 return MetaConfigurationManager.GetConfiguration(this._MetaConfiguration, this._KnownTypes);
+            }
+
+            public IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> Handle(TestRun testRun)
+            {
+                return this._MetaConfiguration.InitialValue;
             }
         }
         #endregion
@@ -140,7 +143,6 @@ namespace GRYLibrary.Core.APIServer
             try
             {
                 this.CreateRequiredFolder();
-                this.RunMigrationIfRequired(logger, this._Configuration.InitializationInformation.BasicInformationFile);
                 logger = this.GetApplicationLogger(persistedAPIServerConfiguration);
                 logger.Log($"Start {this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName}", LogLevel.Information);
                 logger.Log($"Environment: {this._Configuration.InitializationInformation.ApplicationConstants.Environment}", LogLevel.Debug);
@@ -396,6 +398,11 @@ namespace GRYLibrary.Core.APIServer
                     return this._HostAPISpecificationForInNonDevelopmentEnvironment;
                 }
             }
+
+            public bool Handle(TestRun testRun)
+            {
+                return true;
+            }
         }
         #endregion
 
@@ -415,11 +422,6 @@ namespace GRYLibrary.Core.APIServer
                     throw new FileNotFoundException($"\"{passwordFile}\" does not exist.");
                 }
             }
-        }
-
-        private void RunMigrationIfRequired(IGeneralLogger logger, AbstractFilePath basicInformationFile)
-        {
-            GRYMigration.MigrateIfRequired(basicInformationFile, this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName, this._Configuration.InitializationInformation.ApplicationConstants.ApplicationVersion, logger, this._Configuration.InitializationInformation.BaseFolder, this._Configuration.InitializationInformation.ApplicationConstants.Environment, this._Configuration.InitializationInformation.ApplicationConstants.ExecutionMode, new Dictionary<object, object>(), new HashSet<MigrationMetaInformation>());
         }
 
         private IGeneralLogger GetApplicationLogger(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration)
