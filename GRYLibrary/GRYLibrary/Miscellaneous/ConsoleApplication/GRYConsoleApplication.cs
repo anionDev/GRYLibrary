@@ -45,7 +45,7 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
                 try
                 {
                     Console.Clear();
-                    if (_ResetConsoleColorToDefaultvalues)
+                    if (this._ResetConsoleColorToDefaultvalues)
                     {
                         if (GUtilities.DarkModeEnabled)
                         {
