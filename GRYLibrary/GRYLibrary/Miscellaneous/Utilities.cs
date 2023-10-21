@@ -2536,6 +2536,14 @@ namespace GRYLibrary.Core.Miscellaneous
             return DateTime.UtcNow;
 #endif
         }
+        public static string DateTimeToString(DateTime value)
+        {
+            return value.ToString("O");
+        }
+        public static DateTime DateTimeParse(string value)
+        {
+            return DateTime.ParseExact(value, "O", CultureInfo.InvariantCulture); 
+        }
         public static byte[] StreamToByteArray(Stream input)
         {
             using MemoryStream ms = new MemoryStream();
