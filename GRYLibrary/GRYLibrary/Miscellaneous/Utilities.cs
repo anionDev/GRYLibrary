@@ -1786,6 +1786,16 @@ namespace GRYLibrary.Core.Miscellaneous
             return value;
         }
 
+        public static string AdaptMySQLConnectionString(string connectionString, bool hidePassword)
+        {
+            if (hidePassword)
+            {
+                string replaceString = "********";
+                connectionString = Regex.Replace(connectionString, @"Pwd=([^;]+)(;|$)", match => $"Pwd={replaceString}{match.Groups[2]}");
+            }
+            return connectionString;
+        }
+
         /// <summary>
         /// Executes <paramref name="action"/>. When <paramref name="action"/> longer takes than <paramref name="timeout"/> then <paramref name="action"/> will be aborted.
         /// </summary>
@@ -2525,6 +2535,14 @@ namespace GRYLibrary.Core.Miscellaneous
 #else
             return DateTime.UtcNow;
 #endif
+        }
+        public static string DateTimeToString(DateTime value)
+        {
+            return value.ToString("O");
+        }
+        public static DateTime DateTimeParse(string value)
+        {
+            return DateTime.ParseExact(value, "O", CultureInfo.InvariantCulture);
         }
         public static byte[] StreamToByteArray(Stream input)
         {

@@ -15,7 +15,6 @@ using GRYLibrary.Core.APIServer.Mid.WAF;
 using GRYLibrary.Core.APIServer.ExecutionModes;
 using GRYLibrary.Core.APIServer.Settings;
 using GRYLibrary.Core.APIServer.Settings.Configuration;
-using GRYLibrary.Core.APIServer.Utilities;
 using GRYLibrary.Core.Miscellaneous;
 using GRYLibrary.Core.Miscellaneous.FilePath;
 using Microsoft.AspNetCore.Builder;
@@ -34,6 +33,8 @@ using GRYLibrary.Core.APIServer.ExecutionModes.Visitors;
 using System.Reflection;
 using GRYLibrary.Core.Miscellaneous.MetaConfiguration.ConfigurationFormats;
 using GRYLibrary.Core.Miscellaneous.MetaConfiguration;
+using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
+using GRYLibrary.Core.APIServer.Utilities;
 
 namespace GRYLibrary.Core.APIServer
 {
@@ -166,6 +167,7 @@ namespace GRYLibrary.Core.APIServer
             IGeneralLogger logger,
             IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedAPIServerConfiguration)
         {
+            logger.Log($"BaseFolder: {apiServerConfiguration.InitializationInformation.BaseFolder}", LogLevel.Debug);
             WebApplicationBuilder builder = WebApplication.CreateBuilder(new WebApplicationOptions
             {
                 ApplicationName = this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName,
@@ -237,7 +239,7 @@ namespace GRYLibrary.Core.APIServer
                         string passwordFilePath = https.TLSCertificateInformation.CertificatePasswordFile.GetPath(this._Configuration.InitializationInformation.ApplicationConstants.GetCertificateFolder());
                         string password = File.ReadAllText(passwordFilePath, new UTF8Encoding(false));
                         X509Certificate2 certificate = certificate = new X509Certificate2(pfxFilePath, password);
-                        if (this._Configuration.InitializationInformation.ApplicationConstants.Environment is Productive && Miscellaneous.Utilities.IsSelfSIgned(certificate))
+                        if (this._Configuration.InitializationInformation.ApplicationConstants.Environment is Productive && GUtilities.IsSelfSIgned(certificate))
                         {
                             logger.Log($"The used certificate '{pfxFilePath}' is self-signed. Using self-signed certificates is not recommended in a productive environment.", LogLevel.Warning);
                         }
@@ -412,11 +414,18 @@ namespace GRYLibrary.Core.APIServer
             if (persistedApplicationSpecificConfiguration.ServerConfiguration.Protocol is HTTPS https)
             {
                 string pfxFile = https.TLSCertificateInformation.CertificatePFXFile.GetPath(certFolder);
+                string passwordFile = https.TLSCertificateInformation.CertificatePasswordFile.GetPath(certFolder);
+                if (!File.Exists(pfxFile) && !File.Exists(passwordFile))
+                {
+                    GUtilities.EnsureFileExists(pfxFile);
+                    File.WriteAllBytes(pfxFile, GUtilities.HexStringToByteArray(persistedApplicationSpecificConfiguration.ServerConfiguration.DevelopmentCertificatePFXHex));
+                    GUtilities.EnsureFileExists(passwordFile);
+                    File.WriteAllBytes(passwordFile, GUtilities.HexStringToByteArray(persistedApplicationSpecificConfiguration.ServerConfiguration.DevelopmentCertificatePasswordHex));
+                }
                 if (!File.Exists(pfxFile))
                 {
                     throw new FileNotFoundException($"\"{pfxFile}\" does not exist.");
                 }
-                string passwordFile = https.TLSCertificateInformation.CertificatePasswordFile.GetPath(certFolder);
                 if (!File.Exists(passwordFile))
                 {
                     throw new FileNotFoundException($"\"{passwordFile}\" does not exist.");
@@ -431,9 +440,9 @@ namespace GRYLibrary.Core.APIServer
 
         private void CreateRequiredFolder()
         {
-            Miscellaneous.Utilities.EnsureDirectoryExists(this._Configuration.InitializationInformation.ApplicationConstants.GetConfigurationFolder());
-            Miscellaneous.Utilities.EnsureDirectoryExists(this._Configuration.InitializationInformation.ApplicationConstants.GetLogFolder());
-            Miscellaneous.Utilities.EnsureDirectoryExists(this._Configuration.InitializationInformation.ApplicationConstants.GetCertificateFolder());
+            GUtilities.EnsureDirectoryExists(this._Configuration.InitializationInformation.ApplicationConstants.GetConfigurationFolder());
+            GUtilities.EnsureDirectoryExists(this._Configuration.InitializationInformation.ApplicationConstants.GetLogFolder());
+            GUtilities.EnsureDirectoryExists(this._Configuration.InitializationInformation.ApplicationConstants.GetCertificateFolder());
         }
 
         private void RunAPIServer(WebApplication server)

@@ -1,6 +1,8 @@
 ﻿using GRYLibrary.Core.GeneralPurposeLogger;
 using GRYLibrary.Core.APIServer.ExecutionModes;
 using GRYLibrary.Core.Log;
+using GRYLibrary.Core.APIServer.ConcreteEnvironments;
+using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 
 namespace GRYLibrary.Core.APIServer.Utilities
 {
@@ -23,7 +25,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
 
         public IGeneralLogger Handle(RunProgram runProgram)
         {
-            GeneralLogger result = GeneralLogger.CreateUsingGRYLog(this._LogConfiguration, out GRYLog logger, this._BaseFolder);
+            IGeneralLogger result = GeneralLogger.CreateUsingGRYLog(this._LogConfiguration, out GRYLog logger, this._BaseFolder);
             logger.BasePath = this._BaseFolder;
             logger.UseSubNamespace(this._LoggerName);
             return result;
