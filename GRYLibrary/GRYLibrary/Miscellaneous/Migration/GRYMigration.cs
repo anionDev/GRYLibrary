@@ -15,7 +15,7 @@ namespace GRYLibrary.Core.Miscellaneous
     {
         internal static Encoding Encoding { get; set; } = new UTF8Encoding(false);
         public static void MigrateIfRequired(
-            AbstractFilePath basicInformationFile, string appName, Version3 currentVersion, IGeneralLogger logger, 
+            AbstractFilePath basicInformationFile, string appName, Version3 currentVersion, IGeneralLogger logger,
             string baseFolder, GRYEnvironment targetEnvironmentType, ExecutionMode executionMode,
             MigrateInstanceInformation migrateInstanceInformation
         )

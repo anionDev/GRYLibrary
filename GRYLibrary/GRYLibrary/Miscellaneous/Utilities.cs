@@ -2542,7 +2542,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static DateTime DateTimeParse(string value)
         {
-            return DateTime.ParseExact(value, "O", CultureInfo.InvariantCulture); 
+            return DateTime.ParseExact(value, "O", CultureInfo.InvariantCulture);
         }
         public static byte[] StreamToByteArray(Stream input)
         {

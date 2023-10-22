@@ -1,10 +1,6 @@
-﻿using Keycloak.Net;
-
-namespace GRYLibrary.Core.APIServer.Services.KeyCloak
+﻿namespace GRYLibrary.Core.APIServer.Services.KeyCloak
 {
-    public interface IKeyCloakService
-    {
+    public interface IKeyCloakService: IAuthenticationService { 
         public IKeyCloakServiceSettings Settings { get; }
-        public KeycloakClient GetKeycloakClient();
     }
 }
