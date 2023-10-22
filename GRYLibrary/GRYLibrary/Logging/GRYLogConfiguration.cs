@@ -150,6 +150,10 @@ namespace GRYLibrary.Core.Log
                 {
                     logTarget.LogLevels.Add(LogLevel.Debug);
                 }
+                else
+                {
+                    logTarget.LogLevels.Remove(LogLevel.Debug);
+                }
             }
             return result;
         }

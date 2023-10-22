@@ -21,6 +21,18 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
             }
             return false;
         }
+        public static bool APIKeyIsGiven(string apiKey)
+        {
+            if (string.IsNullOrWhiteSpace(apiKey))
+            {
+                return false;
+            }
+            if (apiKey.StartsWith("[") && apiKey.EndsWith("]")) // option to allow non-functional descriptions as default-value
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }
 

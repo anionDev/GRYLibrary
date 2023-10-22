@@ -41,6 +41,12 @@ namespace GRYLibrary.Core.APIServer.Utilities
             context.Response.Body = originalResponseBody;
             return (requestBody, responseBody);
         }
+
+        public static string GetDefaultDomainValue(string codeUnitName)
+        {
+            return $"{codeUnitName.ToLower()}.test.local";
+        }
+
         public static byte[] GetRequestBody(HttpContext context)
         {
             context.Request.EnableBuffering();

@@ -63,7 +63,7 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
         }
         public static void SetValue<T>(DbSet<APIServer.CommonDBTypes.KeyValuePair> kvps, string name, Func<T, string> serialize, T value)
         {
-            var kvp = kvps.Where(kvp => kvp.Key == name).FirstOrDefault();
+            KeyValuePair kvp = kvps.Where(kvp => kvp.Key == name).FirstOrDefault();
             if (kvp == default)
             {
                 kvps.Add(new APIServer.CommonDBTypes.KeyValuePair()
