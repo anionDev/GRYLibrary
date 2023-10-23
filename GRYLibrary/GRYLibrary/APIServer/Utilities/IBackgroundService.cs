@@ -13,19 +13,19 @@ namespace GRYLibrary.Core.APIServer.Utilities
         {
             if (this.ShouldBeExecuted(executionMode))
             {
-                Logger.Log($"Background-service {this.GetType().Name} will be started.", Microsoft.Extensions.Logging.LogLevel.Information);
+                this.Logger.Log($"Background-service {this.GetType().Name} will be started.", Microsoft.Extensions.Logging.LogLevel.Information);
                 this.StartAsyncImplementation();
             }
             else
             {
-                Logger.Log($"Background-service {this.GetType().Name} will not be started.", Microsoft.Extensions.Logging.LogLevel.Information);
+                this.Logger.Log($"Background-service {this.GetType().Name} will not be started.", Microsoft.Extensions.Logging.LogLevel.Information);
             }
         }
         public void Stop(ExecutionMode executionMode)
         {
             if (this.ShouldBeExecuted(executionMode))
             {
-                Logger.Log($"Background-service {this.GetType().Name} will be stopped.", Microsoft.Extensions.Logging.LogLevel.Information);
+                this.Logger.Log($"Background-service {this.GetType().Name} will be stopped.", Microsoft.Extensions.Logging.LogLevel.Information);
                 this.StartAsyncImplementation();
             }
         }

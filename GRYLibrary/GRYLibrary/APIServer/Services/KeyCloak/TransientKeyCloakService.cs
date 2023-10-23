@@ -5,7 +5,7 @@ namespace GRYLibrary.Core.APIServer.Services.KeyCloak
 {
     public class TransientKeyCloakService : IKeyCloakService
     {
-        
+
         public IKeyCloakServiceSettings Settings { get; }
         public TransientKeyCloakService(IKeyCloakServiceSettings settings)
         {
