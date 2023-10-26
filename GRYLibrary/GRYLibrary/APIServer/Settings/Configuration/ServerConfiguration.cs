@@ -4,8 +4,8 @@
     {
         public string Domain { get; set; }
         public Protocol Protocol { get; set; }
-        public string DevelopmentCertificatePasswordHex { get; set; } 
-        public string DevelopmentCertificatePFXHex { get; set; } 
+        public string DevelopmentCertificatePasswordHex { get; set; }
+        public string DevelopmentCertificatePFXHex { get; set; }
         public bool HostAPISpecificationForInNonDevelopmentEnvironment { get; set; } = false;
         public const string APIRoutePrefix = "/API";
         public const string APISpecificationDocumentName = "APISpecification";
