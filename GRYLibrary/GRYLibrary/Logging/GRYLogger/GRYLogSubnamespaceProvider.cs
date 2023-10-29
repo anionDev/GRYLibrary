@@ -1,6 +1,6 @@
 ﻿using GRYLibrary.Core.Miscellaneous.CustomDisposables;
 
-namespace GRYLibrary.Core.Log
+namespace GRYLibrary.Core.Logging.GRYLogger
 {
     public class GRYLogSubNamespaceProvider : CustomDisposable
     {

@@ -2,12 +2,12 @@
 using CommandLine.Text;
 using GRYLibrary.Core.APIServer.ConcreteEnvironments;
 using GRYLibrary.Core.APIServer.ExecutionModes;
-using GRYLibrary.Core.Log;
 using Microsoft.Extensions.Logging;
 using System;
 using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 using System.Collections.Generic;
 using System.IO;
+using GRYLibrary.Core.Logging.GRYLogger;
 
 namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
 {

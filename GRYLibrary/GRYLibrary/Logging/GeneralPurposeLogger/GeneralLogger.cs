@@ -1,8 +1,8 @@
-﻿using GRYLibrary.Core.Log;
+﻿using GRYLibrary.Core.Logging.GRYLogger;
 using System;
 using System.IO;
 
-namespace GRYLibrary.Core.GeneralPurposeLogger
+namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
 {
     public class GeneralLogger : IGeneralLogger
     {

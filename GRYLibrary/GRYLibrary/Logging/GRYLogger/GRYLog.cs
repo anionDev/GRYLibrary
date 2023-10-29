@@ -1,5 +1,5 @@
-﻿using GRYLibrary.Core.GeneralPurposeLogger;
-using GRYLibrary.Core.Log.ConcreteLogTargets;
+﻿using GRYLibrary.Core.Logging.GeneralPurposeLogger;
+using GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets;
 using GRYLibrary.Core.Miscellaneous;
 using Microsoft.Extensions.Logging;
 using System;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace GRYLibrary.Core.Log
+namespace GRYLibrary.Core.Logging.GRYLogger
 {
     public sealed class GRYLog : IDisposable, ILogger, IGeneralLogger
     {
@@ -318,33 +318,12 @@ namespace GRYLibrary.Core.Log
                 this.Log(message);
             }
         }
-
+        [Obsolete($"Use {nameof(GeneralLoggerExtensions)}.{nameof(GeneralLoggerExtensions.Log)} instead")]
         public void ExecuteAndLog(Action action, string nameOfAction, bool preventThrowingExceptions = false, LogLevel logLevelForOverhead = LogLevel.Debug, string subNamespaceForLog = Utilities.EmptyString)
         {
-            this.Log($"Action '{nameOfAction}' will be started now.", logLevelForOverhead);
-            Stopwatch stopWatch = new();
-            try
-            {
-                using (this.UseSubNamespace(subNamespaceForLog))
-                {
-                    stopWatch.Start();
-                    action();
-                    stopWatch.Stop();
-                }
-            }
-            catch (Exception exception)
-            {
-                this.Log($"An exception occurred while executing action '{nameOfAction}'.", LogLevel.Error, exception, 0x78200002.ToString());
-                if (!preventThrowingExceptions)
-                {
-                    throw;
-                }
-            }
-            finally
-            {
-                this.Log($"Action '{nameOfAction}' finished. Duration: {Utilities.DurationToUserFriendlyString(stopWatch.Elapsed)}", logLevelForOverhead);
-            }
+            GeneralLoggerExtensions.Log(this, nameOfAction, logLevelForOverhead, !preventThrowingExceptions, true, true, action);
         }
+
         public TResult ExecuteAndLog<TResult>(Func<TResult> action, string nameOfAction, bool preventThrowingExceptions = false, LogLevel logLevelForOverhead = LogLevel.Debug, TResult defaultValue = default, string subNamespaceForLog = Utilities.EmptyString)
         {
             this.Log($"Action '{nameOfAction}' will be started now.", logLevelForOverhead);

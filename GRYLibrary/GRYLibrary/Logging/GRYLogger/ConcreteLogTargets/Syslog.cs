@@ -1,9 +1,10 @@
 ﻿using GRYLibrary.Core.ExecutePrograms;
+using GRYLibrary.Core.Logging.GRYLogger;
 using GRYLibrary.Core.Miscellaneous;
 using System;
 using System.Collections.Generic;
 
-namespace GRYLibrary.Core.Log.ConcreteLogTargets
+namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
 {
     public sealed class Syslog : GRYLogTarget
     {

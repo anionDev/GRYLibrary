@@ -1,5 +1,5 @@
 ﻿using GRYLibrary.Core.APIServer.ConcreteEnvironments;
-using GRYLibrary.Core.Log;
+using GRYLibrary.Core.Logging.GRYLogger;
 
 namespace GRYLibrary.Core.APIServer.Settings.Configuration
 {

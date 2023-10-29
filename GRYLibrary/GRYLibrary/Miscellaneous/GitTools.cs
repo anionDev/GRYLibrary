@@ -1,6 +1,6 @@
 ﻿using GRYLibrary.Core.ExecutePrograms;
 using GRYLibrary.Core.ExecutePrograms.WaitingStates;
-using GRYLibrary.Core.Log;
+using GRYLibrary.Core.Logging.GRYLogger;
 using System;
 using System.Collections.Generic;
 using System.IO;
