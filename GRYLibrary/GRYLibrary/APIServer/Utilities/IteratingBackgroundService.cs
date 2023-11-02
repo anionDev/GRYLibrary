@@ -29,7 +29,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
                     {
                         while (this.Enabled)
                         {
-                            Logger.Log($"Execute {this.GetType().Name}", Microsoft.Extensions.Logging.LogLevel.Debug, false, false, false, false, this.Run);
+                            this.Logger.Log($"Execute {this.GetType().Name}", Microsoft.Extensions.Logging.LogLevel.Debug, false, false, false, false, this.Run);
                             Thread.Sleep(50);
                         }
                     });

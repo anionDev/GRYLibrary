@@ -3,6 +3,7 @@ using System;
 using GUtilies = GRYLibrary.Core.Miscellaneous.Utilities;
 using System.Diagnostics;
 using GRYLibrary.Core.Logging.GRYLogger;
+using System.Collections.Generic;
 
 namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
 {
@@ -52,7 +53,11 @@ namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
                 }
             }
         }
-        public static void LogException(this IGeneralLogger logger, Exception exception, string message)
+        public static void LogLoopExecution<T>(this IGeneralLogger logger,IEnumerable<T> items, Action<T> action)
+        {
+            throw new NotImplementedException();
+        }
+            public static void LogException(this IGeneralLogger logger, Exception exception, string message)
         {
             LogItem logItem = new LogItem(message, exception);
             logger.AddLogEntry(logItem);

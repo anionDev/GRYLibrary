@@ -52,7 +52,7 @@ namespace GRYLibrary.Core.APIServer.Mid.RequestLogger
         {
             try
             {
-                return $"UTF8-encoded-content: \"{_Encoding.GetString(content)}\"";
+                return $"UTF8-encoded-content: \"{this._Encoding.GetString(content)}\"";
             }
             catch
             {

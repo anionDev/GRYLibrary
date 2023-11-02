@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -35,18 +36,40 @@ namespace GRYLibrary.Core.GenericAPIClient
         }
         public async Task<string> SendAsStringAsync(string route, HttpMethod method)
         {
-            using HttpClient client = this.GetHTTPClient();
-            HttpResponseMessage response;
-            using (HttpRequestMessage requestMessage = new HttpRequestMessage(method, $"{this.Configuration.APIAddress}/{route}"))
-            {
-                if (this.Configuration.APIKey != null)
-                {
-                    requestMessage.Headers.Authorization = new AuthenticationHeaderValue("APIKey", this.Configuration.APIKey);
-                }
-                response = await client.SendAsync(requestMessage);
-            }
+            var response = await this.GetResponse(route, method);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
+        }
+
+        public async Task<bool> IsAvailable()
+        {
+            if (this.Configuration.TestRoute == null)
+            {
+                throw new NotSupportedException($"{nameof(IsAvailable)} is not supported for this API-client.");
+            }
+            else
+            {
+                try
+                {
+                    await this.GetResponse(this.Configuration.TestRoute, HttpMethod.Get);
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
+
+        private async Task<HttpResponseMessage> GetResponse(string route, HttpMethod method)
+        {
+            using HttpClient client = this.GetHTTPClient();
+            using HttpRequestMessage requestMessage = new HttpRequestMessage(method, $"{this.Configuration.APIAddress}/{route}");
+            if (this.Configuration.APIKey != null)
+            {
+                requestMessage.Headers.Authorization = new AuthenticationHeaderValue("APIKey", this.Configuration.APIKey);
+            }
+            return await client.SendAsync(requestMessage);
         }
 
         public virtual void Dispose()
