@@ -23,6 +23,7 @@ namespace GRYLibrary.Core.APIServer.Mid.RequestLogger
         private readonly IGeneralLogger _Logger;
         private readonly IRequestLoggingConfiguration _RequestLoggingSettings;
         private readonly IApplicationConstants _AppConstants;
+        private readonly Encoding _Encoding = new UTF8Encoding(false);
         /// <inheritdoc/>
         public RequestLoggingMiddleware(RequestDelegate next, IRequestLoggingConfiguration requestLoggingSettings, IApplicationConstants appConstants, IGeneralLogger logger) : base(next)
         {
@@ -36,7 +37,6 @@ namespace GRYLibrary.Core.APIServer.Mid.RequestLogger
         {
             DateTime moment = GUtilities.GetNow();
             (byte[] requestBodyB, byte[] responseBodyB) = Tools.ExecuteAndGetBody(this._Next, context);
-
             string requestBody = this.BytesToString(requestBodyB);
             string responseBody = this.BytesToString(responseBodyB);
             string requestRoute = context.Request.Path;
@@ -52,7 +52,7 @@ namespace GRYLibrary.Core.APIServer.Mid.RequestLogger
         {
             try
             {
-                return $"UTF8-encoded-content: \"{new UTF8Encoding(false).GetString(content)}\"";
+                return $"UTF8-encoded-content: \"{_Encoding.GetString(content)}\"";
             }
             catch
             {

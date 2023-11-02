@@ -1171,6 +1171,13 @@ namespace GRYLibrary.Core.Miscellaneous
                 Thread.Sleep(50);
             }
         }
+        public static async Task WaitUntilConditionIsTrueAsync(Func<bool> condition)
+        {
+            while (!condition())
+            {
+               await Task.Delay(50);
+            }
+        }
         public static ISet<string> ToCaseInsensitiveSet(this ISet<string> input)
         {
             ISet<WriteableTuple<string, string>> tupleList = new HashSet<WriteableTuple<string, string>>(input.Select((item) => new WriteableTuple<string, string>(item, item.ToLower())));

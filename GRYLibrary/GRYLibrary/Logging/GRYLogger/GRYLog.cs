@@ -321,7 +321,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         [Obsolete($"Use {nameof(GeneralLoggerExtensions)}.{nameof(GeneralLoggerExtensions.Log)} instead")]
         public void ExecuteAndLog(Action action, string nameOfAction, bool preventThrowingExceptions = false, LogLevel logLevelForOverhead = LogLevel.Debug, string subNamespaceForLog = Utilities.EmptyString)
         {
-            GeneralLoggerExtensions.Log(this, nameOfAction, logLevelForOverhead, !preventThrowingExceptions, true, true, action);
+            GeneralLoggerExtensions.Log(this, nameOfAction, logLevelForOverhead, !preventThrowingExceptions, true, true, true, action);
         }
 
         public TResult ExecuteAndLog<TResult>(Func<TResult> action, string nameOfAction, bool preventThrowingExceptions = false, LogLevel logLevelForOverhead = LogLevel.Debug, TResult defaultValue = default, string subNamespaceForLog = Utilities.EmptyString)

@@ -6,9 +6,7 @@ using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.APIServer.Utilities
 {
-    public interface IBackgroundService
+    internal class BackgroundServiceHelper
     {
-        public void StartAsync();
-        public Task Stop();
     }
 }

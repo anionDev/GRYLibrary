@@ -13,9 +13,12 @@ namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
             LogItem logItem = new LogItem(message, logLevel);
             logger.AddLogEntry(logItem);
         }
-        public static void Log(this IGeneralLogger logger, string actionName, LogLevel logLevelForOverhead, bool throwExceptionIfOccurrs, bool logEndOfAtion, bool printDuration, Action action)
+        public static void Log(this IGeneralLogger logger, string actionName, LogLevel logLevelForOverhead, bool throwExceptionIfOccurrs, bool logStartOfAction, bool logEndOfAtion, bool printDuration, Action action)
         {
-            logger.Log($"Start action \"{actionName}\".", logLevelForOverhead);
+            if (logStartOfAction)
+            {
+                logger.Log($"Start action \"{actionName}\".", logLevelForOverhead);
+            }
             Stopwatch stopwatch = Stopwatch.StartNew();
             try
             {
@@ -32,18 +35,21 @@ namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
                     throw;
                 }
             }
-            if (logEndOfAtion)
+            finally
             {
-                string duration;
-                if (printDuration)
+                if (logEndOfAtion)
                 {
-                    duration = $" Duration: {GUtilies.DurationToUserFriendlyString(stopwatch.Elapsed)}";
+                    string duration;
+                    if (printDuration)
+                    {
+                        duration = $" Duration: {GUtilies.DurationToUserFriendlyString(stopwatch.Elapsed)}";
+                    }
+                    else
+                    {
+                        duration = GUtilies.EmptyString;
+                    }
+                    logger.Log($"Finished action \"{actionName}\".{duration}", logLevelForOverhead);
                 }
-                else
-                {
-                    duration = GUtilies.EmptyString;
-                }
-                logger.Log($"Finished action \"{actionName}\".{duration}", logLevelForOverhead);
             }
         }
         public static void LogException(this IGeneralLogger logger, Exception exception, string message)
