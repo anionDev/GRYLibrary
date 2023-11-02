@@ -1,4 +1,3 @@
-using GRYLibrary.Core.GeneralPurposeLogger;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Net;
@@ -9,8 +8,9 @@ using GRYLibrary.Core.APIServer.Mid.Logging;
 using GRYLibrary.Core.APIServer.Settings;
 using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 using System.Collections.Generic;
-using GRYLibrary.Core.Log;
 using System.Text;
+using GRYLibrary.Core.Logging.GeneralPurposeLogger;
+using GRYLibrary.Core.Logging.GRYLogger;
 
 namespace GRYLibrary.Core.APIServer.Mid.RequestLogger
 {
@@ -43,8 +43,8 @@ namespace GRYLibrary.Core.APIServer.Mid.RequestLogger
             ushort responseHTTPStatusCode = (ushort)context.Response.StatusCode;
             IPAddress clientIP = context.Connection.RemoteIpAddress;
             Request request = new Request(moment, clientIP, context.Request.Method, requestRoute, context.Request.Query, context.Request.Headers, requestBody, null/*TODO*/, responseHTTPStatusCode, context.Response.Headers, responseBody);
-            this.LogHTTPRequest(request, false, new HashSet<GRYLogTarget> { new Log.ConcreteLogTargets.Console() });
-            this.LogHTTPRequest(request, this.ShouldLogEntireRequestContentInLogFile(request), new HashSet<GRYLogTarget> { new Log.ConcreteLogTargets.LogFile() });
+            this.LogHTTPRequest(request, false, new HashSet<GRYLogTarget> { new Core.Logging.GRYLogger.ConcreteLogTargets.Console() });
+            this.LogHTTPRequest(request, this.ShouldLogEntireRequestContentInLogFile(request), new HashSet<GRYLogTarget> { new Core.Logging.GRYLogger.ConcreteLogTargets.LogFile() });
             return Task.CompletedTask;
         }
 

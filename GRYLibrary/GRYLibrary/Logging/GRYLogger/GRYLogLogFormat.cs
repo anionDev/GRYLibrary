@@ -1,4 +1,4 @@
-﻿namespace GRYLibrary.Core.Log
+﻿namespace GRYLibrary.Core.Logging.GRYLogger
 {
     public enum GRYLogLogFormat : int
     {

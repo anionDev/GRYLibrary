@@ -1,4 +1,4 @@
-﻿using GRYLibrary.Core.Log;
+﻿using GRYLibrary.Core.Logging.GRYLogger;
 using GRYLibrary.Core.Miscellaneous.FilePath;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Generic;

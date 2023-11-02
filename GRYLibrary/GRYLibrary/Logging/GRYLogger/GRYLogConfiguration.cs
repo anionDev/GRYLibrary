@@ -1,14 +1,14 @@
 ﻿using GRYLibrary.Core.AdvancedObjectAnalysis;
-using GRYLibrary.Core.Log.ConcreteLogTargets;
+using GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets;
 using GRYLibrary.Core.Miscellaneous.FilePath;
 using GRYLibrary.Core.XMLSerializer;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Console = GRYLibrary.Core.Log.ConcreteLogTargets.Console;
+using Console = GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets.Console;
 
-namespace GRYLibrary.Core.Log
+namespace GRYLibrary.Core.Logging.GRYLogger
 {
     /// <summary>
     /// Represents a log-configuration for <see cref="GRYLog"/>.

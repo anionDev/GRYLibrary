@@ -1,12 +1,12 @@
 ﻿using GRYLibrary.Core.AdvancedObjectAnalysis;
-using GRYLibrary.Core.Log.ConcreteLogTargets;
+using GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Xml.Serialization;
 
-namespace GRYLibrary.Core.Log
+namespace GRYLibrary.Core.Logging.GRYLogger
 {
     [XmlInclude(typeof(ConcreteLogTargets.Console))]
     [XmlInclude(typeof(LogFile))]

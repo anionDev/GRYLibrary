@@ -1,6 +1,6 @@
-﻿using GRYLibrary.Core.GeneralPurposeLogger;
-using GRYLibrary.Core.APIServer.ExecutionModes;
-using GRYLibrary.Core.Log;
+﻿using GRYLibrary.Core.APIServer.ExecutionModes;
+using GRYLibrary.Core.Logging.GeneralPurposeLogger;
+using GRYLibrary.Core.Logging.GRYLogger;
 
 namespace GRYLibrary.Core.APIServer.Utilities
 {

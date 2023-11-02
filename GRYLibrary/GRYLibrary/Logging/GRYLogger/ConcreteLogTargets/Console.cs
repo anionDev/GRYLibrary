@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace GRYLibrary.Core.Log.ConcreteLogTargets
+namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
 {
     public sealed class Console : GRYLogTarget
     {
@@ -13,7 +13,7 @@ namespace GRYLibrary.Core.Log.ConcreteLogTargets
         protected override void ExecuteImplementation(LogItem logItem, GRYLog logObject)
         {
             TextWriter output;
-            if (logItem.IsErrorEntry() || (this.WriteWarningsToStdErr && logItem.LogLevel == LogLevel.Warning))
+            if (logItem.IsErrorEntry() || this.WriteWarningsToStdErr && logItem.LogLevel == LogLevel.Warning)
             {
                 output = System.Console.Error;
             }

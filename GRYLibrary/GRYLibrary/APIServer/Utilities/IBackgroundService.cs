@@ -1,5 +1,5 @@
 ﻿using GRYLibrary.Core.APIServer.ExecutionModes;
-using GRYLibrary.Core.GeneralPurposeLogger;
+using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 
 namespace GRYLibrary.Core.APIServer.Utilities
 {

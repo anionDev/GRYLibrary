@@ -3,7 +3,6 @@ using GRYLibrary.Core.Exceptions;
 using GRYLibrary.Core.ExecutePrograms;
 using GRYLibrary.Core.ExecutePrograms.WaitingStates;
 using GRYLibrary.Core.APIServer.ExecutionModes;
-using GRYLibrary.Core.Log;
 using GRYLibrary.Core.OperatingSystem;
 using GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems;
 using GRYLibrary.Core.XMLSerializer;
@@ -40,6 +39,7 @@ using System.Xml.Schema;
 using System.Xml.Xsl;
 using static GRYLibrary.Core.Miscellaneous.TableGenerator;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using GRYLibrary.Core.Logging.GRYLogger;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
@@ -3077,6 +3077,13 @@ namespace GRYLibrary.Core.Miscellaneous
                 result = result + ".0";
             }
             return result;
+        }
+
+        public static bool ContainsDuplicates<T>(IEnumerable<T> value)
+        {
+            int count = value.Count();
+            int hashSetCount = value.ToHashSet().Count;
+            return count != hashSetCount;
         }
     }
 }

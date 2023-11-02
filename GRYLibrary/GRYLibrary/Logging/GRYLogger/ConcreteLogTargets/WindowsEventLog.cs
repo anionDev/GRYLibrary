@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.Versioning;
 
-namespace GRYLibrary.Core.Log.ConcreteLogTargets
+namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
 {
     [SupportedOSPlatform("windows")]
     public sealed class WindowsEventLog : GRYLogTarget

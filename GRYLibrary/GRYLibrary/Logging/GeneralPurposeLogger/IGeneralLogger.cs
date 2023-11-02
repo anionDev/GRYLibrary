@@ -1,7 +1,7 @@
-using GRYLibrary.Core.Log;
+using GRYLibrary.Core.Logging.GRYLogger;
 using System;
 
-namespace GRYLibrary.Core.GeneralPurposeLogger
+namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
 {
     public interface IGeneralLogger
     {

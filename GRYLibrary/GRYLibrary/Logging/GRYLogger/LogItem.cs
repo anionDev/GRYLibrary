@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 
-namespace GRYLibrary.Core.Log
+namespace GRYLibrary.Core.Logging.GRYLogger
 {
     public struct LogItem
     {
