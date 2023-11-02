@@ -3081,8 +3081,8 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public static bool ContainsDuplicates<T>(IEnumerable<T> value)
         {
-            var count = value.Count();
-            var hashSetCount = value.ToHashSet().Count;
+            int count = value.Count();
+            int hashSetCount = value.ToHashSet().Count;
             return count != hashSetCount;
         }
     }
