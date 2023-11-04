@@ -8,5 +8,6 @@ namespace GRYLibrary.Core.GenericAPIClient
         public IGenericAPIClientConfiguration Configuration { get; set; }
         public Task<decimal> GetAsDecimalAsync(string route);
         public Task<string> GetAsStringAsync(string route);
+        public Task<bool> IsAvailable();
     }
 }

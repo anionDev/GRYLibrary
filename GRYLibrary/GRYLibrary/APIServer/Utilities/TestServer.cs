@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.IO;
 
 namespace GRYLibrary.Core.APIServer.Utilities
 {
@@ -12,13 +13,13 @@ namespace GRYLibrary.Core.APIServer.Utilities
             this.ProgramFile = programFile;
             this.APIKey = apiKey;
 
-
             Process process = new Process
             {
                 StartInfo = new ProcessStartInfo()
                 {
                     FileName = ProgramFile,
-                    Arguments = "--TestRun"
+                    Arguments = "--TestRun",
+                    WorkingDirectory=Path.GetDirectoryName(ProgramFile),
                 },
                 EnableRaisingEvents = true
             };
