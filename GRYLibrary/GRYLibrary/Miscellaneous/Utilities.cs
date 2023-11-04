@@ -1202,7 +1202,7 @@ namespace GRYLibrary.Core.Miscellaneous
         /// Casts an object to the given type if possible.
         /// This can be useful for example to to cast 'Action&lt;Object&gt;' to 'Action' or 'Func&lt;string&gt;' to 'Func&lt;Object&gt;' to fulfil interface-compatibility.
         /// </summary>
-        internal /*TODO change to public when it works properly*/ static object Cast(object @object, Type targetType)
+        internal /*TODO change to public when it works properly*/ static object Cast2(object @object, Type targetType)
         {
             return Cast(@object, targetType, DefaultConversions);
         }
@@ -3016,8 +3016,11 @@ namespace GRYLibrary.Core.Miscellaneous
                     return configurationRoot.GetRequiredSection(typeof(T).Name).Get<T>();
                 });
         }
+#pragma warning disable IDE0060 //not used parameter "knownTypes"
         public static T CreateOrLoadXMLConfigurationFile<T, TBase>(string configurationFile, T initialValue, ISet<Type> knownTypes) where T : TBase, new()
+#pragma warning restore IDE0060 
         {
+            //TODO use knownTypes
             SimpleObjectPersistence<T> simpleObjectPersistence = new SimpleObjectPersistence<T>();
             //TODO simpleObjectPersistence.Serializer.KnownTypes.UnionWith(knownTypes);
             return CreateOrLoadConfigurationFile<T, TBase>(configurationFile, initialValue,

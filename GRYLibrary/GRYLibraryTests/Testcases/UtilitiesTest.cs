@@ -681,7 +681,7 @@ namespace GRYLibrary.Tests.Testcases
             //  dynamic x = (dynamic)testObject;
             //   System.Collections.Generic.KeyValuePair<int, int> actualObjectDirectCasted = (System.Collections.Generic.KeyValuePair<int, int>)x;
 
-            object actualObject = GUtilities.Cast(testObject, expectedObject.GetType());
+            object actualObject = GUtilities.Cast2(testObject, expectedObject.GetType());
 
 
             Assert.AreNotEqual(testObject, actualObject);
