@@ -65,7 +65,7 @@ namespace GRYLibrary.Core.Miscellaneous
                 object argument = addMethodArguments[i];
                 if (argument != null)
                 {
-                    argument = Cast(addMethodArguments[i], addMethod.GetParameters()[i].ParameterType);
+                    argument = Cast2(addMethodArguments[i], addMethod.GetParameters()[i].ParameterType);
                 }
                 castedArguments.Add(argument);
             }
