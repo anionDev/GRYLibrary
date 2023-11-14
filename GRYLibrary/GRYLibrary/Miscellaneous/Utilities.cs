@@ -1175,7 +1175,7 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             while (!condition())
             {
-               await Task.Delay(50);
+                await Task.Delay(50);
             }
         }
         public static ISet<string> ToCaseInsensitiveSet(this ISet<string> input)

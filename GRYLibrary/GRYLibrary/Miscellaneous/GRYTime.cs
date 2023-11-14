@@ -57,12 +57,12 @@ namespace GRYLibrary.Core.Miscellaneous
                    this.Second == other.Second;
         }
 
-        public  int CompareTo(GRYTime other)
+        public int CompareTo(GRYTime other)
         {
             return this.ToTime().CompareTo(other.ToTime());
         }
 
-        public  int CompareTo(object obj)
+        public int CompareTo(object obj)
         {
             return this.ToTime().CompareTo(obj);
         }

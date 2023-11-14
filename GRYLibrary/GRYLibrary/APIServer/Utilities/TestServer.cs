@@ -19,7 +19,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
                 {
                     FileName = ProgramFile,
                     Arguments = "--TestRun",
-                    WorkingDirectory=Path.GetDirectoryName(this.ProgramFile),
+                    WorkingDirectory = Path.GetDirectoryName(this.ProgramFile),
                 },
                 EnableRaisingEvents = true
             };
