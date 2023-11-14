@@ -4,18 +4,19 @@ using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 using System.Threading.Tasks;
 using System.Threading;
 
-namespace GRYLibrary.Core.APIServer.Utilities
+namespace GRYLibrary.Core.APIServer.BaseServices
 {
     public abstract class IteratingBackgroundService
     {
         public bool Enabled { get; set; }
         protected bool Running { get; private set; }
-        public IGeneralLogger Logger { get; protected set; }
+        protected readonly IGeneralLogger _Logger;
         private readonly ExecutionMode _ExecutionMode;
         protected abstract void Run();
-        public IteratingBackgroundService(ExecutionMode executionMode)
+        public IteratingBackgroundService(ExecutionMode executionMode, IGeneralLogger logger)
         {
             this._ExecutionMode = executionMode;
+            this._Logger = logger;
         }
         public void StartAsync()
         {
@@ -24,19 +25,19 @@ namespace GRYLibrary.Core.APIServer.Utilities
                 this.Running = true;
                 if (this.ShouldBeExecuted())
                 {
-                    this.Logger.Log($"Background-service {this.GetType().Name} will be started.", Microsoft.Extensions.Logging.LogLevel.Debug);
+                    this._Logger.Log($"Background-service {this.GetType().Name} will be started.", Microsoft.Extensions.Logging.LogLevel.Debug);
                     Task.Run(() =>
                     {
                         while (this.Enabled)
                         {
-                            this.Logger.Log($"Execute {this.GetType().Name}", Microsoft.Extensions.Logging.LogLevel.Debug, false, false, false, false, this.Run);
+                            this._Logger.Log($"Execute {this.GetType().Name}", Microsoft.Extensions.Logging.LogLevel.Debug, false, false, false, false, this.Run);
                             Thread.Sleep(50);
                         }
                     });
                 }
                 else
                 {
-                    this.Logger.Log($"Background-service {this.GetType().Name} will not be started.", Microsoft.Extensions.Logging.LogLevel.Debug);
+                    this._Logger.Log($"Background-service {this.GetType().Name} will not be started.", Microsoft.Extensions.Logging.LogLevel.Debug);
                 }
             }
         }
@@ -44,10 +45,10 @@ namespace GRYLibrary.Core.APIServer.Utilities
         {
             if (this.Running)
             {
-                this.Logger.Log($"Background-service {this.GetType().Name} will be stopped.", Microsoft.Extensions.Logging.LogLevel.Debug);
+                this._Logger.Log($"Background-service {this.GetType().Name} will be stopped.", Microsoft.Extensions.Logging.LogLevel.Debug);
                 this.Enabled = false;
                 await GUtilities.WaitUntilConditionIsTrueAsync(() => !this.Running);
-                this.Logger.Log($"Background-service {this.GetType().Name} stopped.", Microsoft.Extensions.Logging.LogLevel.Debug);
+                this._Logger.Log($"Background-service {this.GetType().Name} stopped.", Microsoft.Extensions.Logging.LogLevel.Debug);
             }
         }
         public bool ShouldBeExecuted()

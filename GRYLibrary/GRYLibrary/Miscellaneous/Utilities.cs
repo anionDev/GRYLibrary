@@ -695,7 +695,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static string DateTimeToUserFriendlyString(GRYDateTime dateTime)
         {
-            return DateTimeToISO8601String(GRYDateTime.ToDateTime(dateTime), false);
+            return DateTimeToISO8601String(dateTime.ToDateTime(), false);
         }
         public static string DateTimeForFilename(DateTime dateTime)
         {

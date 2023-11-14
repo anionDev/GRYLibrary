@@ -20,26 +20,15 @@ namespace GRYLibrary.Core.Miscellaneous
             this.Year = year;
             this.Month = month;
             this.Day = day;
-            ToDate(this);//check if date is valid
+            this.ToDate();//check if date is valid
         }
-        public static DateOnly ToDate(GRYDate value)
+        public DateOnly ToDate()
         {
-            if (value == default)
-            {
-                return DateOnly.MinValue;
-            }
-            else
-            {
-                return new DateOnly(value.Year, value.Month, value.Day);
-            }
+            return new DateOnly(this.Year, this.Month, this.Day);
         }
         public static GRYDate FromDate(DateOnly value)
         {
             return new GRYDate(value.Year, value.Month, value.Day);
-        }
-        public static string ToString(GRYDate value)
-        {
-            return ToDate(value).ToString(DateFormat);
         }
         public static GRYDate FromString(string @string)
         {
@@ -55,11 +44,6 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             return $"{this.Year.ToString().PadLeft(4, '0')}-{this.Month.ToString().PadLeft(2, '0')}-{this.Day.ToString().PadLeft(2, '0')}";
         }
-        public readonly string ToString(string format)
-        {
-            return ToDate(this).ToString(format);
-        }
-
         public override readonly bool Equals(object obj)
         {
             return obj is GRYDate time && this.Equals(time);
@@ -72,14 +56,14 @@ namespace GRYLibrary.Core.Miscellaneous
                    this.Day == other.Day;
         }
 
-        public readonly int CompareTo(GRYDate other)
+        public int CompareTo(GRYDate other)
         {
-            return ToDate(this).CompareTo(ToDate(other));
+            return this.ToDate().CompareTo(other.ToDate());
         }
 
-        public readonly int CompareTo(object obj)
+        public int CompareTo(object obj)
         {
-            return ToDate(this).CompareTo(obj);
+            return this.ToDate().CompareTo(obj);
         }
 
         public static bool operator ==(GRYDate left, GRYDate right)
@@ -94,19 +78,19 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public static bool operator <(GRYDate left, GRYDate right)
         {
-            return ToDate(left) < ToDate(right);
+            return left.ToDate() < right.ToDate();
         }
         public static bool operator >(GRYDate left, GRYDate right)
         {
-            return ToDate(left) > ToDate(right);
+            return left.ToDate() > right.ToDate();
         }
         public static bool operator <=(GRYDate left, GRYDate right)
         {
-            return ToDate(left) <= ToDate(right);
+            return left.ToDate() <= right.ToDate();
         }
         public static bool operator >=(GRYDate left, GRYDate right)
         {
-            return ToDate(left) >= ToDate(right);
+            return left.ToDate() >= right.ToDate();
         }
     }
 }
