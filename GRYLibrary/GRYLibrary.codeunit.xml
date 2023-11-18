@@ -13,4 +13,17 @@
             <cps:developeremailaddress>marius.goecke@gmail.com</cps:developeremailaddress>
         </cps:developer>
     </cps:developerteam>
+    <!--
+    <cps:demands>
+        <cps:demand name="python" version="3.11"/>
+        <cps:demand name="pip3" version="22"/>
+        <cps:demand name="git" version="2.39"/>
+        <cps:demand name="gitversion" version="5"/>
+        <cps:demand name="docfx" version="2"/>
+        <cps:demand name="reportgenerator" version="5"/>
+        <cps:demand name="scriptcollection" version="3.4"/>
+        <cps:demand name="dotnet" version="7"/>
+        <cps:demand name="dotnetcoverage" version="17"/>
+    </cps:demands>
+    -->
 </cps:codeunit>
