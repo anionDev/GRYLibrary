@@ -25,8 +25,6 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 using System.Text;
@@ -1193,7 +1191,6 @@ namespace GRYLibrary.Core.Miscellaneous
             return dictionary as ExpandoObject;
         }
 
-        private static readonly IFormatter _Formatter = new BinaryFormatter();
         public static T DeepClone<T>(this T @object)
         {
             return Generic.GenericDeserialize<T>(Generic.GenericSerialize(@object));

@@ -187,7 +187,7 @@ namespace GRYLibrary.Core.APIServer
 
             apiServerConfiguration.FunctionalInformation = new FunctionalInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>(
                 apiServerConfiguration.InitializationInformation,
-                builder.Services,
+                builder,
                 persistedAPIServerConfiguration
             );
             apiServerConfiguration.SetFunctionalInformationAction(apiServerConfiguration.FunctionalInformation);
@@ -338,6 +338,13 @@ namespace GRYLibrary.Core.APIServer
 
             app.UseRouting();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
+            apiServerConfiguration.FunctionalInformationForWebApplication = new FunctionalInformationForWebApplication<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>(
+                apiServerConfiguration.InitializationInformation,
+                builder.Services,
+                persistedAPIServerConfiguration,
+                app
+            );
+            apiServerConfiguration.ConfigureWebApplication(apiServerConfiguration.FunctionalInformationForWebApplication);
             logger.Log($"The API will now be available under the following URL:", LogLevel.Information);
             logger.Log(apiLink, LogLevel.Information);
             return app;
