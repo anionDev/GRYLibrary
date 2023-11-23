@@ -73,6 +73,7 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
                 string workingDirectory = Directory.GetCurrentDirectory();
                 try
                 {
+                    this._Log.Log($"Arguments: \"{argumentsAsString}\"", LogLevel.Debug);
                     if (this._ExecutionMode is Analysis)
                     {
                         arguments = Array.Empty<string>();
