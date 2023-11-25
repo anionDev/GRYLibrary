@@ -7,7 +7,7 @@ using System;
 
 namespace GRYLibrary.Core.APIServer.BaseServices
 {
-    public abstract class IteratingBackgroundService:IDisposable
+    public abstract class IteratingBackgroundService : IDisposable
     {
         public bool Enabled { get; set; }
         protected bool Running { get; private set; }
@@ -49,7 +49,7 @@ namespace GRYLibrary.Core.APIServer.BaseServices
                 this._Logger.Log($"Background-service {this.GetType().Name} will be stopped.", Microsoft.Extensions.Logging.LogLevel.Debug);
                 this.Enabled = false;
                 await GUtilities.WaitUntilConditionIsTrueAsync(() => !this.Running);
-                Dispose();
+                this.Dispose();
                 this._Logger.Log($"Background-service {this.GetType().Name} stopped.", Microsoft.Extensions.Logging.LogLevel.Debug);
             }
         }
@@ -66,6 +66,8 @@ namespace GRYLibrary.Core.APIServer.BaseServices
             return true;
         }
 
-        public abstract void Dispose();
+        public virtual void Dispose()
+        {
+        }
     }
 }
