@@ -26,18 +26,11 @@ namespace GRYLibrary.Core.Miscellaneous
             this.Hour = hour;
             this.Minute = minute;
             this.Second = second;
-            ToDateTime(this);//check if datetime is valid
+            this.ToDateTime();//check if datetime is valid
         }
-        public static DateTime ToDateTime(GRYDateTime value)//TODO this function should not be static
+        public readonly DateTime ToDateTime()
         {
-            if (value == default)
-            {
-                return DateTime.MinValue;
-            }
-            else
-            {
-                return new DateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second);
-            }
+            return new DateTime(this.Year, this.Month, this.Day, this.Hour, this.Minute, this.Second);
         }
         public readonly GRYTime ToGRYTime()
         {
@@ -91,12 +84,12 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public readonly int CompareTo(GRYDateTime other)
         {
-            return ToDateTime(this).CompareTo(ToDateTime(other));
+            return this.ToDateTime().CompareTo(other.ToDateTime());
         }
 
         public readonly int CompareTo(object obj)
         {
-            return ToDateTime(this).CompareTo(obj);
+            return this.ToDateTime().CompareTo(obj);
         }
 
         public static bool operator ==(GRYDateTime left, GRYDateTime right)
@@ -110,28 +103,28 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static GRYDateTime operator +(GRYDateTime left, TimeSpan right)
         {
-            return FromDateTime(ToDateTime(left) + right);
+            return FromDateTime(left.ToDateTime() + right);
         }
         public static GRYDateTime operator -(GRYDateTime left, TimeSpan right)
         {
-            return FromDateTime(ToDateTime(left) - right);
+            return FromDateTime(left.ToDateTime() - right);
         }
 
         public static bool operator <(GRYDateTime left, GRYDateTime right)
         {
-            return ToDateTime(left) < ToDateTime(right);
+            return left.ToDateTime() < right.ToDateTime();
         }
         public static bool operator >(GRYDateTime left, GRYDateTime right)
         {
-            return ToDateTime(left) > ToDateTime(right);
+            return left.ToDateTime() > right.ToDateTime();
         }
         public static bool operator <=(GRYDateTime left, GRYDateTime right)
         {
-            return ToDateTime(left) <= ToDateTime(right);
+            return left.ToDateTime() <= right.ToDateTime();
         }
         public static bool operator >=(GRYDateTime left, GRYDateTime right)
         {
-            return ToDateTime(left) >= ToDateTime(right);
+            return left.ToDateTime() >= right.ToDateTime();
         }
     }
 }

@@ -1,30 +1,28 @@
 ﻿using GRYLibrary.Core.APIServer.Settings.Configuration;
 using Microsoft.AspNetCore.Builder;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using System;
-using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
 namespace GRYLibrary.Core.APIServer.Settings
 {
     /// <summary>
     /// Represents a container for technical information which are required to start a WebAPI-server.
     /// </summary>
-    public class FunctionalInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
+    public class FunctionalInformationForWebApplication<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
         where PersistedApplicationSpecificConfiguration : new()
     {
-        public FunctionalInformation(
+        public FunctionalInformationForWebApplication(
             InitializationInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> initializationInformation,
-            WebApplicationBuilder webApplicationBuilder,
-            IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedAPIServerConfiguration)
+            IServiceCollection serviceCollection,
+            IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedAPIServerConfiguration,
+            WebApplication webApplication)
         {
             this.InitializationInformation = initializationInformation;
-            this.WebApplicationBuilder = webApplicationBuilder;
+            this.ServiceCollection = serviceCollection;
             this.PersistedAPIServerConfiguration = persistedAPIServerConfiguration;
+            this.WebApplication = webApplication;
         }
         public InitializationInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> InitializationInformation { get; internal set; }
-        public WebApplicationBuilder WebApplicationBuilder { get; internal set; }
+        public IServiceCollection ServiceCollection { get; internal set; }
         public IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> PersistedAPIServerConfiguration { get; internal set; }
-        public Action PreRun { get; set; } = () => { };
-        public Action PostRun { get; set; } = () => { };
-        public ISet<FilterDescriptor> Filter { get; set; } = new HashSet<FilterDescriptor>();
+        public WebApplication WebApplication { get; internal set; }
     }
 }

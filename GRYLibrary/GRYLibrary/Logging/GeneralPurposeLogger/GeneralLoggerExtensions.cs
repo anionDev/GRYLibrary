@@ -14,7 +14,7 @@ namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
             LogItem logItem = new LogItem(message, logLevel);
             logger.AddLogEntry(logItem);
         }
-        public static void Log(this IGeneralLogger logger, string actionName, LogLevel logLevelForOverhead, bool throwExceptionIfOccurrs, bool logStartOfAction, bool logEndOfAtion, bool printDuration, Action action)
+        public static void Log(this IGeneralLogger logger, string actionName, LogLevel logLevelForOverhead, bool throwExceptionIfOccurrs, bool logStartOfAction, bool logExceptionOfAtion, bool logEndOfAtion, bool printDuration, Action action)
         {
             if (logStartOfAction)
             {
@@ -30,7 +30,10 @@ namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
             catch (Exception exception)
             {
                 stopwatch.Stop();
-                logger.LogException(exception, $"Error in action \"{actionName}\".");
+                if (logExceptionOfAtion)
+                {
+                    logger.LogException(exception, $"Error in action \"{actionName}\".");
+                }
                 if (throwExceptionIfOccurrs)
                 {
                     throw;
@@ -53,11 +56,11 @@ namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
                 }
             }
         }
-        public static void LogLoopExecution<T>(this IGeneralLogger logger,IEnumerable<T> items, Action<T> action)
+        public static void LogLoopExecution<T>(this IGeneralLogger logger, IEnumerable<T> items, Action<T> action)
         {
             throw new NotImplementedException();
         }
-            public static void LogException(this IGeneralLogger logger, Exception exception, string message)
+        public static void LogException(this IGeneralLogger logger, Exception exception, string message)
         {
             LogItem logItem = new LogItem(message, exception);
             logger.AddLogEntry(logItem);

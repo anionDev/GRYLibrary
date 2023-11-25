@@ -284,7 +284,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         [Obsolete($"Use {nameof(GeneralLoggerExtensions)}.{nameof(GeneralLoggerExtensions.LogLoopExecution)} instead.")]
         public void ExecuteAndLogForEach<T>(IEnumerable<T> items, Action<T> itemAction, string nameOfEntireLoopAction, string subNamespaceOfEntireLoopAction, Func<T, string> nameOfSingleItemFunc, Func<T, string> subNamespaceOfSingleItemFunc, bool preventThrowingExceptions = false, LogLevel logLevelForOverhead = LogLevel.Debug)
         {
-            GeneralLoggerExtensions.Log(this, nameOfEntireLoopAction, logLevelForOverhead, !preventThrowingExceptions, true, true, true, () =>
+            GeneralLoggerExtensions.Log(this, nameOfEntireLoopAction, logLevelForOverhead, !preventThrowingExceptions, true, false, true, true, () =>
             {
                 List<T> itemsAsList = items.ToList();
                 uint amountOfItems = (uint)itemsAsList.Count;
@@ -294,7 +294,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
                     {
                         T currentItem = itemsAsList[(int)currentIndex];
                         string nameOfSingleItem = nameOfSingleItemFunc(currentItem);
-                        GeneralLoggerExtensions.Log(this, nameOfSingleItemFunc(currentItem), logLevelForOverhead, !preventThrowingExceptions, true, true, false, () => itemAction(currentItem));
+                        GeneralLoggerExtensions.Log(this, nameOfSingleItemFunc(currentItem), logLevelForOverhead, !preventThrowingExceptions, true, false, true, false, () => itemAction(currentItem));
                     }
                     finally
                     {
@@ -321,7 +321,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         [Obsolete($"Use {nameof(GeneralLoggerExtensions)}.{nameof(GeneralLoggerExtensions.Log)} instead")]
         public void ExecuteAndLog(Action action, string nameOfAction, bool preventThrowingExceptions = false, LogLevel logLevelForOverhead = LogLevel.Debug, string subNamespaceForLog = Utilities.EmptyString)
         {
-            GeneralLoggerExtensions.Log(this, nameOfAction, logLevelForOverhead, !preventThrowingExceptions, true, true, true, action);
+            GeneralLoggerExtensions.Log(this, nameOfAction, logLevelForOverhead, !preventThrowingExceptions, true, false, true, true, action);
         }
 
         public TResult ExecuteAndLog<TResult>(Func<TResult> action, string nameOfAction, bool preventThrowingExceptions = false, LogLevel logLevelForOverhead = LogLevel.Debug, TResult defaultValue = default, string subNamespaceForLog = Utilities.EmptyString)

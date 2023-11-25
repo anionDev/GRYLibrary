@@ -9,6 +9,7 @@ namespace GRYLibrary.Core.Miscellaneous
     {
         public static PercentValue ZeroPercent { get; } = new PercentValue((decimal)0);
         public static PercentValue HundredPercent { get; } = new PercentValue((decimal)1);
+        private static Random _Random = new Random();
         public int ValueInPercent => (int)Math.Round(this.Value * 100);
         public decimal Value { get; }
 
@@ -59,6 +60,11 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             return this.Value.ToString();
         }
+        public static PercentValue Random()
+        {
+            return new PercentValue(_Random.NextDouble());
+        }
+
         #region Operators
         public static bool operator ==(PercentValue left, PercentValue right)
         {

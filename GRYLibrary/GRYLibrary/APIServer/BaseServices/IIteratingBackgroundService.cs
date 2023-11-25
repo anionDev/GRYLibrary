@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace GRYLibrary.Core.APIServer.Utilities
+namespace GRYLibrary.Core.APIServer.BaseServices
 {
-    public interface IBackgroundService
+    public interface IIteratingBackgroundService
     {
         public void StartAsync();
         public Task Stop();

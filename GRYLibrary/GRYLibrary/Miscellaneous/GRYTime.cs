@@ -20,26 +20,15 @@ namespace GRYLibrary.Core.Miscellaneous
             this.Hour = hour;
             this.Minute = minute;
             this.Second = second;
-            ToTime(this);//check if time is valid
+            this.ToTime();//check if time is valid
         }
-        public static TimeOnly ToTime(GRYTime value)
+        public readonly TimeOnly ToTime()
         {
-            if (value == default)
-            {
-                return TimeOnly.MinValue;
-            }
-            else
-            {
-                return new TimeOnly(value.Hour, value.Minute, value.Second);
-            }
+            return new TimeOnly(this.Hour, this.Minute, this.Second);
         }
         public static GRYTime FromDateTime(TimeOnly value)
         {
             return new GRYTime(value.Hour, value.Minute, value.Second);
-        }
-        public static string ToString(GRYTime dateTime)
-        {
-            return ToTime(dateTime).ToString(TimeFormat);
         }
         public static GRYTime FromString(string @string)
         {
@@ -55,10 +44,6 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             return $"{this.Hour.ToString().PadLeft(2, '0')}:{this.Minute.ToString().PadLeft(2, '0')}:{this.Second.ToString().PadLeft(2, '0')}";
         }
-        public readonly string ToString(string format)
-        {
-            return ToTime(this).ToString(format);
-        }
 
         public override readonly bool Equals(object obj)
         {
@@ -72,14 +57,14 @@ namespace GRYLibrary.Core.Miscellaneous
                    this.Second == other.Second;
         }
 
-        public readonly int CompareTo(GRYTime other)
+        public int CompareTo(GRYTime other)
         {
-            return ToTime(this).CompareTo(ToTime(other));
+            return this.ToTime().CompareTo(other.ToTime());
         }
 
-        public readonly int CompareTo(object obj)
+        public int CompareTo(object obj)
         {
-            return ToTime(this).CompareTo(obj);
+            return this.ToTime().CompareTo(obj);
         }
 
         public static bool operator ==(GRYTime left, GRYTime right)
@@ -94,19 +79,19 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public static bool operator <(GRYTime left, GRYTime right)
         {
-            return ToTime(left) < ToTime(right);
+            return left.ToTime() < right.ToTime();
         }
         public static bool operator >(GRYTime left, GRYTime right)
         {
-            return ToTime(left) > ToTime(right);
+            return left.ToTime() > right.ToTime();
         }
         public static bool operator <=(GRYTime left, GRYTime right)
         {
-            return ToTime(left) <= ToTime(right);
+            return left.ToTime() <= right.ToTime();
         }
         public static bool operator >=(GRYTime left, GRYTime right)
         {
-            return ToTime(left) >= ToTime(right);
+            return left.ToTime() >= right.ToTime();
         }
     }
 }
