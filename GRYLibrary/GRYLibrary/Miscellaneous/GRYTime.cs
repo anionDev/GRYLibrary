@@ -22,7 +22,7 @@ namespace GRYLibrary.Core.Miscellaneous
             this.Second = second;
             this.ToTime();//check if time is valid
         }
-        public TimeOnly ToTime()
+        public readonly TimeOnly ToTime()
         {
             return new TimeOnly(this.Hour, this.Minute, this.Second);
         }

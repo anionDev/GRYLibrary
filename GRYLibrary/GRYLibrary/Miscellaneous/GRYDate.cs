@@ -22,7 +22,7 @@ namespace GRYLibrary.Core.Miscellaneous
             this.Day = day;
             this.ToDate();//check if date is valid
         }
-        public DateOnly ToDate()
+        public readonly DateOnly ToDate()
         {
             return new DateOnly(this.Year, this.Month, this.Day);
         }

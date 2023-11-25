@@ -28,7 +28,7 @@ namespace GRYLibrary.Core.Miscellaneous
             this.Second = second;
             this.ToDateTime();//check if datetime is valid
         }
-        public DateTime ToDateTime()
+        public readonly DateTime ToDateTime()
         {
             return new DateTime(this.Year, this.Month, this.Day, this.Hour, this.Minute, this.Second);
         }
@@ -82,12 +82,12 @@ namespace GRYLibrary.Core.Miscellaneous
                    this.Second == other.Second;
         }
 
-        public int CompareTo(GRYDateTime other)
+        public readonly int CompareTo(GRYDateTime other)
         {
             return this.ToDateTime().CompareTo(other.ToDateTime());
         }
 
-        public int CompareTo(object obj)
+        public readonly int CompareTo(object obj)
         {
             return this.ToDateTime().CompareTo(obj);
         }
