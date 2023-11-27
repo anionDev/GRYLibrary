@@ -17,7 +17,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
             {
                 StartInfo = new ProcessStartInfo()
                 {
-                    FileName = ProgramFile,
+                    FileName = this.ProgramFile,
                     Arguments = "--TestRun",
                     WorkingDirectory = Path.GetDirectoryName(this.ProgramFile),
                 },
