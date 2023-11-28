@@ -14,7 +14,7 @@ namespace GRYLibrary.Core.Exceptions
 
         private static string CalculateMessage(string errorId, string message)
         {
-            string result = $"Internal alrogithm error. Error-id: {errorId}";
+            string result = $"Internal alrogithm error. Error-information: {errorId}";
             if (message != null)
             {
                 result = $"{result}; Message: {message}";
