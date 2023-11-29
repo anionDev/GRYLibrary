@@ -4,14 +4,12 @@ using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 
 namespace GRYLibrary.Core.Miscellaneous.Captcha
 {
-
-    public class CaptchaManager
+    public class CaptchaManager: ICaptchaManager
     {
         private readonly ConcurrentDictionary<string, CaptchaInstance> _Captchas = new ConcurrentDictionary<string, CaptchaInstance>();
         private readonly ConcurrentDictionary<string, DateTime> _AccessKeys = new ConcurrentDictionary<string, DateTime>();
-        public static CaptchaManager Instance { get; } = new CaptchaManager();
 
-        private CaptchaManager()
+        public CaptchaManager()
         {
             //TODO start cleanup service to remove expired things
         }
@@ -70,7 +68,7 @@ namespace GRYLibrary.Core.Miscellaneous.Captcha
             return false;
         }
 
-        internal bool UserHasAlreadySolvedTheCaptcha(string accessToken, out string failMessage)
+        public bool UserHasAlreadySolvedTheCaptcha(string accessToken, out string failMessage)
         {
             failMessage = null;
             if (accessToken is null)

@@ -65,7 +65,7 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 this._Thread = new System.Threading.Thread(this.Execute)
                 {
-                    Name = Name
+                    Name = this.Name
                 };
                 this._Thread.Start();
             }

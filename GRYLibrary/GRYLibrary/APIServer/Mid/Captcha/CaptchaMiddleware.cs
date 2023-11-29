@@ -12,12 +12,12 @@ namespace GRYLibrary.Core.APIServer.Mid.Captcha
 {
     public class CaptchaMiddleware : AbstractMiddleware
     {
-        private readonly CaptchaManager _CaptchaManager;
+        private readonly ICaptchaManager _CaptchaManager;
         private readonly ICaptchaConfiguration _CaptchaMiddlewareSettings;
         /// <inheritdoc/>
-        public CaptchaMiddleware(RequestDelegate next, ICaptchaConfiguration captchaMiddlewareSettings) : base(next)
+        public CaptchaMiddleware(RequestDelegate next, ICaptchaConfiguration captchaMiddlewareSettings,ICaptchaManager captchaManager) : base(next)
         {
-            this._CaptchaManager = CaptchaManager.Instance;
+            this._CaptchaManager = captchaManager;
             this._CaptchaMiddlewareSettings = captchaMiddlewareSettings;
         }
         /// <inheritdoc/>
@@ -83,7 +83,7 @@ namespace GRYLibrary.Core.APIServer.Mid.Captcha
 
         private bool UserHasAlreadySolvedTheCaptcha(ICaptchaConfiguration settings, HttpContext context)
         {
-            return this.UserHasAlreadySolvedTheCaptcha(this.GetAccessToken(settings, context), out string failMessage);
+            return this.UserHasAlreadySolvedTheCaptcha(this.GetAccessToken(settings, context), out string _);
         }
 
         private void SetAccessToken(ICaptchaConfiguration settings, HttpContext context, string accessKey)

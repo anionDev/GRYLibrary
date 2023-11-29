@@ -1137,7 +1137,7 @@ namespace GRYLibrary.Core.Miscellaneous
                 {
                     throw new ArgumentException($"Argument '{nameof(functions)}' does not contain any function.");
                 }
-                Parallel.ForEach(functions, new ParallelOptions { MaxDegreeOfParallelism = _MaximalDegreeOfParallelism }, new Action<Func<T>, ParallelLoopState>((Func<T> function, ParallelLoopState state) =>
+                Parallel.ForEach(functions, new ParallelOptions { MaxDegreeOfParallelism = this._MaximalDegreeOfParallelism }, new Action<Func<T>, ParallelLoopState>((Func<T> function, ParallelLoopState state) =>
                 {
                     try
                     {
