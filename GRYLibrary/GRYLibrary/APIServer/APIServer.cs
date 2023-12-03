@@ -35,7 +35,6 @@ using GRYLibrary.Core.Miscellaneous.MetaConfiguration;
 using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 using GRYLibrary.Core.APIServer.Utilities;
 using GRYLibrary.Core.Logging.GeneralPurposeLogger;
-using GRYLibrary.Core.APIServer.Services;
 
 namespace GRYLibrary.Core.APIServer
 {
@@ -361,6 +360,12 @@ namespace GRYLibrary.Core.APIServer
             if (persistedApplicationSpecificConfiguration.ApplicationSpecificConfiguration is SupportDefinedMiddlewareType supportDefinedMiddlewareType)
             {
                 IMiddlewareConfiguration middlewareConfiguration = getMiddlewareConfiguration(supportDefinedMiddlewareType);
+                if (middlewareConfiguration == null)
+                {
+                    throw new NullReferenceException($"No middleware-configuration given for {typeof(SupportDefinedMiddlewareType).FullName}.");
+                }
+                else
+                {
                 if (middlewareConfiguration.Enabled)
                 {
                     this._Configuration.FunctionalInformation.Filter.UnionWith(middlewareConfiguration.GetFilter());
@@ -377,6 +382,7 @@ namespace GRYLibrary.Core.APIServer
                 else
                 {
                     logger.Log($"Middleware {middlewareType.FullName} is disabled.", LogLevel.Debug);
+                }
                 }
             }
         }

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using GRYLibrary.Core.APIServer.Mid.Aut;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using System.Linq;
@@ -18,11 +18,7 @@ namespace GRYLibrary.Core.APIServer.Mid.Auth
         }
         public virtual bool AuthenticatedIsRequired(HttpContext context)
         {
-            Endpoint endPoint = context.GetEndpoint();
-            EndpointMetadataCollection metaData = endPoint.Metadata;
-            ControllerActionDescriptor controllerActionDescriptor = metaData.GetMetadata<ControllerActionDescriptor>();
-            System.Reflection.MethodInfo methodInfo = controllerActionDescriptor.MethodInfo;
-            AuthorizeAttribute authorizeAttribute = methodInfo.GetCustomAttributes(false).OfType<AuthorizeAttribute>().FirstOrDefault();
+            AuthorizeAttribute authorizeAttribute = GetAuthorizeAttribute(context);
             return authorizeAttribute != null;
         }
         public abstract bool TryGetAuthentication(HttpContext context, out ClaimsPrincipal principal);

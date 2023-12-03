@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using GRYLibrary.Core.APIServer.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,15 +15,7 @@ namespace GRYLibrary.Core.APIServer.Mid.Aut
         {
             this._AuthorizationConfiguration = authorizationConfiguration;
         }
-        public virtual bool AuthorizationIsRequired(HttpContext context)
-        {
-            Endpoint endPoint = context.GetEndpoint();
-            EndpointMetadataCollection metaData = endPoint.Metadata;
-            ControllerActionDescriptor controllerActionDescriptor = metaData.GetMetadata<ControllerActionDescriptor>();
-            System.Reflection.MethodInfo methodInfo = controllerActionDescriptor.MethodInfo;
-            AuthorizeAttribute authorizeAttribute = methodInfo.GetCustomAttributes(false).OfType<AuthorizeAttribute>().First();
-            return string.IsNullOrEmpty(authorizeAttribute.Groups);
-        }
+        public abstract bool AuthorizationIsRequired(HttpContext context);
         public abstract bool IsAuthorized(HttpContext context);
         public override Task Invoke(HttpContext context)
         {

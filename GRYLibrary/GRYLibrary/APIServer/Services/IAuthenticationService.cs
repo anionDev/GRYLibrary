@@ -16,5 +16,6 @@ namespace GRYLibrary.Core.APIServer.Services
         public bool UserIsInGroup(string username, string groupname);
         public bool GroupExists(string groupname);
         void OnStart();
+        void RemoveUser(string username);
     }
 }

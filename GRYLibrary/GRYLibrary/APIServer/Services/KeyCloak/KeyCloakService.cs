@@ -98,5 +98,10 @@ namespace GRYLibrary.Core.APIServer.Services.KeyCloak
         {
             throw new NotImplementedException();
         }
+
+        public void RemoveUser(string username)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

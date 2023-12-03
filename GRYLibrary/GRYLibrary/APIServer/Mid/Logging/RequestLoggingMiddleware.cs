@@ -151,7 +151,7 @@ namespace GRYLibrary.Core.APIServer.Mid.RequestLogger
         }
         public virtual string Truncate(string value, uint maxLength)
         {
-            var contentLength = value.Length;
+            int contentLength = value.Length;
             if (contentLength <= maxLength)
             {
                 return $"<{value}>";

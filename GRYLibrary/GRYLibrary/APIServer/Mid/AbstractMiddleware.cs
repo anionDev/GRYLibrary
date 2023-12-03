@@ -1,4 +1,7 @@
+using GRYLibrary.Core.APIServer.Mid.Aut;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.APIServer.Mid
@@ -17,5 +20,14 @@ namespace GRYLibrary.Core.APIServer.Mid
             this._Next = next;
         }
         public abstract Task Invoke(HttpContext context);
+        public AuthorizeAttribute GetAuthorizeAttribute(HttpContext context)
+        {
+            Endpoint endPoint = context.GetEndpoint();
+            EndpointMetadataCollection metaData = endPoint.Metadata;
+            ControllerActionDescriptor controllerActionDescriptor = metaData.GetMetadata<ControllerActionDescriptor>();
+            System.Reflection.MethodInfo methodInfo = controllerActionDescriptor.MethodInfo;
+            AuthorizeAttribute authorizeAttribute = methodInfo.GetCustomAttributes(false).OfType<AuthorizeAttribute>().First();
+            return authorizeAttribute;
+        }
     }
 }

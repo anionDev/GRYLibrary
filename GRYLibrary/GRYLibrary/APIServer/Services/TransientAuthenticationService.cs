@@ -1,5 +1,6 @@
 ﻿using GRYLibrary.Core.APIServer.CommonAuthenticationTypes;
 using GRYLibrary.Core.APIServer.CommonDBTypes;
+using GRYLibrary.Core.APIServer.Mid.Auth.Def;
 using GRYLibrary.Core.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -14,12 +15,14 @@ namespace GRYLibrary.Core.APIServer.Services
     /// </remarks>
     public class TransientAuthenticationService : IAuthenticationService
     {
+        private readonly IDefaultAuthenticationConfiguration _AuthenticationService;
         private readonly ITimeService _TimeService;
         private readonly IDictionary<string/*username*/, UserBackendInformation> _Users;
         private readonly IDictionary<string/*groupname*/, UserGroup> _Groups;
-        public TransientAuthenticationService(ITimeService timeService)
+        public TransientAuthenticationService(ITimeService timeService, IDefaultAuthenticationConfiguration defaultAuthenticationConfiguration)
         {
             this._TimeService = timeService;
+            _AuthenticationService=defaultAuthenticationConfiguration;
             this._Users = new Dictionary<string, UserBackendInformation>();
             this._Groups = new Dictionary<string, UserGroup>();
         }
@@ -95,7 +98,7 @@ namespace GRYLibrary.Core.APIServer.Services
 
         public void EnsureUserIsInGroup(string username, string groupname)
         {
-            var user = this.GetUserByName(username);
+            UserBackendInformation user = this.GetUserByName(username);
             if (!this._Groups[groupname].User.Contains(user.User.Id))
             {
                 this._Groups[groupname].User.Add(user.User.Id);
@@ -104,7 +107,7 @@ namespace GRYLibrary.Core.APIServer.Services
 
         public void EnsureUserIsNotInGroup(string username, string groupname)
         {
-            var user = this.GetUserByName(username);
+            UserBackendInformation user = this.GetUserByName(username);
             if (this._Groups[groupname].User.Contains(user.User.Id))
             {
                 this._Groups[groupname].User.Remove(user.User.Id);
@@ -121,7 +124,7 @@ namespace GRYLibrary.Core.APIServer.Services
         {
             if (!this._Groups.ContainsKey(groupname))
             {
-                var group = new UserGroup();
+                UserGroup group = new UserGroup();
                 group.Name = groupname;
                 this._Groups[groupname] = group;
             }
@@ -141,6 +144,11 @@ namespace GRYLibrary.Core.APIServer.Services
 
         public virtual void OnStart()
         {
+        }
+
+        public void RemoveUser(string username)
+        {
+            this._Users.Remove(username);
         }
     }
 }

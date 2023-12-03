@@ -1,21 +1,20 @@
 ﻿using GRYLibrary.Core.APIServer.Services;
-using GRYLibrary.Core.APIServer.Services.KeyCloak;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 
-namespace GRYLibrary.Core.APIServer.Mid.Auth.KC
+namespace GRYLibrary.Core.APIServer.Mid.Auth
 {
-    public class TransientKeyCloakAuthenticationMiddleware : AuthenticationMiddleware
+    public class TransientAuthenticationMiddleware : AuthenticationMiddleware
     {
         private readonly IAuthenticationService _Service;
         public const string CookieName = "x-AccessToken";
         /// <inheritdoc/>
-        public TransientKeyCloakAuthenticationMiddleware(RequestDelegate next, IAuthenticationService keyCloak, IAuthenticationConfiguration authenticationConfiguration) : base(next, authenticationConfiguration)
+        public TransientAuthenticationMiddleware(RequestDelegate next, IAuthenticationService authenticationService, IAuthenticationConfiguration authenticationConfiguration) : base(next, authenticationConfiguration)
         {
-            this._Service = keyCloak;
+            this._Service = authenticationService;
         }
 
         public override bool TryGetAuthentication(HttpContext context, out ClaimsPrincipal principal)
