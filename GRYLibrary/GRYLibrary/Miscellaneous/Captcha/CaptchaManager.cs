@@ -4,7 +4,7 @@ using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 
 namespace GRYLibrary.Core.Miscellaneous.Captcha
 {
-    public class CaptchaManager: ICaptchaManager
+    public class CaptchaManager : ICaptchaManager
     {
         private readonly ConcurrentDictionary<string, CaptchaInstance> _Captchas = new ConcurrentDictionary<string, CaptchaInstance>();
         private readonly ConcurrentDictionary<string, DateTime> _AccessKeys = new ConcurrentDictionary<string, DateTime>();

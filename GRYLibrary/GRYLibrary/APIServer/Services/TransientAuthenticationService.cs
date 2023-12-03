@@ -4,7 +4,7 @@ using GRYLibrary.Core.Exceptions;
 using System;
 using System.Collections.Generic;
 
-namespace GRYLibrary.Core.APIServer.Services.KeyCloak
+namespace GRYLibrary.Core.APIServer.Services
 {
     /// <summary>
     /// This is a transient keycloak-service for testing purposes.
@@ -12,15 +12,13 @@ namespace GRYLibrary.Core.APIServer.Services.KeyCloak
     /// <remarks>
     /// Do not use this service in productive-mode because this service does not implement any features to increase security.
     /// </remarks>
-    public class TransientKeyCloakService : IKeyCloakService
+    public class TransientAuthenticationService : IAuthenticationService
     {
-        public IKeyCloakServiceSettings Settings { get; }
         private readonly ITimeService _TimeService;
         private readonly IDictionary<string/*username*/, UserBackendInformation> _Users;
         private readonly IDictionary<string/*groupname*/, UserGroup> _Groups;
-        public TransientKeyCloakService(IKeyCloakServiceSettings settings, ITimeService timeService)
+        public TransientAuthenticationService(ITimeService timeService)
         {
-            this.Settings = settings;
             this._TimeService = timeService;
             this._Users = new Dictionary<string, UserBackendInformation>();
             this._Groups = new Dictionary<string, UserGroup>();
@@ -61,7 +59,7 @@ namespace GRYLibrary.Core.APIServer.Services.KeyCloak
                 newAccessToken.Value = Guid.NewGuid().ToString();
                 newAccessToken.ExpiredMoment = this._TimeService.GetCurrentTime().AddDays(1);//this time should be moved to IKeyCloakServiceSettings if it is implementable in the real keycloack-service too.
                 user.AccessToken[newAccessToken.Value] = newAccessToken;
-               return newAccessToken;
+                return newAccessToken;
             }
             else
             {
@@ -82,17 +80,67 @@ namespace GRYLibrary.Core.APIServer.Services.KeyCloak
             };
             if (this._Users.ContainsKey(userBackendInformation.User.Name))
             {
-                throw new BadUserContentException("User with already exists.");    
+                throw new BadUserContentException("User with already exists.");
             }
             else
             {
-            this._Users.Add(userBackendInformation.User.Name, userBackendInformation);
+                this._Users.Add(userBackendInformation.User.Name, userBackendInformation);
             }
         }
 
         public void Logout(string username)
         {
-            _Users[username].AccessToken.Clear();
+            this._Users[username].AccessToken.Clear();
+        }
+
+        public void EnsureUserIsInGroup(string username, string groupname)
+        {
+            var user = this.GetUserByName(username);
+            if (!this._Groups[groupname].User.Contains(user.User.Id))
+            {
+                this._Groups[groupname].User.Add(user.User.Id);
+            }
+        }
+
+        public void EnsureUserIsNotInGroup(string username, string groupname)
+        {
+            var user = this.GetUserByName(username);
+            if (this._Groups[groupname].User.Contains(user.User.Id))
+            {
+                this._Groups[groupname].User.Remove(user.User.Id);
+            }
+        }
+
+        public bool UserIsInGroup(string username, string groupname)
+        {
+            return this._Groups[groupname].User.Contains(this.GetUserByName(username).User.Id);
+        }
+
+
+        public void EnsureGroupExists(string groupname)
+        {
+            if (!this._Groups.ContainsKey(groupname))
+            {
+                var group = new UserGroup();
+                group.Name = groupname;
+                this._Groups[groupname] = group;
+            }
+        }
+
+        public void EnsureGroupDoesNotExist(string groupname)
+        {
+            if (this._Groups.ContainsKey(groupname))
+            {
+                this._Groups.Remove(groupname);
+            }
+        }
+        public bool GroupExists(string groupname)
+        {
+            return this._Groups.ContainsKey(groupname);
+        }
+
+        public virtual void OnStart()
+        {
         }
     }
 }

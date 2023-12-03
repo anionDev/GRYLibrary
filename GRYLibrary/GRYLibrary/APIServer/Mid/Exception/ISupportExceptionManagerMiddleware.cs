@@ -2,6 +2,6 @@
 {
     public interface ISupportExceptionManagerMiddleware : ISupportedMiddleware
     {
-        public IExceptionManagerConfiguration ConfigurationForExceptionManagerMiddleware { get;  }
+        public IExceptionManagerConfiguration ConfigurationForExceptionManagerMiddleware { get; }
     }
 }

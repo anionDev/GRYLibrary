@@ -73,5 +73,30 @@ namespace GRYLibrary.Core.APIServer.Services.KeyCloak
         {
             throw new NotImplementedException();
         }
+
+        public void EnsureUserIsInGroup(string user, string group)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void EnsureUserIsNotInGroup(string user, string group)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool UserIsInGroup(string user, string group)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnStart()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool GroupExists(string groupname)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

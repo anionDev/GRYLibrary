@@ -2,6 +2,6 @@
 {
     public interface ISupportRequestCounterMiddleware : ISupportedMiddleware
     {
-        IRequestCounterConfiguration ConfigurationForRequestCounterMiddleware { get;  }
+        IRequestCounterConfiguration ConfigurationForRequestCounterMiddleware { get; }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Controllers;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -48,7 +47,7 @@ namespace GRYLibrary.Core.APIServer.Mid.Auth
         {
             if (this.TryGetAuthentication(context, out ClaimsPrincipal principal))
             {
-                context.User =principal;
+                context.User = principal;
                 return true;
             }
             else

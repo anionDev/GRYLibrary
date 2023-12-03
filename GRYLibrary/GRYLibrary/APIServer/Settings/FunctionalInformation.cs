@@ -14,17 +14,20 @@ namespace GRYLibrary.Core.APIServer.Settings
         public FunctionalInformation(
             InitializationInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> initializationInformation,
             WebApplicationBuilder webApplicationBuilder,
-            IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedAPIServerConfiguration)
+            IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedAPIServerConfiguration,
+            Logging.GeneralPurposeLogger.IGeneralLogger logger)
         {
             this.InitializationInformation = initializationInformation;
             this.WebApplicationBuilder = webApplicationBuilder;
             this.PersistedAPIServerConfiguration = persistedAPIServerConfiguration;
+            this.Logger = logger;
         }
         public InitializationInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> InitializationInformation { get; internal set; }
         public WebApplicationBuilder WebApplicationBuilder { get; internal set; }
         public IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> PersistedAPIServerConfiguration { get; internal set; }
-        public Action PreRun { get; set; } = () => { };
-        public Action PostRun { get; set; } = () => { };
+        public Action<WebApplication> PreRun { get; set; } = (_) => { };
+        public Action<WebApplication> PostRun { get; set; } = (_) => { };
         public ISet<FilterDescriptor> Filter { get; set; } = new HashSet<FilterDescriptor>();
+        public Logging.GeneralPurposeLogger.IGeneralLogger Logger { get; set; } 
     }
 }

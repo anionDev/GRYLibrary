@@ -1,4 +1,5 @@
-﻿using GRYLibrary.Core.APIServer.Services.KeyCloak;
+﻿using GRYLibrary.Core.APIServer.Services;
+using GRYLibrary.Core.APIServer.Services.KeyCloak;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -9,14 +10,12 @@ namespace GRYLibrary.Core.APIServer.Mid.Auth.KC
 {
     public class TransientKeyCloakAuthenticationMiddleware : AuthenticationMiddleware
     {
-        private readonly IKeyCloakAuthenticationConfiguration _AuthenticationMiddlewareSettings;
-        private readonly IKeyCloakService _KeyCloakService;
+        private readonly IAuthenticationService _Service;
         public const string CookieName = "x-AccessToken";
         /// <inheritdoc/>
-        public TransientKeyCloakAuthenticationMiddleware(RequestDelegate next, IKeyCloakAuthenticationConfiguration authenticationMiddlewareSettings, IKeyCloakService keyCloak) : base(next, authenticationMiddlewareSettings)
+        public TransientKeyCloakAuthenticationMiddleware(RequestDelegate next, IAuthenticationService keyCloak, IAuthenticationConfiguration authenticationConfiguration) : base(next, authenticationConfiguration)
         {
-            this._AuthenticationMiddlewareSettings = authenticationMiddlewareSettings;
-            this._KeyCloakService = keyCloak;
+            this._Service = keyCloak;
         }
 
         public override bool TryGetAuthentication(HttpContext context, out ClaimsPrincipal principal)
@@ -35,7 +34,7 @@ namespace GRYLibrary.Core.APIServer.Mid.Auth.KC
                     }
                     else
                     {
-                        bool accessTokenIsValid = _KeyCloakService.AccessTokenIsValid(username, accessToken);
+                        bool accessTokenIsValid = this._Service.AccessTokenIsValid(username, accessToken);
                         if (accessTokenIsValid)
                         {
                             principal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim> { new Claim(ClaimTypes.Name, username), }, "Basic"));
@@ -71,7 +70,7 @@ namespace GRYLibrary.Core.APIServer.Mid.Auth.KC
                 $"User={username};AccessToken=",
                 new CookieOptions()
                 {
-                    Expires = new DateTime(1970,1, 1,  0, 0, 0),
+                    Expires = new DateTime(1970, 1, 1, 0, 0, 0),
                     Path = "/",
                     HttpOnly = true,
                     Secure = true,

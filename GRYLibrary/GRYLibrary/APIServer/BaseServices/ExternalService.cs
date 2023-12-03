@@ -39,7 +39,7 @@ namespace GRYLibrary.Core.APIServer.BaseServices
             {
                 throw new ServiceNotAvailableException(this.ServiceNotAvailableMessage, exception);
             }
-           return action();
+            return action();
         }
         public void EnsureServiceIsDisconnected()
         {

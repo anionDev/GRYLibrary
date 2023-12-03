@@ -2,6 +2,6 @@
 {
     public interface ISupportCaptchaMiddleware : ISupportedMiddleware
     {
-        ICaptchaConfiguration ConfigurationForCaptchaMiddleware { get;  }
+        ICaptchaConfiguration ConfigurationForCaptchaMiddleware { get; }
     }
 }

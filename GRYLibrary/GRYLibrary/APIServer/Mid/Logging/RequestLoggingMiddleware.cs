@@ -128,7 +128,7 @@ namespace GRYLibrary.Core.APIServer.Mid.RequestLogger
         public virtual string FormatLogEntrySummary(Request request)
         {
             string clientIPAsString = this.FormatIPAddress(request.ClientIPAddress);
-            string additionalInformation = GetAdditionalInformation(request, clientIPAsString);
+            string additionalInformation = this.GetAdditionalInformation(request, clientIPAsString);
             if (additionalInformation == null)
             {
                 additionalInformation = string.Empty;

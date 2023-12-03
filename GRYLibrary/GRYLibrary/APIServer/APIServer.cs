@@ -35,6 +35,7 @@ using GRYLibrary.Core.Miscellaneous.MetaConfiguration;
 using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 using GRYLibrary.Core.APIServer.Utilities;
 using GRYLibrary.Core.Logging.GeneralPurposeLogger;
+using GRYLibrary.Core.APIServer.Services;
 
 namespace GRYLibrary.Core.APIServer
 {
@@ -150,9 +151,9 @@ namespace GRYLibrary.Core.APIServer
                 logger.Log($"Executionmode: {this._Configuration.InitializationInformation.ApplicationConstants.ExecutionMode}", LogLevel.Debug);
                 this.EnsureCertificateIsAvailableIfRequired(persistedAPIServerConfiguration);
                 WebApplication webApplication = this.CreateWebApplication(config, logger, persistedAPIServerConfiguration);
-                this._Configuration.FunctionalInformation.PreRun();
-                this.RunAPIServer(webApplication);
-                this._Configuration.FunctionalInformation.PostRun();
+                this._Configuration.FunctionalInformation.PreRun(webApplication);
+                webApplication.Run();
+                this._Configuration.FunctionalInformation.PostRun(webApplication);
                 return 0;
             }
             catch (Exception exception)
@@ -188,7 +189,8 @@ namespace GRYLibrary.Core.APIServer
             apiServerConfiguration.FunctionalInformation = new FunctionalInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>(
                 apiServerConfiguration.InitializationInformation,
                 builder,
-                persistedAPIServerConfiguration
+                persistedAPIServerConfiguration,
+                logger
             );
             apiServerConfiguration.SetFunctionalInformationAction(apiServerConfiguration.FunctionalInformation);
 
@@ -454,11 +456,6 @@ namespace GRYLibrary.Core.APIServer
             GUtilities.EnsureDirectoryExists(this._Configuration.InitializationInformation.ApplicationConstants.GetConfigurationFolder());
             GUtilities.EnsureDirectoryExists(this._Configuration.InitializationInformation.ApplicationConstants.GetLogFolder());
             GUtilities.EnsureDirectoryExists(this._Configuration.InitializationInformation.ApplicationConstants.GetCertificateFolder());
-        }
-
-        private void RunAPIServer(WebApplication server)
-        {
-            server.Run();
         }
     }
 }

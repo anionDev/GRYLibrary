@@ -15,7 +15,7 @@ namespace GRYLibrary.Core.APIServer.Mid.Captcha
         private readonly ICaptchaManager _CaptchaManager;
         private readonly ICaptchaConfiguration _CaptchaMiddlewareSettings;
         /// <inheritdoc/>
-        public CaptchaMiddleware(RequestDelegate next, ICaptchaConfiguration captchaMiddlewareSettings,ICaptchaManager captchaManager) : base(next)
+        public CaptchaMiddleware(RequestDelegate next, ICaptchaConfiguration captchaMiddlewareSettings, ICaptchaManager captchaManager) : base(next)
         {
             this._CaptchaManager = captchaManager;
             this._CaptchaMiddlewareSettings = captchaMiddlewareSettings;

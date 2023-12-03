@@ -11,5 +11,5 @@ namespace GRYLibrary.Core.APIServer.Settings
         public Action<FunctionalInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>> SetFunctionalInformationAction { get; set; } = (_) => { };
         internal FunctionalInformationForWebApplication<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> FunctionalInformationForWebApplication { get; set; }
         public Action<FunctionalInformationForWebApplication<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>> ConfigureWebApplication { get; set; } = (_) => { };
-}
+    }
 }
