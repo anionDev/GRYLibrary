@@ -174,7 +174,7 @@ namespace GRYLibrary.Core.APIServer
                 EnvironmentName = this._Configuration.InitializationInformation.ApplicationConstants.Environment.GetType().Name
             });
             IMvcBuilder mvcBuilder = builder.Services.AddControllers();
-            if (this._Configuration.InitializationInformation.ApplicationConstants.CommonRoutes is HostCommonRoutes)
+            if (this._Configuration.InitializationInformation.ApplicationConstants.CommonRoutesInformation is HostCommonRoutes)
             {
                 mvcBuilder.AddApplicationPart(typeof(CommonRoutesController).Assembly);
             }
@@ -272,7 +272,7 @@ namespace GRYLibrary.Core.APIServer
                         Title = apiUITitle,
                         Description = this._Configuration.InitializationInformation.ApplicationConstants.ApplicationDescription,
                     };
-                    if (this._Configuration.InitializationInformation.ApplicationConstants.CommonRoutes is HostCommonRoutes)
+                    if (this._Configuration.InitializationInformation.ApplicationConstants.CommonRoutesInformation is HostCommonRoutes)
                     {
                         openAPIInfo.TermsOfService = new Uri(persistedApplicationSpecificConfiguration.ServerConfiguration.GetServerAddress() + ServerConfiguration.TermsOfServiceURLSubPath);
                         openAPIInfo.Contact = new OpenApiContact

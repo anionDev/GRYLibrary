@@ -70,7 +70,7 @@ namespace GRYLibrary.Core.APIServer.Mid.RequestLogger
                     string formatted;
                     if (logFullRequest)
                     {
-                        formatted = this.FormatLogEntryFull(request, this._RequestLoggingSettings.MaximalLengthofBodies);
+                        formatted = this.FormatLogEntryFull(request, this._RequestLoggingSettings.MaximalLengthofRequestBodies, this._RequestLoggingSettings.MaximalLengthofResponseBodies);
                     }
                     else
                     {
@@ -106,7 +106,7 @@ namespace GRYLibrary.Core.APIServer.Mid.RequestLogger
             return request.ResponseStatusCode / 100 == 5;
         }
 
-        public virtual string FormatLogEntryFull(Request request, uint maximalLengthofBodies)
+        public virtual string FormatLogEntryFull(Request request, uint maximalLengthofRequestBodies, uint maximalLengthofResponseBodies)
         {
             string clientIPAsString = this.FormatIPAddress(request.ClientIPAddress);
             return $"Request received:{Environment.NewLine}"
@@ -115,10 +115,10 @@ namespace GRYLibrary.Core.APIServer.Mid.RequestLogger
                         + $"  Request-details:{Environment.NewLine}"
                         + $"    Method: {request.Route}{Environment.NewLine}"
                         + $"    Route: {request.Method}{request.GetFormattedQuery()}{Environment.NewLine}"
-                        + $"    Body: {this.Truncate(request.RequestBody, maximalLengthofBodies)}{Environment.NewLine}"
+                        + $"    Body: {this.Truncate(request.RequestBody, maximalLengthofRequestBodies)}{Environment.NewLine}"
                         + $"  Response-details:{Environment.NewLine}"
                         + $"    Statuscode: {request.ResponseStatusCode}{Environment.NewLine}"
-                        + $"    Body: {this.Truncate(request.ResponseBody, maximalLengthofBodies)}{Environment.NewLine}";
+                        + $"    Body: {this.Truncate(request.ResponseBody, maximalLengthofResponseBodies)}{Environment.NewLine}";
         }
 
         public virtual bool ShouldBeLogged(Request request)
@@ -128,15 +128,38 @@ namespace GRYLibrary.Core.APIServer.Mid.RequestLogger
         public virtual string FormatLogEntrySummary(Request request)
         {
             string clientIPAsString = this.FormatIPAddress(request.ClientIPAddress);
-            return $"Request received: {this.FormatTimestamp(request.Timestamp)} {clientIPAsString} requested \"{request.Method} {request.Route}{request.GetFormattedQuery()}\" and got response-code {request.ResponseStatusCode}.";
+            string additionalInformation = GetAdditionalInformation(request, clientIPAsString);
+            if (additionalInformation == null)
+            {
+                additionalInformation = string.Empty;
+            }
+            else
+            {
+                additionalInformation = $"Additional information: {additionalInformation}";
+            }
+            return $"Request received: {this.FormatTimestamp(request.Timestamp)} {clientIPAsString} requested \"{request.Method} {request.Route}{request.GetFormattedQuery()}\" and got response-code {request.ResponseStatusCode}.{additionalInformation}";
         }
+
+        public virtual string GetAdditionalInformation(Request request, string clientIPAsString)
+        {
+            return null;
+        }
+
         public virtual string FormatTimestamp(DateTime timestamp)
         {
             return GUtilities.FormatTimestamp(timestamp, this._RequestLoggingSettings.AddMillisecondsInLogTimestamps);
         }
         public virtual string Truncate(string value, uint maxLength)
         {
-            return string.IsNullOrEmpty(value) || value.Length <= maxLength ? value : value[..(int)maxLength];
+            var contentLength = value.Length;
+            if (contentLength <= maxLength)
+            {
+                return $"<{value}>";
+            }
+            else
+            {
+                return $"<{value[..(int)maxLength]}...> (truncated, original length: {contentLength} characters)";
+            };
         }
         public virtual string FormatIPAddress(IPAddress clientIP)
         {

@@ -11,7 +11,8 @@ namespace GRYLibrary.Core.APIServer.Mid.Logging
         public GRYLogConfiguration RequestsLogConfiguration { get; set; } = GRYLogConfiguration.GetCommonConfiguration(AbstractFilePath.FromString("./Requests.log"));
         public bool Enabled { get; set; } = true;
         public bool LogClientIP { get; set; } = true;
-        public uint MaximalLengthofBodies { get; set; } = 4000;
+        public uint MaximalLengthofRequestBodies { get; set; } = 4000;
+        public uint MaximalLengthofResponseBodies { get; set; } = 4000;
 
 
         public ISet<FilterDescriptor> GetFilter()

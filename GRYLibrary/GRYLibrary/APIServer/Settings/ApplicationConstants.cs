@@ -29,7 +29,10 @@ namespace GRYLibrary.Core.APIServer.Settings
         public string GetCertificateFolder();
         public string GetConfigurationFile();
         public string GetLogFolder();
-        public CommonRoutesHostInformation CommonRoutes { get; set; }
+        /// <summary>
+        /// Thir property only applies for if the envirnonment is not <see cref="Development"/>.
+        /// </summary>
+        public CommonRoutesHostInformation CommonRoutesInformation { get; set; }
         public void Initialize(string baseFolder);
         public Type AuthenticationMiddleware { get; set; }
         public Type AuthorizationMiddleware { get; set; }
@@ -82,7 +85,7 @@ namespace GRYLibrary.Core.APIServer.Settings
         public string GetCertificateFolder() { return this.CertificateFolder.GetPath(this.GetConfigurationFolder()); }
         public string GetConfigurationFile() { return this.ConfigurationFile.GetPath(this.GetConfigurationFolder()); }
         public string GetLogFolder() { return this.LogFolder.GetPath(this._BaseFolder); }
-        public CommonRoutesHostInformation CommonRoutes { get; set; } = new HostCommonRoutes();
+        public CommonRoutesHostInformation CommonRoutesInformation { get; set; } = new HostCommonRoutes();
         public Type AuthenticationMiddleware { get; set; } = null;
         public Type AuthorizationMiddleware { get; set; } = null;
         public Type BlackListMiddleware { get; set; } = null;
