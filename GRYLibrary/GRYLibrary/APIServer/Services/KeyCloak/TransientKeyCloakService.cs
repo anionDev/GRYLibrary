@@ -1,34 +1,98 @@
-﻿using Keycloak.Net;
+﻿using GRYLibrary.Core.APIServer.CommonAuthenticationTypes;
+using GRYLibrary.Core.APIServer.CommonDBTypes;
+using GRYLibrary.Core.Exceptions;
 using System;
+using System.Collections.Generic;
 
 namespace GRYLibrary.Core.APIServer.Services.KeyCloak
 {
+    /// <summary>
+    /// This is a transient keycloak-service for testing purposes.
+    /// </summary>
+    /// <remarks>
+    /// Do not use this service in productive-mode because this service does not implement any features to increase security.
+    /// </remarks>
     public class TransientKeyCloakService : IKeyCloakService
     {
-
         public IKeyCloakServiceSettings Settings { get; }
-        public TransientKeyCloakService(IKeyCloakServiceSettings settings)
+        private readonly ITimeService _TimeService;
+        private readonly IDictionary<string/*username*/, UserBackendInformation> _Users;
+        private readonly IDictionary<string/*groupname*/, UserGroup> _Groups;
+        public TransientKeyCloakService(IKeyCloakServiceSettings settings, ITimeService timeService)
         {
             this.Settings = settings;
+            this._TimeService = timeService;
+            this._Users = new Dictionary<string, UserBackendInformation>();
+            this._Groups = new Dictionary<string, UserGroup>();
         }
-        public bool AccessTokenIsValid(string actionName, string accessToken, string username)
+        public bool AccessTokenIsValid(string username, string accessToken)
         {
-            throw new NotImplementedException();
+            try
+            {
+                UserBackendInformation user = this.GetUserByName(username);
+                AccessToken token = user.AccessToken[accessToken];
+                return this._TimeService.GetCurrentTime() < token.ExpiredMoment;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
-        public KeycloakClient GetKeycloakClient()
+        private UserBackendInformation GetUserByName(string username)
         {
-            throw new NotImplementedException();
+            if (this._Users.TryGetValue(username, out UserBackendInformation value))
+            {
+                return value;
+            }
+            else
+            {
+                throw new KeyNotFoundException($"No user found with username {username}.");
+            }
         }
 
-        public string Login(string username, string password)
+
+        public AccessToken Login(string username, string password)
         {
-            throw new NotImplementedException();
+            UserBackendInformation user = this.GetUserByName(username);
+            if (password == user.Password)
+            {
+                AccessToken newAccessToken = new AccessToken();
+                newAccessToken.Value = Guid.NewGuid().ToString();
+                newAccessToken.ExpiredMoment = this._TimeService.GetCurrentTime().AddDays(1);//this time should be moved to IKeyCloakServiceSettings if it is implementable in the real keycloack-service too.
+                user.AccessToken[newAccessToken.Value] = newAccessToken;
+               return newAccessToken;
+            }
+            else
+            {
+                throw new UserFormattedException("Invalid password.");
+            }
         }
 
-        public void Register(string username, string password, bool enabled)
+        public void Register(string username, string password)
         {
-            throw new NotImplementedException();
+            UserBackendInformation userBackendInformation = new UserBackendInformation()
+            {
+                User = new User()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = username,
+                },
+                Password = password,
+            };
+            if (this._Users.ContainsKey(userBackendInformation.User.Name))
+            {
+                throw new BadUserContentException("User with already exists.");    
+            }
+            else
+            {
+            this._Users.Add(userBackendInformation.User.Name, userBackendInformation);
+            }
+        }
+
+        public void Logout(string username)
+        {
+            _Users[username].AccessToken.Clear();
         }
     }
 }

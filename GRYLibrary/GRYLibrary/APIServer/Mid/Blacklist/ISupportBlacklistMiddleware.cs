@@ -2,6 +2,6 @@
 {
     public interface ISupportBlacklistMiddleware : ISupportedMiddleware
     {
-        public IBlacklistConfiguration ConfigurationForBlacklistMiddleware { get; set; }
+        public IBlacklistConfiguration ConfigurationForBlacklistMiddleware { get;  }
     }
 }

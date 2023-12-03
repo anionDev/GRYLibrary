@@ -2,6 +2,6 @@
 {
     public interface ISupportAuthenticationMiddleware : ISupportedMiddleware
     {
-        public IAuthenticationConfiguration ConfigurationForAuthenticationMiddleware { get; set; }
+        public IAuthenticationConfiguration ConfigurationForAuthenticationMiddleware { get;  }
     }
 }

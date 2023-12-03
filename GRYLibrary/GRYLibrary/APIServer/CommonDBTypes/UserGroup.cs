@@ -1,12 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
+using System.Collections.Generic;
 
 namespace GRYLibrary.Core.APIServer.CommonDBTypes
 {
-    [PrimaryKey(nameof(Id))]
-    public class User
+    public class UserGroup
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public string Name { get; set; }
+        public ISet<Guid> User { get; set; } = new HashSet<Guid>();
     }
 }

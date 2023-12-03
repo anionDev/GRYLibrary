@@ -2,6 +2,6 @@
 {
     public interface ISupportDDOSProtectionMiddleware : ISupportedMiddleware
     {
-        IDDOSProtectionConfiguration ConfigurationForDDOSProtection { get; set; }
+        IDDOSProtectionConfiguration ConfigurationForDDOSProtection { get; }
     }
 }

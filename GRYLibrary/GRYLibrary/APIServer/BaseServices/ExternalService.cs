@@ -59,7 +59,7 @@ namespace GRYLibrary.Core.APIServer.BaseServices
             }
             else
             {
-                var result = this.TryConnectImplementation(out exception);
+                bool result = this.TryConnectImplementation(out exception);
                 if (result)
                 {
                     this.IsConnected = true;

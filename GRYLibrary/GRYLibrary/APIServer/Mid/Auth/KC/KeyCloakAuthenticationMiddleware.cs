@@ -1,14 +1,15 @@
 ﻿using GRYLibrary.Core.APIServer.Services.KeyCloak;
 using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace GRYLibrary.Core.APIServer.Mid.Auth.KC
 {
-    public class KeyCloakAuthentication : AuthenticationMiddleware
+    public class KeyCloakAuthenticationMiddleware : AuthenticationMiddleware
     {
         private readonly IKeyCloakAuthenticationConfiguration _AuthenticationMiddlewareSettings;
         private readonly IKeyCloakService _KeyCloakService;
         /// <inheritdoc/>
-        public KeyCloakAuthentication(RequestDelegate next, IKeyCloakAuthenticationConfiguration authenticationMiddlewareSettings, IKeyCloakService keyCloak) : base(next, authenticationMiddlewareSettings)
+        public KeyCloakAuthenticationMiddleware(RequestDelegate next, IKeyCloakAuthenticationConfiguration authenticationMiddlewareSettings, IKeyCloakService keyCloak) : base(next, authenticationMiddlewareSettings)
         {
             this._AuthenticationMiddlewareSettings = authenticationMiddlewareSettings;
             this._KeyCloakService = keyCloak;
@@ -19,7 +20,7 @@ namespace GRYLibrary.Core.APIServer.Mid.Auth.KC
             throw new System.NotImplementedException();
         }
 
-        public override bool IsAuthenticated(HttpContext context)
+        public override bool TryGetAuthentication(HttpContext context, out ClaimsPrincipal principal)
         {
             throw new System.NotImplementedException();
         }

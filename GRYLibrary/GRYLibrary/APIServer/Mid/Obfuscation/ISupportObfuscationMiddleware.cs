@@ -2,6 +2,6 @@
 {
     public interface ISupportObfuscationMiddleware : ISupportedMiddleware
     {
-        public IObfuscationConfiguration ConfigurationForObfuscationMiddleware { get; set; }
+        public IObfuscationConfiguration ConfigurationForObfuscationMiddleware { get;  }
     }
 }

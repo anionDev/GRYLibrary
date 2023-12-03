@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System;
 using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using GRYLibrary.Core.APIServer.BaseServices;
+using GRYLibrary.Core.APIServer.CommonAuthenticationTypes;
 
 namespace GRYLibrary.Core.APIServer.Services.KeyCloak
 {
@@ -30,7 +31,7 @@ namespace GRYLibrary.Core.APIServer.Services.KeyCloak
             return this.KeycloakClient;
         }
 
-        public virtual bool AccessTokenIsValid(string actionName, string accessToken, string username)
+        public virtual bool AccessTokenIsValid(string username, string accessToken)
         {
             return this.EnsureServiceIsConnected<bool>(() =>
             {
@@ -38,7 +39,7 @@ namespace GRYLibrary.Core.APIServer.Services.KeyCloak
             });
         }
 
-        public virtual void Register(string username, string password, bool enabled)
+        public virtual void Register(string username, string password)
         {
             this.EnsureServiceIsConnected(() =>
             {
@@ -54,18 +55,23 @@ namespace GRYLibrary.Core.APIServer.Services.KeyCloak
                 user.ClientRoles = new Dictionary<string, object>();
                 user.Credentials = new List<Credentials>() { };
                 //user.Email = $"{username}@{Realm}";
-                user.Enabled = enabled;
+                user.Enabled = true;
                 Task<string> task = service.CreateAndRetrieveUserIdAsync(this.Settings.Realm, user);
                 task.Wait();
             });
         }
 
-        public virtual string Login(string username, string password)
+        public AccessToken Login(string username, string password)
         {
-            return this.EnsureServiceIsConnected<string>(() =>
+            return this.EnsureServiceIsConnected<AccessToken>(() =>
             {
                 throw new NotImplementedException();
             });
+        }
+
+        public void Logout(string name)
+        {
+            throw new NotImplementedException();
         }
     }
 }

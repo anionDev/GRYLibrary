@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.APIServer.Mid.Aut
@@ -14,7 +17,12 @@ namespace GRYLibrary.Core.APIServer.Mid.Aut
         }
         public virtual bool AuthorizationIsRequired(HttpContext context)
         {
-            return true;
+            Endpoint endPoint = context.GetEndpoint();
+            EndpointMetadataCollection metaData = endPoint.Metadata;
+            ControllerActionDescriptor controllerActionDescriptor = metaData.GetMetadata<ControllerActionDescriptor>();
+            System.Reflection.MethodInfo methodInfo = controllerActionDescriptor.MethodInfo;
+            AuthorizeAttribute authorizeAttribute = methodInfo.GetCustomAttributes(false).OfType<AuthorizeAttribute>().First();
+            return string.IsNullOrEmpty(authorizeAttribute.Groups);
         }
         public abstract bool IsAuthorized(HttpContext context);
         public override Task Invoke(HttpContext context)
@@ -25,10 +33,15 @@ namespace GRYLibrary.Core.APIServer.Mid.Aut
             }
             else
             {
-                context.Response.StatusCode = 403;
-                return Task.CompletedTask;
+                return this.ReturnUnauthenticatedResult(context);
             }
         }
+        public virtual Task ReturnUnauthenticatedResult(HttpContext context)
+        {
+            context.Response.StatusCode = 403;
+            return Task.CompletedTask;
+        }
+
         public virtual bool IsAuthorizedInternal(HttpContext context)
         {
             if (this.AuthorizationIsRequired(context))

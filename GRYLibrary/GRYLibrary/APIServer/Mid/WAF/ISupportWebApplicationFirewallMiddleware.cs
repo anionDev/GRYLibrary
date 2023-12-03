@@ -2,6 +2,6 @@
 {
     public interface ISupportWebApplicationFirewallMiddleware : ISupportedMiddleware
     {
-        public IWebApplicationFirewallConfiguration ConfigurationForWebApplicationFirewall { get; set; }
+        public IWebApplicationFirewallConfiguration ConfigurationForWebApplicationFirewall { get;  }
     }
 }

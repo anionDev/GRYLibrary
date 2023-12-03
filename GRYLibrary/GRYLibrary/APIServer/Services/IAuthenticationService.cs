@@ -1,12 +1,14 @@
-﻿namespace GRYLibrary.Core.APIServer.Services
+﻿using GRYLibrary.Core.APIServer.CommonAuthenticationTypes;
+
+namespace GRYLibrary.Core.APIServer.Services
 {
     public interface IAuthenticationService
     {
-        public bool AccessTokenIsValid(string actionName, string accessToken, string username);
-        public void Register(string username, string password, bool enabled);
-        /// <returns>
-        /// Returns an access-token.
-        /// </returns>
-        public string Login(string username, string password);
+        /// <summary>
+        /// Checks if the <paramref name="accessToken"/> is a valid authentication for <paramref name="username"/>.
+        /// </summary>
+        public bool AccessTokenIsValid(string username, string accessToken);
+        public void Register(string username, string password);
+        public AccessToken Login(string username, string password);
     }
 }
