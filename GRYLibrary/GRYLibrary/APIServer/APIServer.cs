@@ -1,16 +1,14 @@
 ﻿using GRYLibrary.Core.APIServer.CommonRoutes;
 using GRYLibrary.Core.APIServer.ConcreteEnvironments;
-using GRYLibrary.Core.APIServer.Mid;
-using GRYLibrary.Core.APIServer.Mid.Auth;
-using GRYLibrary.Core.APIServer.Mid.Aut;
-using GRYLibrary.Core.APIServer.Mid.Blacklist;
-using GRYLibrary.Core.APIServer.Mid.Captcha;
-using GRYLibrary.Core.APIServer.Mid.DDOS;
-using GRYLibrary.Core.APIServer.Mid.Exception;
-using GRYLibrary.Core.APIServer.Mid.Obfuscation;
-using GRYLibrary.Core.APIServer.Mid.Counter;
-using GRYLibrary.Core.APIServer.Mid.Logging;
-using GRYLibrary.Core.APIServer.Mid.WAF;
+using GRYLibrary.Core.APIServer.MidT;
+using GRYLibrary.Core.APIServer.MidT.Auth;
+using GRYLibrary.Core.APIServer.MidT.Blacklist;
+using GRYLibrary.Core.APIServer.MidT.Captcha;
+using GRYLibrary.Core.APIServer.MidT.DDOS;
+using GRYLibrary.Core.APIServer.MidT.Exception;
+using GRYLibrary.Core.APIServer.MidT.Obfuscation;
+using GRYLibrary.Core.APIServer.MidT.Counter;
+using GRYLibrary.Core.APIServer.MidT.WAF;
 using GRYLibrary.Core.APIServer.ExecutionModes;
 using GRYLibrary.Core.APIServer.Settings;
 using GRYLibrary.Core.APIServer.Settings.Configuration;
@@ -204,7 +202,7 @@ namespace GRYLibrary.Core.APIServer
                 this.AddDefinedMiddleware((ISupportDDOSProtectionMiddleware c) => c.ConfigurationForDDOSProtection, this._Configuration.InitializationInformation.ApplicationConstants.DDOSProtectionMiddleware, persistedApplicationSpecificConfiguration, middlewares, logger);
                 this.AddDefinedMiddleware((ISupportBlacklistMiddleware c) => c.ConfigurationForBlacklistMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.BlackListMiddleware, persistedApplicationSpecificConfiguration, middlewares, logger);
             }
-            this.AddDefinedMiddleware((ISupportRequestLoggingMiddleware c) => c.ConfigurationForRequestLoggingMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.RequestLoggingMiddleware, persistedApplicationSpecificConfiguration, middlewares, logger);
+            this.AddDefinedMiddleware((ISupportLoggingMiddleware c) => c.ConfigurationForLoggingMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.RequestLoggingMiddleware, persistedApplicationSpecificConfiguration, middlewares, logger);
             if (this._Configuration.InitializationInformation.ApplicationConstants.Environment is not Development)
             {
                 this.AddDefinedMiddleware((ISupportWebApplicationFirewallMiddleware c) => c.ConfigurationForWebApplicationFirewall, this._Configuration.InitializationInformation.ApplicationConstants.WebApplicationFirewallMiddleware, persistedApplicationSpecificConfiguration, middlewares, logger);
