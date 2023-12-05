@@ -1,20 +1,26 @@
-﻿namespace GRYLibrary.Core.APIServer.Services.APIK
+﻿using GRYLibrary.Core.APIServer.Services.Interfaces;
+using GRYLibrary.Core.APIServer.Utilities;
+using Microsoft.AspNetCore.Http;
+using System;
+
+namespace GRYLibrary.Core.APIServer.Services.APIK
 {
     public class APIKeyAuthorizationService : IAPIKeyAuthorizationService
     {
-        private readonly IAPIKeyAuthorizationConfiguration _APIKeyAuthorizationConfiguration;
-        public APIKeyAuthorizationService(IAPIKeyAuthorizationConfiguration apiKeyAuthorizationConfiguration)
+        private readonly Func<string/*action*/, string/*apiKey*/, bool> _Validator;
+        public APIKeyAuthorizationService( Func<string/*action*/, string/*apiKey*/, bool> validator)
         {
-            _APIKeyAuthorizationConfiguration = apiKeyAuthorizationConfiguration;
-        }
-        public bool IsAuthorized(string action, string apiKey)
-        {
-            throw new System.NotImplementedException();
+            this._Validator = validator;
         }
 
-        public bool IsAuthorized(string action)
+        public bool IsAuthorized(string action, string apiKey)
         {
-            throw new System.NotSupportedException();
+            return this._Validator(action, apiKey);
+        }
+
+        public bool IsAuthorized(HttpContext context, AuthorizeAttribute authorizedAttribute)
+        {
+            throw new NotImplementedException();
         }
     }
 }

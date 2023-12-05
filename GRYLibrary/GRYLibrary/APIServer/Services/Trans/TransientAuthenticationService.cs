@@ -3,15 +3,17 @@ using GRYLibrary.Core.APIServer.CommonDBTypes;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
 using GRYLibrary.Core.APIServer.Utilities;
 using GRYLibrary.Core.Exceptions;
+using GRYLibrary.Core.Miscellaneous;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
+using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 
-namespace GRYLibrary.Core.APIServer.Services.Auth
+namespace GRYLibrary.Core.APIServer.Services.Trans
 {
     /// <summary>
-    /// This is a transient keycloak-service for testing purposes.
+    /// This is a transient <see cref="IAuthenticationService"/> for testing purposes.
     /// </summary>
     /// <remarks>
     /// Do not use this service in productive-mode because this service does not implement any features to increase security.
@@ -20,12 +22,10 @@ namespace GRYLibrary.Core.APIServer.Services.Auth
     {
         private readonly ITimeService _TimeService;
         private readonly IDictionary<string/*username*/, UserBackendInformation> _Users;
-        private readonly IDictionary<string/*groupname*/, UserGroup> _Groups;
         public TransientAuthenticationService(ITimeService timeService)
         {
             this._TimeService = timeService;
             this._Users = new Dictionary<string, UserBackendInformation>();
-            this._Groups = new Dictionary<string, UserGroup>();
         }
         public bool AccessTokenIsValid(string username, string accessToken)
         {
@@ -56,6 +56,10 @@ namespace GRYLibrary.Core.APIServer.Services.Auth
 
         public AccessToken Login(string username, string password)
         {
+            if (!this.UserExists(username))
+            {
+                throw new BadRequestException(System.Net.HttpStatusCode.BadRequest, "User does not exist.");
+            }
             UserBackendInformation user = this.GetUserByName(username);
             if (password == user.Password)
             {
@@ -67,12 +71,16 @@ namespace GRYLibrary.Core.APIServer.Services.Auth
             }
             else
             {
-                throw new UserFormattedException("Invalid password.");
+                throw new BadRequestException(System.Net.HttpStatusCode.Unauthorized, "Invalid password.");
             }
         }
 
         public void Register(string username, string password)
         {
+            if (this.UserExists(username))
+            {
+                throw new BadRequestException(System.Net.HttpStatusCode.BadRequest, "User with this name already exists.");
+            }
             UserBackendInformation userBackendInformation = new UserBackendInformation()
             {
                 User = new User()
@@ -82,65 +90,12 @@ namespace GRYLibrary.Core.APIServer.Services.Auth
                 },
                 Password = password,
             };
-            if (this._Users.ContainsKey(userBackendInformation.User.Name))
-            {
-                throw new BadUserContentException("User with already exists.");
-            }
-            else
-            {
-                this._Users.Add(userBackendInformation.User.Name, userBackendInformation);
-            }
+            this._Users.Add(userBackendInformation.User.Name, userBackendInformation);
         }
 
         public void Logout(string username)
         {
             this._Users[username].AccessToken.Clear();
-        }
-
-        public void EnsureUserIsInGroup(string username, string groupname)
-        {
-            UserBackendInformation user = this.GetUserByName(username);
-            if (!this._Groups[groupname].User.Contains(user.User.Id))
-            {
-                this._Groups[groupname].User.Add(user.User.Id);
-            }
-        }
-
-        public void EnsureUserIsNotInGroup(string username, string groupname)
-        {
-            UserBackendInformation user = this.GetUserByName(username);
-            if (this._Groups[groupname].User.Contains(user.User.Id))
-            {
-                this._Groups[groupname].User.Remove(user.User.Id);
-            }
-        }
-
-        public bool UserIsInGroup(string username, string groupname)
-        {
-            return this._Groups[groupname].User.Contains(this.GetUserByName(username).User.Id);
-        }
-
-
-        public void EnsureGroupExists(string groupname)
-        {
-            if (!this._Groups.ContainsKey(groupname))
-            {
-                UserGroup group = new UserGroup();
-                group.Name = groupname;
-                this._Groups[groupname] = group;
-            }
-        }
-
-        public void EnsureGroupDoesNotExist(string groupname)
-        {
-            if (this._Groups.ContainsKey(groupname))
-            {
-                this._Groups.Remove(groupname);
-            }
-        }
-        public bool GroupExists(string groupname)
-        {
-            return this._Groups.ContainsKey(groupname);
         }
 
         public virtual void OnStart()
@@ -189,7 +144,40 @@ namespace GRYLibrary.Core.APIServer.Services.Auth
 
         public bool TryGetAuthentication(HttpContext context, out ClaimsPrincipal principal)
         {
-            throw new NotImplementedException();
+            principal = default;
+            try
+            {
+                if (context.Request.Cookies.TryGetValue(CookieName, out string value))
+                {
+                    string[] splitted = value.Split(';');
+                    string username = splitted[0].Split('=')[1];
+                    string accessToken = splitted[1].Split('=')[1];
+                    if (!string.IsNullOrEmpty(accessToken))
+                    {
+                        bool accessTokenIsValid = AccessTokenIsValid(username, accessToken);
+                        if (accessTokenIsValid)
+                        {
+                            principal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim> { new Claim(ClaimTypes.Name, username) }, "Basic"));
+                            return true;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                GUtilities.NoOperation();
+            }
+            return false;
+        }
+
+        UserBackendInformation IAuthenticationService.GetUserByName(string username)
+        {
+            return this._Users[username];
+        }
+
+        public bool UserExists(string username)
+        {
+            return this._Users.ContainsKey(username);
         }
     }
 }

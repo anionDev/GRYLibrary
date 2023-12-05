@@ -1,7 +1,6 @@
 ﻿namespace GRYLibrary.Core.APIServer.Services.Interfaces
 {
-    public interface IAPIKeyAuthorizationService
+    public interface IAPIKeyAuthorizationService : IAuthorizationService
     {
-        public bool APIKeyIsValid(string actionName, string apiKey);
     }
 }

@@ -208,8 +208,8 @@ namespace GRYLibrary.Core.APIServer
                 this.AddDefinedMiddleware((ISupportWebApplicationFirewallMiddleware c) => c.ConfigurationForWebApplicationFirewall, this._Configuration.InitializationInformation.ApplicationConstants.WebApplicationFirewallMiddleware, persistedApplicationSpecificConfiguration, middlewares, logger);
                 this.AddDefinedMiddleware((ISupportObfuscationMiddleware c) => c.ConfigurationForObfuscationMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.ObfuscationMiddleware, persistedApplicationSpecificConfiguration, middlewares, logger);
                 this.AddDefinedMiddleware((ISupportCaptchaMiddleware c) => c.ConfigurationForCaptchaMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.CaptchaMiddleware, persistedApplicationSpecificConfiguration, middlewares, logger);
-                this.AddDefinedMiddleware((ISupportExceptionManagerMiddleware c) => c.ConfigurationForExceptionManagerMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.ExceptionManagerMiddleware, persistedApplicationSpecificConfiguration, middlewares, logger);
             }
+            this.AddDefinedMiddleware((ISupportExceptionManagerMiddleware c) => c.ConfigurationForExceptionManagerMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.ExceptionManagerMiddleware, persistedApplicationSpecificConfiguration, middlewares, logger);
             #endregion
 
             #region Bussiness-implementation
@@ -303,10 +303,6 @@ namespace GRYLibrary.Core.APIServer
             {
                 app.UseHsts();
             }
-            if (this._Configuration.InitializationInformation.ApplicationConstants.Environment is Development)
-            {
-                app.UseDeveloperExceptionPage();
-            }
             foreach (Type middleware in businessMiddleware)
             {
                 app.UseMiddleware(middleware);
@@ -364,23 +360,23 @@ namespace GRYLibrary.Core.APIServer
                 }
                 else
                 {
-                if (middlewareConfiguration.Enabled)
-                {
-                    this._Configuration.FunctionalInformation.Filter.UnionWith(middlewareConfiguration.GetFilter());
-                    if (middlewareType == null)
+                    if (middlewareConfiguration.Enabled)
                     {
-                        throw new NullReferenceException($"No middleware-type given for {typeof(SupportDefinedMiddlewareType).FullName}.");
+                        this._Configuration.FunctionalInformation.Filter.UnionWith(middlewareConfiguration.GetFilter());
+                        if (middlewareType == null)
+                        {
+                            throw new NullReferenceException($"No middleware-type given for {typeof(SupportDefinedMiddlewareType).FullName}.");
+                        }
+                        else
+                        {
+                            middlewares.Add(middlewareType);
+                            logger.Log($"Added middleware {middlewareType.FullName}.", LogLevel.Debug);
+                        }
                     }
                     else
                     {
-                        middlewares.Add(middlewareType);
-                        logger.Log($"Added middleware {middlewareType.FullName}.", LogLevel.Debug);
+                        logger.Log($"Middleware {middlewareType.FullName} is disabled.", LogLevel.Debug);
                     }
-                }
-                else
-                {
-                    logger.Log($"Middleware {middlewareType.FullName} is disabled.", LogLevel.Debug);
-                }
                 }
             }
         }

@@ -26,7 +26,7 @@ namespace GRYLibrary.Core.APIServer.MidT
             EndpointMetadataCollection metaData = endPoint.Metadata;
             ControllerActionDescriptor controllerActionDescriptor = metaData.GetMetadata<ControllerActionDescriptor>();
             System.Reflection.MethodInfo methodInfo = controllerActionDescriptor.MethodInfo;
-            AuthorizeAttribute authorizeAttribute = methodInfo.GetCustomAttributes(false).OfType<AuthorizeAttribute>().First();
+            AuthorizeAttribute authorizeAttribute = methodInfo.GetCustomAttributes(false).OfType<AuthorizeAttribute>().FirstOrDefault();
             return authorizeAttribute;
         }
     }

@@ -1,39 +1,24 @@
 ﻿using GRYLibrary.Core.APIServer.CommonAuthenticationTypes;
 using GRYLibrary.Core.APIServer.Services.KeyCloak;
-using GRYLibrary.Core.APIServer.Utilities;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
 namespace GRYLibrary.Core.APIServer.Services.KCZAuth
 {
-    public class KeyCloakAuthorizationService : IKeyCloakAuthenticationService
+    public class KeyCloakAuthenticationService : IKeyCloakAuthenticationService
     {
         private readonly IKeyCloakService _KeyCloakService;
-        public KeyCloakAuthorizationService(IKeyCloakService keyCloakService)
+        public KeyCloakAuthenticationService(IKeyCloakService keyCloakService)
         {
-            _KeyCloakService = keyCloakService;
+            this._KeyCloakService = keyCloakService;
         }
+
         public bool AccessTokenIsValid(string username, string accessToken)
         {
             throw new System.NotImplementedException();
         }
 
-        public void EnsureUserIsInGroup(string username, string groupname)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void EnsureUserIsNotInGroup(string username, string groupname)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public bool GroupExists(string groupname)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public bool IsAuthenticated(HttpContext context, AuthorizeAttribute authorizeAttribute)
+        public UserBackendInformation GetUserByName(string username)
         {
             throw new System.NotImplementedException();
         }
@@ -68,7 +53,7 @@ namespace GRYLibrary.Core.APIServer.Services.KCZAuth
             throw new System.NotImplementedException();
         }
 
-        public bool UserIsInGroup(string username, string groupname)
+        public bool UserExists(string username)
         {
             throw new System.NotImplementedException();
         }

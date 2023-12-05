@@ -17,16 +17,16 @@ namespace GRYLibrary.Core.APIServer.MidT.Auth
         protected abstract bool IsAuthorized(HttpContext context);
         public override Task Invoke(HttpContext context)
         {
-            if ( this.AuthorizationIsRequired(context)&& !this.IsAuthorizedInternal(context) )
+            if (this.AuthorizationIsRequired(context) && !this.IsAuthorizedInternal(context))
             {
-                return this.ReturnForbidResult(context);
+                return this.ReturnUnauthorizedResult(context);
             }
             else
             {
                 return this._Next(context);
             }
         }
-        public virtual Task ReturnForbidResult(HttpContext context)
+        public virtual Task ReturnUnauthorizedResult(HttpContext context)
         {
             context.Response.StatusCode = 403;
             return Task.CompletedTask;

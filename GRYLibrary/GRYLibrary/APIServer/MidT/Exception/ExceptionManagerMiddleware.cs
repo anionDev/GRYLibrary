@@ -12,19 +12,20 @@ namespace GRYLibrary.Core.APIServer.MidT.Exception
         public ExceptionManagerMiddleware(RequestDelegate next) : base(next)
         {
         }
+        protected abstract Task HandleException(HttpContext context, System.Exception exception);
         /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
         {
             try
             {
-                // TODO if response.statuscode is 500 then log requestbody
-                return this._Next(context);
+                this._Next(context).Wait();
+                return Task.CompletedTask;
             }
-            catch (System.Exception)
+            catch (System.Exception exception)
             {
-                // TODO log exception and requestbody, return 500
-                throw;
+                return this.HandleException(context, exception);
             }
         }
+
     }
 }

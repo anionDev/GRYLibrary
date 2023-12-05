@@ -1,5 +1,4 @@
 ﻿using GRYLibrary.Core.APIServer.CommonAuthenticationTypes;
-using GRYLibrary.Core.APIServer.Utilities;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
@@ -14,13 +13,9 @@ namespace GRYLibrary.Core.APIServer.Services.Interfaces
         /// </summary>
         public bool AccessTokenIsValid(string username, string accessToken);
         void Logout(string name);
-        public void EnsureUserIsInGroup(string username, string groupname);
-        public void EnsureUserIsNotInGroup(string username, string groupname);
-        public bool UserIsInGroup(string username, string groupname);
-        public bool GroupExists(string groupname);
-        void OnStart();
-        void RemoveUser(string username);
-        bool IsAuthenticated(HttpContext context, AuthorizeAttribute authorizeAttribute);
-        bool TryGetAuthentication(HttpContext context, out ClaimsPrincipal principal);
+        public void RemoveUser(string username);
+        public  bool TryGetAuthentication(HttpContext context, out ClaimsPrincipal principal);
+        UserBackendInformation GetUserByName(string username);
+        bool UserExists(string username);
     }
 }

@@ -12,26 +12,26 @@ namespace GRYLibrary.Core.APIServer.Mid.Auth
     public class AutSMiddleware : AuthorizationMiddleware
     {
         private readonly IAuthorizationService _AuthorizationService;
-        protected AutSMiddleware(RequestDelegate next, IAuthorizationService authorizationService) : base(next)
+        public AutSMiddleware(RequestDelegate next, IAuthorizationService authorizationService) : base(next)
         {
             this._AuthorizationService = authorizationService;
         }
         public override bool AuthorizationIsRequired(HttpContext context)
         {
             AuthorizeAttribute authorizeAttribute = this.GetAuthorizeAttribute(context);
-            return authorizeAttribute.Groups.Any();
+            if (authorizeAttribute == null)
+            {
+                return false;
+            }
+            else
+            {
+                return authorizeAttribute.Groups.Any();
+            }
         }
         protected override bool IsAuthorized(HttpContext context)
         {
             AuthorizeAttribute authorizedAttribute = this.GetAuthorizeAttribute(context);
-            if (authorizedAttribute == null)
-            {
-                return true;
-            }
-            else
-            {
-                return _AuthorizationService.IsAuthorized("context", "authorizedAttribute");//TODO
-            }
+            return this._AuthorizationService.IsAuthorized(context, authorizedAttribute);
         }
     }
 }

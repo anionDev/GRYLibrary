@@ -1,4 +1,5 @@
 ﻿using System;
+using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
@@ -9,7 +10,7 @@ namespace GRYLibrary.Core.Miscellaneous
     {
         public static PercentValue ZeroPercent { get; } = new PercentValue((decimal)0);
         public static PercentValue HundredPercent { get; } = new PercentValue((decimal)1);
-        private static Random _Random = new Random();
+        private static readonly Random _Random = new Random();
         public int ValueInPercent => (int)Math.Round(this.Value * 100);
         public decimal Value { get; }
 
@@ -58,7 +59,7 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public override string ToString()
         {
-            return this.Value.ToString();
+            return GUtilities.DecimalToString(this.Value);
         }
         public static PercentValue Random()
         {
