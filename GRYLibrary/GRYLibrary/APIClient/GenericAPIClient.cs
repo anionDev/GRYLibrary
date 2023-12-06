@@ -34,9 +34,20 @@ namespace GRYLibrary.Core.GenericAPIClient
         {
             return await this.SendAsStringAsync(route, HttpMethod.Get);
         }
-        public async Task<string> SendAsStringAsync(string route, HttpMethod method)
+
+        public async Task PostAsync(string route, string body)
         {
-            HttpResponseMessage response = await this.GetResponse(route, method);
+            HttpResponseMessage response = await this.GetResponse(route, HttpMethod.Post, body);
+            response.EnsureSuccessStatusCode();
+        }
+        public async Task PutAsync(string route, string body)
+        {
+            HttpResponseMessage response = await this.GetResponse(route, HttpMethod.Put, body);
+            response.EnsureSuccessStatusCode();
+        }
+        private async Task<string> SendAsStringAsync(string route, HttpMethod method)
+        {
+            HttpResponseMessage response = await this.GetResponse(route, method, null);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }
@@ -51,7 +62,7 @@ namespace GRYLibrary.Core.GenericAPIClient
             {
                 try
                 {
-                    await this.GetResponse(this.Configuration.TestRoute, HttpMethod.Get);
+                    await this.GetResponse(this.Configuration.TestRoute, HttpMethod.Get, null);
                     return true;
                 }
                 catch
@@ -61,10 +72,15 @@ namespace GRYLibrary.Core.GenericAPIClient
             }
         }
 
-        private async Task<HttpResponseMessage> GetResponse(string route, HttpMethod method)
+        private async Task<HttpResponseMessage> GetResponse(string route, HttpMethod method, string body)
         {
             using HttpClient client = this.GetHTTPClient();
             using HttpRequestMessage requestMessage = new HttpRequestMessage(method, $"{this.Configuration.APIAddress}/{route}");
+
+            if (body != null)
+            {
+                requestMessage.Content = new StringContent(body);
+            }
             if (this.Configuration.APIKey != null)
             {
                 requestMessage.Headers.Authorization = new AuthenticationHeaderValue("APIKey", this.Configuration.APIKey);
