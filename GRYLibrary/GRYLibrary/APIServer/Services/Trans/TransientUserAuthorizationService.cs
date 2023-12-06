@@ -6,7 +6,6 @@ using GRYLibrary.Core.Exceptions;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace GRYLibrary.Core.APIServer.Services.Trans
 {

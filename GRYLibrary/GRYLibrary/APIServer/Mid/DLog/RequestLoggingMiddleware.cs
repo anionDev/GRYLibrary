@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Text;
 using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using GRYLibrary.Core.Logging.GRYLogger;
-using GRYLibrary.Core.APIServer.MidT.RequestLogger;
+using GRYLibrary.Core.APIServer.MidT.RLog;
 
 namespace GRYLibrary.Core.APIServer.Mid.DLog
 {

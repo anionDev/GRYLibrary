@@ -42,7 +42,7 @@ namespace GRYLibrary.Core.APIServer.Settings
         public Type ExceptionManagerMiddleware { get; set; }
         public Type ObfuscationMiddleware { get; set; }
         public Type RequestCounterMiddleware { get; set; }
-        public Type RequestLoggingMiddleware { get; set; }
+        public Type LoggingMiddleware { get; set; }
         public Type WebApplicationFirewallMiddleware { get; set; }
         public IList<Type> CustomMiddlewares { get; set; }
         public ISet<Type> KnownTypes { get; set; }
@@ -94,7 +94,7 @@ namespace GRYLibrary.Core.APIServer.Settings
         public Type ExceptionManagerMiddleware { get; set; } = null;
         public Type ObfuscationMiddleware { get; set; } = null;
         public Type RequestCounterMiddleware { get; set; } = null;
-        public Type RequestLoggingMiddleware { get; set; } = null;
+        public Type LoggingMiddleware { get; set; } = null;
         public Type WebApplicationFirewallMiddleware { get; set; } = null;
         public IList<Type> CustomMiddlewares { get; set; } = new List<Type>();
         public ISet<Type> KnownTypes { get; set; } = new HashSet<Type>();

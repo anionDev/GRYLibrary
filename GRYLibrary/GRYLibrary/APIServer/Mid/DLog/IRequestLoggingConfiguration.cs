@@ -1,4 +1,4 @@
-﻿using GRYLibrary.Core.APIServer.MidT.Logging;
+﻿using GRYLibrary.Core.APIServer.MidT.RLog;
 using GRYLibrary.Core.Logging.GRYLogger;
 
 namespace GRYLibrary.Core.APIServer.Mid.DLog

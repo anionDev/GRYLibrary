@@ -1,6 +1,5 @@
-﻿using GRYLibrary.Core.APIServer.MidT.Logging;
-
-namespace GRYLibrary.Core.APIServer.MidT.Exception
+﻿
+namespace GRYLibrary.Core.APIServer.MidT.RLog
 {
     public interface ISupportLoggingMiddleware : ISupportedMiddleware
     {

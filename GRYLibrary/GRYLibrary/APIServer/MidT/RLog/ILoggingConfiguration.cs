@@ -1,4 +1,5 @@
-﻿namespace GRYLibrary.Core.APIServer.MidT.Logging
+﻿
+namespace GRYLibrary.Core.APIServer.MidT.RLog
 {
     public interface ILoggingConfiguration : IMiddlewareConfiguration
     {

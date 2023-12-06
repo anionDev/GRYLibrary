@@ -1,16 +1,16 @@
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace GRYLibrary.Core.APIServer.MidT.RequestLogger
+namespace GRYLibrary.Core.APIServer.MidT.RLog
 {
     /// <summary>
-    /// Represents a middleware which logs the requests.
+    /// Represents a middleware which logs the HTTP-requests.
     /// </summary>
     public abstract class LoggingMiddleware : AbstractMiddleware
     {
         public LoggingMiddleware(RequestDelegate next) : base(next)
         {
-            }
+        }
         /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
         {
