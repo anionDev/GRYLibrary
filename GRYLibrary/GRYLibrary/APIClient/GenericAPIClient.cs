@@ -36,7 +36,7 @@ namespace GRYLibrary.Core.GenericAPIClient
         }
         public async Task<string> SendAsStringAsync(string route, HttpMethod method)
         {
-            var response = await this.GetResponse(route, method);
+            HttpResponseMessage response = await this.GetResponse(route, method);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }
