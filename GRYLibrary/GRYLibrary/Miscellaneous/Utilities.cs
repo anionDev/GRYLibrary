@@ -1137,7 +1137,7 @@ namespace GRYLibrary.Core.Miscellaneous
                 {
                     throw new ArgumentException($"Argument '{nameof(functions)}' does not contain any function.");
                 }
-                Parallel.ForEach(functions, new ParallelOptions { MaxDegreeOfParallelism = _MaximalDegreeOfParallelism }, new Action<Func<T>, ParallelLoopState>((Func<T> function, ParallelLoopState state) =>
+                Parallel.ForEach(functions, new ParallelOptions { MaxDegreeOfParallelism = this._MaximalDegreeOfParallelism }, new Action<Func<T>, ParallelLoopState>((Func<T> function, ParallelLoopState state) =>
                 {
                     try
                     {
@@ -1315,12 +1315,12 @@ namespace GRYLibrary.Core.Miscellaneous
 
             public bool Handle(OSX operatingSystem)
             {
-                return this._Path.StartsWith("/");
+                return this._Path.StartsWith('/');
             }
 
             public bool Handle(Windows operatingSystem)
             {
-                if (this._Path.StartsWith("/") || this._Path.StartsWith(@"\"))
+                if (this._Path.StartsWith('/') || this._Path.StartsWith('\\'))
                 {
                     return true;
                 }
@@ -1738,7 +1738,7 @@ namespace GRYLibrary.Core.Miscellaneous
             for (int i = 0; i < lines.Length; i++)
             {
                 string line = lines[i].Trim();
-                if (!(treatHashAsComment && line.StartsWith("#")))
+                if (!(treatHashAsComment && line.StartsWith('#')))
                 {
                     if (isFirstLine && firstLineContainsHeadlines)
                     {
@@ -1780,7 +1780,7 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 value = value.Trim();
             }
-            if (value.StartsWith("\"") && value.EndsWith("\""))
+            if (value.StartsWith('"') && value.EndsWith('"'))
             {
                 value = value[1..];
                 value = value.Remove(value.Length - 1);
@@ -2159,9 +2159,9 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         public static Guid GetVolumeIdByMountPoint(string mountPoint)
         {
-            if (!mountPoint.EndsWith("\\"))
+            if (!mountPoint.EndsWith('\\'))
             {
-                mountPoint += "\\";
+                mountPoint += '\\';
             }
             foreach (Guid volumeId in GetAvailableVolumeIds())
             {

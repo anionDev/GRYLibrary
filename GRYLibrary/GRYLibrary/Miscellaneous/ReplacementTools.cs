@@ -13,7 +13,7 @@ namespace GRYLibrary.Core.Miscellaneous
             while (oldVersion != newVersion)
             {
                 oldVersion = newVersion;
-                newVersion = ReplaceVariablesOneTime(input, replacements, booleanReplacements, variables);
+                newVersion = ReplaceVariablesOneTime(newVersion, replacements, booleanReplacements, variables);
             }
             return newVersion;
         }
@@ -43,7 +43,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         private static string ReplaceFuncVariable(string input, string key, Func<string> value)
         {
-            string str = $"__{key}__";
+            string str = $"__[{key}]__";
             if (input.Contains(str))
             {
                 input = input.Replace(str, value());
@@ -51,7 +51,7 @@ namespace GRYLibrary.Core.Miscellaneous
             return input;
         }
 
-        private static string ReplaceBooleanVariable(string input, string variableName, bool enabled)
+        internal static string ReplaceBooleanVariable(string input, string variableName, bool enabled)
         {
             string result = input;
             if (enabled)
@@ -61,7 +61,7 @@ namespace GRYLibrary.Core.Miscellaneous
             }
             else
             {
-                result = Regex.Replace(result, @$"__\[{variableName}\]__(.|\n)*__\[\/{variableName}\]__", string.Empty);
+                result = Regex.Replace(result, @$"__\[{variableName}\]__(.|\n)*?__\[\/{variableName}\]__", string.Empty);
             }
             return result;
         }
