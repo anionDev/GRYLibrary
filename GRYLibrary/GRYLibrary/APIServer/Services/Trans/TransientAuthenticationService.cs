@@ -153,7 +153,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
                     string accessToken = splitted[1].Split('=')[1];
                     if (!string.IsNullOrEmpty(accessToken))
                     {
-                        bool accessTokenIsValid = AccessTokenIsValid(username, accessToken);
+                        bool accessTokenIsValid = this.AccessTokenIsValid(username, accessToken);
                         if (accessTokenIsValid)
                         {
                             principal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim> { new Claim(ClaimTypes.Name, username) }, "Basic"));

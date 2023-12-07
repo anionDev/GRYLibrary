@@ -1,4 +1,5 @@
 using GRYLibrary.Core.APIServer.Utilities;
+using GRYLibrary.Core.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using System.Linq;
@@ -23,10 +24,14 @@ namespace GRYLibrary.Core.APIServer.MidT
         public AuthorizeAttribute GetAuthorizeAttribute(HttpContext context)
         {
             Endpoint endPoint = context.GetEndpoint();
-            EndpointMetadataCollection metaData = endPoint.Metadata;
-            ControllerActionDescriptor controllerActionDescriptor = metaData.GetMetadata<ControllerActionDescriptor>();
-            System.Reflection.MethodInfo methodInfo = controllerActionDescriptor.MethodInfo;
-            AuthorizeAttribute authorizeAttribute = methodInfo.GetCustomAttributes(false).OfType<AuthorizeAttribute>().FirstOrDefault();
+            if(endPoint == null)
+            {
+                throw new BadRequestException(System.Net.HttpStatusCode.NotFound,"Not found");
+            }
+            EndpointMetadataCollection metaData = endPoint!=null? endPoint.Metadata:null;
+            ControllerActionDescriptor controllerActionDescriptor = metaData != null ? metaData.GetMetadata<ControllerActionDescriptor>() : null;
+            System.Reflection.MethodInfo methodInfo = controllerActionDescriptor != null ? controllerActionDescriptor.MethodInfo : null;
+            AuthorizeAttribute authorizeAttribute = methodInfo != null? methodInfo.GetCustomAttributes(false).OfType<AuthorizeAttribute>().FirstOrDefault():null;
             return authorizeAttribute;
         }
     }

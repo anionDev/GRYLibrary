@@ -97,14 +97,14 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         {
             if (context.User.Identity.IsAuthenticated)
             {
-                var user = _AuthenticationService.GetUserByName(context.User.Identity.Name);
+                var user = this._AuthenticationService.GetUserByName(context.User.Identity.Name);
                 var authorizedGroups = authorizedAttribute.Groups;
 
                 foreach (var authorizedGroup in authorizedGroups)
                 {
-                    if (_Groups.ContainsKey(authorizedGroup))
+                    if (this._Groups.ContainsKey(authorizedGroup))
                     {
-                        var group = _Groups[authorizedGroup];
+                        var group = this._Groups[authorizedGroup];
                         if (group.UserIds.Contains(user.User.Id))
                         {
                             return true;
