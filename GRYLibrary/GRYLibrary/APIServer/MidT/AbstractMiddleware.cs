@@ -26,7 +26,7 @@ namespace GRYLibrary.Core.APIServer.MidT
             Endpoint endPoint = context.GetEndpoint();
             if(endPoint == null)
             {
-                throw new BadRequestException(System.Net.HttpStatusCode.NotFound,"Not found");
+                throw new BadRequestException((int)System.Net.HttpStatusCode.NotFound,"Not found");
             }
             EndpointMetadataCollection metaData = endPoint!=null? endPoint.Metadata:null;
             ControllerActionDescriptor controllerActionDescriptor = metaData != null ? metaData.GetMetadata<ControllerActionDescriptor>() : null;

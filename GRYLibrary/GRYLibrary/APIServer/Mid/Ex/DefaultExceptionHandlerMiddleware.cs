@@ -1,5 +1,6 @@
 ﻿using GRYLibrary.Core.APIServer.MidT.Exception;
 using GRYLibrary.Core.Exceptions;
+using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Net;
@@ -9,8 +10,10 @@ namespace GRYLibrary.Core.APIServer.Mid.Ex
 {
     public class DefaultExceptionHandlerMiddleware : ExceptionManagerMiddleware
     {
-        public DefaultExceptionHandlerMiddleware(RequestDelegate next) : base(next)
+        private readonly IGeneralLogger _GeneralLogger;
+        public DefaultExceptionHandlerMiddleware(RequestDelegate next, IGeneralLogger logger) : base(next)
         {
+            this._GeneralLogger = logger;
         }
 
         protected async override Task HandleException(HttpContext context, Exception exception)
@@ -48,13 +51,14 @@ namespace GRYLibrary.Core.APIServer.Mid.Ex
             }
             if (exceptionForFormatting is BadRequestException badHttpRequestException)
             {
-                context.Response.StatusCode = (int)badHttpRequestException.HttpStatusCode;
+                context.Response.StatusCode = (int)badHttpRequestException.HTTPStatusCode;
             }
             else
             {
+                this._GeneralLogger.LogException(exceptionForFormatting, "Error while processing request");
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             }
-            (string ContentType, string bodyContent) = this.GetResonceContent(context.Response.StatusCode,context, exceptionForFormatting);
+            (string ContentType, string bodyContent) = this.GetResonceContent(context.Response.StatusCode, context, exceptionForFormatting);
             context.Response.ContentType = ContentType;
             await context.Response.WriteAsync(bodyContent);
             return;

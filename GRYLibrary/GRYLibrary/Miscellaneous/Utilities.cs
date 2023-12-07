@@ -38,6 +38,7 @@ using System.Xml.Xsl;
 using static GRYLibrary.Core.Miscellaneous.TableGenerator;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using GRYLibrary.Core.Logging.GRYLogger;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace GRYLibrary.Core.Miscellaneous
 {

@@ -5,23 +5,23 @@ namespace GRYLibrary.Core.Exceptions
 {
     public class BadRequestException : UserFormattedException
     {
-        public HttpStatusCode HttpStatusCode { get; }
-        public BadRequestException(HttpStatusCode httpStatusCode) : this(httpStatusCode, GetMessage(httpStatusCode))
+        public uint HTTPStatusCode { get; }
+        public BadRequestException(uint httpStatusCode) : this(httpStatusCode, GetMessage(httpStatusCode))
         {
         }
-        public BadRequestException(HttpStatusCode httpStatusCode, string message) : base(message)
+        public BadRequestException(uint httpStatusCode, string message) : base(message)
         {
-            GUtilities.AssertCondition(((int)httpStatusCode / 100)==4);
-            this.HttpStatusCode = httpStatusCode;
+            GUtilities.AssertCondition((httpStatusCode / 100)==4);
+            this.HTTPStatusCode = httpStatusCode;
         }
 
-        private static string GetMessage(HttpStatusCode httpStatusCode)
+        private static string GetMessage(uint httpStatusCode)
         {
-            if (httpStatusCode == HttpStatusCode.Unauthorized)
+            if (httpStatusCode == (int)HttpStatusCode.Unauthorized)
             {
                 return "Authentication required";
             }
-            else if (httpStatusCode == HttpStatusCode.Forbidden)
+            else if (httpStatusCode == (int)HttpStatusCode.Forbidden)
             {
                 return "Unauthorized";
             }

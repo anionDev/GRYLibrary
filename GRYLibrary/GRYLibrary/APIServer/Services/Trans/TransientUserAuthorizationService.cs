@@ -89,7 +89,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         {
             if (!this.IsAuthorized(action, user, secret))
             {
-                throw new BadRequestException(System.Net.HttpStatusCode.Forbidden, "Not authorized.");
+                throw new BadRequestException((int)System.Net.HttpStatusCode.Forbidden, "Not authorized.");
             }
         }
 

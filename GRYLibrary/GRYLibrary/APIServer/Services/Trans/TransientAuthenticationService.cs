@@ -57,7 +57,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         {
             if (!this.UserExists(username))
             {
-                throw new BadRequestException(System.Net.HttpStatusCode.BadRequest, "User does not exist.");
+                throw new BadRequestException((int)System.Net.HttpStatusCode.BadRequest, "User does not exist.");
             }
             UserBackendInformation user = this.GetUserByName(username);
             if (password == user.Password)
@@ -70,7 +70,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             }
             else
             {
-                throw new BadRequestException(System.Net.HttpStatusCode.Unauthorized, "Invalid password.");
+                throw new BadRequestException((int)System.Net.HttpStatusCode.Unauthorized, "Invalid password.");
             }
         }
 
@@ -78,7 +78,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         {
             if (this.UserExists(username))
             {
-                throw new BadRequestException(System.Net.HttpStatusCode.BadRequest, "User with this name already exists.");
+                throw new BadRequestException((int)System.Net.HttpStatusCode.BadRequest, "User with this name already exists.");
             }
             UserBackendInformation userBackendInformation = new UserBackendInformation()
             {
