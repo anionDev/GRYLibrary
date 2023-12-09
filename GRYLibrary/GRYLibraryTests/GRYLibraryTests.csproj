@@ -16,7 +16,7 @@
         <RootNamespace>GRYLibrary.Tests</RootNamespace>
         <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
         <Nullable>disable</Nullable>
-        <Configurations>Development;Productive;QualityCheck</Configurations>
+        <Configurations>Development;QualityCheck;Productive</Configurations>
         <IsTestProject>true</IsTestProject>
         <LangVersion>11.0</LangVersion>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
@@ -49,10 +49,10 @@
         <ErrorReport>none</ErrorReport>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Productive'">
-        <DebugType>portable</DebugType>
-        <DebugSymbols>true</DebugSymbols>
-        <Optimize>false</Optimize>
-        <DefineConstants>TRACE;QualityCheck</DefineConstants>
+        <DebugType>none</DebugType>
+        <DebugSymbols>false</DebugSymbols>
+        <Optimize>true</Optimize>
+        <DefineConstants>Productive</DefineConstants>
         <ErrorReport>none</ErrorReport>
     </PropertyGroup>
   <ItemGroup>
