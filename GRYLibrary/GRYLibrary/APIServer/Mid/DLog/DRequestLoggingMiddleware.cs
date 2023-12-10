@@ -143,7 +143,7 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
             {
                 return true;
             }
-            if (IsIgnored(request.Route))
+            if (this.IsIgnored(request.Route))
             {
                 return false;
             }
