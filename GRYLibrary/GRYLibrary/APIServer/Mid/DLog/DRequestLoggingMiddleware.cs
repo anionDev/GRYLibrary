@@ -17,15 +17,15 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
     /// <summary>
     /// Represents a middleware which logs the requests.
     /// </summary>
-    public class RRequestLoggingMiddleware : LoggingMiddleware
+    public class DRequestLoggingMiddleware : RequestLoggingMiddleware
     {
         private readonly IGeneralLogger _RequestLogger;
         private readonly IGeneralLogger _Logger;
-        private readonly IRequestLoggingConfiguration _RequestLoggingSettings;
+        private readonly IDRequestLoggingConfiguration _RequestLoggingSettings;
         private readonly IApplicationConstants _AppConstants;
         private readonly Encoding _Encoding = new UTF8Encoding(false);
         /// <inheritdoc/>
-        public RRequestLoggingMiddleware(RequestDelegate next, IRequestLoggingConfiguration requestLoggingSettings, IApplicationConstants appConstants, IGeneralLogger logger) : base(next)
+        public DRequestLoggingMiddleware(RequestDelegate next, IDRequestLoggingConfiguration requestLoggingSettings, IApplicationConstants appConstants, IGeneralLogger logger) : base(next)
         {
             this._RequestLoggingSettings = requestLoggingSettings;
             this._AppConstants = appConstants;

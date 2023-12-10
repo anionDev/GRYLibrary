@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace GRYLibrary.Core.APIServer.MidT.RLog
 {
     /// <summary>
-    /// Configuration for <see cref="LoggingMiddleware"/>
+    /// Configuration for <see cref="RequestLoggingMiddleware"/>
     /// </summary>
-    public class LoggingConfiguration : ILoggingConfiguration
+    public class RequestLoggingConfiguration : IRequestLoggingConfiguration
     {
         public bool Enabled { get; set; } = true;
 

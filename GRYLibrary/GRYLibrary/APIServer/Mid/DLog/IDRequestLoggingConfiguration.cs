@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace GRYLibrary.Core.APIServer.Mid.DLog
 {
-    public interface IRequestLoggingConfiguration : ILoggingConfiguration
+    public interface IDRequestLoggingConfiguration : IRequestLoggingConfiguration
     {
         public bool AddMillisecondsInLogTimestamps { get; set; }
         public bool LogClientIP { get; set; }

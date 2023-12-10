@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace GRYLibrary.Core.APIServer.Mid.DLog
 {
-    public class RequestLoggingConfiguration : IRequestLoggingConfiguration
+    public class DRequestLoggingConfiguration : IDRequestLoggingConfiguration
     {
         public bool AddMillisecondsInLogTimestamps { get; set; } = false;
         public GRYLogConfiguration RequestsLogConfiguration { get; set; } = GRYLogConfiguration.GetCommonConfiguration(AbstractFilePath.FromString("./Requests.log"));

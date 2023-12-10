@@ -6,9 +6,9 @@ namespace GRYLibrary.Core.APIServer.MidT.RLog
     /// <summary>
     /// Represents a middleware which logs the HTTP-requests.
     /// </summary>
-    public abstract class LoggingMiddleware : AbstractMiddleware
+    public abstract class RequestLoggingMiddleware : AbstractMiddleware
     {
-        public LoggingMiddleware(RequestDelegate next) : base(next)
+        public RequestLoggingMiddleware(RequestDelegate next) : base(next)
         {
         }
         /// <inheritdoc/>
