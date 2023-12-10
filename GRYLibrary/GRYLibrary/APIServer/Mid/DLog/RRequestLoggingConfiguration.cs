@@ -13,6 +13,7 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
         public bool LogClientIP { get; set; } = true;
         public uint MaximalLengthofRequestBodies { get; set; } = 4000;
         public uint MaximalLengthofResponseBodies { get; set; } = 4000;
+        public ISet<string> NotLoggedRoutes { get; set; } = new HashSet<string>();
 
 
         public ISet<FilterDescriptor> GetFilter()

@@ -10,6 +10,7 @@ using System.Text;
 using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using GRYLibrary.Core.Logging.GRYLogger;
 using GRYLibrary.Core.APIServer.MidT.RLog;
+using System.Text.RegularExpressions;
 
 namespace GRYLibrary.Core.APIServer.Mid.DLog
 {
@@ -82,7 +83,7 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
                     this._RequestLogger.AddLogEntry(logItem);
                 }
             }
-            catch (System.Exception exception)
+            catch (Exception exception)
             {
                 this._Logger.LogException(exception, "Error while logging request.");
             }
@@ -102,7 +103,23 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
 
         public virtual bool ShouldLogEntireRequestContentInLogFile(Request request)
         {
-            return request.ResponseStatusCode / 100 == 5;
+            if (request.ResponseStatusCode / 100 == 5)
+            {
+                return true;
+            }
+            return true;
+        }
+
+        private bool IsIgnored(string route)
+        {
+            foreach (var notLoggedRoute in this._RequestLoggingSettings.NotLoggedRoutes)
+            {
+                if (Regex.IsMatch(route, notLoggedRoute))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public virtual string FormatLogEntryFull(Request request, uint maximalLengthofRequestBodies, uint maximalLengthofResponseBodies)
@@ -122,6 +139,14 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
 
         public virtual bool ShouldBeLogged(Request request)
         {
+            if (request.ResponseStatusCode / 100 == 5)
+            {
+                return true;
+            }
+            if (IsIgnored(request.Route))
+            {
+                return false;
+            }
             return true;
         }
         public virtual string FormatLogEntrySummary(Request request)
