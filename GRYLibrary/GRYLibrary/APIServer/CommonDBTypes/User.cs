@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 
 namespace GRYLibrary.Core.APIServer.CommonDBTypes
 {
@@ -9,6 +8,5 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public string Name { get; set; }
-        public ISet<string> Groups { get; set; } = new HashSet<string>();
     }
 }

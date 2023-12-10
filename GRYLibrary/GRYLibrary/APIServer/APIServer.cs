@@ -1,16 +1,14 @@
 ﻿using GRYLibrary.Core.APIServer.CommonRoutes;
 using GRYLibrary.Core.APIServer.ConcreteEnvironments;
-using GRYLibrary.Core.APIServer.Mid;
-using GRYLibrary.Core.APIServer.Mid.Auth;
-using GRYLibrary.Core.APIServer.Mid.Aut;
-using GRYLibrary.Core.APIServer.Mid.Blacklist;
-using GRYLibrary.Core.APIServer.Mid.Captcha;
-using GRYLibrary.Core.APIServer.Mid.DDOS;
-using GRYLibrary.Core.APIServer.Mid.Exception;
-using GRYLibrary.Core.APIServer.Mid.Obfuscation;
-using GRYLibrary.Core.APIServer.Mid.Counter;
-using GRYLibrary.Core.APIServer.Mid.Logging;
-using GRYLibrary.Core.APIServer.Mid.WAF;
+using GRYLibrary.Core.APIServer.MidT;
+using GRYLibrary.Core.APIServer.MidT.Auth;
+using GRYLibrary.Core.APIServer.MidT.Blacklist;
+using GRYLibrary.Core.APIServer.MidT.Captcha;
+using GRYLibrary.Core.APIServer.MidT.DDOS;
+using GRYLibrary.Core.APIServer.MidT.Exception;
+using GRYLibrary.Core.APIServer.MidT.Obfuscation;
+using GRYLibrary.Core.APIServer.MidT.Counter;
+using GRYLibrary.Core.APIServer.MidT.WAF;
 using GRYLibrary.Core.APIServer.ExecutionModes;
 using GRYLibrary.Core.APIServer.Settings;
 using GRYLibrary.Core.APIServer.Settings.Configuration;
@@ -35,6 +33,7 @@ using GRYLibrary.Core.Miscellaneous.MetaConfiguration;
 using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 using GRYLibrary.Core.APIServer.Utilities;
 using GRYLibrary.Core.Logging.GeneralPurposeLogger;
+using GRYLibrary.Core.APIServer.MidT.RLog;
 
 namespace GRYLibrary.Core.APIServer
 {
@@ -62,7 +61,7 @@ namespace GRYLibrary.Core.APIServer
             apiServerConfiguration.InitializationInformation.BaseFolder = GetDefaultBaseFolder(apiServerConfiguration.InitializationInformation.ApplicationConstants);
             apiServerConfiguration.InitializationInformation.ApplicationConstants.Initialize(apiServerConfiguration.InitializationInformation.BaseFolder);
             apiServerConfiguration.InitializationInformation.ApplicationConstants.KnownTypes.Add(typeof(PersistedApplicationSpecificConfiguration));
-            apiServerConfiguration.InitializationInformation.InitialApplicationConfiguration = PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>.Create(new PersistedApplicationSpecificConfiguration(), gryConsoleApplicationInitialInformation.Environment, apiServerConfiguration.InitializationInformation.ApplicationConstants.ApplicationName, apiServerConfiguration.InitializationInformation.ApplicationConstants.GetCertificateFolder());
+            apiServerConfiguration.InitializationInformation.InitialApplicationConfiguration = PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>.Create(new PersistedApplicationSpecificConfiguration(), gryConsoleApplicationInitialInformation.Environment);
             apiServerConfiguration.InitializationInformation.BasicInformationFile = AbstractFilePath.FromString("./BasicApplicationInformation.xml");
 
             apiServerConfiguration.SetInitialzationInformationAction(apiServerConfiguration.InitializationInformation);
@@ -150,9 +149,9 @@ namespace GRYLibrary.Core.APIServer
                 logger.Log($"Executionmode: {this._Configuration.InitializationInformation.ApplicationConstants.ExecutionMode}", LogLevel.Debug);
                 this.EnsureCertificateIsAvailableIfRequired(persistedAPIServerConfiguration);
                 WebApplication webApplication = this.CreateWebApplication(config, logger, persistedAPIServerConfiguration);
-                this._Configuration.FunctionalInformation.PreRun();
-                this.RunAPIServer(webApplication);
-                this._Configuration.FunctionalInformation.PostRun();
+                this._Configuration.FunctionalInformation.PreRun(webApplication);
+                webApplication.Run();
+                this._Configuration.FunctionalInformation.PostRun(webApplication);
                 return 0;
             }
             catch (Exception exception)
@@ -174,7 +173,7 @@ namespace GRYLibrary.Core.APIServer
                 EnvironmentName = this._Configuration.InitializationInformation.ApplicationConstants.Environment.GetType().Name
             });
             IMvcBuilder mvcBuilder = builder.Services.AddControllers();
-            if (this._Configuration.InitializationInformation.ApplicationConstants.CommonRoutes is HostCommonRoutes)
+            if (this._Configuration.InitializationInformation.ApplicationConstants.CommonRoutesInformation is HostCommonRoutes)
             {
                 mvcBuilder.AddApplicationPart(typeof(CommonRoutesController).Assembly);
             }
@@ -188,7 +187,8 @@ namespace GRYLibrary.Core.APIServer
             apiServerConfiguration.FunctionalInformation = new FunctionalInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>(
                 apiServerConfiguration.InitializationInformation,
                 builder,
-                persistedAPIServerConfiguration
+                persistedAPIServerConfiguration,
+                logger
             );
             apiServerConfiguration.SetFunctionalInformationAction(apiServerConfiguration.FunctionalInformation);
 
@@ -200,25 +200,25 @@ namespace GRYLibrary.Core.APIServer
             #region General Threat-Protection
             if (this._Configuration.InitializationInformation.ApplicationConstants.Environment is not Development)
             {
-                this.AddDefinedMiddleware((ISupportDDOSProtectionMiddleware c) => c.ConfigurationForDDOSProtection, this._Configuration.InitializationInformation.ApplicationConstants.DDOSProtectionMiddleware, persistedApplicationSpecificConfiguration, middlewares);
-                this.AddDefinedMiddleware((ISupportBlacklistMiddleware c) => c.ConfigurationForBlacklistMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.BlackListMiddleware, persistedApplicationSpecificConfiguration, middlewares);
+                this.AddDefinedMiddleware((ISupportDDOSProtectionMiddleware c) => c.ConfigurationForDDOSProtection, this._Configuration.InitializationInformation.ApplicationConstants.DDOSProtectionMiddleware, persistedApplicationSpecificConfiguration, middlewares, logger);
+                this.AddDefinedMiddleware((ISupportBlacklistMiddleware c) => c.ConfigurationForBlacklistMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.BlackListMiddleware, persistedApplicationSpecificConfiguration, middlewares, logger);
             }
-            this.AddDefinedMiddleware((ISupportRequestLoggingMiddleware c) => c.ConfigurationForRequestLoggingMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.RequestLoggingMiddleware, persistedApplicationSpecificConfiguration, middlewares);
+            this.AddDefinedMiddleware((ISupportRequestLoggingMiddleware c) => c.ConfigurationForLoggingMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.LoggingMiddleware, persistedApplicationSpecificConfiguration, middlewares, logger);
             if (this._Configuration.InitializationInformation.ApplicationConstants.Environment is not Development)
             {
-                this.AddDefinedMiddleware((ISupportWebApplicationFirewallMiddleware c) => c.ConfigurationForWebApplicationFirewall, this._Configuration.InitializationInformation.ApplicationConstants.WebApplicationFirewallMiddleware, persistedApplicationSpecificConfiguration, middlewares);
-                this.AddDefinedMiddleware((ISupportObfuscationMiddleware c) => c.ConfigurationForObfuscationMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.ObfuscationMiddleware, persistedApplicationSpecificConfiguration, middlewares);
-                this.AddDefinedMiddleware((ISupportCaptchaMiddleware c) => c.ConfigurationForCaptchaMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.CaptchaMiddleware, persistedApplicationSpecificConfiguration, middlewares);
-                this.AddDefinedMiddleware((ISupportExceptionManagerMiddleware c) => c.ConfigurationForExceptionManagerMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.ExceptionManagerMiddleware, persistedApplicationSpecificConfiguration, middlewares);
+                this.AddDefinedMiddleware((ISupportWebApplicationFirewallMiddleware c) => c.ConfigurationForWebApplicationFirewall, this._Configuration.InitializationInformation.ApplicationConstants.WebApplicationFirewallMiddleware, persistedApplicationSpecificConfiguration, middlewares, logger);
+                this.AddDefinedMiddleware((ISupportObfuscationMiddleware c) => c.ConfigurationForObfuscationMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.ObfuscationMiddleware, persistedApplicationSpecificConfiguration, middlewares, logger);
+                this.AddDefinedMiddleware((ISupportCaptchaMiddleware c) => c.ConfigurationForCaptchaMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.CaptchaMiddleware, persistedApplicationSpecificConfiguration, middlewares, logger);
             }
+            this.AddDefinedMiddleware((ISupportExceptionManagerMiddleware c) => c.ConfigurationForExceptionManagerMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.ExceptionManagerMiddleware, persistedApplicationSpecificConfiguration, middlewares, logger);
             #endregion
 
             #region Bussiness-implementation
-            this.AddDefinedMiddleware((ISupportAuthenticationMiddleware c) => c.ConfigurationForAuthenticationMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.AuthenticationMiddleware, persistedApplicationSpecificConfiguration, businessMiddleware);
-            this.AddDefinedMiddleware((ISupportAuthorizationMiddleware c) => c.ConfigurationForAuthorizationMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.AuthorizationMiddleware, persistedApplicationSpecificConfiguration, businessMiddleware);
+            this.AddDefinedMiddleware((ISupportAuthenticationMiddleware c) => c.ConfigurationForAuthenticationMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.AuthenticationMiddleware, persistedApplicationSpecificConfiguration, businessMiddleware, logger);
+            this.AddDefinedMiddleware((ISupportAuthorizationMiddleware c) => c.ConfigurationForAuthorizationMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.AuthorizationMiddleware, persistedApplicationSpecificConfiguration, businessMiddleware, logger);
             if (this._Configuration.InitializationInformation.ApplicationConstants.Environment is not Development)
             {
-                this.AddDefinedMiddleware((ISupportRequestCounterMiddleware c) => c.ConfigurationForRequestCounterMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.RequestCounterMiddleware, persistedApplicationSpecificConfiguration, businessMiddleware);
+                this.AddDefinedMiddleware((ISupportRequestCounterMiddleware c) => c.ConfigurationForRequestCounterMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.RequestCounterMiddleware, persistedApplicationSpecificConfiguration, businessMiddleware, logger);
             }
             foreach (Type customMiddleware in this._Configuration.InitializationInformation.ApplicationConstants.CustomMiddlewares)
             {
@@ -252,7 +252,6 @@ namespace GRYLibrary.Core.APIServer
                     }
                 });
             });
-
             string appVersionString = $"v{this._Configuration.InitializationInformation.ApplicationConstants.ApplicationVersion}";
             builder.Services.AddControllers(mvcOptions => mvcOptions.UseGeneralRoutePrefix(ServerConfiguration.APIRoutePrefix));
             builder.Services.AddControllers();
@@ -273,7 +272,7 @@ namespace GRYLibrary.Core.APIServer
                         Title = apiUITitle,
                         Description = this._Configuration.InitializationInformation.ApplicationConstants.ApplicationDescription,
                     };
-                    if (this._Configuration.InitializationInformation.ApplicationConstants.CommonRoutes is HostCommonRoutes)
+                    if (this._Configuration.InitializationInformation.ApplicationConstants.CommonRoutesInformation is HostCommonRoutes)
                     {
                         openAPIInfo.TermsOfService = new Uri(persistedApplicationSpecificConfiguration.ServerConfiguration.GetServerAddress() + ServerConfiguration.TermsOfServiceURLSubPath);
                         openAPIInfo.Contact = new OpenApiContact
@@ -295,7 +294,7 @@ namespace GRYLibrary.Core.APIServer
             }
             builder.Services.AddLogging(c => c.ClearProviders());
             WebApplication app = builder.Build();
-
+            app.UseRouting();
             #region Add middlewares
             foreach (Type middleware in middlewares)
             {
@@ -304,10 +303,6 @@ namespace GRYLibrary.Core.APIServer
             if (persistedApplicationSpecificConfiguration.ServerConfiguration.Protocol is HTTPS)
             {
                 app.UseHsts();
-            }
-            if (this._Configuration.InitializationInformation.ApplicationConstants.Environment is Development)
-            {
-                app.UseDeveloperExceptionPage();
             }
             foreach (Type middleware in businessMiddleware)
             {
@@ -336,7 +331,6 @@ namespace GRYLibrary.Core.APIServer
             }
             #endregion
 
-            app.UseRouting();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
             apiServerConfiguration.FunctionalInformationForWebApplication = new FunctionalInformationForWebApplication<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>(
                 apiServerConfiguration.InitializationInformation,
@@ -354,22 +348,35 @@ namespace GRYLibrary.Core.APIServer
             Func<SupportDefinedMiddlewareType, IMiddlewareConfiguration> getMiddlewareConfiguration,
             Type middlewareType,
             IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration,
-            List<Type> middlewares
+            List<Type> middlewares,
+            IGeneralLogger logger
         ) where SupportDefinedMiddlewareType : ISupportedMiddleware
         {
             if (persistedApplicationSpecificConfiguration.ApplicationSpecificConfiguration is SupportDefinedMiddlewareType supportDefinedMiddlewareType)
             {
                 IMiddlewareConfiguration middlewareConfiguration = getMiddlewareConfiguration(supportDefinedMiddlewareType);
-                if (middlewareConfiguration.Enabled)
+                if (middlewareConfiguration == null)
                 {
-                    this._Configuration.FunctionalInformation.Filter.UnionWith(middlewareConfiguration.GetFilter());
-                    if (middlewareType == null)
+                    throw new NullReferenceException($"No middleware-configuration given for {typeof(SupportDefinedMiddlewareType).FullName}.");
+                }
+                else
+                {
+                    if (middlewareConfiguration.Enabled)
                     {
-                        throw new NullReferenceException($"No middleware-type given for {typeof(SupportDefinedMiddlewareType).FullName}.");
+                        this._Configuration.FunctionalInformation.Filter.UnionWith(middlewareConfiguration.GetFilter());
+                        if (middlewareType == null)
+                        {
+                            throw new NullReferenceException($"No middleware-type given for {typeof(SupportDefinedMiddlewareType).FullName}.");
+                        }
+                        else
+                        {
+                            middlewares.Add(middlewareType);
+                            logger.Log($"Added middleware {middlewareType.FullName}.", LogLevel.Debug);
+                        }
                     }
                     else
                     {
-                        middlewares.Add(middlewareType);
+                        logger.Log($"Middleware {middlewareType.FullName} is disabled.", LogLevel.Debug);
                     }
                 }
             }
@@ -450,11 +457,6 @@ namespace GRYLibrary.Core.APIServer
             GUtilities.EnsureDirectoryExists(this._Configuration.InitializationInformation.ApplicationConstants.GetConfigurationFolder());
             GUtilities.EnsureDirectoryExists(this._Configuration.InitializationInformation.ApplicationConstants.GetLogFolder());
             GUtilities.EnsureDirectoryExists(this._Configuration.InitializationInformation.ApplicationConstants.GetCertificateFolder());
-        }
-
-        private void RunAPIServer(WebApplication server)
-        {
-            server.Run();
         }
     }
 }

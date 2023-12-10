@@ -68,6 +68,7 @@ namespace GRYLibrary.Core.APIServer.BaseServices
 
         public virtual void Dispose()
         {
+            GUtilities.NoOperation();
         }
     }
 }

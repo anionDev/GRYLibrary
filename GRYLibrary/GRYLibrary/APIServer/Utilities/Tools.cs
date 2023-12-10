@@ -7,7 +7,6 @@ using GRYLibrary.Core.Miscellaneous.ConsoleApplication;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.IO;
-using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.APIServer.Utilities
 {
@@ -22,8 +21,8 @@ namespace GRYLibrary.Core.APIServer.Utilities
             {
                 context.Response.Body = intermediateResponseBody;
 
-                Task result = next(context);
-                result.Wait();
+              //  Task result = next(context);
+              //  result.Wait();
 
                 //read response body
                 intermediateResponseBody.Position = 0;

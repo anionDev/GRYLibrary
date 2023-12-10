@@ -20,7 +20,7 @@ namespace GRYLibrary.Core.APIServer.Settings.Configuration
         public ServerConfiguration ServerConfiguration { get; set; }
         public GRYLogConfiguration ApplicationLogConfiguration { get; set; }
         public PersistedApplicationSpecificConfiguration ApplicationSpecificConfiguration { get; set; }
-        public static PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> Create<PersistedAppSpecificConfiguration>(PersistedAppSpecificConfiguration persistedApplicationSpecificConfiguration, GRYEnvironment environment, string codeunitName, string certificateFolder)
+        public static PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> Create<PersistedAppSpecificConfiguration>(PersistedAppSpecificConfiguration persistedApplicationSpecificConfiguration, GRYEnvironment environment)
             where PersistedAppSpecificConfiguration : new()
         {
             ServerConfiguration serverConfiguration = new ServerConfiguration();

@@ -51,7 +51,7 @@ namespace GRYLibrary.Core.Miscellaneous
             return input;
         }
 
-        private static string ReplaceBooleanVariable(string input, string variableName, bool enabled)
+        internal static string ReplaceBooleanVariable(string input, string variableName, bool enabled)
         {
             string result = input;
             if (enabled)
@@ -61,7 +61,7 @@ namespace GRYLibrary.Core.Miscellaneous
             }
             else
             {
-                result = Regex.Replace(result, @$"__\[{variableName}\]__(.|\n)*__\[\/{variableName}\]__", string.Empty);
+                result = Regex.Replace(result, @$"__\[{variableName}\]__(.|\n)*?__\[\/{variableName}\]__", string.Empty);
             }
             return result;
         }
