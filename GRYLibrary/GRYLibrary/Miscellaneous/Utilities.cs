@@ -1795,7 +1795,7 @@ namespace GRYLibrary.Core.Miscellaneous
             if (hidePassword)
             {
                 string replaceString = "********";
-                connectionString = Regex.Replace(connectionString, @"Pwd=([^;]+)(;|$)", match => $"Pwd={replaceString}{match.Groups[2]}");
+                connectionString = Regex.Replace(connectionString, @"(PWD|Pwd)=([^;]+)(;|$)", match => $"{match.Groups[1]}={replaceString}{match.Groups[3]}");
             }
             return connectionString;
         }
@@ -3070,11 +3070,11 @@ namespace GRYLibrary.Core.Miscellaneous
             string result = amount.ToString(CultureInfo.InvariantCulture);
             if (result.Contains('.'))
             {
-                while (result.EndsWith("0"))
+                while (result.EndsWith('0'))
                 {
                     result = result.Remove(result.Length - 1);
                 }
-                if (result.EndsWith("."))
+                if (result.EndsWith('.'))
                 {
                     result = result + "0";
                 }

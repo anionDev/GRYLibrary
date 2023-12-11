@@ -2,11 +2,15 @@
 using GRYLibrary.Core.APIServer.ExecutionModes;
 using GRYLibrary.Core.APIServer.Settings;
 using GRYLibrary.Core.APIServer.Settings.Configuration;
+using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using GRYLibrary.Core.Miscellaneous;
 using GRYLibrary.Core.Miscellaneous.ConsoleApplication;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 using System;
 using System.IO;
+using System.Threading;
 
 namespace GRYLibrary.Core.APIServer.Utilities
 {
@@ -21,8 +25,8 @@ namespace GRYLibrary.Core.APIServer.Utilities
             {
                 context.Response.Body = intermediateResponseBody;
 
-              //  Task result = next(context);
-              //  result.Wait();
+                //  Task result = next(context);
+                //  result.Wait();
 
                 //read response body
                 intermediateResponseBody.Position = 0;
@@ -64,6 +68,28 @@ namespace GRYLibrary.Core.APIServer.Utilities
         {
             GRYConsoleApplication<GCodeUnitSpecificCommandlineParameter, APIServerConfiguration<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>> consoleApp = new GRYConsoleApplication<GCodeUnitSpecificCommandlineParameter, APIServerConfiguration<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>>(APIServer<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>.APIMain, codeUnitName, codeUnitVersion.ToString(), codeUnitDescription, true, executionMode, environmentTargetType, true);
             return consoleApp.Main(commandlineArguments, initializer);
+        }
+        public static void ConnectToDatabase(Action connectAction, IGeneralLogger logger, string adaptedConnectionString)
+        {
+            bool connected = false;
+            while (!connected)
+            {
+                try
+                {
+                    logger.Log($"Connect to database using connection-string \"{adaptedConnectionString}\".", LogLevel.Information);
+                    connectAction();
+                    logger.Log($"Connected successfully.", LogLevel.Information);
+                    connected = true;
+                }
+                catch (Exception exception)
+                {
+                    logger.Log($"Could not connect to database. Exception-message: {exception.Message}", LogLevel.Warning);
+                }
+                finally
+                {
+                    Thread.Sleep(TimeSpan.FromSeconds(5));
+                }
+            }
         }
     }
 }
