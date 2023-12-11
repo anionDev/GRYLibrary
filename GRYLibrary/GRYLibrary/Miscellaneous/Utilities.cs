@@ -1795,7 +1795,7 @@ namespace GRYLibrary.Core.Miscellaneous
             if (hidePassword)
             {
                 string replaceString = "********";
-                connectionString = Regex.Replace(connectionString, @"Pwd=([^;]+)(;|$)", match => $"Pwd={replaceString}{match.Groups[2]}");
+                connectionString = Regex.Replace(connectionString, @"(PWD|Pwd)=([^;]+)(;|$)", match => $"Pwd={replaceString}{match.Groups[2]}");
             }
             return connectionString;
         }
