@@ -11,12 +11,13 @@ using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 using System;
 using System.IO;
 using System.Threading;
+using GRYLibrary.Core.Logging.GRYLogger;
 
 namespace GRYLibrary.Core.APIServer.Utilities
 {
     public static class Tools
     {
-        public static (byte[] requestBody, byte[] responsetBody) ExecuteAndGetBody(RequestDelegate next, HttpContext context, Func<byte[], byte[]> responseBodyUpdater = null)
+        public static (byte[] requestBody, byte[] responsetBody) ExecuteAndGetBody(HttpContext context, Func<byte[], byte[]> responseBodyUpdater = null)
         {
             byte[] requestBody = GetRequestBody(context);
             byte[] responseBody;
@@ -25,12 +26,9 @@ namespace GRYLibrary.Core.APIServer.Utilities
             {
                 context.Response.Body = intermediateResponseBody;
 
-                //  Task result = next(context);
-                //  result.Wait();
-
                 //read response body
                 intermediateResponseBody.Position = 0;
-                responseBody = Miscellaneous.Utilities.StreamToByteArray(intermediateResponseBody);
+                responseBody = GUtilities.StreamToByteArray(intermediateResponseBody);
                 if (responseBodyUpdater != null)
                 {
                     responseBody = responseBodyUpdater(responseBody);
@@ -53,7 +51,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
         public static byte[] GetRequestBody(HttpContext context)
         {
             context.Request.EnableBuffering();
-            byte[] result = Miscellaneous.Utilities.StreamToByteArray(context.Request.Body);
+            byte[] result = GUtilities.StreamToByteArray(context.Request.Body);
             context.Request.Body = new MemoryStream(result);
             return result;
         }
@@ -76,18 +74,18 @@ namespace GRYLibrary.Core.APIServer.Utilities
             {
                 try
                 {
-                    logger.Log($"Connect to database using connection-string \"{adaptedConnectionString}\".", LogLevel.Information);
+                    logger.Log($"Try to connect to database using connection-string \"{adaptedConnectionString}\".", LogLevel.Debug);
                     connectAction();
                     logger.Log($"Connected successfully.", LogLevel.Information);
                     connected = true;
                 }
                 catch (Exception exception)
                 {
-                    logger.Log($"Could not connect to database. Exception-message: {exception.Message}", LogLevel.Warning);
+                    logger.LogException(exception, "Could not connect to database.", LogLevel.Warning);
                 }
                 finally
                 {
-                    Thread.Sleep(TimeSpan.FromSeconds(5));
+                    Thread.Sleep(TimeSpan.FromSeconds(10));
                 }
             }
         }

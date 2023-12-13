@@ -62,7 +62,11 @@ namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
         }
         public static void LogException(this IGeneralLogger logger, Exception exception, string message)
         {
-            LogItem logItem = new LogItem(message, exception);
+            logger.LogException(exception, message, LogLevel.Error);
+        }
+        public static void LogException(this IGeneralLogger logger, Exception exception, string message, LogLevel logLevel)
+        {
+            LogItem logItem = new LogItem(message, logLevel, exception);
             logger.AddLogEntry(logItem);
         }
 

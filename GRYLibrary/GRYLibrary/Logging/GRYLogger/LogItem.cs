@@ -209,7 +209,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
             {
                 message = "An exception occurred.";
             }
-            if (!(message.EndsWith(".") | message.EndsWith("?") | message.EndsWith(":") | message.EndsWith("!")))
+            if (!(message.EndsWith('.') | message.EndsWith('?') | message.EndsWith(':') | message.EndsWith('!')))
             {
                 message += ".";
             }

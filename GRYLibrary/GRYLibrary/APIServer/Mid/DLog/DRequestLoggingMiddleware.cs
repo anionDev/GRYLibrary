@@ -37,7 +37,7 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
         protected override void Log(HttpContext context)
         {
             DateTime moment = GUtilities.GetNow();
-            (byte[] requestBodyB, byte[] responseBodyB) = Tools.ExecuteAndGetBody(this._Next, context);
+            (byte[] requestBodyB, byte[] responseBodyB) = Tools.ExecuteAndGetBody(context);
             string requestBody = this.BytesToString(requestBodyB);
             string responseBody = this.BytesToString(responseBodyB);
             string requestRoute = context.Request.Path;
