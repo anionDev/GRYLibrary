@@ -21,17 +21,17 @@ namespace GRYLibrary.Core.APIServer.MidT
             this._Next = next;
         }
         public abstract Task Invoke(HttpContext context);
+        public bool EndPointAvailable(HttpContext context)
+        {
+            return context.GetEndpoint() != null;
+        }
         public AuthorizeAttribute GetAuthorizeAttribute(HttpContext context)
         {
-            Endpoint endPoint = context.GetEndpoint();
-            if(endPoint == null)
-            {
-                throw new BadRequestException((int)System.Net.HttpStatusCode.NotFound,"Not found");
-            }
-            EndpointMetadataCollection metaData = endPoint!=null? endPoint.Metadata:null;
-            ControllerActionDescriptor controllerActionDescriptor = metaData != null ? metaData.GetMetadata<ControllerActionDescriptor>() : null;
-            System.Reflection.MethodInfo methodInfo = controllerActionDescriptor != null ? controllerActionDescriptor.MethodInfo : null;
-            AuthorizeAttribute authorizeAttribute = methodInfo != null? methodInfo.GetCustomAttributes(false).OfType<AuthorizeAttribute>().FirstOrDefault():null;
+            Endpoint endPoint = context.GetEndpoint() ?? throw new BadRequestException((int)System.Net.HttpStatusCode.NotFound, "Not found");
+            EndpointMetadataCollection metaData = endPoint?.Metadata;
+            ControllerActionDescriptor controllerActionDescriptor = metaData?.GetMetadata<ControllerActionDescriptor>();
+            System.Reflection.MethodInfo methodInfo = controllerActionDescriptor?.MethodInfo;
+            AuthorizeAttribute authorizeAttribute = methodInfo?.GetCustomAttributes(false).OfType<AuthorizeAttribute>().FirstOrDefault();
             return authorizeAttribute;
         }
     }

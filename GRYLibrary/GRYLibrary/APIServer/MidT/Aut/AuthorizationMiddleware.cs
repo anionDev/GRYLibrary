@@ -11,8 +11,15 @@ namespace GRYLibrary.Core.APIServer.MidT.Auth
         }
         public virtual bool AuthorizationIsRequired(HttpContext context)
         {
-            AuthorizeAttribute authorizeAttribute = this.GetAuthorizeAttribute(context);
-            return authorizeAttribute != null;
+            if (this.EndPointAvailable(context))
+            {
+                AuthorizeAttribute authorizeAttribute = this.GetAuthorizeAttribute(context);
+                return authorizeAttribute != null;
+            }
+            else
+            {
+                return false;
+            }
         }
         protected abstract bool IsAuthorized(HttpContext context);
         public override Task Invoke(HttpContext context)
