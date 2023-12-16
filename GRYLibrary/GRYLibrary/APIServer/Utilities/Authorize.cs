@@ -8,6 +8,9 @@ namespace GRYLibrary.Core.APIServer.Utilities
     public class AuthorizeAttribute : Attribute
     {
         public ISet<string> Groups { get; private set; }
+        public AuthorizeAttribute() : this(null)
+        {
+        }
         public AuthorizeAttribute(string groups)
         {
             if (groups == null || string.IsNullOrEmpty(groups))
