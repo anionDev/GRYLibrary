@@ -91,6 +91,10 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             return this.ToDateTime().CompareTo(obj);
         }
+        public GRYDateTime ToFullHour()
+        {
+            return new GRYDateTime(this.Year, this.Month, this.Day, this.Hour, 0, 0);
+        }
 
         public static bool operator ==(GRYDateTime left, GRYDateTime right)
         {
@@ -101,10 +105,12 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             return !(left == right);
         }
+
         public static GRYDateTime operator +(GRYDateTime left, TimeSpan right)
         {
             return FromDateTime(left.ToDateTime() + right);
         }
+
         public static GRYDateTime operator -(GRYDateTime left, TimeSpan right)
         {
             return FromDateTime(left.ToDateTime() - right);
@@ -114,14 +120,17 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             return left.ToDateTime() < right.ToDateTime();
         }
+
         public static bool operator >(GRYDateTime left, GRYDateTime right)
         {
             return left.ToDateTime() > right.ToDateTime();
         }
+
         public static bool operator <=(GRYDateTime left, GRYDateTime right)
         {
             return left.ToDateTime() <= right.ToDateTime();
         }
+
         public static bool operator >=(GRYDateTime left, GRYDateTime right)
         {
             return left.ToDateTime() >= right.ToDateTime();
