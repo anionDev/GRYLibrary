@@ -2208,10 +2208,7 @@ namespace GRYLibrary.Core.Miscellaneous
             return (ModelBindingContext bindingContext) =>
             {
                 //see https://learn.microsoft.com/de-de/aspnet/core/mvc/advanced/custom-model-binding?view=aspnetcore-7.0
-                if (bindingContext == null)
-                {
-                    throw new ArgumentNullException(nameof(bindingContext));
-                }
+                ArgumentNullException.ThrowIfNull(bindingContext);
                 string modelName = bindingContext.ModelName;
                 ValueProviderResult values = bindingContext.ValueProvider.GetValue("moment");
                 ValueProviderResult values2 = bindingContext.ValueProvider.GetValue("{moment}");
@@ -2861,10 +2858,11 @@ namespace GRYLibrary.Core.Miscellaneous
             }
             return true;
         }
+        private static readonly char[] ToPascalCaseSeparator = new[] { '-', '_' };
         public static string ToPascalCase(this string input)
         {
             IEnumerable<string> words = input
-                .Split(new[] { '-', '_' }, StringSplitOptions.RemoveEmptyEntries)
+                .Split(ToPascalCaseSeparator, StringSplitOptions.RemoveEmptyEntries)
                 .Select(word => word[..1].ToUpper() + word[1..].ToLower());
 
             return string.Concat(words);
@@ -2962,6 +2960,7 @@ namespace GRYLibrary.Core.Miscellaneous
             return Encoding.GetEncoding(encodingIdentifier);
         }
         private static readonly IOperatingSystemVisitor<bool> _DarkModeEnabledVisitor = new GetDarkModeEnabledVisitor();
+
         private class SetDarkModeEnabledVisitor : IOperatingSystemVisitor
         {
             private readonly bool _Enabled;
