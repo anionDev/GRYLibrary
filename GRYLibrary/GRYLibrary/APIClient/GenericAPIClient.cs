@@ -83,14 +83,14 @@ namespace GRYLibrary.Core.GenericAPIClient
             }
             if (this.Configuration.APIKey != null)
             {
-                requestMessage.Headers.Authorization = new AuthenticationHeaderValue("APIKey", this.Configuration.APIKey);
+                requestMessage.Headers.Add("APIKey", this.Configuration.APIKey);
             }
             return await client.SendAsync(requestMessage);
         }
 
         public virtual void Dispose()
         {
-            Miscellaneous.Utilities.NoOperation();
+            GC.SuppressFinalize(this);
         }
     }
 }
