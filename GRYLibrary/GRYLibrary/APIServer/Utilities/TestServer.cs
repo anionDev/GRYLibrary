@@ -1,20 +1,23 @@
-﻿using System;
+﻿using GRYLibrary.Core.APIServer.Settings.Configuration;
+using System;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
+using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 
 namespace GRYLibrary.Core.APIServer.Utilities
 {
     public sealed class TestServer : IDisposable
     {
-        public static readonly TimeSpan DefaultWaitTimeAfterProcessStart = TimeSpan.FromSeconds(2);
+        public static readonly TimeSpan WaitTimeoutOfProcessStartUntilServiceIsAvailable = TimeSpan.FromSeconds(30);
+        private readonly Process _Process;
         public string APIKey { get; private set; }
         public string ProgramFile { get; private set; }
-        private readonly Process _Process;
-        public TestServer(string programFile, string apiKey) : this(programFile, apiKey, DefaultWaitTimeAfterProcessStart)
+
+        public TestServer(string programFile, string apiKey) : this(programFile, apiKey, WaitTimeoutOfProcessStartUntilServiceIsAvailable)
         {
         }
-        public TestServer(string programFile, string apiKey, TimeSpan waitTimeAfterProcessStart)
+
+        public TestServer(string programFile, string apiKey, TimeSpan timoutOfProcessStartUntilServiceIsAvailable)
         {
             this.ProgramFile = programFile;
             this.APIKey = apiKey;
@@ -31,9 +34,9 @@ namespace GRYLibrary.Core.APIServer.Utilities
             };
             this._Process = process;
             process.Start();
-            Thread.Sleep(waitTimeAfterProcessStart);
+            GUtilities.WaitUntilPortIsAvailable("127.0.0.1", HTTP.DefaultPort, timoutOfProcessStartUntilServiceIsAvailable);
         }
-
+ 
         public void Dispose()
         {
             this._Process.Kill();

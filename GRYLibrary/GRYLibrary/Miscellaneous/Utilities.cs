@@ -1362,7 +1362,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
             public bool Handle(Linux operatingSystem)
             {
-                return this._Path.StartsWith("/");
+                return this._Path.StartsWith('/');
             }
         }
         public static bool IsAbsoluteLocalFilePath(string path)
@@ -1813,6 +1813,34 @@ namespace GRYLibrary.Core.Miscellaneous
                 workerThread.Interrupt();
             }
             return terminatedInGivenTimeSpan;
+        }
+
+        public static void WaitUntilPortIsAvailable(string address, ushort port, TimeSpan timeout)
+        {
+            RunWithTimeout(() => WaitUntilPortIsAvailable(address, port), timeout);
+
+        }
+        public static void WaitUntilPortIsAvailable(string address, ushort port)
+        {
+            while (!PortIsAvailable(address, port))
+            {
+                Thread.Sleep(TimeSpan.FromMilliseconds(50));
+            }
+            Thread.Sleep(TimeSpan.FromSeconds(1));
+        }
+
+        public static bool PortIsAvailable(string address, ushort port)
+        {
+            using TcpClient tcpClient = new TcpClient();
+            try
+            {
+                tcpClient.Connect(address, port);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public static string ResolveToFullPath(this string path)

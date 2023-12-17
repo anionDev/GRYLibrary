@@ -6,12 +6,13 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Generic;
 using System.Linq;
+using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 
 namespace GRYLibrary.Core.APIServer.Mid.NewFolder
 {
     public class APIKeyValidatorFilter : IOperationFilter
     {
-        public const string QueryParameterName = "APIKey";
+        public const string QueryParameterName = "APIKey";//TODO use "Authorization" instead. This must work with all clients (test-clients, real clients, Swagger-UI)
         public static (bool provided, string apiKey) TryGetAPIKey(HttpContext context)
         {
             bool apiKeyIsGiven = context.Request.Headers.TryGetValue(QueryParameterName, out StringValues values);
@@ -19,7 +20,8 @@ namespace GRYLibrary.Core.APIServer.Mid.NewFolder
             {
                 if (values.Count == 1)
                 {
-                    return (true, values.First());
+                    string apiKey = values.First();
+                    return (true, apiKey);
                 }
             }
             return (false, null);
@@ -42,7 +44,7 @@ namespace GRYLibrary.Core.APIServer.Mid.NewFolder
                     Schema = new OpenApiSchema
                     {
                         Type = "string",
-                        Default = new OpenApiString(string.Empty)
+                        Default = new OpenApiString(GUtilities.EmptyString),
                     }
                 });
             }
