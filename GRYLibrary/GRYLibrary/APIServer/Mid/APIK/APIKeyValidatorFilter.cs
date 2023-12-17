@@ -19,7 +19,8 @@ namespace GRYLibrary.Core.APIServer.Mid.NewFolder
             {
                 if (values.Count == 1)
                 {
-                    return (true, values.First());
+                    string apiKey = values.First();
+                    return (true, apiKey);
                 }
             }
             return (false, null);

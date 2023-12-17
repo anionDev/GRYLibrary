@@ -112,7 +112,7 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
 
         private bool IsIgnored(string route)
         {
-            foreach (var notLoggedRoute in this._RequestLoggingSettings.NotLoggedRoutes)
+            foreach (string notLoggedRoute in this._RequestLoggingSettings.NotLoggedRoutes)
             {
                 if (Regex.IsMatch(route, notLoggedRoute))
                 {

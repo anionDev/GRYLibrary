@@ -23,15 +23,20 @@ namespace GRYLibrary.Core.APIServer.Utilities
 
         public IGeneralLogger Handle(RunProgram runProgram)
         {
-            IGeneralLogger result = GeneralLogger.CreateUsingGRYLog(this._LogConfiguration, out GRYLog logger, this._BaseFolder);
-            logger.BasePath = this._BaseFolder;
-            logger.UseSubNamespace(this._LoggerName);
-            return result;
+            return this.GetUsualLog();
         }
 
         public IGeneralLogger Handle(TestRun testRun)
         {
-            return GeneralLogger.CreateUsingConsole();
+            return this.GetUsualLog();
+        }
+
+        private IGeneralLogger GetUsualLog()
+        {
+            IGeneralLogger result = GeneralLogger.CreateUsingGRYLog(this._LogConfiguration, out GRYLog logger, this._BaseFolder);
+            logger.BasePath = this._BaseFolder;
+            logger.UseSubNamespace(this._LoggerName);
+            return result;
         }
     }
 }

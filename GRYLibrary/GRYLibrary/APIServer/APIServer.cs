@@ -87,7 +87,7 @@ namespace GRYLibrary.Core.APIServer
 
         #region Create or load config-file
 
-        internal static IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> LoadConfiguration<PersistedAppSpecificConfiguration>(
+        private static IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> LoadConfiguration<PersistedAppSpecificConfiguration>(
             ISet<Type> knownTypes, GRYEnvironment evironment, ExecutionMode executionMode, string configurationFile, bool throwErrorIfConfigurationDoesNotExistInProduction,
             PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> initialConfiguration)
                 where PersistedAppSpecificConfiguration : new()
@@ -126,13 +126,18 @@ namespace GRYLibrary.Core.APIServer
 
             public IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> Handle(RunProgram runProgram)
             {
-                //TODO add option to define config-file-migrations here
-                return MetaConfigurationManager.GetConfiguration(this._MetaConfiguration, this._KnownTypes);
+                return this.UsePersistedConfiguration();
             }
 
             public IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> Handle(TestRun testRun)
             {
-                return this._MetaConfiguration.InitialValue;
+                return this.UsePersistedConfiguration();
+            }
+
+            private IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> UsePersistedConfiguration()
+            {
+                //TODO add option to define config-file-migrations here
+                return MetaConfigurationManager.GetConfiguration(this._MetaConfiguration, this._KnownTypes);
             }
         }
         #endregion
@@ -295,6 +300,7 @@ namespace GRYLibrary.Core.APIServer
             builder.Services.AddLogging(c => c.ClearProviders());
             WebApplication app = builder.Build();
             app.UseRouting();
+
             #region Add middlewares
             foreach (Type middleware in middlewares)
             {
