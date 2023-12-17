@@ -1824,8 +1824,9 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             while (!PortIsAvailable(address, port))
             {
-                Thread.Sleep(50);
+                Thread.Sleep(TimeSpan.FromMilliseconds(50));
             }
+            Thread.Sleep(TimeSpan.FromSeconds(1));
         }
 
         public static bool PortIsAvailable(string address, ushort port)
