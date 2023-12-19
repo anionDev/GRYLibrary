@@ -12,12 +12,12 @@ namespace GRYLibrary.Core.APIServer.Utilities
         public GetProcolVisitor(string domain)
         {
             this._Domain = domain;
-            this._HTTP = HTTP.Create();
+            this._HTTP = new HTTP();
         }
         public GetProcolVisitor(string domain, ushort httpPort)
         {
             this._Domain = domain;
-            this._HTTP = HTTP.Create(httpPort);
+            this._HTTP = new HTTP(httpPort);
         }
 
         public Protocol Handle(Analysis analysis)
@@ -27,7 +27,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
 
         public Protocol Handle(RunProgram runProgram)
         {
-            return HTTPS.Create(new TLSCertificateInformation
+            return new HTTPS(new TLSCertificateInformation
             {
                 CertificatePFXFile = AbstractFilePath.FromString($"./{this._Domain}.pfx"),
                 CertificatePasswordFile = AbstractFilePath.FromString($"./{this._Domain}.password"),

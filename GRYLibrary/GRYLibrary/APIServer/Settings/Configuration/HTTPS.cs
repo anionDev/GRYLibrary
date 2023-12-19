@@ -4,14 +4,13 @@
     {
         public const ushort DefaultPort = 443;
         public TLSCertificateInformation TLSCertificateInformation { get; set; }
-        public static HTTPS Create(TLSCertificateInformation tlsCertificateInformation)
+        public HTTPS(TLSCertificateInformation tlsCertificateInformation) : this(DefaultPort, tlsCertificateInformation)
+        { 
+        }
+        public HTTPS(ushort port, TLSCertificateInformation tlsCertificateInformation)
         {
-            HTTPS result = new HTTPS
-            {
-                Port = DefaultPort,
-                TLSCertificateInformation = tlsCertificateInformation
-            };
-            return result;
+            this.Port = port;
+            this.TLSCertificateInformation = tlsCertificateInformation;
         }
         public override string GetProtocol()
         {
