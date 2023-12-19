@@ -3,17 +3,12 @@
     public class HTTP : Protocol
     {
         public const ushort DefaultPort = 80;
-        public static HTTP Create()
+        public HTTP() : this(DefaultPort)
         {
-            return Create(DefaultPort);
         }
-        public static HTTP Create(ushort port)
+        public HTTP(ushort port)
         {
-            HTTP result = new HTTP
-            {
-                Port = port
-            };
-            return result;
+          this.Port = port;
         }
 
         public override string GetProtocol()
