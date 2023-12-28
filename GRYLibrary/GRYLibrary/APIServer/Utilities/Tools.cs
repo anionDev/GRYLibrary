@@ -11,12 +11,34 @@ using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 using System;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.APIServer.Utilities
 {
     public static class Tools
     {
-        public static (byte[] requestBody, byte[] responsetBody) ExecuteAndGetBody(HttpContext context, Func<byte[], byte[]> responseBodyUpdater = null)
+        public static byte[] GetRequestBody(HttpContext context, Func<byte[], byte[]> requestBodyUpdater = null)
+        {
+            context.Request.EnableBuffering();
+            byte[] result = GUtilities.StreamToByteArray(context.Request.Body);
+            if (requestBodyUpdater != null)
+            {
+                result = requestBodyUpdater(result);
+            }
+            context.Request.Body = new MemoryStream(result);
+            return result;
+        }
+        public static byte[] GetResponseBody(HttpContext context, Func<byte[], byte[]> responseBodyUpdater = null)
+        {
+            byte[] result = GUtilities.StreamToByteArray(context.Response.Body);
+            if (responseBodyUpdater != null)
+            {
+                result = responseBodyUpdater(result);
+            }
+            context.Response.Body = new MemoryStream(result);
+            return result;
+        }
+        private static (byte[] requestBody, byte[] responsetBody) GetBodiesBackup(HttpContext context, Func<byte[], byte[]> responseBodyUpdater = null)
         {
             byte[] requestBody = GetRequestBody(context);
             byte[] responseBody;
@@ -47,7 +69,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
             return $"{codeUnitName.ToLower()}.test.local";
         }
 
-        public static byte[] GetRequestBody(HttpContext context)
+        private static byte[] GetRequestBody(HttpContext context)
         {
             context.Request.EnableBuffering();
             byte[] result = GUtilities.StreamToByteArray(context.Request.Body);
