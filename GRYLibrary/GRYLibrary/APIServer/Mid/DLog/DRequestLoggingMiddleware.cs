@@ -34,19 +34,17 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
         }
         /// <inheritdoc/>
 
-        protected override void Log(HttpContext context)
+        protected override void Log(HttpContext context, byte[] requestBodyBytes, byte[] responseBodyBytes)
         {
             DateTime moment = GUtilities.GetNow();
-            byte[] requestBodyBytes = Tools.GetRequestBody(context);
-            byte[] responseBodyBytes = Tools.GetResponseBody(context);
             string requestBody = this.BytesToString(requestBodyBytes);
             string responseBody = this.BytesToString(responseBodyBytes);
             string requestRoute = context.Request.Path;
             ushort responseHTTPStatusCode = (ushort)context.Response.StatusCode;
             IPAddress clientIP = context.Connection.RemoteIpAddress;
             Request request = new Request(moment, clientIP, context.Request.Method, requestRoute, context.Request.Query, context.Request.Headers, requestBody, null/*TODO*/, responseHTTPStatusCode, context.Response.Headers, responseBody);
-            this.LogHTTPRequest(request, false, new HashSet<GRYLogTarget> { new Core.Logging.GRYLogger.ConcreteLogTargets.Console() });
-            this.LogHTTPRequest(request, this.ShouldLogEntireRequestContentInLogFile(request), new HashSet<GRYLogTarget> { new Core.Logging.GRYLogger.ConcreteLogTargets.LogFile() });
+            this.LogHTTPRequest(request, false, new HashSet<GRYLogTarget> { new Logging.GRYLogger.ConcreteLogTargets.Console() });
+            this.LogHTTPRequest(request, this.ShouldLogEntireRequestContentInLogFile(request), new HashSet<GRYLogTarget> { new Logging.GRYLogger.ConcreteLogTargets.LogFile() });
         }
 
         private string BytesToString(byte[] content)

@@ -44,7 +44,8 @@ namespace GRYLibrary.Core.APIServer.Settings
         public Type RequestCounterMiddleware { get; set; }
         public Type LoggingMiddleware { get; set; }
         public Type WebApplicationFirewallMiddleware { get; set; }
-        public IList<Type> CustomMiddlewares { get; set; }
+        public IList<Type> CustomMiddlewares1 { get; set; }
+        public IList<Type> CustomMiddlewares2 { get; set; }
         public ISet<Type> KnownTypes { get; set; }
     }
     public interface IApplicationConstants<AppSpecificConstants> : IApplicationConstants
@@ -96,7 +97,8 @@ namespace GRYLibrary.Core.APIServer.Settings
         public Type RequestCounterMiddleware { get; set; } = null;
         public Type LoggingMiddleware { get; set; } = null;
         public Type WebApplicationFirewallMiddleware { get; set; } = null;
-        public IList<Type> CustomMiddlewares { get; set; } = new List<Type>();
+        public IList<Type> CustomMiddlewares1 { get; set; } = new List<Type>();
+        public IList<Type> CustomMiddlewares2 { get; set; } = new List<Type>();
         public ISet<Type> KnownTypes { get; set; } = new HashSet<Type>();
 
         public void Initialize(string baseFolder)

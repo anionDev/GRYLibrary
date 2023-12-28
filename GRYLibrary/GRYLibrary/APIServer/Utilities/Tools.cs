@@ -11,12 +11,73 @@ using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 using System;
 using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
+using System.Text;
 
 namespace GRYLibrary.Core.APIServer.Utilities
 {
     public static class Tools
     {
+        public static (byte[] requestBody, byte[] responseBody) ExecuteNextMiddlewareAndGetRequestAndResponseBody(HttpContext context, RequestDelegate next, Func<byte[], byte[]> requestBodyUpdater = null, Func<byte[], byte[]> responseBodyUpdater = null)
+        {
+            var requestBody = GetRequestBody(context, requestBodyUpdater);
+            Stream originalBody = context.Response.Body;
+            byte[] responseBody;
+            using (var memStream = new MemoryStream())
+            {
+                context.Response.Body = memStream;
+                next(context).Wait();
+                memStream.Position = 0;
+                responseBody = GUtilities.StreamToByteArray(memStream);
+                string temp1= new UTF8Encoding(false).GetString(responseBody);
+                context.Response.Body = new MemoryStream(responseBody);
+            }
+
+            /*
+
+            byte[] responseBody = default;
+
+
+                string temp1 = new UTF8Encoding(false).GetString(responseBody);
+                if (responseBodyUpdater != null)
+                {
+                    responseBody = responseBodyUpdater(responseBody);
+                }
+                string temp2 = new UTF8Encoding(false).GetString(responseBody);
+                MemoryStream memStream2 = new MemoryStream(responseBody);
+                memStream2.CopyToAsync(originalBody).Wait();
+
+            context.Response.Body = originalBody;
+            */
+            return (requestBody, responseBody);
+        }
+
+        private static (byte[] requestBody, byte[] responseBody) ExecuteNextMiddlewareAndGetRequestAndResponseBody2(HttpContext context, RequestDelegate next, Func<byte[], byte[]> requestBodyUpdater = null, Func<byte[], byte[]> responseBodyUpdater = null)
+        {
+            var requestBody = GetRequestBody(context, requestBodyUpdater);
+            byte[] responseBody = default;
+            Stream originalBody = context.Response.Body;
+
+            using (var memStream = new MemoryStream())
+            {
+                context.Response.Body = memStream;
+
+                next(context).Wait();
+
+                memStream.Position = 0;
+                responseBody = GUtilities.StreamToByteArray(memStream);
+                string temp1 = new UTF8Encoding(false).GetString(responseBody);
+                if (responseBodyUpdater != null)
+                {
+                    responseBody = responseBodyUpdater(responseBody);
+                }
+                string temp2 = new UTF8Encoding(false).GetString(responseBody);
+                MemoryStream memStream2 = new MemoryStream(responseBody);
+                memStream2.CopyToAsync(originalBody).Wait();
+            }
+
+            context.Response.Body = originalBody;
+            return (requestBody, responseBody);
+        }
         public static byte[] GetRequestBody(HttpContext context, Func<byte[], byte[]> requestBodyUpdater = null)
         {
             context.Request.EnableBuffering();
@@ -28,54 +89,12 @@ namespace GRYLibrary.Core.APIServer.Utilities
             context.Request.Body = new MemoryStream(result);
             return result;
         }
-        public static byte[] GetResponseBody(HttpContext context, Func<byte[], byte[]> responseBodyUpdater = null)
-        {
-            byte[] result = GUtilities.StreamToByteArray(context.Response.Body);
-            if (responseBodyUpdater != null)
-            {
-                result = responseBodyUpdater(result);
-            }
-            context.Response.Body = new MemoryStream(result);
-            return result;
-        }
-        private static (byte[] requestBody, byte[] responsetBody) GetBodiesBackup(HttpContext context, Func<byte[], byte[]> responseBodyUpdater = null)
-        {
-            byte[] requestBody = GetRequestBody(context);
-            byte[] responseBody;
-            Stream originalResponseBody = context.Response.Body;
-            using (MemoryStream intermediateResponseBody = new MemoryStream())
-            {
-                context.Response.Body = intermediateResponseBody;
-
-                //read response body
-                intermediateResponseBody.Position = 0;
-                responseBody = GUtilities.StreamToByteArray(intermediateResponseBody);
-                if (responseBodyUpdater != null)
-                {
-                    responseBody = responseBodyUpdater(responseBody);
-                }
-
-                //write response body to original response-stream
-                intermediateResponseBody.Position = 0;
-                using MemoryStream copyStream = new MemoryStream(responseBody);
-                copyStream.CopyToAsync(originalResponseBody).Wait();
-            }
-            context.Response.Body = originalResponseBody;
-            return (requestBody, responseBody);
-        }
 
         public static string GetDefaultDomainValue(string codeUnitName)
         {
             return $"{codeUnitName.ToLower()}.test.local";
         }
 
-        private static byte[] GetRequestBody(HttpContext context)
-        {
-            context.Request.EnableBuffering();
-            byte[] result = GUtilities.StreamToByteArray(context.Request.Body);
-            context.Request.Body = new MemoryStream(result);
-            return result;
-        }
         public static bool IsAPIDocumentationRequest(HttpContext context)
         {
             return context.Request.Path.ToString().StartsWith($"{ServerConfiguration.APIRoutePrefix}/{ServerConfiguration.ResourcesSubPath}/{ServerConfiguration.APISpecificationDocumentName}/");
