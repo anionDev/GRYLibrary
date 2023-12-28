@@ -20,40 +20,6 @@ namespace GRYLibrary.Core.APIServer.Utilities
         public static (byte[] requestBody, byte[] responseBody) ExecuteNextMiddlewareAndGetRequestAndResponseBody(HttpContext context, RequestDelegate next, Func<byte[], byte[]> requestBodyUpdater = null, Func<byte[], byte[]> responseBodyUpdater = null)
         {
             var requestBody = GetRequestBody(context, requestBodyUpdater);
-            Stream originalBody = context.Response.Body;
-            byte[] responseBody;
-            using (var memStream = new MemoryStream())
-            {
-                context.Response.Body = memStream;
-                next(context).Wait();
-                memStream.Position = 0;
-                responseBody = GUtilities.StreamToByteArray(memStream);
-                string temp1= new UTF8Encoding(false).GetString(responseBody);
-                context.Response.Body = new MemoryStream(responseBody);
-            }
-
-            /*
-
-            byte[] responseBody = default;
-
-
-                string temp1 = new UTF8Encoding(false).GetString(responseBody);
-                if (responseBodyUpdater != null)
-                {
-                    responseBody = responseBodyUpdater(responseBody);
-                }
-                string temp2 = new UTF8Encoding(false).GetString(responseBody);
-                MemoryStream memStream2 = new MemoryStream(responseBody);
-                memStream2.CopyToAsync(originalBody).Wait();
-
-            context.Response.Body = originalBody;
-            */
-            return (requestBody, responseBody);
-        }
-
-        private static (byte[] requestBody, byte[] responseBody) ExecuteNextMiddlewareAndGetRequestAndResponseBody2(HttpContext context, RequestDelegate next, Func<byte[], byte[]> requestBodyUpdater = null, Func<byte[], byte[]> responseBodyUpdater = null)
-        {
-            var requestBody = GetRequestBody(context, requestBodyUpdater);
             byte[] responseBody = default;
             Stream originalBody = context.Response.Body;
 
@@ -78,6 +44,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
             context.Response.Body = originalBody;
             return (requestBody, responseBody);
         }
+
         public static byte[] GetRequestBody(HttpContext context, Func<byte[], byte[]> requestBodyUpdater = null)
         {
             context.Request.EnableBuffering();
