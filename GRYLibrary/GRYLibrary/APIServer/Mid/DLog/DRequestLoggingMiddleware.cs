@@ -38,25 +38,29 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
         {
             DateTime moment = GUtilities.GetNow();
             (byte[] requestBodyB, byte[] responseBodyB) = Tools.ExecuteAndGetBody(context);
-            string requestBody = this.BytesToString(requestBodyB);
-            string responseBody = this.BytesToString(responseBodyB);
+            (string info, string content, byte[] plainContent) requestBody = this.BytesToString(requestBodyB);
+            (string info, string content, byte[] plainContent) responseBody = this.BytesToString(responseBodyB);
             string requestRoute = context.Request.Path;
             ushort responseHTTPStatusCode = (ushort)context.Response.StatusCode;
             IPAddress clientIP = context.Connection.RemoteIpAddress;
             Request request = new Request(moment, clientIP, context.Request.Method, requestRoute, context.Request.Query, context.Request.Headers, requestBody, null/*TODO*/, responseHTTPStatusCode, context.Response.Headers, responseBody);
-            this.LogHTTPRequest(request, false, new HashSet<GRYLogTarget> { new Core.Logging.GRYLogger.ConcreteLogTargets.Console() });
-            this.LogHTTPRequest(request, this.ShouldLogEntireRequestContentInLogFile(request), new HashSet<GRYLogTarget> { new Core.Logging.GRYLogger.ConcreteLogTargets.LogFile() });
+            this.LogHTTPRequest(request, false, new HashSet<GRYLogTarget> { new Logging.GRYLogger.ConcreteLogTargets.Console() });
+            this.LogHTTPRequest(request, this.ShouldLogEntireRequestContentInLogFile(request), new HashSet<GRYLogTarget> { new Logging.GRYLogger.ConcreteLogTargets.LogFile() });
         }
 
-        private string BytesToString(byte[] content)
+        private (string info, string content, byte[] plainContent) BytesToString(byte[] content)
         {
+            if (content.Length == 0)
+            {
+                return ("Empty", null, content);
+            }
             try
             {
-                return $"UTF8-encoded-content: \"{this._Encoding.GetString(content)}\"";
+                return ("UTF8-encoded-content", this._Encoding.GetString(content), content);
             }
             catch
             {
-                return $"Hex-encoded-content: {GUtilities.ByteArrayToHexString(content)}";
+                return ("Hex-encoded-content", GUtilities.ByteArrayToHexString(content), content);
             }
         }
 
@@ -131,10 +135,24 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
                         + $"  Request-details:{Environment.NewLine}"
                         + $"    Method: {request.Route}{Environment.NewLine}"
                         + $"    Route: {request.Method}{request.GetFormattedQuery()}{Environment.NewLine}"
-                        + $"    Body: {this.Truncate(request.RequestBody, maximalLengthofRequestBodies)}{Environment.NewLine}"
+                        + $"    Body: {this.FormatBody(request.RequestBody, maximalLengthofRequestBodies)}{Environment.NewLine}"
                         + $"  Response-details:{Environment.NewLine}"
                         + $"    Statuscode: {request.ResponseStatusCode}{Environment.NewLine}"
-                        + $"    Body: {this.Truncate(request.ResponseBody, maximalLengthofResponseBodies)}{Environment.NewLine}";
+                        + $"    Body: {this.FormatBody(request.ResponseBody, maximalLengthofResponseBodies)}{Environment.NewLine}";
+        }
+
+        private string FormatBody((string info, string content, byte[] plainContent) body, uint maximalLengthofRequestBodies)
+        {
+            string result;
+            if (body.content == null)
+            {
+                result = body.info;
+            }
+            else
+            {
+                result = $"{body.info} ({this.Truncate(body.content, maximalLengthofRequestBodies, (ulong)body.plainContent.LongLength)})";
+            }
+            return result;
         }
 
         public virtual bool ShouldBeLogged(Request request)
@@ -173,17 +191,16 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
         {
             return GUtilities.FormatTimestamp(timestamp, this._RequestLoggingSettings.AddMillisecondsInLogTimestamps);
         }
-        public virtual string Truncate(string value, uint maxLength)
+        public virtual string Truncate(string value, uint maxLength, ulong originalLength)
         {
-            int contentLength = value.Length;
-            if (contentLength <= maxLength)
+            if (value.Length <= maxLength)
             {
-                return $"<{value}>";
+                return $"\"{value}\"";
             }
             else
             {
-                return $"<{value[..(int)maxLength]}...> (truncated, original length: {contentLength} characters)";
-            };
+                return $"\"{value[..(int)maxLength]}...\" (Content truncated; Original length: {originalLength} bytes)";
+            }
         }
         public virtual string FormatIPAddress(IPAddress clientIP)
         {
