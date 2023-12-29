@@ -34,12 +34,11 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
         }
         /// <inheritdoc/>
 
-        protected override void Log(HttpContext context)
+        protected override void Log(HttpContext context, byte[] requestBodyBytes, byte[] responseBodyBytes)
         {
             DateTime moment = GUtilities.GetNow();
-            (byte[] requestBodyB, byte[] responseBodyB) = Tools.ExecuteAndGetBody(context);
-            (string info, string content, byte[] plainContent) requestBody = this.BytesToString(requestBodyB);
-            (string info, string content, byte[] plainContent) responseBody = this.BytesToString(responseBodyB);
+            string requestBody = this.BytesToString(requestBodyBytes);
+            string responseBody = this.BytesToString(responseBodyBytes);
             string requestRoute = context.Request.Path;
             ushort responseHTTPStatusCode = (ushort)context.Response.StatusCode;
             IPAddress clientIP = context.Connection.RemoteIpAddress;
