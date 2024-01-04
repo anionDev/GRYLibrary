@@ -2,12 +2,12 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
     <metadata minClientVersion="2.12">
         <id>GRYLibrary</id>
-        <version>0.12.84</version>
+        <version>0.12.85</version>
         <title>GRYLibrary</title>
         <authors>Marius Göcke</authors>
         <owners>Marius Göcke</owners>
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
-        <copyright>Copyright © 2023 by Marius Göcke</copyright>
+        <copyright>Copyright © 2024 by Marius Göcke</copyright>
         <description>GRYLibrary is a collection with some useful .NET classes and functions which are very easy (re)usable.</description>
         <summary>GRYLibrary is a collection with some useful .NET classes and functions which are very easy (re)usable.</summary>
         <license type="file">lib/net7/GRYLibrary.License.txt</license>

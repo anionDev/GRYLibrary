@@ -2,14 +2,14 @@
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <Authors>Marius Göcke</Authors>
-        <Version>0.12.84</Version>
-        <AssemblyVersion>0.12.84</AssemblyVersion>
-        <FileVersion>0.12.84</FileVersion>
+        <Version>0.12.85</Version>
+        <AssemblyVersion>0.12.85</AssemblyVersion>
+        <FileVersion>0.12.85</FileVersion>
         <SelfContained>false</SelfContained>
         <IsPackable>false</IsPackable>
         <PreserveCompilationContext>false</PreserveCompilationContext>
         <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
-        <Copyright>Copyright © 2023 Marius Göcke</Copyright>
+        <Copyright>Copyright © 2024 Marius Göcke</Copyright>
         <Description>GRYLibrary is a collection with some useful .NET classes and functions which are very easy (re)usable.</Description>
         <PackageProjectUrl>https://github.com/anionDev/GRYLibrary</PackageProjectUrl>
         <RepositoryUrl>https://github.com/anionDev/GRYLibrary.git</RepositoryUrl>
