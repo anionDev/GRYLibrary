@@ -1,0 +1,65 @@
+﻿using GRYLibrary.Core.Miscellaneous;
+using GRYLibrary.Core.Playlists.ConcretePlaylistHandler;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
+
+namespace GRYLibrary.Tests.Testcases.Playlists.ConcretePlaylistHandler
+{
+    [TestClass]
+    public class M3uHandlerTest
+    {
+        [TestMethod]
+        public void AddSongTo3UTest1()
+        {
+            //arrange
+            Encoding encoding = new UTF8Encoding();
+            var m3uHandler = new M3UHandler();
+            using (var tempFolder = new TempFolder())
+            {
+                var m3uFile = Path.Combine(tempFolder.Path, "test.mp3");
+                GUtilities.EnsureFileExists(m3uFile);
+                string content = "./testfile1.mp3";
+                File.WriteAllText(m3uFile, content, encoding);
+                string newContent = "./testfile2.mp3";
+                string expectedConent = $"{content}\n{newContent}";
+
+                //act
+                m3uHandler.AddItemsToPlaylist(m3uFile, new string[] { newContent });
+
+                //assert
+                string actualContent = File.ReadAllText(m3uFile, encoding);
+                Assert.AreEqual(expectedConent, actualContent);
+            }
+        }
+
+        [TestMethod]
+        public void AddSongTo3UTest2()
+        {
+            //arrange
+            Encoding encoding = new UTF8Encoding();
+            var m3uHandler = new M3UHandler();
+            using (var tempFolder = new TempFolder())
+            {
+                var m3uFile = Path.Combine(tempFolder.Path, "test.mp3");
+                GUtilities.EnsureFileExists(m3uFile);
+                string content = "./testfile1.mp3\n";
+                File.WriteAllText(m3uFile, content, encoding);
+                string newContent = "./testfile2.mp3";
+                string expectedConent = $"{content}{newContent}";
+
+                //act
+                m3uHandler.AddItemsToPlaylist(m3uFile, new string[] { newContent });
+
+                //assert
+                string actualContent = File.ReadAllText(m3uFile, encoding);
+                Assert.AreEqual(expectedConent, actualContent);
+            }
+        }
+    }
+}
