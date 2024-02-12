@@ -1,6 +1,6 @@
 ﻿namespace GRYLibrary.Core.APIServer.Services.Interfaces
 {
-    public interface IAuthorizationService
+    public interface ICredentialsProvider
     {
     }
 }

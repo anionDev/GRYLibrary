@@ -1,24 +1,30 @@
 ﻿using GRYLibrary.Core.APIServer.CommonAuthenticationTypes;
+using GRYLibrary.Core.APIServer.Services.Interfaces;
 using GRYLibrary.Core.APIServer.Services.KeyCloak;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
 
 namespace GRYLibrary.Core.APIServer.Services.KCZAuth
 {
     public class KeyCloakAuthenticationService : IKeyCloakAuthenticationService
     {
         private readonly IKeyCloakService _KeyCloakService;
-        public KeyCloakAuthenticationService(IKeyCloakService keyCloakService)
+        private readonly IHTTPCredentialsProvider _HTTPCredentialsProvider;
+        public KeyCloakAuthenticationService(IKeyCloakService keyCloakService, IHTTPCredentialsProvider httpCredentialsProvider)
         {
             this._KeyCloakService = keyCloakService;
+            this._HTTPCredentialsProvider = httpCredentialsProvider;
         }
 
-        public bool AccessTokenIsValid(string username, string accessToken)
+        public bool AccessTokenIsValid(string accessToken)
         {
             throw new System.NotImplementedException();
         }
 
-        public UserBackendInformation GetUserByName(string username)
+        public string GetIdOfUser(string username)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public string GetUserName(string accessToken)
         {
             throw new System.NotImplementedException();
         }
@@ -28,12 +34,7 @@ namespace GRYLibrary.Core.APIServer.Services.KCZAuth
             throw new System.NotImplementedException();
         }
 
-        public void Logout(string name)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void OnStart()
+        public void Logout(AccessToken accessToken)
         {
             throw new System.NotImplementedException();
         }
@@ -44,11 +45,6 @@ namespace GRYLibrary.Core.APIServer.Services.KCZAuth
         }
 
         public void RemoveUser(string username)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public bool TryGetAuthentication(HttpContext context, out ClaimsPrincipal principal)
         {
             throw new System.NotImplementedException();
         }

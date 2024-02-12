@@ -2579,6 +2579,11 @@ namespace GRYLibrary.Core.Miscellaneous
             input.CopyTo(ms);
             return ms.ToArray();
         }
+        public static bool ByteArrayEquals(ReadOnlySpan<byte> array1, ReadOnlySpan<byte> array2)
+        {
+            return array1.SequenceEqual(array2);
+        }
+
         public static SerializableDictionary<TKey, TValue> ToSerializableDictionary<TKey, TValue>(this IDictionary<TKey, TValue> dictionary)
         {
             SerializableDictionary<TKey, TValue> result = new();

@@ -41,7 +41,7 @@ namespace GRYLibrary.Core.Crypto
             return Utilities.ConcatBytesArraysWithLengthInformation(parameters.D, parameters.DP, parameters.Exponent, parameters.InverseQ, parameters.Modulus, parameters.P, parameters.Q);
         }
         /// <inheritdoc/>
-        public override (byte[]/*Private key*/, byte[]/*Public key*/) GenerateRandomKeyPair()
+        public override (byte[] privateKey, byte[] publicKey) GenerateRandomKeyPair()
         {
             using RSACryptoServiceProvider rsaCryptoServiceProvider = new(this.KeyLengthForNewGeneratedKeys);
             return (RSAParametersToPassword(rsaCryptoServiceProvider.ExportParameters(true)), RSAParametersToPassword(rsaCryptoServiceProvider.ExportParameters(false)));

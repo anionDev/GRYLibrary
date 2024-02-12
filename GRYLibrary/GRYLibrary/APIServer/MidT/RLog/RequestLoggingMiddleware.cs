@@ -1,7 +1,5 @@
 using GRYLibrary.Core.APIServer.Utilities;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.APIServer.MidT.RLog
@@ -17,9 +15,7 @@ namespace GRYLibrary.Core.APIServer.MidT.RLog
         /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
         {
-            (byte[] requestBodyBytes, byte[] responseBodyBytes) = Tools.ExecuteNextMiddlewareAndGetRequestAndResponseBody(context, _Next);
-            string temp1 = new UTF8Encoding(false).GetString(requestBodyBytes);
-            string temp2 = new UTF8Encoding(false).GetString(responseBodyBytes);
+            (byte[] requestBodyBytes, byte[] responseBodyBytes) = Tools.ExecuteNextMiddlewareAndGetRequestAndResponseBody(context, this._Next);
             this.Log(context, requestBodyBytes, responseBodyBytes);
             return Task.CompletedTask;
         }

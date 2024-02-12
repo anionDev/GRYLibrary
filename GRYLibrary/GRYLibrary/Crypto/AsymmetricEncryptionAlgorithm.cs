@@ -13,6 +13,6 @@
         /// The first tuple-item represents the private-key.
         /// The second tuple-item represents the public-key.
         /// </returns>
-        public abstract (byte[]/*Private key*/, byte[]/*Public key*/) GenerateRandomKeyPair();
+        public abstract (byte[] privateKey, byte[] publicKey) GenerateRandomKeyPair();
     }
 }
