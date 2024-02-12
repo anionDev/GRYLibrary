@@ -1,13 +1,16 @@
-﻿namespace GRYLibrary.Core.APIServer.Services.Interfaces
+﻿using System.Collections.Generic;
+
+namespace GRYLibrary.Core.APIServer.Services.Interfaces
 {
     public interface IUserAuthorizationService : IAuthorizationService
     {
-        public void AssertIsAuthorized(string action, string user, string secret);
-        public bool IsAuthorized(string action, string user, string secret);
+        public bool IsAuthorized(string user, string action);
         public void EnsureUserIsInGroup(string username, string groupname);
         public void EnsureUserIsNotInGroup(string username, string groupname);
         public bool UserIsInGroup(string username, string groupname);
         public bool GroupExists(string groupname);
-        void EnsureGroupExists(string groupUser);
+        public void EnsureGroupExists(string groupUser);
+        public void EnsureGroupDoesNotExist(string groupname);
+        public ISet<string> GetGroupsOfUser(string username);
     }
 }

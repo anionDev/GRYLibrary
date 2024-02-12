@@ -1,9 +1,5 @@
-﻿using GRYLibrary.Core.APIServer.CommonAuthenticationTypes;
-using GRYLibrary.Core.APIServer.CommonDBTypes;
+﻿using GRYLibrary.Core.APIServer.CommonDBTypes;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
-using GRYLibrary.Core.APIServer.Utilities;
-using GRYLibrary.Core.Exceptions;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 
@@ -25,42 +21,23 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             this._Groups = new Dictionary<string, UserGroup>();
             this._AuthenticationService = authenticationService;
         }
-        public bool IsAuthorized(string action, string secret)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsAuthorized(string action, string user, string secret)
-        {
-            throw new NotImplementedException();
-        }
 
         public void EnsureUserIsInGroup(string username, string groupname)
         {
-            UserBackendInformation user = this.GetUserByName(username);
-            if (!this._Groups[groupname].UserIds.Contains(user.User.Id))
-            {
-                this._Groups[groupname].UserIds.Add(user.User.Id);
-            }
-        }
-
-        private UserBackendInformation GetUserByName(string username)
-        {
-            return this._AuthenticationService.GetUserByName(username);
+           string userId = this._AuthenticationService.GetIdOfUser(username);
+            this._Groups[groupname].UserIds.Add(userId);
         }
 
         public void EnsureUserIsNotInGroup(string username, string groupname)
         {
-            UserBackendInformation user = this.GetUserByName(username);
-            if (this._Groups[groupname].UserIds.Contains(user.User.Id))
-            {
-                this._Groups[groupname].UserIds.Remove(user.User.Id);
-            }
+            string userId = this._AuthenticationService.GetIdOfUser(username);
+            this._Groups[groupname].UserIds.Remove(userId);
         }
 
         public bool UserIsInGroup(string username, string groupname)
         {
-            return this._Groups[groupname].UserIds.Contains(this.GetUserByName(username).User.Id);
+            string userId = this._AuthenticationService.GetIdOfUser(username);
+            return this._Groups[groupname].UserIds.Contains(userId);
         }
 
         public void EnsureGroupExists(string groupname)
@@ -85,34 +62,15 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             return this._Groups.ContainsKey(groupname);
         }
 
-        public void AssertIsAuthorized(string action, string user, string secret)
+        public bool IsAuthorized(string user, string action)
         {
-            if (!this.IsAuthorized(action, user, secret))
-            {
-                throw new BadRequestException((int)System.Net.HttpStatusCode.Forbidden, "Not authorized.");
-            }
+            throw new NotImplementedException();
         }
 
-        public bool IsAuthorized(HttpContext context, AuthorizeAttribute authorizedAttribute)
+        public ISet<string> GetGroupsOfUser(string username)
         {
-            if (context.User.Identity.IsAuthenticated)
-            {
-                UserBackendInformation user = this._AuthenticationService.GetUserByName(context.User.Identity.Name);
-                ISet<string> authorizedGroups = authorizedAttribute.Groups;
-
-                foreach (string authorizedGroup in authorizedGroups)
-                {
-                    if (this._Groups.ContainsKey(authorizedGroup))
-                    {
-                        UserGroup group = this._Groups[authorizedGroup];
-                        if (group.UserIds.Contains(user.User.Id))
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
+            throw new NotImplementedException();
         }
+
     }
 }

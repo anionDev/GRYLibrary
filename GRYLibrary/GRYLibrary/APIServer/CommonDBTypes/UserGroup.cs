@@ -5,8 +5,8 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
 {
     public class UserGroup
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Name { get; set; }
-        public ISet<Guid> UserIds { get; set; } = new HashSet<Guid>();
+        public ISet<string> UserIds { get; set; } = new HashSet<string>();
     }
 }

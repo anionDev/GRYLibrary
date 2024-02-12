@@ -1,5 +1,5 @@
 ﻿using GRYLibrary.Core.APIServer.Services.KeyCloak;
-using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 
 namespace GRYLibrary.Core.APIServer.Services.KCZAut
 {
@@ -11,7 +11,7 @@ namespace GRYLibrary.Core.APIServer.Services.KCZAut
             this._KeyCloakService = keyCloakService;
         }
 
-        public void AssertIsAuthorized(string action, string user, string secret)
+        public void EnsureGroupDoesNotExist(string groupname)
         {
             throw new System.NotImplementedException();
         }
@@ -31,35 +31,17 @@ namespace GRYLibrary.Core.APIServer.Services.KCZAut
             throw new System.NotImplementedException();
         }
 
+        public ISet<string> GetGroupsOfUser(string username)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public bool GroupExists(string groupname)
         {
             throw new System.NotImplementedException();
         }
 
-        public bool IsAuthorized(HttpContext context, Utilities.AuthorizeAttribute authorizeAttribute)
-        {
-            System.Collections.Generic.ISet<string> groups = authorizeAttribute.Groups;
-            foreach (string group in groups)
-            {
-                if (this._KeyCloakService.UserIsInGroup(context.User.Identity.Name, group))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public bool IsAuthorized(string action)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public bool IsAuthorized(string action, string secret)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public bool IsAuthorized(string action, string user, string secret)
+        public bool IsAuthorized(string user, string action)
         {
             throw new System.NotImplementedException();
         }

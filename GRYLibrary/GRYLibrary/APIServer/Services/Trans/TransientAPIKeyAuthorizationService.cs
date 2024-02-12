@@ -1,6 +1,4 @@
 ﻿using GRYLibrary.Core.APIServer.Services.Interfaces;
-using GRYLibrary.Core.APIServer.Utilities;
-using Microsoft.AspNetCore.Http;
 using System;
 
 namespace GRYLibrary.Core.APIServer.Services.Trans
@@ -14,11 +12,6 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
     public class TransientAPIKeyAuthorizationService : IAPIKeyAuthorizationService
     {
         public bool IsAuthorized(string action, string secret)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsAuthorized(HttpContext context, AuthorizeAttribute authorizedAttribute)
         {
             throw new NotImplementedException();
         }
