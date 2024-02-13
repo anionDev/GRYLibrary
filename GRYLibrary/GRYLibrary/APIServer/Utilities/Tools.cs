@@ -15,7 +15,6 @@ using System.Text;
 using System.Collections.Generic;
 using System.Security.Claims;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
-using System.Security.Cryptography;
 using GRYLibrary.Core.Crypto;
 using HashAlgorithm = GRYLibrary.Core.Crypto.HashAlgorithm;
 using SHA256 = GRYLibrary.Core.Crypto.SHA256;
