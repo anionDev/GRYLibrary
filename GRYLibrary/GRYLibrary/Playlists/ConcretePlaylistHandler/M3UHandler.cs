@@ -9,7 +9,13 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
     {
         public override void AddItemsToPlaylist(string playlistFile, IEnumerable<string> newItems)
         {
-            File.AppendAllLines(playlistFile, newItems, this.Encoding);
+            var content = File.ReadAllText(playlistFile, this.Encoding);
+            if (!content.EndsWith('\n'))
+            {
+                content = content + '\n';
+            }
+            content = content + string.Join('\n', newItems);
+            File.WriteAllText(playlistFile, content, this.Encoding);
         }
 
         public override void CreatePlaylist(string file)
@@ -19,19 +25,19 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
 
         public override void DeleteItemsFromPlaylist(string playlistFile, IEnumerable<string> itemsToDelete)
         {
-            File.AppendAllLines(playlistFile, itemsToDelete.Select(song => "-" + song), this.Encoding);
+            File.AppendAllLines(playlistFile, itemsToDelete.Select(song => '-' + song), this.Encoding);
         }
 
         public override (ISet<string> included, ISet<string> excluded) GetItemsAndExcludedItems(string playlistFile)
         {
             IEnumerable<string> lines = File.ReadAllLines(playlistFile, this.Encoding)
-                .Where(line => !string.IsNullOrWhiteSpace(line) && !line.StartsWith("#"))
+                .Where(line => !string.IsNullOrWhiteSpace(line) && !line.StartsWith('#'))
                 .Select(line => line.Replace("\"", string.Empty));
             HashSet<string> includedItems = new();
             HashSet<string> excludedItems = new();
             foreach (string line in lines)
             {
-                if (line.StartsWith("-"))
+                if (line.StartsWith('-'))
                 {
                     excludedItems.Add(line[1..]);
                 }
