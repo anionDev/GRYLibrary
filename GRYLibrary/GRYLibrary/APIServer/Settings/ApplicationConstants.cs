@@ -1,6 +1,7 @@
 ﻿using GRYLibrary.Core.APIServer.CommonRoutes;
 using GRYLibrary.Core.APIServer.ConcreteEnvironments;
 using GRYLibrary.Core.APIServer.ExecutionModes;
+using GRYLibrary.Core.APIServer.MaintenanceRoutes;
 using GRYLibrary.Core.Miscellaneous;
 using GRYLibrary.Core.Miscellaneous.FilePath;
 using System;
@@ -32,7 +33,8 @@ namespace GRYLibrary.Core.APIServer.Settings
         /// <summary>
         /// Thir property only applies for if the envirnonment is not <see cref="Development"/>.
         /// </summary>
-        public CommonRoutesHostInformation CommonRoutesInformation { get; set; }
+        public CommonRoutesHostInformation CommonRoutesHostInformation { get; set; }
+        public AbstractHostMaintenanceInformation HostMaintenanceInformation { get; set; }
         public void Initialize(string baseFolder);
         public Type AuthenticationMiddleware { get; set; }
         public Type AuthorizationMiddleware { get; set; }
@@ -86,7 +88,8 @@ namespace GRYLibrary.Core.APIServer.Settings
         public string GetCertificateFolder() { return this.CertificateFolder.GetPath(this.GetConfigurationFolder()); }
         public string GetConfigurationFile() { return this.ConfigurationFile.GetPath(this.GetConfigurationFolder()); }
         public string GetLogFolder() { return this.LogFolder.GetPath(this._BaseFolder); }
-        public CommonRoutesHostInformation CommonRoutesInformation { get; set; } = new HostCommonRoutes();
+        public CommonRoutesHostInformation CommonRoutesHostInformation { get; set; } = new HostCommonRoutes();
+        public AbstractHostMaintenanceInformation HostMaintenanceInformation { get; set; }=new HostMaintenanceRoutes();
         public Type AuthenticationMiddleware { get; set; } = null;
         public Type AuthorizationMiddleware { get; set; } = null;
         public Type BlackListMiddleware { get; set; } = null;

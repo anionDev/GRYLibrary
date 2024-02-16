@@ -1,5 +1,4 @@
-﻿using GRYLibrary.Core.APIServer.CommonRoutes;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
@@ -29,7 +28,7 @@ namespace GRYLibrary.Core.APIServer.Mid.NewFolder
 
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            if (!context.MethodInfo.DeclaringType.Assembly.Equals(typeof(CommonRoutesController).Assembly))
+            if (!context.MethodInfo.DeclaringType.Assembly.Equals(typeof(APIKeyValidatorFilter).Assembly))
             {
                 if (operation.Parameters == null)
                 {
