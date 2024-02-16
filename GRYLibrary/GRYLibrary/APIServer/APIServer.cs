@@ -34,7 +34,7 @@ using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 using GRYLibrary.Core.APIServer.Utilities;
 using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using GRYLibrary.Core.APIServer.MidT.RLog;
-using Microsoft.Extensions.Options;
+using GRYLibrary.Core.APIServer.MaintenanceRoutes;
 
 namespace GRYLibrary.Core.APIServer
 {
@@ -179,9 +179,13 @@ namespace GRYLibrary.Core.APIServer
                 EnvironmentName = this._Configuration.InitializationInformation.ApplicationConstants.Environment.GetType().Name
             });
             IMvcBuilder mvcBuilder = builder.Services.AddControllers();
-            if (this._Configuration.InitializationInformation.ApplicationConstants.CommonRoutesInformation is HostCommonRoutes)
+            if (this._Configuration.InitializationInformation.ApplicationConstants.CommonRoutesHostInformation is HostCommonRoutes)
             {
                 mvcBuilder.AddApplicationPart(typeof(CommonRoutesController).Assembly);
+            }
+            if (this._Configuration.InitializationInformation.ApplicationConstants.HostMaintenanceInformation is HostMaintenanceRoutes)
+            {
+                mvcBuilder.AddApplicationPart(typeof(MaintenanceRoutesController).Assembly);
             }
 
             builder.Services.AddSingleton((serviceProvider) => apiServerConfiguration.InitializationInformation.CommandlineParameter);
@@ -266,7 +270,7 @@ namespace GRYLibrary.Core.APIServer
             });
             string appVersionString = $"v{this._Configuration.InitializationInformation.ApplicationConstants.ApplicationVersion}";
             builder.Services.AddControllers(mvcOptions => mvcOptions.UseGeneralRoutePrefix(ServerConfiguration.APIRoutePrefix));
-            builder.Services.AddControllers();
+
             bool hostAPIDocumentation = HostAPIDocumentation(this._Configuration.InitializationInformation.ApplicationConstants.Environment, persistedApplicationSpecificConfiguration.ServerConfiguration.HostAPISpecificationForInNonDevelopmentEnvironment, this._Configuration.InitializationInformation.ApplicationConstants.ExecutionMode);
             string apiUITitle = $"{this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName} v{this._Configuration.InitializationInformation.ApplicationConstants.ApplicationVersion} API documentation";
             if (hostAPIDocumentation)
@@ -284,7 +288,7 @@ namespace GRYLibrary.Core.APIServer
                         Title = apiUITitle,
                         Description = this._Configuration.InitializationInformation.ApplicationConstants.ApplicationDescription,
                     };
-                    if (this._Configuration.InitializationInformation.ApplicationConstants.CommonRoutesInformation is HostCommonRoutes)
+                    if (this._Configuration.InitializationInformation.ApplicationConstants.CommonRoutesHostInformation is HostCommonRoutes)
                     {
                         openAPIInfo.TermsOfService = new Uri(persistedApplicationSpecificConfiguration.ServerConfiguration.GetServerAddress() + ServerConfiguration.TermsOfServiceURLSubPath);
                         openAPIInfo.Contact = new OpenApiContact
