@@ -8,7 +8,12 @@ namespace GRYLibrary.Core.Miscellaneous
     /// Simple generic generator for ids.
     /// </summary>
     /// <typeparam name="T">Represents the type of an id</typeparam>
-    public class IdGenerator<T>
+    public interface IIdGenerator<T>
+    {
+        public T GenerateNewId();
+        public ISet<T> GeneratedIds();
+    }
+    public class IdGenerator<T> : IIdGenerator<T>
     {
         private readonly ISet<T> _GeneratedIds = new HashSet<T>();
         private readonly Func<T, T> _GenerateNewId;

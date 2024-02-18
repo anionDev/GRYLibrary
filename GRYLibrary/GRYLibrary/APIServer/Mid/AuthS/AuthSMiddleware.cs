@@ -1,5 +1,6 @@
 ﻿using GRYLibrary.Core.APIServer.MidT.Auth;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
+using GRYLibrary.Core.APIServer.Utilities;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
@@ -10,15 +11,17 @@ namespace GRYLibrary.Core.APIServer.Mid.AuthS
     /// </summary>
     public class AuthSMiddleware : AuthenticationMiddleware
     {
+        private readonly IHTTPCredentialsProvider _CredentialsProvider;
         private readonly IAuthenticationService _AuthenticationService;
-        public AuthSMiddleware(RequestDelegate next, IAuthenticationService authenticationService) : base(next)
+        public AuthSMiddleware(RequestDelegate next, IHTTPCredentialsProvider credentialsProvider, IAuthenticationService authenticationService) : base(next)
         {
+            this._CredentialsProvider = credentialsProvider;
             this._AuthenticationService = authenticationService;
         }
 
         public override bool TryGetAuthentication(HttpContext context, out ClaimsPrincipal principal)
         {
-            return this._AuthenticationService.TryGetAuthentication(context, out principal);
+            return Tools.TryGetAuthentication(this._CredentialsProvider, this._AuthenticationService, context, out principal);
         }
     }
 }

@@ -17,8 +17,6 @@ namespace GRYLibrary.Core.APIServer.MidT.RLog
         public override Task Invoke(HttpContext context)
         {
             (byte[] requestBodyBytes, byte[] responseBodyBytes) = Tools.ExecuteNextMiddlewareAndGetRequestAndResponseBody(context, this._Next);
-            string temp1 = new UTF8Encoding(false).GetString(requestBodyBytes);
-            string temp2 = new UTF8Encoding(false).GetString(responseBodyBytes);
             this.Log(context, requestBodyBytes, responseBodyBytes);
             return Task.CompletedTask;
         }

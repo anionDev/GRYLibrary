@@ -12,6 +12,12 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Text;
+using System.Collections.Generic;
+using System.Security.Claims;
+using GRYLibrary.Core.APIServer.Services.Interfaces;
+using GRYLibrary.Core.Crypto;
+using HashAlgorithm = GRYLibrary.Core.Crypto.HashAlgorithm;
+using SHA256 = GRYLibrary.Core.Crypto.SHA256;
 
 namespace GRYLibrary.Core.APIServer.Utilities
 {
@@ -19,11 +25,11 @@ namespace GRYLibrary.Core.APIServer.Utilities
     {
         public static (byte[] requestBody, byte[] responseBody) ExecuteNextMiddlewareAndGetRequestAndResponseBody(HttpContext context, RequestDelegate next, Func<byte[], byte[]> requestBodyUpdater = null, Func<byte[], byte[]> responseBodyUpdater = null)
         {
-            var requestBody = GetRequestBody(context, requestBodyUpdater);
+            byte[] requestBody = GetRequestBody(context, requestBodyUpdater);
             byte[] responseBody = default;
             Stream originalBody = context.Response.Body;
 
-            using (var memStream = new MemoryStream())
+            using (MemoryStream memStream = new MemoryStream())
             {
                 context.Response.Body = memStream;
 
@@ -95,6 +101,47 @@ namespace GRYLibrary.Core.APIServer.Utilities
                     Thread.Sleep(TimeSpan.FromSeconds(10));
                 }
             }
+        }
+
+        public static bool TryGetAuthentication(IHTTPCredentialsProvider credentialsProvider, IAuthenticationService authenticationService, HttpContext context, out ClaimsPrincipal principal)
+        {
+            principal = default;
+            try
+            {
+                if (credentialsProvider.ContainsCredentials(context))
+                {
+                    string secret = credentialsProvider.ExtractSecret(context);
+                    string accessToken = secret;
+                    if (!string.IsNullOrEmpty(accessToken))
+                    {
+                        bool accessTokenIsValid = authenticationService.AccessTokenIsValid(accessToken);
+                        if (accessTokenIsValid)
+                        {
+                            string username = authenticationService.GetUserName(accessToken);
+                            principal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim> { new Claim(ClaimTypes.Name, username) }, "Basic"));
+                            return true;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                GUtilities.NoOperation();
+            }
+            return false;
+        }
+        private static IList<HashAlgorithm> _HashAlgorithms = new List<HashAlgorithm>() { new SHA256(), new SHA256PureCSharp() };
+        public static Crypto.HashAlgorithm GetHashAlgorithm(string passwordHashAlgorithmIdentifier)
+        {
+            var passwordHashAlgorithmIdentifierBytes = GUtilities.PadLeft(new UTF8Encoding(false).GetBytes(passwordHashAlgorithmIdentifier), 10);
+            foreach (var algorithm in _HashAlgorithms)
+            {
+                if (algorithm.GetIdentifier() == passwordHashAlgorithmIdentifierBytes)
+                {
+                    return algorithm;
+                }
+            }
+            throw new KeyNotFoundException($"Unknown algorithm: {passwordHashAlgorithmIdentifier}");
         }
     }
 }
