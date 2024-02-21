@@ -18,6 +18,7 @@ using GRYLibrary.Core.APIServer.Services.Interfaces;
 using GRYLibrary.Core.Crypto;
 using HashAlgorithm = GRYLibrary.Core.Crypto.HashAlgorithm;
 using SHA256 = GRYLibrary.Core.Crypto.SHA256;
+using GRYLibrary.Core.APIServer.Services;
 
 namespace GRYLibrary.Core.APIServer.Utilities
 {
@@ -130,7 +131,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
             }
             return false;
         }
-        private static IList<HashAlgorithm> _HashAlgorithms = new List<HashAlgorithm>() { new SHA256(), new SHA256PureCSharp() };
+        private readonly static IList<HashAlgorithm> _HashAlgorithms = new List<HashAlgorithm>() { new SHA256(), new SHA256PureCSharp() };
         public static Crypto.HashAlgorithm GetHashAlgorithm(string passwordHashAlgorithmIdentifier)
         {
             var passwordHashAlgorithmIdentifierBytes = GUtilities.PadLeft(new UTF8Encoding(false).GetBytes(passwordHashAlgorithmIdentifier), 10);
@@ -142,6 +143,36 @@ namespace GRYLibrary.Core.APIServer.Utilities
                 }
             }
             throw new KeyNotFoundException($"Unknown algorithm: {passwordHashAlgorithmIdentifier}");
+        }
+        public static void CheckService(IGeneralLogger logger, string name, IExternalService service, ref bool result, IList<string> messages, bool logIfNotAvailable)
+        {
+            CheckService(logger, name, service == null, service.IsAvailable, ref result, messages, logIfNotAvailable);
+        }
+        public static void CheckService(IGeneralLogger logger, string name, bool serviceIsNull, Func<bool> isAvailable, ref bool result, IList<string> messages, bool logIfNotAvailable)
+        {
+            if (serviceIsNull)
+            {
+                string message = $"{name} is null.";
+                messages.Add(message);
+                if (logIfNotAvailable)
+                {
+                    logger.Log(message, LogLevel.Warning);
+                }
+                result = false;
+                return;
+            }
+            if (!isAvailable())
+            {
+                string message = $"{name} is not available.";
+                messages.Add(message);
+                if (logIfNotAvailable)
+                {
+                    logger.Log(message, LogLevel.Warning);
+                }
+                result = false;
+                return;
+            }
+            //more checks can be added
         }
     }
 }
