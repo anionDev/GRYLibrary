@@ -38,6 +38,7 @@ using System.Xml.Xsl;
 using static GRYLibrary.Core.Miscellaneous.TableGenerator;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using GRYLibrary.Core.Logging.GRYLogger;
+using System.Net.Http;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
@@ -1842,7 +1843,31 @@ namespace GRYLibrary.Core.Miscellaneous
                 return false;
             }
         }
-
+        public static bool WebsiteIsAvailable(string link, bool ensureSuccessStatusCode = true)
+        {
+            return WebsiteIsAvailable(link, ensureSuccessStatusCode, new Dictionary<string, string>());
+        }
+        public static bool WebsiteIsAvailable(string link, bool ensureSuccessStatusCode, IDictionary<string, string> extraHeaders)
+        {
+            try
+            {
+                using var httpClient = new HttpClient();
+                foreach (var header in extraHeaders)
+                {
+                    httpClient.DefaultRequestHeaders.Add(header.Key, header.Value);
+                }
+                HttpResponseMessage response = httpClient.GetAsync(link).WaitAndGetResult();
+                if (ensureSuccessStatusCode)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public static string ResolveToFullPath(this string path)
         {
             return ResolveToFullPath(path, Directory.GetCurrentDirectory());
