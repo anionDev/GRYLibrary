@@ -26,7 +26,7 @@ namespace GRYLibrary.Core.APIServer.Services.KeyCloak
         private void Initialize()
         {
             this.KeycloakClient = new KeycloakClient(this.Settings.URL, this.Settings.AdminClientUsername, this.Settings.AdminClientPassword/*TODO use clientSecret instead*/);
-            TryConnect(out Exception _);
+            this.TryConnect(out Exception _);
         }
 
         protected KeycloakClient GetKeycloakClient()

@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Routing;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System;
-using System.Diagnostics;
 
 namespace GRYLibrary.Core.APIServer.MaintenanceRoutes
 {

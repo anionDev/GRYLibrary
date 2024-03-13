@@ -2,9 +2,10 @@
 
 namespace GRYLibrary.Core.Miscellaneous.Migration
 {
-    public class MigrateInstanceInformation
+    public class MigratationInformation
     {
         public IDictionary<object, object> CustomValues { get; set; }
-        public ISet<MigrationMetaInformation> MetaMigrations { get; set; }
+        public Version3 SourceVersion { get; set; }
+        public Version3 TargetVersion { get; set; }
     }
 }

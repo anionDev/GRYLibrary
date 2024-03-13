@@ -19,6 +19,9 @@ using GRYLibrary.Core.Crypto;
 using HashAlgorithm = GRYLibrary.Core.Crypto.HashAlgorithm;
 using SHA256 = GRYLibrary.Core.Crypto.SHA256;
 using GRYLibrary.Core.APIServer.Services;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.APIServer.Utilities
 {
@@ -173,6 +176,41 @@ namespace GRYLibrary.Core.APIServer.Utilities
                 return;
             }
             //more checks can be added
+        }
+#pragma warning disable IDE0060 // Remove unused parameter
+        public static Task<HealthCheckResult> CheckHealthAsync(IGeneralLogger logger, Func<(bool, IEnumerable<string>)> check, HealthCheckContext context, CancellationToken cancellationToken)
+#pragma warning restore IDE0060 // Remove unused parameter
+        {
+            (bool result, IEnumerable<string> messages) = check();
+            int messageCount = messages.Count();
+            LogLevel loglevel;
+            string message;
+            if (result)
+            {
+                message = "Service is healthy.";
+                loglevel = LogLevel.Debug;
+            }
+            else
+            {
+                message = "Service is unhealthy.";
+                loglevel = LogLevel.Warning;
+            }
+
+            if (messageCount > 0)
+            {
+                message = $"{message} The following messages occurred: " + string.Join(", ", messages.Select(message => "\"" + message + "\""));
+            }
+            logger.Log(message, loglevel);
+            HealthCheckResult healthCheckResult;
+            if (result)
+            {
+                healthCheckResult = HealthCheckResult.Healthy(message);
+            }
+            else
+            {
+                healthCheckResult = HealthCheckResult.Unhealthy(message);
+            }
+            return Task.FromResult(healthCheckResult);
         }
     }
 }
