@@ -22,9 +22,18 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
                 output = System.Console.Out;
             }
             logItem.Format(logObject.Configuration, out string formattedMessage, out int cb, out int ce, out ConsoleColor _, this.Format, logItem.MessageId);
-            output.Write(formattedMessage.AsSpan(0, cb));
-            this.WriteWithColorToConsole(formattedMessage[cb..ce], output, logItem.LogLevel, logObject);
-            output.Write(formattedMessage[ce..] + Environment.NewLine);
+            //TODO refactor to do this in one write-statement by using the codes described in https://stackoverflow.com/a/74807043/3905529
+
+            string part1 = formattedMessage.AsSpan(0, cb).ToString();
+            output.Write(part1);
+
+            string part2 = formattedMessage[cb..ce];
+            this.WriteWithColorToConsole(part2, output, logItem.LogLevel, logObject);
+
+            string part3 = formattedMessage[ce..] + Environment.NewLine;
+            output.Write(part3);
+
+            output.Flush();
         }
         public override HashSet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization()
         {
