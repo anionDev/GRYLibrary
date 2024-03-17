@@ -59,7 +59,7 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="CommandLineParser" Version="2.9.1" />
-        <PackageReference Include="DNTCaptcha.Core" Version="5.0.0" />
+        <PackageReference Include="DNTCaptcha.Core" Version="5.1.0" />
         <PackageReference Include="ExtendedXmlSerializer" Version="3.7.11" />
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
         <PackageReference Include="Keycloak.Net.Core" Version="1.0.22" />

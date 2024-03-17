@@ -3,10 +3,10 @@ using System;
 
 namespace GRYLibrary.Core.Miscellaneous.Migration.Templates
 {
-    public class MariaDBMigratable : Migratable
+    public class SQLiteDBMigratable : Migratable
     {
         private readonly Version3 _CurrentVersionOfProgram;
-        public MariaDBMigratable(IGeneralLogger logger,MigrationConfiguration migrationConfiguration,Version3 currentVersionOfProgram) : base(logger,migrationConfiguration)
+        public SQLiteDBMigratable(IGeneralLogger logger, MigrationConfiguration migrationConfiguration, Version3 currentVersionOfProgram) : base(logger, migrationConfiguration)
         {
             this._CurrentVersionOfProgram = currentVersionOfProgram;
         }
@@ -18,7 +18,7 @@ namespace GRYLibrary.Core.Miscellaneous.Migration.Templates
 
         public override Version3 GetCurrentVersionOfProgram()
         {
-            return _CurrentVersionOfProgram;
+            throw new NotImplementedException();
         }
 
         public override bool InitializeWithLatestVersion()
