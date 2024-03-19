@@ -1,6 +1,5 @@
 using GRYLibrary.Core.APIServer.Utilities;
 using Microsoft.AspNetCore.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.APIServer.MidT.RLog

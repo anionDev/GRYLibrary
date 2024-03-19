@@ -1,6 +1,7 @@
 ﻿using GRYLibrary.Core.APIServer.Settings.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 namespace GRYLibrary.Core.APIServer.Settings
 {
     /// <summary>
@@ -24,5 +25,7 @@ namespace GRYLibrary.Core.APIServer.Settings
         public IServiceCollection ServiceCollection { get; internal set; }
         public IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> PersistedAPIServerConfiguration { get; internal set; }
         public WebApplication WebApplication { get; internal set; }
+        public Action PreRun { get; set; } = () => { };
+        public Action PostRun { get; set; } = () => { };
     }
 }
