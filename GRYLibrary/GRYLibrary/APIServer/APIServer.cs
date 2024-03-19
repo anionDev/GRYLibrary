@@ -155,9 +155,9 @@ namespace GRYLibrary.Core.APIServer
                 logger.Log($"Executionmode: {this._Configuration.InitializationInformation.ApplicationConstants.ExecutionMode}", LogLevel.Debug);
                 this.EnsureCertificateIsAvailableIfRequired(persistedAPIServerConfiguration);
                 WebApplication webApplication = this.CreateWebApplication(config, logger, persistedAPIServerConfiguration);
-                this._Configuration.FunctionalInformation.PreRun(webApplication);
+                this._Configuration.FunctionalInformationForWebApplication.PreRun();
                 webApplication.Run();
-                this._Configuration.FunctionalInformation.PostRun(webApplication);
+                this._Configuration.FunctionalInformationForWebApplication.PostRun();
                 return 0;
             }
             catch (Exception exception)
