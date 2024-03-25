@@ -1,14 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 
 namespace GRYLibrary.Core.Logging.GRYLogger
 {
     public struct LogItem
     {
-        private const string _Indentation = "    ";
         private string _FormattedMessage;
         private int _ColorBegin;
         private int _ColorEnd;
@@ -40,7 +38,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
                     string plainMessage = this._GetMessageFunction();
                     if (this.Exception != null)
                     {
-                        plainMessage = GetExceptionMessage(this.Exception, plainMessage);
+                        plainMessage = GUtilities.GetExceptionMessage(this.Exception, plainMessage);
                     }
                     this._PlainMessage = plainMessage;
                     this._MessageLoaded = true;
@@ -203,59 +201,6 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         {
             return !(left == right);
         }
-        public static string GetExceptionMessage(Exception exception, string message = null, uint indentationLevel = 1, string exceptionTitle = "Exception-information")
-        {
-            if (string.IsNullOrWhiteSpace(message))
-            {
-                message = "An exception occurred.";
-            }
-            if (!(message.EndsWith('.') | message.EndsWith('?') | message.EndsWith(':') | message.EndsWith('!')))
-            {
-                message += ".";
-            }
-            string result = $"{exceptionTitle}: ";
-            if (exception == null)
-            {
-                result += "null";
-            }
-            else
-            {
-                result += $"'{message}', Exception-type: {exception.GetType().FullName}, Exception-message: '{exception.Message}'";
-                if (true)
-                {
-                    result += @$"
-(Exception-details:
-{Indent(FormatStackTrace(exception), indentationLevel)},
-{Indent(FormatStackInnerException(exception, indentationLevel), indentationLevel)}
-)";
-                }
-            }
-            return result;
-        }
-        private static string Indent(IList<string> lines, uint indentationLevel)
-        {
-            string fullIndentation = string.Concat(Enumerable.Repeat(_Indentation, (int)indentationLevel));
-            return string.Join(Environment.NewLine, lines.Select(line => fullIndentation + line));
-        }
 
-        private static IList<string> FormatStackTrace(Exception exception)
-        {
-            List<string> result = new();
-            if (exception.StackTrace == null)
-            {
-                result.Add("Stack-trace: null");
-            }
-            else
-            {
-                result.Add("Stack-trace:");
-                result.AddRange(GUtilities.SplitOnNewLineCharacter(exception.StackTrace));
-            }
-            return result;
-        }
-
-        private static IList<string> FormatStackInnerException(Exception exception, uint indentationLevel)
-        {
-            return GUtilities.SplitOnNewLineCharacter(GetExceptionMessage(exception.InnerException, null, indentationLevel + 1, "Inner exception")).ToList();
-        }
     }
 }

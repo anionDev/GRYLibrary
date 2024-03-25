@@ -1,7 +1,6 @@
 ﻿using GRYLibrary.Core.APIServer.Settings.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System;
 using System.Collections.Generic;
 namespace GRYLibrary.Core.APIServer.Settings
 {
