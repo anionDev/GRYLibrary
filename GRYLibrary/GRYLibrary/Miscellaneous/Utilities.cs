@@ -42,11 +42,16 @@ using System.Net.Http;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
-    public static class Utilities
+    public static partial class Utilities
     {
         #region Constants
         public const string EmptyString = "";
         public const string SpecialCharacterTestString = "<SpecialCharacterTest>äöüßÄÖÜÆÑçéý &← /\\*#^°'`´\" ?|§@$€%-_²⁶₇¬∀∈∑∜∫∰≈≪ﬁ.Доброе утро صبح به خیر शुभ प्रभात 좋은 아침 സുപ്രഭാതം おはようございます ហ្គុនមូហ្កិន</SpecialCharacterTest>";
+
+        [GeneratedRegex(@"(PWD|Pwd)=([^;]+)(;|$)")]
+        private static partial Regex MariaDBPasswordHideRegex();
+        [GeneratedRegex(@"^[0-9a-f]+$")]
+        private static partial Regex OneOrMoreHexSigns();
         #endregion
 
         public static (T[], T[]) Split<T>(T[] source, int index)
@@ -1796,7 +1801,7 @@ namespace GRYLibrary.Core.Miscellaneous
             if (hidePassword)
             {
                 string replaceString = "********";
-                connectionString = Regex.Replace(connectionString, @"(PWD|Pwd)=([^;]+)(;|$)", match => $"{match.Groups[1]}={replaceString}{match.Groups[3]}");
+                connectionString = MariaDBPasswordHideRegex().Replace(connectionString, match => $"{match.Groups[1]}={replaceString}{match.Groups[3]}");
             }
             return connectionString;
         }
@@ -2903,7 +2908,7 @@ namespace GRYLibrary.Core.Miscellaneous
             return char.ToLowerInvariant(pascalCase[0]) + pascalCase[1..];
         }
 
-        private static readonly Regex _OneOrMoreHexSigns = new Regex(@"^[0-9a-f]+$");
+        private static readonly Regex _OneOrMoreHexSigns = OneOrMoreHexSigns();
         public static bool IsHexString(string result)
         {
             return _OneOrMoreHexSigns.Match(result.ToLower()).Success;
@@ -3148,6 +3153,92 @@ namespace GRYLibrary.Core.Miscellaneous
             int count = value.Count();
             int hashSetCount = value.ToHashSet().Count;
             return count != hashSetCount;
+        }
+        #region Format exception
+        private const string _LogIndentation = "    ";
+        public static string GetExceptionMessage(Exception exception, string message = null, bool wrapInOneLine = false, uint indentationLevel = 1, string exceptionTitle = "Exception-information")
+        {
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                message = "An exception occurred.";
+            }
+            if (!(message.EndsWith('.') | message.EndsWith('?') | message.EndsWith(':') | message.EndsWith('!')))
+            {
+                message += ".";
+            }
+            string result = $"{exceptionTitle}: ";
+            if (exception == null)
+            {
+                result += "null";
+            }
+            else
+            {
+                result += $"'{message}', Exception-type: {exception.GetType().FullName}, Exception-message: '{exception.Message}'";
+                if (true)
+                {
+                    result += @$"
+(Exception-details:
+{Indent(FormatStackTrace(exception), indentationLevel)},
+{Indent(FormatStackInnerException(exception, indentationLevel), indentationLevel)}
+)";
+                }
+            }
+            if (wrapInOneLine)
+            {
+                result = result
+                    .Replace("\r", " ")
+                    .Replace("\n", " ")
+                    .Replace("  ", " ");
+            }
+            result = result.Trim();
+            return result;
+        }
+        private static string Indent(IList<string> lines, uint indentationLevel)
+        {
+            string fullIndentation = string.Concat(Enumerable.Repeat(_LogIndentation, (int)indentationLevel));
+            return string.Join(Environment.NewLine, lines.Select(line => fullIndentation + line));
+        }
+
+        private static IList<string> FormatStackTrace(Exception exception)
+        {
+            List<string> result = new();
+            if (exception.StackTrace == null)
+            {
+                result.Add("Stack-trace: null");
+            }
+            else
+            {
+                result.Add("Stack-trace:");
+                result.AddRange(SplitOnNewLineCharacter(exception.StackTrace));
+            }
+            return result;
+        }
+
+        private static IList<string> FormatStackInnerException(Exception exception, uint indentationLevel, bool wrapInOneLine = false)
+        {
+            return SplitOnNewLineCharacter(GetExceptionMessage(exception.InnerException, null, wrapInOneLine, indentationLevel + 1, "Inner exception")).ToList();
+        }
+        #endregion
+
+        /// <param name="result">
+        /// Will contain (false, messages + "Task was cancelled") if the task was cancelled.
+        /// Otherwise the value will be set to null.
+        /// </param>
+        /// <returns>
+        /// Returns true if and only if the task was cancelled by the cancellationtoken. 
+        /// </returns>
+        public static bool CheckCancellationToken(IList<string> messages, CancellationToken cancellationToken, out (bool, IList<string>) result)
+        {
+            if (cancellationToken != null && cancellationToken.IsCancellationRequested)
+            {
+                result = (false, messages.Concat(new List<string>() { "Task was cancelled" }).ToList());
+                return true;
+            }
+            else
+            {
+                result = default;
+                return false;
+            }
         }
     }
 }

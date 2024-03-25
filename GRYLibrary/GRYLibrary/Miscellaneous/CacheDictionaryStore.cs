@@ -15,11 +15,12 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public TValue GetValue(TKey key, THelper helper)
         {
-            if (!this._Cache.ContainsKey(key))
+            if (!this._Cache.TryGetValue(key, out TValue value))
             {
-                this._Cache.Add(key, this._GetFunction(key, helper));
+                value = this._GetFunction(key, helper);
+                this._Cache.Add(key, value);
             }
-            return this._Cache[key];
+            return value;
         }
         public void ResetCache()
         {

@@ -181,11 +181,19 @@ namespace GRYLibrary.Core.APIServer.Utilities
         public static Task<HealthCheckResult> CheckHealthAsync(IGeneralLogger logger, Func<(bool, IEnumerable<string>)> check, HealthCheckContext context, CancellationToken cancellationToken)
 #pragma warning restore IDE0060 // Remove unused parameter
         {
-            (bool result, IEnumerable<string> messages) = check();
-            int messageCount = messages.Count();
+            (bool result, IEnumerable<string> messages) result;
+            try
+            {
+                result = check();
+            }
+            catch (Exception exception)
+            {
+                result = (false, new List<string>() { GUtilities.GetExceptionMessage(exception, "Error while calculating health-status", true) });
+            }
+            int messageCount = result.messages.Count();
             LogLevel loglevel;
             string message;
-            if (result)
+            if (result.result)
             {
                 message = "Service is healthy.";
                 loglevel = LogLevel.Debug;
@@ -198,11 +206,11 @@ namespace GRYLibrary.Core.APIServer.Utilities
 
             if (messageCount > 0)
             {
-                message = $"{message} The following messages occurred: " + string.Join(", ", messages.Select(message => "\"" + message + "\""));
+                message = $"{message} The following messages occurred: " + string.Join(", ", result.messages.Select(message => "\"" + message + "\""));
             }
             logger.Log(message, loglevel);
             HealthCheckResult healthCheckResult;
-            if (result)
+            if (result.result)
             {
                 healthCheckResult = HealthCheckResult.Healthy(message);
             }
