@@ -27,6 +27,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
 {
     public static class Tools
     {
+        public const string ObsoleteDataContextMessage = "This datacontext-specific-type is obsolete. Use the newest data-context instead.";
         public static (byte[] requestBody, byte[] responseBody) ExecuteNextMiddlewareAndGetRequestAndResponseBody(HttpContext context, RequestDelegate next, Func<byte[], byte[]> requestBodyUpdater = null, Func<byte[], byte[]> responseBodyUpdater = null)
         {
             byte[] requestBody = GetRequestBody(context, requestBodyUpdater);
@@ -82,6 +83,11 @@ namespace GRYLibrary.Core.APIServer.Utilities
             where GCodeUnitSpecificCommandlineParameter : class, ICommandlineParameter, new()
         {
             GRYConsoleApplication<GCodeUnitSpecificCommandlineParameter, APIServerConfiguration<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>> consoleApp = new GRYConsoleApplication<GCodeUnitSpecificCommandlineParameter, APIServerConfiguration<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>>(APIServer<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>.APIMain, codeUnitName, codeUnitVersion.ToString(), codeUnitDescription, true, executionMode, environmentTargetType, true);
+            consoleApp.CommandlineArgumentParsingErrorHandler = (cmd, errors) =>
+            {
+                consoleApp.Main(new string[] { }, initializer);
+                int i = 3;
+            };
             return consoleApp.Main(commandlineArguments, initializer);
         }
         public static void ConnectToDatabase(Action connectAction, IGeneralLogger logger, string adaptedConnectionString)
