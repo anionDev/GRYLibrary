@@ -9,7 +9,7 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
     {
         public override void AddItemsToPlaylist(string playlistFile, IEnumerable<string> newItems)
         {
-            var content = File.ReadAllText(playlistFile, this.Encoding);
+            string content = File.ReadAllText(playlistFile, this.Encoding);
             if (!content.EndsWith('\n'))
             {
                 content = content + '\n';

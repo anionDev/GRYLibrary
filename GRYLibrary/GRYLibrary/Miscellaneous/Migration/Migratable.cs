@@ -21,22 +21,25 @@ namespace GRYLibrary.Core.Miscellaneous.Migration
         {
             if (this.IsAlreadyInitialized())
             {
-                var migrations = this.GetSortedRelevantMigrations();
+                IList<MigrationMetaInformation> migrations = this.GetSortedRelevantMigrations();
                 this.ValidateMigrations(migrations);
-                foreach (var migration in migrations)
+                foreach (MigrationMetaInformation migration in migrations)
                 {
+                    _Logger.Log($"Migrate database from v{migration.MigratationInformation.SourceVersion} to v{migration.MigratationInformation.TargetVersion}.", Microsoft.Extensions.Logging.LogLevel.Information);
                     migration.Migration(migration.MigratationInformation);
                 }
             }
             else
             {
+                _Logger.Log("Initialize database", Microsoft.Extensions.Logging.LogLevel.Information);
                 this.InitializeWithLatestVersion();
             }
+            _Logger.Log("Finished database initialization", Microsoft.Extensions.Logging.LogLevel.Information);
         }
 
         private void ValidateMigrations(IEnumerable<MigrationMetaInformation> migrations)
         {
-            foreach (var migration in migrations)
+            foreach (MigrationMetaInformation migration in migrations)
             {
                 this.ValidateMigration(migration);
             }

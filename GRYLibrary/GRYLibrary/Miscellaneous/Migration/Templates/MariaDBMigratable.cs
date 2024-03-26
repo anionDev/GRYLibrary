@@ -18,7 +18,7 @@ namespace GRYLibrary.Core.Miscellaneous.Migration.Templates
 
         public override Version3 GetCurrentVersionOfProgram()
         {
-            return _CurrentVersionOfProgram;
+            return this._CurrentVersionOfProgram;
         }
 
         public override bool InitializeWithLatestVersion()

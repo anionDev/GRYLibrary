@@ -102,13 +102,13 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
                                 })
                                 .WithNotParsed(errors =>
                                 {
-                                    if (CommandlineArgumentParsingErrorHandler == null)
+                                    if (this.CommandlineArgumentParsingErrorHandler == null)
                                     {
                                         this.HandleParsingErrors(argumentsAsString, errors);
                                     }
                                     else
                                     {
-                                        CommandlineArgumentParsingErrorHandler(argumentsAsString, errors);
+                                        this.CommandlineArgumentParsingErrorHandler(argumentsAsString, errors);
                                     }
                                 });
                         }

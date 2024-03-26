@@ -85,8 +85,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
             GRYConsoleApplication<GCodeUnitSpecificCommandlineParameter, APIServerConfiguration<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>> consoleApp = new GRYConsoleApplication<GCodeUnitSpecificCommandlineParameter, APIServerConfiguration<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>>(APIServer<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>.APIMain, codeUnitName, codeUnitVersion.ToString(), codeUnitDescription, true, executionMode, environmentTargetType, true);
             consoleApp.CommandlineArgumentParsingErrorHandler = (cmd, errors) =>
             {
-                consoleApp.Main(new string[] { }, initializer);
-                int i = 3;
+                consoleApp.Main(Array.Empty<string>(), initializer);//TODO implement correct handler
             };
             return consoleApp.Main(commandlineArguments, initializer);
         }
@@ -143,8 +142,8 @@ namespace GRYLibrary.Core.APIServer.Utilities
         private readonly static IList<HashAlgorithm> _HashAlgorithms = new List<HashAlgorithm>() { new SHA256(), new SHA256PureCSharp() };
         public static Crypto.HashAlgorithm GetHashAlgorithm(string passwordHashAlgorithmIdentifier)
         {
-            var passwordHashAlgorithmIdentifierBytes = GUtilities.PadLeft(new UTF8Encoding(false).GetBytes(passwordHashAlgorithmIdentifier), 10);
-            foreach (var algorithm in _HashAlgorithms)
+            byte[] passwordHashAlgorithmIdentifierBytes = GUtilities.PadLeft(new UTF8Encoding(false).GetBytes(passwordHashAlgorithmIdentifier), 10);
+            foreach (HashAlgorithm algorithm in _HashAlgorithms)
             {
                 if (algorithm.GetIdentifier() == passwordHashAlgorithmIdentifierBytes)
                 {
