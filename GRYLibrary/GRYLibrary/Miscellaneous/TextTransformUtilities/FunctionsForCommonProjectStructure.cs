@@ -32,15 +32,20 @@ namespace GRYLibrary.Core.Miscellaneous.TextTransformUtilities
                             constantDocumentationSummaryLines.Add(constantProperties["documentationsummary"]);
                         }
                         contentLines.Add(string.Empty);
-                        foreach (string line in constantDocumentationSummaryLines)
+                        if (constantDocumentationSummaryLines.Count > 0)
                         {
-                            if (!string.IsNullOrEmpty(line))
+                            contentLines.Add("/// <summary>");
+                            foreach (string line in constantDocumentationSummaryLines)
                             {
-                                contentLines.Add($"        /// {line}");
+                                if (!string.IsNullOrEmpty(line))
+                                {
+                                    contentLines.Add($"        /// {line}");
+                                }
                             }
+                            contentLines.Add("/// </summary>");
                         }
                         string constantValue = constantProperties["value"];
-                        string constantValueEscaped = constantValue.Replace("\\", "\\\\");
+                        string constantValueEscaped = constantValue.Replace("\"", "\"\"");
                         string constantName = constantProperties["name"];
                         contentLines.Add($"        internal const string {constantName} = @\"{constantValueEscaped}\";");
                     }
