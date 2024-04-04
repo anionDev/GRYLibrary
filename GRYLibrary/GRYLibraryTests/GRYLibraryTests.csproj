@@ -2,9 +2,9 @@
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <Authors>Marius Göcke</Authors>
-        <Version>0.12.92</Version>
-        <AssemblyVersion>0.12.92</AssemblyVersion>
-        <FileVersion>0.12.92</FileVersion>
+        <Version>0.12.93</Version>
+        <AssemblyVersion>0.12.93</AssemblyVersion>
+        <FileVersion>0.12.93</FileVersion>
         <SelfContained>false</SelfContained>
         <IsPackable>false</IsPackable>
         <PreserveCompilationContext>false</PreserveCompilationContext>
@@ -76,7 +76,7 @@
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
     <PackageReference Include="NJsonSchema" Version="11.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
-    <PackageReference Include="NSwag.AspNetCore" Version="14.0.4" />
+    <PackageReference Include="NSwag.AspNetCore" Version="14.0.5" />
     <PackageReference Include="System.Collections.Immutable" Version="8.0.0" />
     <PackageReference Include="System.Reactive" Version="6.0.0" />
   </ItemGroup>

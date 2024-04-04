@@ -27,6 +27,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
 {
     public static class Tools
     {
+        public const string ObsoleteDataContextMessage = "This datacontext-specific-type is obsolete. Use the newest data-context instead.";
         public static (byte[] requestBody, byte[] responseBody) ExecuteNextMiddlewareAndGetRequestAndResponseBody(HttpContext context, RequestDelegate next, Func<byte[], byte[]> requestBodyUpdater = null, Func<byte[], byte[]> responseBodyUpdater = null)
         {
             byte[] requestBody = GetRequestBody(context, requestBodyUpdater);

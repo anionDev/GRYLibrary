@@ -23,6 +23,7 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
         private readonly bool _ProgramCanRunWithoutArguments;
         private readonly GRYConsoleApplicationInitialInformation _GRYConsoleApplicationInitialInformation;
         private readonly bool _ResetConsoleToDefaultvalues;
+        public Action<string, IEnumerable<Error>> CommandlineArgumentParsingErrorHandler;
         public GRYConsoleApplication(Func<CMDOptions, Action<InitializationConfig>, GRYConsoleApplicationInitialInformation, int> main, string programName, string programVersion, string programDescription, bool programCanRunWithoutArguments, ExecutionMode executionMode, GRYEnvironment environment, bool resetConsoleToDefaultvalues)
         {
             this._Main = main;
@@ -101,8 +102,14 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
                                 })
                                 .WithNotParsed(errors =>
                                 {
-                                    result = 3;
-                                    this.HandleParsingErrors(argumentsAsString, errors);
+                                    if (CommandlineArgumentParsingErrorHandler == null)
+                                    {
+                                        this.HandleParsingErrors(argumentsAsString, errors);
+                                    }
+                                    else
+                                    {
+                                        CommandlineArgumentParsingErrorHandler(argumentsAsString, errors);
+                                    }
                                 });
                         }
                     }
