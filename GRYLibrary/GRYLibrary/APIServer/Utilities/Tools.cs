@@ -83,11 +83,6 @@ namespace GRYLibrary.Core.APIServer.Utilities
             where GCodeUnitSpecificCommandlineParameter : class, ICommandlineParameter, new()
         {
             GRYConsoleApplication<GCodeUnitSpecificCommandlineParameter, APIServerConfiguration<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>> consoleApp = new GRYConsoleApplication<GCodeUnitSpecificCommandlineParameter, APIServerConfiguration<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>>(APIServer<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>.APIMain, codeUnitName, codeUnitVersion.ToString(), codeUnitDescription, true, executionMode, environmentTargetType, true);
-            consoleApp.CommandlineArgumentParsingErrorHandler = (cmd, errors) =>
-            {
-                consoleApp.Main(Array.Empty<string>(), initializer);
-                int i = 3;
-            };
             return consoleApp.Main(commandlineArguments, initializer);
         }
         public static void ConnectToDatabase(Action connectAction, IGeneralLogger logger, string adaptedConnectionString)
