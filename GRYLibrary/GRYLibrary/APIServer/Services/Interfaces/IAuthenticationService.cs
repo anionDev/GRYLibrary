@@ -13,6 +13,7 @@ namespace GRYLibrary.Core.APIServer.Services.Interfaces
         public string GetUserName(string accessToken);
         public string GetIdOfUser(string username);
         void Logout(AccessToken accessToken);
+        void LogoutEverywhere(string username);
         public void RemoveUser(string username);
         bool UserExists(string username);
     }

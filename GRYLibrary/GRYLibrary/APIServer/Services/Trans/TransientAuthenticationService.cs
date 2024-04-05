@@ -1,11 +1,10 @@
-﻿using GRYLibrary.Core.APIServer.CommonAuthenticationTypes;
-using GRYLibrary.Core.APIServer.CommonDBTypes;
+﻿using GRYLibrary.Core.APIServer.CommonDBTypes;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
 using GRYLibrary.Core.Exceptions;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AccessToken = GRYLibrary.Core.APIServer.CommonAuthenticationTypes.AccessToken;
 
 namespace GRYLibrary.Core.APIServer.Services.Trans
 {
@@ -82,6 +81,11 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             this._Users[this.GetUserName(accessToken.Value)].AccessToken.Remove(accessToken);
         }
 
+        public void LogoutEverywhere(string username)
+        {
+            this._Users[username].AccessToken.Clear();
+        }
+
         public virtual void OnStart()
         {
         }
@@ -90,37 +94,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         {
             this._Users.Remove(username);
         }
-
-        public static string CookieName { get; set; } = "X-Authorization";
-        //TODO move CookieName to configuration
-        //TODO remove "X-"-prefix from CookieName
-        public static (string key, string value, CookieOptions options) GetAccessTokenCookie(string username, string accessToken, DateTime expires)
-        {
-            return (CookieName,
-                $"User={username};AccessToken={accessToken}",
-                new CookieOptions()
-                {
-                    Expires = expires,
-                    Path = "/",
-                    HttpOnly = true,
-                    Secure = true,
-                }
-            );
-        }
-
-        public static (string key, string value, CookieOptions options) GetAccessTokenExpiredCookie(string username)
-        {
-            return (CookieName,
-                $"User={username};AccessToken=",
-                new CookieOptions()
-                {
-                    Expires = new DateTime(1970, 1, 1, 0, 0, 0),
-                    Path = "/",
-                    HttpOnly = true,
-                    Secure = true,
-                }
-            );
-        }
+      
 
         public bool UserExists(string username)
         {
