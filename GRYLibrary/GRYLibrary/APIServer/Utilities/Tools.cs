@@ -22,6 +22,7 @@ using GRYLibrary.Core.APIServer.Services;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System.Linq;
 using System.Threading.Tasks;
+using GRYLibrary.Core.APIServer.Verbs;
 
 namespace GRYLibrary.Core.APIServer.Utilities
 {
@@ -80,11 +81,12 @@ namespace GRYLibrary.Core.APIServer.Utilities
         public static int RunAPIServer<GCodeUnitSpecificCommandlineParameter, GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration>(string codeUnitName, string codeUnitDescription, Version3 codeUnitVersion, GRYEnvironment environmentTargetType, ExecutionMode executionMode, string[] commandlineArguments, Action<APIServerConfiguration<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>> initializer)
             where GCodeUnitSpecificConfiguration : new()
             where GCodeUnitSpecificConstants : new()
-            where GCodeUnitSpecificCommandlineParameter : class, ICommandlineParameter, new()
+            where GCodeUnitSpecificCommandlineParameter : class, IAPIServerCommandlineParameter, new()
         {
-            GRYConsoleApplication<GCodeUnitSpecificCommandlineParameter, APIServerConfiguration<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>> consoleApp = new GRYConsoleApplication<GCodeUnitSpecificCommandlineParameter, APIServerConfiguration<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>>(APIServer<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>.APIMain, codeUnitName, codeUnitVersion.ToString(), codeUnitDescription, true, executionMode, environmentTargetType, true);
-            return consoleApp.Main(commandlineArguments, initializer);
+            GRYConsoleApplication<GCodeUnitSpecificCommandlineParameter> consoleApp = new GRYConsoleApplication<GCodeUnitSpecificCommandlineParameter>(new VerbParser<GCodeUnitSpecificCommandlineParameter>(APIServer<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>.CreateMain(initializer)), codeUnitName, codeUnitVersion.ToString(), codeUnitDescription, true, executionMode, environmentTargetType, true);
+            return consoleApp.Main(commandlineArguments);
         }
+
         public static void ConnectToDatabase(Action connectAction, IGeneralLogger logger, string adaptedConnectionString)
         {
             bool connected = false;

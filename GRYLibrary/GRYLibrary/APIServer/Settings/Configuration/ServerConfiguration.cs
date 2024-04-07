@@ -3,6 +3,12 @@
     public class ServerConfiguration
     {
         public string Domain { get; set; }
+        public string PublicUrl { get; set; }
+        public void SetDomainAndPublichUrlToDefault(string domain)
+        {
+            this.Domain = domain;
+            this.PublicUrl = $"https://{domain}:443";
+        }
         public Protocol Protocol { get; set; }
         public string DevelopmentCertificatePasswordHex { get; set; }
         public string DevelopmentCertificatePFXHex { get; set; }
@@ -16,7 +22,14 @@
         public const string LicenseURLSubPath = $"{APIResourcesSubPath}/Information/License";
         public string GetServerAddress()
         {
-            return $"{this.Protocol.GetProtocol()}://{this.Domain}:{this.Protocol.Port}";
+            if (this.PublicUrl == null)
+            {
+                return $"{this.Protocol.GetProtocol()}://{this.Domain}:{this.Protocol.Port}";
+            }
+            else
+            {
+                return this.PublicUrl;
+            }
         }
     }
 }
