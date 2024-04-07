@@ -5,11 +5,11 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
 {
     public class GRYConsoleApplicationInitialInformation
     {
-        public string ProgramName { get; set; }
-        public string ProgramVersion { get; set; }
-        public string ProgramDescription { get; set; }
-        public ExecutionMode ExecutionMode { get; set; }
-        public GRYEnvironment Environment { get; set; }
+        public string ProgramName { get;private set; }
+        public string ProgramVersion { get; private set; }
+        public string ProgramDescription { get; private set; }
+        public ExecutionMode ExecutionMode { get; private set; }
+        public GRYEnvironment Environment { get; private set; }
 
         public GRYConsoleApplicationInitialInformation(string programName, string programVersion, string programDescription, ExecutionMode executionMode, GRYEnvironment environment)
         {

@@ -25,16 +25,16 @@ namespace GRYLibrary.Core.Miscellaneous.Migration
                 this.ValidateMigrations(migrations);
                 foreach (MigrationMetaInformation migration in migrations)
                 {
-                    _Logger.Log($"Migrate database from v{migration.MigratationInformation.SourceVersion} to v{migration.MigratationInformation.TargetVersion}.", Microsoft.Extensions.Logging.LogLevel.Information);
+                    this._Logger.Log($"Migrate database from v{migration.MigratationInformation.SourceVersion} to v{migration.MigratationInformation.TargetVersion}.", Microsoft.Extensions.Logging.LogLevel.Information);
                     migration.Migration(migration.MigratationInformation);
                 }
             }
             else
             {
-                _Logger.Log("Initialize database", Microsoft.Extensions.Logging.LogLevel.Information);
+                this._Logger.Log("Initialize database", Microsoft.Extensions.Logging.LogLevel.Information);
                 this.InitializeWithLatestVersion();
             }
-            _Logger.Log("Finished database initialization", Microsoft.Extensions.Logging.LogLevel.Information);
+            this._Logger.Log("Finished database initialization", Microsoft.Extensions.Logging.LogLevel.Information);
         }
 
         private void ValidateMigrations(IEnumerable<MigrationMetaInformation> migrations)
