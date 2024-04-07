@@ -83,7 +83,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
             where GCodeUnitSpecificCommandlineParameter : class, ICommandlineParameter, new()
         {
             GRYConsoleApplication<GCodeUnitSpecificCommandlineParameter, APIServerConfiguration<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>> consoleApp = new GRYConsoleApplication<GCodeUnitSpecificCommandlineParameter, APIServerConfiguration<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>>(APIServer<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>.APIMain, codeUnitName, codeUnitVersion.ToString(), codeUnitDescription, true, executionMode, environmentTargetType, true);
-              return consoleApp.Main(commandlineArguments, initializer);
+            return consoleApp.Main(commandlineArguments, initializer);
         }
         public static void ConnectToDatabase(Action connectAction, IGeneralLogger logger, string adaptedConnectionString)
         {
