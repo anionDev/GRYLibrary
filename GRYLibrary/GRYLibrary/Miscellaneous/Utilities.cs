@@ -1856,8 +1856,8 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             try
             {
-                using var httpClient = new HttpClient();
-                foreach (var header in extraHeaders)
+                using HttpClient httpClient = new HttpClient();
+                foreach (System.Collections.Generic.KeyValuePair<string, string> header in extraHeaders)
                 {
                     httpClient.DefaultRequestHeaders.Add(header.Key, header.Value);
                 }

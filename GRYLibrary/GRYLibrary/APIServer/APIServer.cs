@@ -46,14 +46,26 @@ namespace GRYLibrary.Core.APIServer
         where ApplicationSpecificConstants : new()
         where CommandlineParameterType : class, ICommandlineParameter
     {
+        public APIServer()
+        {
+
+        }
         //TODO integrate prometheus-net (https://github.com/prometheus-net/prometheus-net#best-practices-and-usage) for metrics and healthcheck
         private APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> _Configuration;
-        public static int APIMain(CommandlineParameterType commandlineParameter, Action<APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>> configurationInitializer, GRYConsoleApplicationInitialInformation gryConsoleApplicationInitialInformation)
-        {
-            APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> apiServerConfiguration = new APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>();
 
+        public static Func<CommandlineParameterType, GRYConsoleApplicationInitialInformation, int> CreateMain(Action<APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>> init)
+        {
+            return (CommandlineParameterType commandlineParameter, GRYConsoleApplicationInitialInformation gryConsoleApplicationInitialInformation) =>
+            {
+                APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> apiServerConfiguration = new APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>();
+                init(apiServerConfiguration);
+                APIMain(commandlineParameter, gryConsoleApplicationInitialInformation, apiServerConfiguration);
+                return 0;
+            };
+        }
+        public static int APIMain(CommandlineParameterType commandlineParameter, GRYConsoleApplicationInitialInformation gryConsoleApplicationInitialInformation, APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> apiServerConfiguration)
+        {
             #region Initialize default configuration-values
-            configurationInitializer(apiServerConfiguration);
             apiServerConfiguration.InitializationInformation = new InitializationInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
             {
                 CommandlineParameter = commandlineParameter,
