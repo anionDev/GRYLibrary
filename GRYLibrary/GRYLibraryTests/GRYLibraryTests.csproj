@@ -2,9 +2,9 @@
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <Authors>Marius Göcke</Authors>
-        <Version>0.12.93</Version>
-        <AssemblyVersion>0.12.93</AssemblyVersion>
-        <FileVersion>0.12.93</FileVersion>
+        <Version>0.12.94</Version>
+        <AssemblyVersion>0.12.94</AssemblyVersion>
+        <FileVersion>0.12.94</FileVersion>
         <SelfContained>false</SelfContained>
         <IsPackable>false</IsPackable>
         <PreserveCompilationContext>false</PreserveCompilationContext>
@@ -69,14 +69,14 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
-    <PackageReference Include="MSTest.TestAdapter" Version="3.2.2" />
-    <PackageReference Include="MSTest.TestFramework" Version="3.2.2" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.3.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.3.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
     <PackageReference Include="NJsonSchema" Version="11.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
-    <PackageReference Include="NSwag.AspNetCore" Version="14.0.5" />
+    <PackageReference Include="NSwag.AspNetCore" Version="14.0.7" />
     <PackageReference Include="System.Collections.Immutable" Version="8.0.0" />
     <PackageReference Include="System.Reactive" Version="6.0.0" />
   </ItemGroup>

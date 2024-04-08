@@ -33,21 +33,17 @@ namespace GRYLibrary.Core.GenericAPIClient
         {
             return await this.SendAsStringAsync(route, HttpMethod.Get);
         }
-
         public async Task PostAsync(string route, string body)
         {
-            HttpResponseMessage response = await this.GetResponse(route, HttpMethod.Post, body);
-            response.EnsureSuccessStatusCode();
+            await this.GetResponse(route, HttpMethod.Post, body);
         }
         public async Task PutAsync(string route, string body)
         {
-            HttpResponseMessage response = await this.GetResponse(route, HttpMethod.Put, body);
-            response.EnsureSuccessStatusCode();
+            await this.GetResponse(route, HttpMethod.Put, body);
         }
         private async Task<string> SendAsStringAsync(string route, HttpMethod method)
         {
             HttpResponseMessage response = await this.GetResponse(route, method, null);
-            response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }
 
@@ -74,17 +70,48 @@ namespace GRYLibrary.Core.GenericAPIClient
         private async Task<HttpResponseMessage> GetResponse(string route, HttpMethod method, string body)
         {
             using HttpClient client = this.GetHTTPClient();
-            using HttpRequestMessage requestMessage = new HttpRequestMessage(method, $"{this.Configuration.APIAddress}/{route}");
+            using HttpRequestMessage request = new HttpRequestMessage(method, $"{this.Configuration.APIAddress}/{route}");
 
             if (body != null)
             {
-                requestMessage.Content = new StringContent(body);
+                request.Content = new StringContent(body);
             }
             if (this.Configuration.APIKey != null)
             {
-                requestMessage.Headers.Add("APIKey", this.Configuration.APIKey);
+                request.Headers.Add("APIKey", this.Configuration.APIKey);
             }
-            return await client.SendAsync(requestMessage);
+            HttpResponseMessage result = await client.SendAsync(request);
+            CheckResponse(request, result, this.Configuration.Verbose);
+            return result;
+        }
+
+        internal static void CheckResponse(HttpRequestMessage request, HttpResponseMessage response, bool verbose)
+        {
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException)
+            {
+                throw new HttpRequestException($"Request resulted in response-statuscode {(int)response.StatusCode}. The request was {RequestToString(request, verbose)}.");
+            }
+        }
+
+        internal static string RequestToString(HttpRequestMessage request, bool verbose)
+        {
+            string result = $"<{request.Method} {request.RequestUri}>";
+            if (verbose)
+            {
+                if (request.Content != null)
+                {
+                    string requestBody = request.Content.ReadAsStringAsync().Result;
+                    if (requestBody != null)
+                    {
+                        result = $"{result} (Body: \"{requestBody}\")";
+                    }
+                }
+            }
+            return result;
         }
 
         public virtual void Dispose()

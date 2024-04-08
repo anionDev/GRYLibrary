@@ -14,7 +14,7 @@ namespace GRYLibrary.Core.GenericAPIClient
         /// The route must be available using <see cref="HttpMethod.Get"/>.
         /// </remarks>
         public string TestRoute { get; set; }
-        /// <inheritdoc/>
         public HttpClientHandler HttpClientHandler { get; set; }
+        public bool Verbose { get; set; } = false;
     }
 }
