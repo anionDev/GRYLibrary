@@ -1,4 +1,5 @@
-﻿using GRYLibrary.Core.Graph.Exceptions;
+﻿using GRYLibrary.Core.Exceptions;
+using GRYLibrary.Core.Graph.Exceptions;
 using GRYLibrary.Core.Miscellaneous;
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,7 @@ namespace GRYLibrary.Core.Graph
             {
                 if (!value && this.ContainsOneOrMoreSelfLoops())
                 {
-                    throw new Exception("Setting ContainsSelfLoops to false is not possible while the graph contains self-loops");
+                    throw new AssertionException("Setting ContainsSelfLoops to false is not possible while the graph contains self-loops.");
                 }
                 this._SelfLoopIsAllowed = value;
             }
@@ -106,7 +107,7 @@ namespace GRYLibrary.Core.Graph
             {
                 throw new InvalidGraphStructureException($"Self-loops are not allowed. Change the value of the {nameof(this.SelfLoopIsAllowed)}-property to allow this.");
             }
-            if (this.Edges.Where(existingEdge => existingEdge.Name.Equals(edge.Name)).Count() > 0)
+            if (this.Edges.Where(existingEdge => existingEdge.Name.Equals(edge.Name)).Any())
             {
                 throw new InvalidGraphStructureException($"This graph does already have an edge with the name {edge.Name}.");
             }
@@ -309,7 +310,7 @@ namespace GRYLibrary.Core.Graph
         {
             if (!this.Vertices.Contains(startVertex))
             {
-                throw new InternalAlgorithmException($"Vertex '{startVertex}' is not contained in this graph.");
+                throw new Exceptions.InternalAlgorithmException($"Vertex '{startVertex}' is not contained in this graph.");
             }
             visitedMap = new Dictionary<Vertex, bool>();
             foreach (Vertex vertex in this.Vertices)

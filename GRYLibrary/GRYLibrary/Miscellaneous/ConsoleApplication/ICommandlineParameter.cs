@@ -2,6 +2,5 @@
 {
     public interface ICommandlineParameter
     {
-        string[] OriginalArguments { get; set; }
     }
 }

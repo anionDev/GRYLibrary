@@ -44,7 +44,7 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             while (!ThisProgramIsTheOnlyInstance())
             {
-                System.Threading.Thread.Sleep(25);
+                System.Threading.Thread.Sleep(50);
             }
         }
 

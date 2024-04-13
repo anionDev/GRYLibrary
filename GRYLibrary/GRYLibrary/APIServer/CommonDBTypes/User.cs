@@ -18,7 +18,7 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
         public ISet<RefreshToken> RefreshToken { get; set; } = new HashSet<RefreshToken>();
         public ISet<AccessToken> AccessToken { get; set; } = new HashSet<AccessToken>();
         public ISet<IMFAMethod> MFAMethods { get; set; } = new HashSet<IMFAMethod>();
-
+        public ISet<Role> Roles { get; set; } = new HashSet<Role>();
         public override bool Equals(object obj)
         {
             return this.Equals(obj as User);
