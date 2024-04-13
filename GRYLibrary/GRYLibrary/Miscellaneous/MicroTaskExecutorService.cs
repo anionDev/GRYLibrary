@@ -38,6 +38,7 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             while (this.IsRunning)
             {
+                Thread.Sleep(50);
                 lock (this._Lock)
                 {
                     if (!this.IsStillEnabled())
