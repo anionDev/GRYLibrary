@@ -80,7 +80,7 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
                     {
                         arguments = Array.Empty<string>();
                     }
-                    if (arguments.Length == 0 && !_ProgramCanRunWithoutArguments)
+                    if (arguments.Length == 0 && !this._ProgramCanRunWithoutArguments)
                     {
                         string programNameLower = this._ProgramName.ToLower();
                         this._Log.Log($"{this._ProgramName} v{this._ProgramVersion}");
