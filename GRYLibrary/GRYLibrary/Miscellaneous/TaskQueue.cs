@@ -44,14 +44,17 @@ namespace GRYLibrary.Core.Miscellaneous
                 bool enabled = true;
                 while (enabled)
                 {
+                    Thread.Sleep(50);
                     if (!this.InfiniteMode)
                     {
                         enabled = false;
                     }
                     while (!this.IsFinished())
                     {
+                        Thread.Sleep(50);
                         while (this.NewThreadCanBeStarted())
                         {
+                            Thread.Sleep(50);
                             Tuple<string, Action> dequeuedAction = this._ActionQueue.Dequeue();
                             Thread thread = new(() => this.ExecuteTask(dequeuedAction))
                             {

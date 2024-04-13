@@ -31,8 +31,8 @@ namespace GRYLibrary.Core.APIServer.BaseServices
                     {
                         while (this.Enabled)
                         {
-                            this._Logger.Log($"Execute {this.GetType().Name}", Microsoft.Extensions.Logging.LogLevel.Debug, false, false, true, false, false, this.Run);
                             Thread.Sleep(50);
+                            this._Logger.Log($"Execute {this.GetType().Name}", Microsoft.Extensions.Logging.LogLevel.Debug, false, false, true, false, false, this.Run);
                         }
                     });
                 }
@@ -68,7 +68,7 @@ namespace GRYLibrary.Core.APIServer.BaseServices
 
         public virtual void Dispose()
         {
-           GC.SuppressFinalize(this);
+            GC.SuppressFinalize(this);
         }
     }
 }

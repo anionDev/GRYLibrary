@@ -639,13 +639,10 @@ namespace GRYLibrary.Core.ExecutePrograms
         {
             while (this.IsRunning || !this._NotLoggedOutputLines.IsEmpty)
             {
+                Thread.Sleep(100);
                 if (this._NotLoggedOutputLines.TryDequeue(out (LogLevel, string) logItem))
                 {
                     this.LogObject.Log(logItem.Item2, logItem.Item1);
-                }
-                else
-                {
-                    Thread.Sleep(50);
                 }
             }
         }
