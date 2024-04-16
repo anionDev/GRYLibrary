@@ -1796,7 +1796,7 @@ namespace GRYLibrary.Core.Miscellaneous
             return value;
         }
 
-        public static string AdaptMySQLConnectionString(string connectionString, bool hidePassword)
+        public static string AdaptMariaDBSQLConnectionString(string connectionString, bool hidePassword)
         {
             if (hidePassword)
             {

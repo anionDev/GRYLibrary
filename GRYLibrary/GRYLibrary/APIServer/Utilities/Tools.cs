@@ -138,7 +138,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
             return false;
         }
         private readonly static IList<HashAlgorithm> _HashAlgorithms = new List<HashAlgorithm>() { new SHA256(), new SHA256PureCSharp() };
-        public static Crypto.HashAlgorithm GetHashAlgorithm(string passwordHashAlgorithmIdentifier)
+        public static HashAlgorithm GetHashAlgorithm(string passwordHashAlgorithmIdentifier)
         {
             byte[] passwordHashAlgorithmIdentifierBytes = GUtilities.PadLeft(new UTF8Encoding(false).GetBytes(passwordHashAlgorithmIdentifier), 10);
             foreach (HashAlgorithm algorithm in _HashAlgorithms)
