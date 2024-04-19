@@ -2,9 +2,9 @@
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <Authors>Marius Göcke</Authors>
-        <Version>0.12.94</Version>
-        <AssemblyVersion>0.12.94</AssemblyVersion>
-        <FileVersion>0.12.94</FileVersion>
+        <Version>0.12.95</Version>
+        <AssemblyVersion>0.12.95</AssemblyVersion>
+        <FileVersion>0.12.95</FileVersion>
         <SelfContained>false</SelfContained>
         <IsPackable>false</IsPackable>
         <PreserveCompilationContext>false</PreserveCompilationContext>
