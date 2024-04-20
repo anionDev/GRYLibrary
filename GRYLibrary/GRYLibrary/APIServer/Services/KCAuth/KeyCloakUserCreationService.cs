@@ -21,5 +21,9 @@ namespace GRYLibrary.Core.APIServer.Services.KCAuth
             return user;
         }
 
+        public string Hash(string password)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

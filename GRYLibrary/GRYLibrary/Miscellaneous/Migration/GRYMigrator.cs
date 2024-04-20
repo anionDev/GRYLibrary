@@ -41,7 +41,7 @@ namespace GRYLibrary.Core.Miscellaneous.Migration
                 if (!namesOfAlreadyExecutedMigrations.Contains(migration.MigrationName))
                 {
                     this._Logger.Log($"Run Migration {migration.MigrationName}.", Microsoft.Extensions.Logging.LogLevel.Information);
-                    DateTime now = _TimeService.GetCurrentTime();
+                    DateTime now = this._TimeService.GetCurrentTime();
                     using (SqlCommand cmd = new SqlCommand(migration.MigrationContent, this._Connection))
                     {
                         cmd.ExecuteNonQuery();
