@@ -14,6 +14,7 @@ GRYLibrary uses dependencies which are released under their own license:
  - Microsoft.Win32.Registry is licensed under the terms of the MIT-license. (See appendix 2.)
  - NJsonSchema is licensed under the terms of the MIT-license. (See appendix 2.)
  - NSwag.AspNetCore is licensed under the terms of the MIT-license. (See appendix 2.)
+ - Pomelo.EntityFrameworkCore.MySql is licensed under the terms of the MIT-license. (See appendix 2.)
  - System.Collections.Immutable is licensed under the terms of the MIT-license. (See appendix 2.)
  - System.Reactive is licensed under the terms of the MIT-license. (See appendix 2.)
  - TagLibSharp is licensed under the terms of the LGPL2.1-license. (See appendix 4.)
