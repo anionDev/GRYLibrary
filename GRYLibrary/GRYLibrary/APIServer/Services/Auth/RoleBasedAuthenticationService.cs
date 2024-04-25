@@ -1,98 +1,98 @@
 ﻿using GRYLibrary.Core.APIServer.CommonAuthenticationTypes;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
-using GRYLibrary.Core.APIServer.Services.KeyCloak;
+using System;
 using System.Collections.Generic;
 
-namespace GRYLibrary.Core.APIServer.Services.KCZAuth
+namespace GRYLibrary.Core.APIServer.Services.Auth
 {
-    public class KeyCloakAuthenticationService : IKeyCloakAuthenticationService
+    public class RoleBasedAuthenticationService : IAuthenticationService
     {
-        private readonly IKeyCloakService _KeyCloakService;
-        private readonly IHTTPCredentialsProvider _HTTPCredentialsProvider;
-        public KeyCloakAuthenticationService(IKeyCloakService keyCloakService, IHTTPCredentialsProvider httpCredentialsProvider)
+      private readonly IRoleBasedAuthenticationPersistence _RoleBasedAuthenticationPersistence;
+
+        public RoleBasedAuthenticationService(IRoleBasedAuthenticationPersistence roleBasedAuthenticationPersistence)
         {
-            this._KeyCloakService = keyCloakService;
-            this._HTTPCredentialsProvider = httpCredentialsProvider;
+            this._RoleBasedAuthenticationPersistence = roleBasedAuthenticationPersistence;
         }
 
         public bool AccessTokenIsValid(string accessToken)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public void EnsureGroupDoesNotExist(string groupname)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public void EnsureGroupExists(string groupUser)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public void EnsureUserIsInGroup(string username, string groupname)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public void EnsureUserIsNotInGroup(string username, string groupname)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public ISet<string> GetGroupsOfUser(string username)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public string GetIdOfUser(string username)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public string GetUserName(string accessToken)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public bool GroupExists(string groupname)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public AccessToken Login(string username, string password)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
+            //TODO also persist accesstoken which leads to AccessTokenIsValid(accesstoken)==true
         }
 
         public void Logout(AccessToken accessToken)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public void LogoutEverywhere(string username)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public void Register(string username, string password)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public void RemoveUser(string username)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public bool UserExists(string username)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public bool UserIsInGroup(string username, string groupname)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

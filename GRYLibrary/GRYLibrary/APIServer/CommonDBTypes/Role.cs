@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 
 namespace GRYLibrary.Core.APIServer.CommonDBTypes
 {
@@ -8,7 +9,7 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
     {
         public string Id { get; set; }
         public string Name { get; set; } = null;
-
+        public ISet<Role> InheritedRoles { get; set; } = new HashSet<Role>();
         public override bool Equals(object obj)
         {
             return this.Equals(obj as User);

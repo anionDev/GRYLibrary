@@ -2,13 +2,10 @@
 
 namespace GRYLibrary.Core.APIServer.Services.Interfaces
 {
-    public interface IUserCreatorService: IUserCreatorService<User>
+    public interface IUserCreatorService
     {
-    }
-    public interface IUserCreatorService<UserType> where UserType : User
-    {
-        /// <returns>Returns a newly created and not persisted <typeparamref name="UserType"/>-object.</returns>
-        public UserType CreateUser(string name, string passwordHash);
+        /// <returns>Returns a newly created and not persisted <see cref="User"/>-object.</returns>
+        public User CreateUser(string name, string passwordHash);
         public string Hash(string password);
     }
 }
