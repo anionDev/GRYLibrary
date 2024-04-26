@@ -38,8 +38,14 @@ namespace GRYLibrary.Core.APIServer.Utilities
             using (MemoryStream memStream = new MemoryStream())
             {
                 context.Response.Body = memStream;
-
-                next(context).Wait();
+                try
+                {
+                    next(context).Wait();
+                }
+                catch
+                {
+                    throw;
+                }
 
                 memStream.Position = 0;
                 responseBody = GUtilities.StreamToByteArray(memStream);
@@ -110,7 +116,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
             }
         }
 
-        public static bool TryGetAuthentication(IHTTPCredentialsProvider credentialsProvider, IAuthenticationService authenticationService, HttpContext context, out ClaimsPrincipal principal)
+        public static bool TryGetAuthentication(ICredentialsProvider credentialsProvider, IAuthenticationService authenticationService, HttpContext context, out ClaimsPrincipal principal)
         {
             principal = default;
             try

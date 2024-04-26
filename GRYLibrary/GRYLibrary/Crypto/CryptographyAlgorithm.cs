@@ -11,6 +11,6 @@ namespace GRYLibrary.Core.Crypto
         /// Returns an identifier with en exact length of 10.
         /// </returns>
         public abstract byte[] GetIdentifier();
-        public Encoding Encoding { get; set; } = new UTF8Encoding(false);
+        public Encoding Encoding { get; } = new UTF8Encoding(false);
     }
 }

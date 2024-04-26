@@ -12,19 +12,19 @@ namespace GRYLibrary.Core.APIServer.MidT.Exception
         public ExceptionManagerMiddleware(RequestDelegate next) : base(next)
         {
         }
-        protected abstract Task HandleException(HttpContext context, System.Exception exception);
+        protected abstract void HandleException(HttpContext context, System.Exception exception);
         /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
         {
             try
             {
                 this._Next(context).Wait();
-                return Task.CompletedTask;
             }
             catch (System.Exception exception)
             {
-                return this.HandleException(context, exception);
+                this.HandleException(context, exception);
             }
+            return Task.CompletedTask;
         }
 
     }

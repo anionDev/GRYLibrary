@@ -5,7 +5,7 @@ namespace GRYLibrary.Core.APIServer.Services.Auth
 {
     public interface IRoleBasedAuthenticationPersistence
     {
-        void CreateUser(string username, string password);
+        void RegisterUser(string username, string password);
         ISet<User> GetAllUsers();
         User GetUser(string id);
         User GetUserByName(string username);

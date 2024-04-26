@@ -1,7 +1,10 @@
 ﻿using GRYLibrary.Core.APIServer.CommonAuthenticationTypes;
+using GRYLibrary.Core.APIServer.CommonDBTypes;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
+using GRYLibrary.Core.Crypto;
 using System;
 using System.Collections.Generic;
+using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 
 namespace GRYLibrary.Core.APIServer.Services.Auth
 {
@@ -91,6 +94,16 @@ namespace GRYLibrary.Core.APIServer.Services.Auth
         }
 
         public bool UserIsInGroup(string username, string groupname)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string Hash(string password)
+        {
+            return GUtilities.ByteArrayToHexString(new SHA256().Hash(GUtilities.StringToByteArray(password)));
+        }
+
+        public ISet<User> GetAllUser()
         {
             throw new NotImplementedException();
         }

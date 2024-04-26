@@ -1,10 +1,12 @@
 ﻿using GRYLibrary.Core.APIServer.CommonDBTypes;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
+using GRYLibrary.Core.Crypto;
 using GRYLibrary.Core.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using AccessToken = GRYLibrary.Core.APIServer.CommonAuthenticationTypes.AccessToken;
+using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 
 namespace GRYLibrary.Core.APIServer.Services.Trans
 {
@@ -28,10 +30,13 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             this._UserCreatorService = userCreatorService;
             this._Users = new Dictionary<string, User>();
         }
-        public string Hash(string input)
+
+        public string Hash(string password)
         {
-            throw new NotImplementedException();
+            string result= GUtilities.ByteArrayToHexString(new SHA256().Hash(GUtilities.StringToByteArray(password)));
+            return result;
         }
+
         private User GetUserByName(string username)
         {
             if (this._Users.TryGetValue(username, out User value))
@@ -75,7 +80,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             }
             string passwordHashsed = this.Hash(password);
             User user = this._UserCreatorService.CreateUser(username, passwordHashsed);
-            this._Users.Add(user.Id, user);
+            this._Users.Add(user.Name, user);
         }
 
         public void Logout(AccessToken accessToken)
@@ -181,6 +186,11 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         public ISet<string> GetGroupsOfUser(string username)
         {
             throw new NotImplementedException();
+        }
+
+        public ISet<User> GetAllUser()
+        {
+            return _Users.Values.ToHashSet();
         }
     }
 }

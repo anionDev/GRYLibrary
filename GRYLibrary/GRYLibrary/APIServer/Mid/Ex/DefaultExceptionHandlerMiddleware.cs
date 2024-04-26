@@ -3,7 +3,9 @@ using GRYLibrary.Core.Exceptions;
 using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using Microsoft.AspNetCore.Http;
 using System;
+using System.IO;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.APIServer.Mid.Ex
@@ -16,7 +18,7 @@ namespace GRYLibrary.Core.APIServer.Mid.Ex
             this._GeneralLogger = logger;
         }
 
-        protected async override Task HandleException(HttpContext context, Exception exception)
+        protected override void HandleException(HttpContext context, Exception exception)
         {
             Exception exceptionForFormatting;
             if (exception == null)
@@ -58,12 +60,11 @@ namespace GRYLibrary.Core.APIServer.Mid.Ex
                 this._GeneralLogger.LogException(exceptionForFormatting, "Error while processing request");
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             }
-            (string ContentType, string bodyContent) = this.GetResonceContent(context.Response.StatusCode, context, exceptionForFormatting);
+            (string ContentType, string bodyContent) = this.GetResponceContent(context.Response.StatusCode, context, exceptionForFormatting);
             context.Response.ContentType = ContentType;
-            await context.Response.WriteAsync(bodyContent);
-            return;
+            context.Response.WriteAsync(bodyContent).Wait();
         }
-        public virtual (string ContentType, string bodyContent) GetResonceContent(int httpStatusCode, HttpContext context, Exception exception)
+        public virtual (string ContentType, string bodyContent) GetResponceContent(int httpStatusCode, HttpContext context, Exception exception)
         {
             return (null, string.Empty);
         }
