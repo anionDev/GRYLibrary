@@ -11,9 +11,9 @@ namespace GRYLibrary.Core.APIServer.Mid.AuthS
     /// </summary>
     public class AuthSMiddleware : AuthenticationMiddleware
     {
-        private readonly IHTTPCredentialsProvider _CredentialsProvider;
+        private readonly ICredentialsProvider _CredentialsProvider;
         private readonly IAuthenticationService _AuthenticationService;
-        public AuthSMiddleware(RequestDelegate next, IHTTPCredentialsProvider credentialsProvider, IAuthenticationService authenticationService) : base(next)
+        public AuthSMiddleware(RequestDelegate next, ICredentialsProvider credentialsProvider, IAuthenticationService authenticationService) : base(next)
         {
             this._CredentialsProvider = credentialsProvider;
             this._AuthenticationService = authenticationService;

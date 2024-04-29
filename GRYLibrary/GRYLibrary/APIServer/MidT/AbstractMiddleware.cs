@@ -34,5 +34,14 @@ namespace GRYLibrary.Core.APIServer.MidT
             AuthorizeAttribute authorizeAttribute = methodInfo?.GetCustomAttributes(false).OfType<AuthorizeAttribute>().FirstOrDefault();
             return authorizeAttribute;
         }
+        public ActionAttribute GetActionAttribute(HttpContext context)
+        {
+            Endpoint endPoint = context.GetEndpoint() ?? throw new BadRequestException((int)System.Net.HttpStatusCode.NotFound, "Not found");
+            EndpointMetadataCollection metaData = endPoint?.Metadata;
+            ControllerActionDescriptor controllerActionDescriptor = metaData?.GetMetadata<ControllerActionDescriptor>();
+            System.Reflection.MethodInfo methodInfo = controllerActionDescriptor?.MethodInfo;
+            ActionAttribute actionAttribute = methodInfo?.GetCustomAttributes(false).OfType<ActionAttribute>().FirstOrDefault();
+            return actionAttribute;
+        }
     }
 }

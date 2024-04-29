@@ -15,6 +15,7 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
         public string EMailAddress { get; set; } = null;
         public bool UserIsActivated { get; set; } = true;
         public bool UserIsLocked { get; set; } = false;
+        public DateTime RegistrationMoment { get; set; } = default;
         public ISet<RefreshToken> RefreshToken { get; set; } = new HashSet<RefreshToken>();
         public ISet<AccessToken> AccessToken { get; set; } = new HashSet<AccessToken>();
         public ISet<IMFAMethod> MFAMethods { get; set; } = new HashSet<IMFAMethod>();

@@ -36,7 +36,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
             process.Start();
             GUtilities.WaitUntilPortIsAvailable("127.0.0.1", HTTP.DefaultPort, timoutOfProcessStartUntilServiceIsAvailable);
         }
- 
+
         public void Dispose()
         {
             this._Process.Kill();

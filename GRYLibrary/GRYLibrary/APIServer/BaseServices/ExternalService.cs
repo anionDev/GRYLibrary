@@ -1,16 +1,18 @@
-﻿using GRYLibrary.Core.Exceptions;
+﻿using GRYLibrary.Core.APIServer.Services;
+using GRYLibrary.Core.Exceptions;
 using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using Microsoft.Extensions.Logging;
 using System;
 
 namespace GRYLibrary.Core.APIServer.BaseServices
 {
-    public abstract class ExternalService : IDisposable
+    public abstract class ExternalService : IExternalService
     {
         protected readonly IGeneralLogger _Logger;
         public bool IsConnected { get; private set; }
         public string ExternalServiceName { get; private set; }
         public string ServiceNotAvailableMessage { get; private set; }
+        public abstract bool IsAvailable();
         protected ExternalService(string externalServiceName, IGeneralLogger logger)
         {
             this.ExternalServiceName = externalServiceName;

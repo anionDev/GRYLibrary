@@ -2,5 +2,6 @@
 {
     public interface IMFAMethod
     {
+        public bool IsActicated { get; set; }
     }
 }

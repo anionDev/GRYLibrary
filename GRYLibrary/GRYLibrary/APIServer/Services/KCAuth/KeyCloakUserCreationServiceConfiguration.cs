@@ -2,7 +2,7 @@
 {
     public class KeyCloakUserCreationServiceConfiguration : IKeyCloakUserCreationServiceConfiguration
     {
-        public string PasswordHashAlgorithmIdentifier { get ; set ; }
- 
+        public string PasswordHashAlgorithmIdentifier { get; set; }
+
     }
 }

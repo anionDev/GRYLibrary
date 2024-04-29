@@ -1,7 +1,9 @@
 ﻿using GRYLibrary.Core.APIServer.CommonDBTypes;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
 using GRYLibrary.Core.APIServer.Utilities;
+using GRYLibrary.Core.Crypto;
 using System;
+using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 
 namespace GRYLibrary.Core.APIServer.Services.KCAuth
 {
@@ -21,5 +23,9 @@ namespace GRYLibrary.Core.APIServer.Services.KCAuth
             return user;
         }
 
+        public string Hash(string password)
+        {
+            return GUtilities.ByteArrayToHexString(new Argon2().Hash(GUtilities.StringToByteArray(password)));
+        }
     }
 }

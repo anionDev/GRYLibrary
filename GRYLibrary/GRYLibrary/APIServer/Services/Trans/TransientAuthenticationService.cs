@@ -1,10 +1,12 @@
 ﻿using GRYLibrary.Core.APIServer.CommonDBTypes;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
+using GRYLibrary.Core.Crypto;
 using GRYLibrary.Core.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using AccessToken = GRYLibrary.Core.APIServer.CommonAuthenticationTypes.AccessToken;
+using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 
 namespace GRYLibrary.Core.APIServer.Services.Trans
 {
@@ -14,25 +16,30 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
     /// <remarks>
     /// Do not use this service in productive-mode because this service does not implement any features to increase security.
     /// </remarks>
-    public class TransientAuthenticationService<UserType> : IAuthenticationService
-        where UserType : User
+    public class TransientAuthenticationService : IAuthenticationService
     {
+
+        private readonly IDictionary<string/*groupname*/, UserGroup> _Groups;
         private readonly ITimeService _TimeService;
-        private readonly IUserCreatorService<UserType> _UserCreatorService;
-        private readonly IDictionary<string/*username*/, UserType> _Users;
-        public TransientAuthenticationService(ITimeService timeService, IUserCreatorService<UserType> userCreatorService)
+        private readonly IUserCreatorService _UserCreatorService;
+        private readonly IDictionary<string/*username*/, User> _Users;
+        public TransientAuthenticationService(ITimeService timeService, IUserCreatorService userCreatorService)
         {
+            this._Groups = new Dictionary<string, UserGroup>();
             this._TimeService = timeService;
             this._UserCreatorService = userCreatorService;
-            this._Users = new Dictionary<string, UserType>();
+            this._Users = new Dictionary<string, User>();
         }
-        public string Hash(string input)
+
+        public string Hash(string password)
         {
-            throw new NotImplementedException();
+            string result = GUtilities.ByteArrayToHexString(new SHA256().Hash(GUtilities.StringToByteArray(password)));
+            return result;
         }
-        private UserType GetUserByName(string username)
+
+        private User GetUserByName(string username)
         {
-            if (this._Users.TryGetValue(username, out UserType value))
+            if (this._Users.TryGetValue(username, out User value))
             {
                 return value;
             }
@@ -50,7 +57,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
                 throw new BadRequestException((int)System.Net.HttpStatusCode.BadRequest, "User does not exist.");
             }
             string passwordHashsed = this.Hash(password);
-            UserType user = this.GetUserByName(username);
+            User user = this.GetUserByName(username);
             if (passwordHashsed == user.PasswordHash)
             {
                 AccessToken newAccessToken = new AccessToken();
@@ -72,8 +79,8 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
                 throw new BadRequestException((int)System.Net.HttpStatusCode.BadRequest, "User with this name already exists.");
             }
             string passwordHashsed = this.Hash(password);
-            UserType user = this._UserCreatorService.CreateUser(username, passwordHashsed);
-            this._Users.Add(user.Id, user);
+            User user = this._UserCreatorService.CreateUser(username, passwordHashsed);
+            this._Users.Add(user.Name, user);
         }
 
         public void Logout(AccessToken accessToken)
@@ -94,7 +101,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         {
             this._Users.Remove(username);
         }
-      
+
 
         public bool UserExists(string username)
         {
@@ -103,7 +110,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public bool AccessTokenIsValid(string accessToken)
         {
-            foreach (KeyValuePair<string, UserType> user in this._Users)
+            foreach (KeyValuePair<string, User> user in this._Users)
             {
                 foreach (AccessToken at in user.Value.AccessToken)
                 {
@@ -117,7 +124,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         }
         public string GetUserName(string accessToken)
         {
-            foreach (KeyValuePair<string, UserType> user in this._Users)
+            foreach (KeyValuePair<string, User> user in this._Users)
             {
                 foreach (AccessToken at in user.Value.AccessToken)
                 {
@@ -133,6 +140,57 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         public string GetIdOfUser(string username)
         {
             return this._Users.Values.Where(user => user.Name == username).First().Id;
+        }
+
+        public void EnsureUserIsInGroup(string username, string groupname)
+        {
+            string userId = this.GetIdOfUser(username);
+            this._Groups[groupname].UserIds.Add(userId);
+        }
+
+        public void EnsureUserIsNotInGroup(string username, string groupname)
+        {
+            string userId = this.GetIdOfUser(username);
+            this._Groups[groupname].UserIds.Remove(userId);
+        }
+
+        public bool UserIsInGroup(string username, string groupname)
+        {
+            string userId = this.GetIdOfUser(username);
+            return this._Groups[groupname].UserIds.Contains(userId);
+        }
+
+        public void EnsureGroupExists(string groupname)
+        {
+            if (!this._Groups.ContainsKey(groupname))
+            {
+                UserGroup group = new UserGroup();
+                group.Name = groupname;
+                this._Groups[groupname] = group;
+            }
+        }
+
+        public void EnsureGroupDoesNotExist(string groupname)
+        {
+            if (this._Groups.ContainsKey(groupname))
+            {
+                this._Groups.Remove(groupname);
+            }
+        }
+        public bool GroupExists(string groupname)
+        {
+            return this._Groups.ContainsKey(groupname);
+        }
+
+
+        public ISet<string> GetGroupsOfUser(string username)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ISet<User> GetAllUser()
+        {
+            return this._Users.Values.ToHashSet();
         }
     }
 }

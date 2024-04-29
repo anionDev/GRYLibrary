@@ -2,6 +2,6 @@
 {
     public interface IKeyCloakUserCreationServiceConfiguration
     {
-        public string PasswordHashAlgorithmIdentifier {  get; set; }
+        public string PasswordHashAlgorithmIdentifier { get; set; }
     }
 }

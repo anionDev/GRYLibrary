@@ -8,7 +8,7 @@
         }
         public HTTP(ushort port)
         {
-          this.Port = port;
+            this.Port = port;
         }
 
         public override string GetProtocol()

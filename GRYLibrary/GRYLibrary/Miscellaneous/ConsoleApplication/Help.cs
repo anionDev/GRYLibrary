@@ -9,7 +9,7 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
 
         public override int Run(GRYConsoleApplicationInitialInformation applicationInitialInformation)
         {
-            this.ParserBase._Logger.Log($"{applicationInitialInformation.ProgramName} v{applicationInitialInformation.ProgramVersion}",Microsoft.Extensions.Logging.LogLevel.Information);
+            this.ParserBase._Logger.Log($"{applicationInitialInformation.ProgramName} v{applicationInitialInformation.ProgramVersion}", Microsoft.Extensions.Logging.LogLevel.Information);
             if (applicationInitialInformation.ProgramDescription is not null)
             {
                 this.ParserBase._Logger.Log(string.Empty, Microsoft.Extensions.Logging.LogLevel.Information);

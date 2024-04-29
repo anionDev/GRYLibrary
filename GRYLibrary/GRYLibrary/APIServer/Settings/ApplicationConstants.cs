@@ -89,7 +89,7 @@ namespace GRYLibrary.Core.APIServer.Settings
         public string GetConfigurationFile() { return this.ConfigurationFile.GetPath(this.GetConfigurationFolder()); }
         public string GetLogFolder() { return this.LogFolder.GetPath(this._BaseFolder); }
         public CommonRoutesHostInformation CommonRoutesHostInformation { get; set; } = new HostCommonRoutes();
-        public AbstractHostMaintenanceInformation HostMaintenanceInformation { get; set; }=new HostMaintenanceRoutes();
+        public AbstractHostMaintenanceInformation HostMaintenanceInformation { get; set; } = new HostMaintenanceRoutes();
         public Type AuthenticationMiddleware { get; set; } = null;
         public Type AuthorizationMiddleware { get; set; } = null;
         public Type BlackListMiddleware { get; set; } = null;

@@ -14,8 +14,8 @@ namespace GRYLibrary.Core.APIServer.Mid.Auth
     {
         private readonly IUserAuthorizationService _AuthorizationService;
         private readonly IAuthenticationService _AuthenticationService;
-        private readonly IHTTPCredentialsProvider _CredentialsProvider;
-        public AutSMiddleware(RequestDelegate next, IUserAuthorizationService authorizationService, IAuthenticationService authenticationService, IHTTPCredentialsProvider credentialsProvider) : base(next)
+        private readonly ICredentialsProvider _CredentialsProvider;
+        public AutSMiddleware(RequestDelegate next, IUserAuthorizationService authorizationService, IAuthenticationService authenticationService, ICredentialsProvider credentialsProvider) : base(next)
         {
             this._AuthorizationService = authorizationService;
             this._AuthenticationService = authenticationService;
@@ -36,12 +36,13 @@ namespace GRYLibrary.Core.APIServer.Mid.Auth
         protected override bool IsAuthorized(HttpContext context)
         {
             AuthorizeAttribute authorizedAttribute = this.GetAuthorizeAttribute(context);
-            System.Collections.Generic.ISet<string> authorizedGroups =authorizedAttribute.Groups;
+            ActionAttribute actionAttribute = this.GetActionAttribute(context);
             GUtilities.AssertCondition(this._CredentialsProvider.ContainsCredentials(context));
             string accessToken = this._CredentialsProvider.ExtractSecret(context);
             string username = this._AuthenticationService.GetUserName(accessToken);
-            System.Collections.Generic.ISet<string> groupsOfUser = this._AuthorizationService.GetGroupsOfUser(username);
-            return authorizedGroups.Intersect(groupsOfUser).Any();
+            System.Collections.Generic.ISet<string> authorizedGroups = authorizedAttribute.Groups;
+            return this._AuthorizationService.IsAuthorized(username, actionAttribute.Action, authorizedGroups);
+            ;
         }
     }
 }

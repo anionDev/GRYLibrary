@@ -5,7 +5,7 @@ namespace GRYLibrary.Core.Miscellaneous.ConsoleApplication
 {
     public class GRYConsoleApplicationInitialInformation
     {
-        public string ProgramName { get;private set; }
+        public string ProgramName { get; private set; }
         public string ProgramVersion { get; private set; }
         public string ProgramDescription { get; private set; }
         public ExecutionMode ExecutionMode { get; private set; }
