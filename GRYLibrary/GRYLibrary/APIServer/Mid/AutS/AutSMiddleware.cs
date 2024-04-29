@@ -41,7 +41,7 @@ namespace GRYLibrary.Core.APIServer.Mid.Auth
             string accessToken = this._CredentialsProvider.ExtractSecret(context);
             string username = this._AuthenticationService.GetUserName(accessToken);
             System.Collections.Generic.ISet<string> authorizedGroups = authorizedAttribute.Groups;
-            return _AuthorizationService.IsAuthorized(username, actionAttribute.Action, authorizedGroups);
+            return this._AuthorizationService.IsAuthorized(username, actionAttribute.Action, authorizedGroups);
             ;
         }
     }

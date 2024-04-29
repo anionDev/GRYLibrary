@@ -33,7 +33,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public string Hash(string password)
         {
-            string result= GUtilities.ByteArrayToHexString(new SHA256().Hash(GUtilities.StringToByteArray(password)));
+            string result = GUtilities.ByteArrayToHexString(new SHA256().Hash(GUtilities.StringToByteArray(password)));
             return result;
         }
 
@@ -101,7 +101,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         {
             this._Users.Remove(username);
         }
-      
+
 
         public bool UserExists(string username)
         {
@@ -190,7 +190,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public ISet<User> GetAllUser()
         {
-            return _Users.Values.ToHashSet();
+            return this._Users.Values.ToHashSet();
         }
     }
 }

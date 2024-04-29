@@ -11,7 +11,7 @@ namespace GRYLibrary.Core.APIServer.Services.Aut
         public RoleBasedAuthorizationService(IAuthenticationService authenticationService, IRoleBasedAuthorizationPersistence roleBasedAuthorizationPersistence)
         {
             this._AuthenticationService = authenticationService;
-            this._RoleBasedAuthorizationPersistence =roleBasedAuthorizationPersistence;
+            this._RoleBasedAuthorizationPersistence = roleBasedAuthorizationPersistence;
         }
 
         public bool IsAuthorized(string user, string action, ISet<string> authorizedGroups)
@@ -23,7 +23,7 @@ namespace GRYLibrary.Core.APIServer.Services.Aut
         public bool IsAuthorized(string user, string action)
         {
             ISet<string> groupsOfUser = this._AuthenticationService.GetGroupsOfUser(user);
-            return _RoleBasedAuthorizationPersistence.GetAuhorizedGroupsForAction(action).Intersect(groupsOfUser).Any();
+            return this._RoleBasedAuthorizationPersistence.GetAuhorizedGroupsForAction(action).Intersect(groupsOfUser).Any();
         }
     }
 }

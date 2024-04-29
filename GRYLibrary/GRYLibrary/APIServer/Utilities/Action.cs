@@ -11,7 +11,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
         }
         public ActionAttribute(string action)
         {
-          this.Action=action;
+            this.Action = action;
         }
     }
 }

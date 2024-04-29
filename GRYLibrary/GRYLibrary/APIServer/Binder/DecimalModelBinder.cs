@@ -9,8 +9,8 @@ namespace GRYLibrary.Core.APIServer.Binder
     {
         public Task BindModelAsync(ModelBindingContext bindingContext)
         {
-            return GUtilities.GenericModelBinder(value => decimal.Parse(value,CultureInfo.InvariantCulture), typeof(decimal).Name, true)(bindingContext);
-         
+            return GUtilities.GenericModelBinder(value => decimal.Parse(value, CultureInfo.InvariantCulture), typeof(decimal).Name, true)(bindingContext);
+
         }
     }
 }

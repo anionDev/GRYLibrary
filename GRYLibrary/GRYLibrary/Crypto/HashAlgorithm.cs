@@ -1,7 +1,4 @@
 ﻿using GRYLibrary.Core.Miscellaneous;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace GRYLibrary.Core.Crypto
 {

@@ -18,7 +18,7 @@ namespace GRYLibrary.Core.APIServer.MidT.Auth
         public abstract bool TryGetAuthentication(HttpContext context, out ClaimsPrincipal principal);
         public override Task Invoke(HttpContext context)
         {
-            if (!this.IsAuthenticatedInternal(context)&&this.AuthenticationIsRequired(context) )
+            if (!this.IsAuthenticatedInternal(context) && this.AuthenticationIsRequired(context))
             {
                 return this.ReturnAuthenticationRequiredResult(context);
             }

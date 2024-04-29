@@ -9,7 +9,7 @@ namespace GRYLibrary.Core.APIServer.Services.Cerbos
         private readonly IAuthenticationService _AuthenticationService;
         public CerbosAuthorizationService(IAuthenticationService authenticationService)
         {
-            _AuthenticationService = authenticationService;
+            this._AuthenticationService = authenticationService;
         }
         public bool IsAuthorized(string user, string action)
         {

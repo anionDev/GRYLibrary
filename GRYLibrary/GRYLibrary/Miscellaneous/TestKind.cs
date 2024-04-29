@@ -46,5 +46,10 @@
         /// Tests that verifies that the entire communication between 2 systems is working correctly including serialization, transport and deserialization.
         /// </summary>
         EndToEndTest = 8,
+
+        /// <summary>
+        /// Test that only generates build-artifacts.
+        /// </summary>
+        GenerationTest = 9,
     }
 }

@@ -8,7 +8,7 @@ namespace GRYLibrary.Core.APIServer.Services.APIK
     public class APIKeyAuthorizationService : IAPIKeyAuthorizationService
     {
         private readonly Func<string/*action*/, string/*apiKey*/, bool> _Validator;
-        public APIKeyAuthorizationService( Func<string/*action*/, string/*apiKey*/, bool> validator)
+        public APIKeyAuthorizationService(Func<string/*action*/, string/*apiKey*/, bool> validator)
         {
             this._Validator = validator;
         }

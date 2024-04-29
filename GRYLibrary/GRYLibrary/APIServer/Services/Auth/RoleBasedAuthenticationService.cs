@@ -10,7 +10,7 @@ namespace GRYLibrary.Core.APIServer.Services.Auth
 {
     public class RoleBasedAuthenticationService : IAuthenticationService
     {
-      private readonly IRoleBasedAuthenticationPersistence _RoleBasedAuthenticationPersistence;
+        private readonly IRoleBasedAuthenticationPersistence _RoleBasedAuthenticationPersistence;
 
         public RoleBasedAuthenticationService(IRoleBasedAuthenticationPersistence roleBasedAuthenticationPersistence)
         {
