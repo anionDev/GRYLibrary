@@ -9,10 +9,20 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
     {
         public string Id { get; set; }
         public string Name { get; set; } = null;
-        public ISet<Role> InheritedRoles { get; set; } = new HashSet<Role>();
+        public HashSet<Role> InheritedRoles { get; set; }
+        public ISet<Role> GetAllInheritedRoles()
+        {
+            ISet<Role> result= new HashSet<Role>();
+            foreach (Role inheritedRole in this.InheritedRoles)
+            {
+                result.Add(inheritedRole);
+                result.UnionWith(inheritedRole.GetAllInheritedRoles());
+            }
+            return result;
+        }
         public override bool Equals(object obj)
         {
-            return this.Equals(obj as User);
+            return this.Equals(obj as Role);
         }
 
         public bool Equals(Role other)

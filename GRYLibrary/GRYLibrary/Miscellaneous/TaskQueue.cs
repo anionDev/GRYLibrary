@@ -12,7 +12,7 @@ namespace GRYLibrary.Core.Miscellaneous
 
         public TaskQueue(bool infiniteMode = false)
         {
-            this.CurrentAmountOfThreads = new Semaphore(nameof(this.CurrentAmountOfThreads));
+            this.CurrentAmountOfThreads = new MultiSemaphore(nameof(this.CurrentAmountOfThreads));
             this.IsRunning = false;
             this.InfiniteMode = infiniteMode;
             this.MaxDegreeOfParallelism = 10;
@@ -23,7 +23,7 @@ namespace GRYLibrary.Core.Miscellaneous
         {
             this._ActionQueue.Enqueue(action);
         }
-        public Semaphore CurrentAmountOfThreads { get; private set; }
+        public MultiSemaphore CurrentAmountOfThreads { get; private set; }
         public bool IsRunning { get; private set; }
         public bool InfiniteMode { get; }
         public int MaxDegreeOfParallelism { get; set; }

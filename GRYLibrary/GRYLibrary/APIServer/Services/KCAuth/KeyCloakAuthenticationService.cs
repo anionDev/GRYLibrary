@@ -23,22 +23,22 @@ namespace GRYLibrary.Core.APIServer.Services.KCZAuth
             throw new System.NotImplementedException();
         }
 
-        public void EnsureGroupDoesNotExist(string groupname)
+        public void EnsureRoleDoesNotExist(string groupname)
         {
             throw new System.NotImplementedException();
         }
 
-        public void EnsureGroupExists(string groupUser)
+        public void EnsureRoleExists(string groupUser)
         {
             throw new System.NotImplementedException();
         }
 
-        public void EnsureUserIsInGroup(string username, string groupname)
+        public void EnsureUserHasRole(string username, string groupname)
         {
             throw new System.NotImplementedException();
         }
 
-        public void EnsureUserIsNotInGroup(string username, string groupname)
+        public void EnsureUserDoesNotHaveRole(string username, string groupname)
         {
             throw new System.NotImplementedException();
         }
@@ -48,7 +48,7 @@ namespace GRYLibrary.Core.APIServer.Services.KCZAuth
             throw new System.NotImplementedException();
         }
 
-        public ISet<string> GetGroupsOfUser(string username)
+        public ISet<string> GetRolesOfUser(string username)
         {
             throw new System.NotImplementedException();
         }
@@ -58,12 +58,17 @@ namespace GRYLibrary.Core.APIServer.Services.KCZAuth
             throw new System.NotImplementedException();
         }
 
+        public User GetUser(string userId)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public string GetUserName(string accessToken)
         {
             throw new System.NotImplementedException();
         }
 
-        public bool GroupExists(string groupname)
+        public bool RoleExists(string groupname)
         {
             throw new System.NotImplementedException();
         }
@@ -103,7 +108,22 @@ namespace GRYLibrary.Core.APIServer.Services.KCZAuth
             throw new System.NotImplementedException();
         }
 
-        public bool UserIsInGroup(string username, string groupname)
+        public bool UserHasRole(string username, string groupname)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void AddUser(User user)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Role GetRoleByName(string roleName)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public User GetUserByName(string name)
         {
             throw new System.NotImplementedException();
         }

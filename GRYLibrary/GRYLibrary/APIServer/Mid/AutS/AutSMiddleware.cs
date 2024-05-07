@@ -1,4 +1,5 @@
 ﻿using GRYLibrary.Core.APIServer.MidT.Auth;
+using GRYLibrary.Core.APIServer.Services.Auth;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
 using GRYLibrary.Core.APIServer.Utilities;
 using Microsoft.AspNetCore.Http;
@@ -12,10 +13,10 @@ namespace GRYLibrary.Core.APIServer.Mid.Auth
     /// </summary>
     public class AutSMiddleware : AuthorizationMiddleware
     {
-        private readonly IUserAuthorizationService _AuthorizationService;
+        private readonly IRoleBasedAuthorizationService _AuthorizationService;
         private readonly IAuthenticationService _AuthenticationService;
         private readonly ICredentialsProvider _CredentialsProvider;
-        public AutSMiddleware(RequestDelegate next, IUserAuthorizationService authorizationService, IAuthenticationService authenticationService, ICredentialsProvider credentialsProvider) : base(next)
+        public AutSMiddleware(RequestDelegate next, IRoleBasedAuthorizationService authorizationService, IAuthenticationService authenticationService, ICredentialsProvider credentialsProvider) : base(next)
         {
             this._AuthorizationService = authorizationService;
             this._AuthenticationService = authenticationService;

@@ -4,31 +4,48 @@ using System.Collections.Generic;
 
 namespace GRYLibrary.Core.APIServer.Services.Interfaces
 {
+    /// <summary>
+    /// Represents a service which manages users and its roles.
+    /// </summary>
     public interface IAuthenticationService
     {
         public string Hash(string password);
-        public void Register(string username, string password);
-        public AccessToken Login(string username, string password);
+        public void AddUser(User user);
+        public AccessToken Login(string userName, string password);
         public bool AccessTokenIsValid(string accessToken);
         /// <remarks>
         /// This operation does not check if the <paramref name="accessToken"/> is valid.
         /// </remarks>
         public string GetUserName(string accessToken);
-        public string GetIdOfUser(string username);
-        void Logout(AccessToken accessToken);
-        void LogoutEverywhere(string username);
-        public void RemoveUser(string username);
-        bool UserExists(string username);
+        public void RemoveUser(string userId);
+        bool UserExists(string userId);
         public ISet<User> GetAllUser();
-        #region Groups
+        public User GetUser(string userId);
+        #region Roles
 
-        public void EnsureUserIsInGroup(string username, string groupname);
-        public void EnsureUserIsNotInGroup(string username, string groupname);
-        public bool UserIsInGroup(string username, string groupname);
-        public bool GroupExists(string groupname);
-        public void EnsureGroupExists(string groupUser);
-        public void EnsureGroupDoesNotExist(string groupname);
-        public ISet<string> GetGroupsOfUser(string username);
+        public void EnsureUserHasRole(string userId, string roleId);
+        public void EnsureUserDoesNotHaveRole(string userId, string roleId);
+        public bool UserHasRole(string userId, string roleId);
+        public bool RoleExists(string roleName);
+        public void EnsureRoleExists(string roleName);
+        public void EnsureRoleDoesNotExist(string roleName);
+        public Role GetRoleByName(string roleName);
+        public ISet<string> GetRolesOfUser(string userId);
         #endregion
+        void Logout(AccessToken accessToken);
+        void LogoutEverywhere(string userId);
+        public User GetUserByName(string name);
+    }
+    /// <summary>
+    /// Represents a authentication-service with a custom user-type.
+    /// </summary>
+    /// <typeparam name="UserType"></typeparam>
+        public interface IAuthenticationService<UserType>: IAuthenticationService
+        where UserType : User
+    {
+        public ISet<UserType> GetAllUserTyped();
+        public UserType GetUserTyped(string userId);
+        public void AddUserTyped(UserType user);
+        public UserType GetUserByNameTyped(string name);
     }
 }

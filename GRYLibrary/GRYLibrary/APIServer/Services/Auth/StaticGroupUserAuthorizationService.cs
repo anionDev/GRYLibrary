@@ -1,5 +1,5 @@
-﻿using GRYLibrary.Core.APIServer.Services.Interfaces;
-using System;
+﻿using GRYLibrary.Core.APIServer.CommonDBTypes;
+using GRYLibrary.Core.APIServer.Services.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,23 +11,19 @@ namespace GRYLibrary.Core.APIServer.Services.Auth
     /// <remarks>
     /// Do not use this service in productive-mode because this service does not implement any features to increase security.
     /// </remarks>
-    public class StaticGroupUserAuthorizationService : IUserAuthorizationService
+    public class StaticGroupUserAuthorizationService<UserType> : RoleBasedAuthorizationService
+        where UserType : User
     {
-        private readonly IAuthenticationService _AuthenticationService;
+        private readonly IAuthenticationService<UserType> _AuthenticationService;
 
-        public StaticGroupUserAuthorizationService(IAuthenticationService authenticationService)
+        public StaticGroupUserAuthorizationService(IAuthenticationService<UserType> authenticationService)
         {
             this._AuthenticationService = authenticationService;
         }
 
-        public bool IsAuthorized(string user, string action)
+        public override bool IsAuthorized(string user, string action, ISet<string> authorizedGroups)
         {
-            throw new NotSupportedException();
-        }
-
-        public bool IsAuthorized(string user, string action, ISet<string> authorizedGroups)
-        {
-            ISet<string> groupsOfUser = this._AuthenticationService.GetGroupsOfUser(user);
+            ISet<string> groupsOfUser = this._AuthenticationService.GetRolesOfUser(user);
             return groupsOfUser.Intersect(authorizedGroups).Any();
         }
     }

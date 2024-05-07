@@ -3,6 +3,9 @@ using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 
 namespace GRYLibrary.Core.Exceptions
 {
+    /// <summary>
+    /// Represents a exception which is supposed to result in a 4xx-response-statuscode if the exception is thrown in the context of processing a HTTP-request.
+    /// </summary>
     public class BadRequestException : UserFormattedException
     {
         public ushort HTTPStatusCode { get; }
