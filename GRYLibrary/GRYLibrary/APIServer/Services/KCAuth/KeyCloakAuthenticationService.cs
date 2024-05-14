@@ -127,5 +127,15 @@ namespace GRYLibrary.Core.APIServer.Services.KCZAuth
         {
             throw new System.NotImplementedException();
         }
+
+        public User GetUserByAccessToken(string accessToken)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void AddRole(string roleName)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

@@ -5,6 +5,6 @@ namespace GRYLibrary.Core.APIServer.Services.Auth
 {
     public interface IRoleBasedAuthorizationService : IUserAuthorizationService
     {
-        public bool IsAuthorized(string user, string action, ISet<string> authorizedGroups);
+        public bool IsAuthorized(string userId,  ISet<string> authorizedGroups);
     }
 }

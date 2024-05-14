@@ -133,43 +133,49 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             return this._TransientAuthenticationServicePersistence.GetUserById(userId);
         }
 
+        public Role GetRoleByName(string roleName)
+        {
+            return this._TransientAuthenticationServicePersistence.GetAllRoles().Where(r => r.Name == roleName).First();
+        }
+        public Role GetRoleById(string roleId)
+        {
+            return this._TransientAuthenticationServicePersistence.GetAllRoles().Where(r => r.Id == roleId).First();
+        }
         public void EnsureUserHasRole(string userId, string roleId)
         {
-            Role role = this._TransientAuthenticationServicePersistence.GetAlRoles()[roleId];
+            Role role = this.GetRoleById(roleId);
             UserType user = this._TransientAuthenticationServicePersistence.GetAllUsers()[userId];
             user.Roles.Add(role);
         }
 
         public void EnsureUserDoesNotHaveRole(string userId, string roleId)
         {
-            Role role = this._TransientAuthenticationServicePersistence.GetAlRoles()[roleId];
+            Role role = this.GetRoleById(roleId);
             UserType user = this._TransientAuthenticationServicePersistence.GetAllUsers()[userId];
             user.Roles.Remove(role);
         }
 
         public bool UserHasRole(string userId, string roleId)
         {
-            Role role = this._TransientAuthenticationServicePersistence.GetAlRoles()[roleId];
+            Role role = this.GetRoleById(roleId);
             UserType user = this._TransientAuthenticationServicePersistence.GetAllUsers()[userId];
             return user.Roles.Contains(role);
         }
 
         public bool RoleExists(string roleName)
         {
-            return this._TransientAuthenticationServicePersistence.GetAlRoles().Values.Where(r => r.Name == roleName).Any();
+            return this._TransientAuthenticationServicePersistence.GetAllRoles().Where(r => r.Name == roleName).Any();
         }
 
         public void EnsureRoleExists(string roleName)
         {
             if (!this.RoleExists(roleName))
             {
-                HashSet<Role> allRoles = this._TransientAuthenticationServicePersistence.GetAlRoles().Values.ToHashSet();
                 Role newRole =new Role();
                 newRole.Id = Guid.NewGuid().ToString();
                 newRole.Name = roleName;
                 newRole.InheritedRoles = new HashSet<Role>();
-                allRoles.Add(newRole);
-                this._TransientAuthenticationServicePersistence.SetAllRoles(allRoles);
+                this._TransientAuthenticationServicePersistence.AddRole(newRole);
             }
         }
 
@@ -177,19 +183,12 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         {
             if (this.RoleExists(roleName))
             {
-                HashSet<Role> allRoles = this._TransientAuthenticationServicePersistence.GetAlRoles().Values.ToHashSet();
-                allRoles=allRoles.Where(r => r.Name != roleName).ToHashSet();
-                this._TransientAuthenticationServicePersistence.SetAllRoles(allRoles);
+                this._TransientAuthenticationServicePersistence.DeleteRoleByName(roleName);
             }
         }
             public ISet<string> GetRolesOfUser(string userId)
         {
             return this._TransientAuthenticationServicePersistence.GetUserById(userId).Roles.Select(r=>r.Name).ToHashSet();
-        }
-
-        public Role GetRoleByName(string roleName)
-        {
-          return this._TransientAuthenticationServicePersistence.GetAlRoles().Values.Where(r => r.Name == roleName).First();
         }
 
         public void AddUserTyped(UserType user)
@@ -209,19 +208,32 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public UserType GetUserByNameTyped(string username)
         {
-            if (this._TransientAuthenticationServicePersistence.GetAllUsers().TryGetValue(username, out UserType value))
-            {
-                return value;
-            }
-            else
-            {
-                throw new KeyNotFoundException($"No user found with username {username}.");
-            }
+            return this._TransientAuthenticationServicePersistence.GetAllUsers().Where(kvp => kvp.Value.Name == username).First().Value;
         }
 
         public User GetUserByName(string name)
         {
             return this.GetUserByNameTyped(name);
+        }
+
+        public bool UserWithNameExists(string username)
+        {
+           return this._TransientAuthenticationServicePersistence.GetAllUsers().Where(kvp=>kvp.Value.Name == username).Any();
+        }
+
+        public User GetUserById(string userId)
+        {
+           return this._TransientAuthenticationServicePersistence.GetUserById(userId);
+        }
+
+        public User GetUserByAccessToken(string accessToken)
+        {
+         return this._TransientAuthenticationServicePersistence.GetUserByAccessToken(accessToken);   
+        }
+
+        public void AddRole(string roleName)
+        {
+            throw new NotImplementedException();
         }
     }
 }

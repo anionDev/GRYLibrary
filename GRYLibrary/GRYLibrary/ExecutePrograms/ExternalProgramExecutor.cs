@@ -658,10 +658,11 @@ namespace GRYLibrary.Core.ExecutePrograms
         Quiet = 0,
         /// <summary>
         /// If the exitcode of the executed program is not 0 then the StdErr will be logged.
+        /// This is supposed to be the default verbosity-level.
         /// </summary>
         Normal = 1,
         /// <summary>
-        /// Logs StdOut and StdErr of the executed program in realtime.
+        /// Logs and prints StdOut and StdErr of the executed program in realtime.
         /// </summary>
         Full = 2,
         /// <summary>

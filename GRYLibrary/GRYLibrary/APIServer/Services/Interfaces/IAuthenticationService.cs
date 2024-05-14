@@ -22,7 +22,7 @@ namespace GRYLibrary.Core.APIServer.Services.Interfaces
         public ISet<User> GetAllUser();
         public User GetUser(string userId);
         #region Roles
-
+        public void AddRole(string roleName);
         public void EnsureUserHasRole(string userId, string roleId);
         public void EnsureUserDoesNotHaveRole(string userId, string roleId);
         public bool UserHasRole(string userId, string roleId);
@@ -35,6 +35,7 @@ namespace GRYLibrary.Core.APIServer.Services.Interfaces
         void Logout(AccessToken accessToken);
         void LogoutEverywhere(string userId);
         public User GetUserByName(string name);
+        User GetUserByAccessToken(string accessToken);
     }
     /// <summary>
     /// Represents a authentication-service with a custom user-type.
@@ -47,5 +48,7 @@ namespace GRYLibrary.Core.APIServer.Services.Interfaces
         public UserType GetUserTyped(string userId);
         public void AddUserTyped(UserType user);
         public UserType GetUserByNameTyped(string name);
+        bool UserWithNameExists(string username);
+        User GetUserById(string userId);
     }
 }

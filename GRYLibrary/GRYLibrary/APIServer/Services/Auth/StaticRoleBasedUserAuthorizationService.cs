@@ -11,19 +11,18 @@ namespace GRYLibrary.Core.APIServer.Services.Auth
     /// <remarks>
     /// Do not use this service in productive-mode because this service does not implement any features to increase security.
     /// </remarks>
-    public class StaticGroupUserAuthorizationService<UserType> : RoleBasedAuthorizationService
+    public class StaticRoleBasedUserAuthorizationService<UserType> : IRoleBasedAuthorizationService
         where UserType : User
     {
         private readonly IAuthenticationService<UserType> _AuthenticationService;
-
-        public StaticGroupUserAuthorizationService(IAuthenticationService<UserType> authenticationService)
+        public StaticRoleBasedUserAuthorizationService(IAuthenticationService<UserType> authenticationService)
         {
             this._AuthenticationService = authenticationService;
         }
 
-        public override bool IsAuthorized(string user, string action, ISet<string> authorizedGroups)
+        public bool IsAuthorized(string userId, ISet<string> authorizedGroups)
         {
-            ISet<string> groupsOfUser = this._AuthenticationService.GetRolesOfUser(user);
+            ISet<string> groupsOfUser = this._AuthenticationService.GetRolesOfUser(userId);
             return groupsOfUser.Intersect(authorizedGroups).Any();
         }
     }

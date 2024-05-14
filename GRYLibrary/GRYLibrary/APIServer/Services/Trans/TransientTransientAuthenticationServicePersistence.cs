@@ -1,5 +1,4 @@
 ﻿using GRYLibrary.Core.APIServer.CommonDBTypes;
-using GRYLibrary.Core.APIServer.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,9 +21,9 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             this._Users = users.ToDictionary(kvp => kvp.Id);
         }
 
-        public IDictionary<string, Role> GetAlRoles()
+        public ISet<Role> GetAllRoles()
         {
-            return this._Roles.ToDictionary();
+            return this._Roles.Values.ToHashSet();
         }
 
         public void SetAllRoles(ISet<Role> roles)
@@ -39,8 +38,8 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public bool AccessTokenExists(string accessToken, out User user)
         {
-            UserType result= this.GetAllUsers().Values.Where(u => u.AccessToken.Where(at => at.Value == accessToken).Any()).FirstOrDefault();
-            if(result == default)
+            UserType result = this.GetAllUsers().Values.Where(u => u.AccessToken.Where(at => at.Value == accessToken).Any()).FirstOrDefault();
+            if (result == default)
             {
                 user = null;
                 return false;
@@ -59,7 +58,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public bool UserWithNameExists(string userName)
         {
-            return this._Users.Values.Where(u=>u.Name== userName).Any();
+            return this._Users.Values.Where(u => u.Name == userName).Any();
         }
         public bool UserWithIdExists(string userId)
         {
@@ -71,22 +70,65 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             return this._Users[userId];
         }
 
-        public UserType GetuserByName(string userName)
-        {
-            return this._Users.Values.Where(u => u.Name == userName).First();
-        }
-
         public UserType GetUserById(object userId)
         {
             throw new NotImplementedException();
         }
 
-        public UserType GetUserByName(object userName)
+        public void RemoveUser(UserType user)
         {
             throw new NotImplementedException();
         }
 
-        public void RemoveUser(UserType user)
+        public UserType GetUserById(string userId)
+        {
+            return this._Users[userId];
+        }
+
+        public UserType GetUserByName(string userName)
+        {
+            return this._Users.Values.Where(u => u.Name == userName).First();
+        }
+
+        public User GetUserByAccessToken(string accessToken)
+        {
+            foreach (UserType user in this._Users.Values)
+            {
+                if (user.AccessToken.Where(a => a.Value == accessToken).Any())
+                {
+                    //TODO check validity of accesstoken
+                    return user;
+                }
+            }
+            throw new KeyNotFoundException("No user found with given accesstoken.");
+        }
+
+        public bool RoleExists(string roleName)
+        {
+            return this._Roles.Where(kvp => kvp.Value.Name == roleName).Any();
+        }
+
+        public void AddRole(Role role)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateRole(Role role)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteRoleByName(string roleName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddRoleToUser(string userId, string roleId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool UserHasRole(string userId, string roleId)
         {
             throw new NotImplementedException();
         }
