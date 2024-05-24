@@ -1,44 +1,45 @@
-﻿using System;
+﻿using GRYLibrary.Core.Exceptions;
+using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
-    /// <summary>
-    /// Represents a threadsafe semaphore
-    /// </summary>
-    public sealed class Semaphore : Property<long>
+    public class Semaphore
     {
-        public string Name { get; set; }
-        public Semaphore(string propertyName = "") : base(0, propertyName, false)
+        private readonly object _LockObject = new object();
+        private bool _Semaphore = true;//true=up=usable, false=down=locked
+        /// <summary>
+        /// Waits until the semaphore is open again
+        /// </summary>
+        public void Lock()
         {
-            this.LockEnabled = true;
-        }
-        public override long Value { get => base.Value; set => throw new InvalidOperationException($"Please use the {nameof(Increment)}- and {nameof(Decrement)}-operation to modify the value."); }
-        public void Increment()
-        {
-            base.Value += 1;
-        }
-        public void Decrement()
-        {
-            if (this.Value == 0)
+            lock (this._LockObject)
             {
-                throw new InvalidOperationException($"The value of the {nameof(Semaphore)} can not be decremented if the {nameof(this.Value)} is 0.");
-            }
-            base.Value -= 1;
-        }
-        public override bool Equals(object @object)
-        {
-            if (@object is not Semaphore typedObject)
-            {
-                return false;
-            }
-            else
-            {
-                return typedObject.Name.Equals(this.Name);
+                GUtilities.WaitUntilConditionIsTrue(() => this._Semaphore);
+                this._Semaphore = false;
             }
         }
-        public override int GetHashCode()
+        public bool IsLocked()
         {
-            return HashCode.Combine(this.Name);
+            lock (this._LockObject)
+            {
+                return !this._Semaphore;
+            }
+
+        }
+        public void Unlock()
+        {
+            lock (this._LockObject)
+            {
+                if (this._Semaphore)
+                {
+                    throw new InternalAlgorithmException("Can not unlock an unlocked semaphore.");
+                }
+                else
+                {
+                    this._Semaphore = true;
+
+                }
+            }
         }
     }
 }

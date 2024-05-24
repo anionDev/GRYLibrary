@@ -2,9 +2,9 @@
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <Authors>Marius Göcke</Authors>
-        <Version>0.12.97</Version>
-        <AssemblyVersion>0.12.97</AssemblyVersion>
-        <FileVersion>0.12.97</FileVersion>
+        <Version>0.12.98</Version>
+        <AssemblyVersion>0.12.98</AssemblyVersion>
+        <FileVersion>0.12.98</FileVersion>
         <SelfContained>false</SelfContained>
         <IsPackable>false</IsPackable>
         <PreserveCompilationContext>false</PreserveCompilationContext>
@@ -59,12 +59,12 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="CommandLineParser" Version="2.9.1" />
-        <PackageReference Include="DNTCaptcha.Core" Version="5.2.3" />
+        <PackageReference Include="DNTCaptcha.Core" Version="5.2.4" />
         <PackageReference Include="ExtendedXmlSerializer" Version="3.7.18" />
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
         <PackageReference Include="Keycloak.Net.Core" Version="1.0.26" />
         <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.5" />
         <PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="8.0.0" />
         <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
         <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
@@ -75,8 +75,8 @@
         <PackageReference Include="NJsonSchema" Version="11.0.0" />
         <PackageReference Include="NSwag.AspNetCore" Version="14.0.7" />
         <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
-        <PackageReference Include="System.Reactive" Version="6.0.0" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+        <PackageReference Include="System.Reactive" Version="6.0.1" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
         <PackageReference Include="TagLibSharp" Version="2.3.0" />
     </ItemGroup>
 </Project>

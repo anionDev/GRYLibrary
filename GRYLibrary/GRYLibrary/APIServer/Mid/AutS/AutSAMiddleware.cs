@@ -1,21 +1,23 @@
-﻿using GRYLibrary.Core.APIServer.MidT.Auth;
+﻿using GRYLibrary.Core.APIServer.CommonDBTypes;
+using GRYLibrary.Core.APIServer.MidT.Auth;
+using GRYLibrary.Core.APIServer.Services.Auth;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
 using GRYLibrary.Core.APIServer.Utilities;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
 using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 
-namespace GRYLibrary.Core.APIServer.Mid.Auth
+namespace GRYLibrary.Core.APIServer.Mid.AutS
 {
     /// <summary>
-    /// Represents an <see cref="AuthorizationMiddleware"/> which implements authorizaton-checks based on group-memberships defined by <see cref="IUserAuthorizationService"/>.
+    /// Represents an <see cref="AuthorizationMiddleware"/> which implements action-based authorizaton-checks using a <see cref="IActionBasedAuthorizationService"/>.
     /// </summary>
-    public class AutSMiddleware : AuthorizationMiddleware
+    public class AutSAMiddleware : AuthorizationMiddleware
     {
-        private readonly IUserAuthorizationService _AuthorizationService;
+        private readonly IActionBasedAuthorizationService _AuthorizationService;
         private readonly IAuthenticationService _AuthenticationService;
         private readonly ICredentialsProvider _CredentialsProvider;
-        public AutSMiddleware(RequestDelegate next, IUserAuthorizationService authorizationService, IAuthenticationService authenticationService, ICredentialsProvider credentialsProvider) : base(next)
+        public AutSAMiddleware(RequestDelegate next, IActionBasedAuthorizationService authorizationService, IAuthenticationService authenticationService, ICredentialsProvider credentialsProvider) : base(next)
         {
             this._AuthorizationService = authorizationService;
             this._AuthenticationService = authenticationService;
@@ -35,14 +37,11 @@ namespace GRYLibrary.Core.APIServer.Mid.Auth
         }
         protected override bool IsAuthorized(HttpContext context)
         {
-            AuthorizeAttribute authorizedAttribute = this.GetAuthorizeAttribute(context);
             ActionAttribute actionAttribute = this.GetActionAttribute(context);
             GUtilities.AssertCondition(this._CredentialsProvider.ContainsCredentials(context));
             string accessToken = this._CredentialsProvider.ExtractSecret(context);
-            string username = this._AuthenticationService.GetUserName(accessToken);
-            System.Collections.Generic.ISet<string> authorizedGroups = authorizedAttribute.Groups;
-            return this._AuthorizationService.IsAuthorized(username, actionAttribute.Action, authorizedGroups);
-            ;
+            User user = this._AuthenticationService.GetUserByAccessToken(accessToken);
+            return this._AuthorizationService.IsAuthorized(user.Id, actionAttribute.Action);
         }
     }
 }

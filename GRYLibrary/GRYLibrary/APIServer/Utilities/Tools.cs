@@ -95,25 +95,32 @@ namespace GRYLibrary.Core.APIServer.Utilities
 
         public static void ConnectToDatabase(Action connectAction, IGeneralLogger logger, string adaptedConnectionString)
         {
-            bool connected = false;
-            while (!connected)
+            ConnectToDatabase(connectAction, logger, adaptedConnectionString, TimeSpan.FromMinutes(2));
+        }
+        public static void ConnectToDatabase(Action connectAction, IGeneralLogger logger, string adaptedConnectionString, TimeSpan timeout)
+        {
+            GUtilities.RunWithTimeout(() =>
             {
-                try
+                bool connected = false;
+                while (!connected)
                 {
-                    logger.Log($"Try to connect to database using connection-string \"{adaptedConnectionString}\".", LogLevel.Debug);
-                    connectAction();
-                    logger.Log($"Connected successfully.", LogLevel.Information);
-                    connected = true;
+                    try
+                    {
+                        logger.Log($"Try to connect to database using connection-string \"{adaptedConnectionString}\".", LogLevel.Debug);
+                        connectAction();
+                        logger.Log($"Connected successfully.", LogLevel.Information);
+                        connected = true;
+                    }
+                    catch (Exception exception)
+                    {
+                        logger.LogException(exception, "Could not connect to database.", LogLevel.Warning);
+                    }
+                    finally
+                    {
+                        Thread.Sleep(TimeSpan.FromSeconds(2));
+                    }
                 }
-                catch (Exception exception)
-                {
-                    logger.LogException(exception, "Could not connect to database.", LogLevel.Warning);
-                }
-                finally
-                {
-                    Thread.Sleep(TimeSpan.FromSeconds(10));
-                }
-            }
+            }, timeout);
         }
 
         public static bool TryGetAuthentication(ICredentialsProvider credentialsProvider, IAuthenticationService authenticationService, HttpContext context, out ClaimsPrincipal principal)

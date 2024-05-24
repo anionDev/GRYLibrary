@@ -11,15 +11,15 @@ namespace GRYLibrary.Core.APIServer.Utilities
         public AuthorizeAttribute() : this(null)
         {
         }
-        public AuthorizeAttribute(string groups)
+        public AuthorizeAttribute(params string[] groups)
         {
-            if (groups == null || string.IsNullOrEmpty(groups))
+            if (groups == null)
             {
                 this.Groups = new HashSet<string>();
             }
             else
             {
-                this.Groups = groups.Split(",").ToHashSet();
+                this.Groups = groups.ToHashSet();
             }
         }
     }

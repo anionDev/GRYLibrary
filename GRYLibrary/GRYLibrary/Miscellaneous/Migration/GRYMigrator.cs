@@ -1,5 +1,7 @@
 ﻿using GRYLibrary.Core.APIServer.Services.Database;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
+using GRYLibrary.Core.APIServer.Services.Trans;
+using GRYLibrary.Core.APIServer.Services.TS;
 using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using System;
 using System.Collections.Generic;
@@ -18,7 +20,7 @@ namespace GRYLibrary.Core.Miscellaneous.Migration
     {
         private readonly IGeneralLogger _Logger;
         private readonly ITimeService _TimeService;
-        private readonly DbConnection _Connection;//TODO make this workable also for other databases
+        private readonly DbConnection _Connection;
         private readonly IList<MigrationInstance> _Migrations;
         public const string MigrationTableName = "GRYMigrationInformation";
         private readonly IGenericDatabaseInteractor _DatabaseInteractor;
@@ -106,7 +108,17 @@ namespace GRYLibrary.Core.Miscellaneous.Migration
                     result.Add(new MigrationExecutionInformation(reader.GetString(0), reader.GetDateTime(1)));
                 }
             }
-            return result.OrderBy(o=>o.ExecutionTimestamp).ToList();
+            return result.OrderBy(o => o.ExecutionTimestamp).ToList();
+        }
+        /// <remarks>
+        /// This function is supposed to be a utilitiy for an integration-test.
+        /// </remarks>
+        public static void DoAllMigrations(DbConnection dbConnection, IDatabaseManager databaseManager)
+        {
+            IList<MigrationInstance> migrations = databaseManager.GetAllMigrations();
+            GRYMigrator migrator = new GRYMigrator(GeneralLogger.CreateUsingConsole(), new TimeService(), dbConnection, migrations, databaseManager.GetGenericDatabaseInteractor());
+            migrator.InitializeDatabaseAndMigrateIfRequired();
+            GUtilities.AssertCondition(databaseManager.GetGenericDatabaseInteractor().GetAllTableNames(dbConnection).Any());
         }
     }
 }

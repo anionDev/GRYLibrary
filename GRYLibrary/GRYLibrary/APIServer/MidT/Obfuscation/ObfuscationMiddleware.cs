@@ -41,7 +41,7 @@ namespace GRYLibrary.Core.APIServer.MidT.Obfuscation
                 else
                 {
                     clearResponseBody = true;
-                    responseStatusCode = 400;
+                    responseStatusCode = StatusCodes.Status400BadRequest;
                 }
                 context.Response.StatusCode = responseStatusCode; //TODO check why this does not work properly
                 if (clearResponseBody)

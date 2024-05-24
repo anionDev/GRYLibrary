@@ -1,4 +1,5 @@
 ﻿using GRYLibrary.Core.APIServer.Utilities;
+using GRYLibrary.Core.Exceptions;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
@@ -26,17 +27,12 @@ namespace GRYLibrary.Core.APIServer.MidT.Auth
         {
             if (this.AuthorizationIsRequired(context) && !this.IsAuthorizedInternal(context))
             {
-                return this.ReturnUnauthorizedResult(context);
+                throw new BadRequestException(StatusCodes.Status403Forbidden);
             }
             else
             {
                 return this._Next(context);
             }
-        }
-        public virtual Task ReturnUnauthorizedResult(HttpContext context)
-        {
-            context.Response.StatusCode = 403;
-            return Task.CompletedTask;
         }
 
         public virtual bool IsAuthorizedInternal(HttpContext context)
