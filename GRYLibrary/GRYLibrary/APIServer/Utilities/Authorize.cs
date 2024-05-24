@@ -13,7 +13,14 @@ namespace GRYLibrary.Core.APIServer.Utilities
         }
         public AuthorizeAttribute(params string[] groups)
         {
-            this.Groups = groups.ToHashSet();
+            if (groups == null)
+            {
+                this.Groups = new HashSet<string>();
+            }
+            else
+            {
+                this.Groups = groups.ToHashSet();
+            }
         }
     }
 }
