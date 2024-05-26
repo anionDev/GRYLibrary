@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using GRYLibrary.Core.APIServer.Mid.DLog;
+using GRYLibrary.Core.APIServer.Utilities;
+using Microsoft.AspNetCore.Http;
+using System.Text;
 using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
 
 namespace GRYLibrary.Core.Exceptions
@@ -16,6 +19,36 @@ namespace GRYLibrary.Core.Exceptions
         {
             GUtilities.AssertCondition((httpStatusCode / 100) == 4);
             this.HTTPStatusCode = httpStatusCode;
+        }
+        public BadRequestException(ushort httpStatusCode, bool verbose, SimpleRequest request) : this(httpStatusCode, AdaptMessage("Request resulted in a bad-request-response", request, verbose))
+        {
+        }
+        public BadRequestException(ushort httpStatusCode, string message, bool verbose, SimpleRequest request) : this(httpStatusCode, AdaptMessage(message, request, verbose))
+        {
+        }
+
+        private static string AdaptMessage(string message, SimpleRequest request, bool verbose)
+        {
+            string bodyLog;
+            if (verbose)
+            {
+                (string bodyInfo, string bodyContent, byte[] bodyPlainContent) = DRequestLoggingMiddleware.BytesToString(request.Body, new UTF8Encoding(false));
+                bodyLog = $" ;Body ({bodyInfo}): {bodyContent}";
+            }
+            else
+            {
+                bodyLog = string.Empty;
+            }
+            string query;
+            if (string.IsNullOrEmpty(request.Query))
+            {
+                query = string.Empty;
+            }
+            else
+            {
+                query = "?" + request.Query;
+            }
+            return $"{message}; Request: {request.HTTPMethod} {request.Route}{query}{bodyLog}";
         }
 
         private static string GetMessage(ushort httpStatusCode)

@@ -27,7 +27,7 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
             {
                 return false;
             }
-            if (apiKey.StartsWith("[") && apiKey.EndsWith("]")) // option to allow non-functional descriptions as default-value
+            if (apiKey.StartsWith('[') && apiKey.EndsWith(']')) // option to allow non-functional descriptions as default-value
             {
                 return false;
             }
