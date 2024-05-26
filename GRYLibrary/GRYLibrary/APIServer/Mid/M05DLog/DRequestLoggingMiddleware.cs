@@ -37,8 +37,8 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
         protected override void Log(HttpContext context, byte[] requestBodyBytes, byte[] responseBodyBytes)
         {
             DateTime moment = GUtilities.GetNow();
-            (string info, string content, byte[] plainContent) requestBody = this.BytesToString(requestBodyBytes);
-            (string info, string content, byte[] plainContent) responseBody = this.BytesToString(responseBodyBytes);
+            (string info, string content, byte[] plainContent) requestBody = BytesToString(requestBodyBytes,_Encoding);
+            (string info, string content, byte[] plainContent) responseBody = BytesToString(responseBodyBytes, _Encoding);
             string requestRoute = context.Request.Path;
             ushort responseHTTPStatusCode = (ushort)context.Response.StatusCode;
             IPAddress clientIP = context.Connection.RemoteIpAddress;
@@ -47,7 +47,7 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
             this.LogHTTPRequest(request, this.ShouldLogEntireRequestContentInLogFile(request), new HashSet<GRYLogTarget> { new Logging.GRYLogger.ConcreteLogTargets.LogFile() });
         }
 
-        private (string info, string content, byte[] plainContent) BytesToString(byte[] content)
+        public static (string info, string content, byte[] plainContent) BytesToString(byte[] content, Encoding encoding)
         {
             if (content.Length == 0)
             {
@@ -55,7 +55,7 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
             }
             try
             {
-                return ("UTF8-encoded-content", this._Encoding.GetString(content), content);
+                return ("UTF8-encoded-content", encoding.GetString(content), content);
             }
             catch
             {
@@ -132,8 +132,8 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
                         + $"  Timestamp: {this.FormatTimestamp(request.Timestamp)}{Environment.NewLine}"
                         + $"  Client-ip: {clientIPAsString}{Environment.NewLine}"
                         + $"  Request-details:{Environment.NewLine}"
-                        + $"    Method: {request.Route}{Environment.NewLine}"
-                        + $"    Route: {request.Method}{request.GetFormattedQuery()}{Environment.NewLine}"
+                        + $"    Method: {request.Method}{Environment.NewLine}"
+                        + $"    Route: {request.Route}{request.GetFormattedQuery()}{Environment.NewLine}"
                         + $"    Body: {this.FormatBody(request.RequestBody, maximalLengthofRequestBodies)}{Environment.NewLine}"
                         + $"  Response-details:{Environment.NewLine}"
                         + $"    Statuscode: {request.ResponseStatusCode}{Environment.NewLine}"

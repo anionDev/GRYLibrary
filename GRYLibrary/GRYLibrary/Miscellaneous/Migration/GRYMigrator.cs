@@ -44,9 +44,22 @@ namespace GRYLibrary.Core.Miscellaneous.Migration
 
             IEnumerable<string> namesOfAlreadyExecutedMigrations = this.GetExecutedMigrations().Select(m => m.MigrationName);
 
+            IList<MigrationInstance> migrationsToRun = new List<MigrationInstance>();
             foreach (MigrationInstance migration in this._Migrations)
             {
                 if (!namesOfAlreadyExecutedMigrations.Contains(migration.MigrationName))
+                {
+                    migrationsToRun.Add(migration);
+                }
+            }
+            if (migrationsToRun.Count == 0)
+            {
+                this._Logger.Log("No database-migrations found which were not already executed.", Microsoft.Extensions.Logging.LogLevel.Information);
+            }
+            else
+            {
+                this._Logger.Log($"{migrationsToRun.Count} database-migration(s) to run found.", Microsoft.Extensions.Logging.LogLevel.Information);
+                foreach (MigrationInstance migration in migrationsToRun)
                 {
                     this._Logger.Log($"Run Migration {migration.MigrationName}.", Microsoft.Extensions.Logging.LogLevel.Information);
                     DateTime now = this._TimeService.GetCurrentTime();
@@ -74,8 +87,8 @@ namespace GRYLibrary.Core.Miscellaneous.Migration
                         throw exception;
                     }
                 }
+                this._Logger.Log("Finished database migration", Microsoft.Extensions.Logging.LogLevel.Information);
             }
-            this._Logger.Log("Finished database migration", Microsoft.Extensions.Logging.LogLevel.Information);
         }
         public static IList<MigrationInstance> LoadMigrationsFromResources(Assembly assembly, string migrationsResourceNamePrefix)
         {

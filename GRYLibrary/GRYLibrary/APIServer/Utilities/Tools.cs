@@ -28,10 +28,9 @@ namespace GRYLibrary.Core.APIServer.Utilities
 {
     public static class Tools
     {
-        public const string ObsoleteDataContextMessage = "This datacontext-specific-type is obsolete. Use the newest data-context instead.";
         public static (byte[] requestBody, byte[] responseBody) ExecuteNextMiddlewareAndGetRequestAndResponseBody(HttpContext context, RequestDelegate next, Func<byte[], byte[]> requestBodyUpdater = null, Func<byte[], byte[]> responseBodyUpdater = null)
         {
-            byte[] requestBody = GetRequestBody(context, requestBodyUpdater);
+            byte[] requestBody = GetRequestBody(context.Request, requestBodyUpdater);
             byte[] responseBody = default;
             Stream originalBody = context.Response.Body;
 
@@ -63,15 +62,15 @@ namespace GRYLibrary.Core.APIServer.Utilities
             return (requestBody, responseBody);
         }
 
-        public static byte[] GetRequestBody(HttpContext context, Func<byte[], byte[]> requestBodyUpdater = null)
+        public static byte[] GetRequestBody(HttpRequest request, Func<byte[], byte[]> requestBodyUpdater = null)
         {
-            context.Request.EnableBuffering();
-            byte[] result = GUtilities.StreamToByteArray(context.Request.Body);
+            request.EnableBuffering();
+            byte[] result = GUtilities.StreamToByteArray(request.Body);
             if (requestBodyUpdater != null)
             {
                 result = requestBodyUpdater(result);
             }
-            context.Request.Body = new MemoryStream(result);
+            request.Body = new MemoryStream(result);
             return result;
         }
 
