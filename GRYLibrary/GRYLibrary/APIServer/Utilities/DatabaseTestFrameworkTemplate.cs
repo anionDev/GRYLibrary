@@ -32,23 +32,36 @@ namespace GRYLibrary.Core.APIServer.Utilities
                 this.IsConnected = true;
             }, GeneralLogger.NoLog(), GUtilities.AdaptMariaDBSQLConnectionString(this.ConnectionString, true));
         }
-        public void Dispose()
+
+        protected virtual void Dispose(bool disposing)
         {
             if (!this._Disposed)
             {
-                if (this.MySqlConnection != null)
+                if (disposing)
                 {
-                    if (this.IsConnected)
+                    if (this.MySqlConnection != null)
                     {
-                        this.MySqlConnection.Dispose();
+                        if (this.IsConnected)
+                        {
+                            this.MySqlConnection.Dispose();
+                        }
                     }
-                }
-                using (ExternalProgramExecutor externalProgramExecutor = new ExternalProgramExecutor("docker", $"{this._DockerComposeArgumentPrefix} down", this._TestDatabaseFolder))
-                {
+                    using ExternalProgramExecutor externalProgramExecutor = new ExternalProgramExecutor("docker", $"{this._DockerComposeArgumentPrefix} down", this._TestDatabaseFolder);
                     externalProgramExecutor.Run();
                 }
                 this._Disposed = true;
             }
+        }
+
+        public void Dispose() // Implement IDisposable
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~DatabaseTestFrameworkTemplate() // the finalizer
+        {
+            this.Dispose(false);
         }
     }
 }

@@ -110,12 +110,12 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public void AddRole(Role role)
         {
-            _Roles[role.Id] = role;
+            this._Roles[role.Id] = role;
         }
 
         public void UpdateRole(Role role)
         {
-            _Roles[role.Id] = role;
+            this._Roles[role.Id] = role;
         }
 
         public void DeleteRoleByName(string roleName)
@@ -125,12 +125,12 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public void AddRoleToUser(string userId, string roleId)
         {
-            _Users[userId].Roles.Add(_Roles[roleId]);
+            this._Users[userId].Roles.Add(this._Roles[roleId]);
         }
 
         public bool UserHasRole(string userId, string roleId)
         {
-            return _Users[userId].Roles.Contains(_Roles[roleId]);
+            return this._Users[userId].Roles.Contains(this._Roles[roleId]);
         }
     }
 }
