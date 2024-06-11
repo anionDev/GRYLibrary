@@ -40,6 +40,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using GRYLibrary.Core.Logging.GRYLogger;
 using System.Net.Http;
 using System.Data;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace GRYLibrary.Core.Miscellaneous
 {
@@ -3221,6 +3222,12 @@ namespace GRYLibrary.Core.Miscellaneous
         }
         #endregion
 
+        public static bool CheckCancellationToken(IList<string> messages, CancellationToken cancellationToken, out (HealthStatus, IList<string>) result)
+        {
+            CheckCancellationToken(messages, cancellationToken, out (bool, IList<string>) resultInternal);
+            result = (resultInternal.Item1 ? HealthStatus.Healthy : HealthStatus.Unhealthy, resultInternal.Item2);
+            return resultInternal.Item1;
+        }
         /// <param name="result">
         /// Will contain (false, messages + "Task was cancelled") if the task was cancelled.
         /// Otherwise the value will be set to null.
