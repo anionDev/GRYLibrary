@@ -23,6 +23,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System.Linq;
 using System.Threading.Tasks;
 using GRYLibrary.Core.APIServer.Verbs;
+using GRYLibrary.Core.Exceptions;
 
 namespace GRYLibrary.Core.APIServer.Utilities
 {
@@ -162,11 +163,11 @@ namespace GRYLibrary.Core.APIServer.Utilities
             }
             throw new KeyNotFoundException($"Unknown algorithm: {passwordHashAlgorithmIdentifier}");
         }
-        public static void CheckService(IGeneralLogger logger, string name, IExternalService service, ref bool result, IList<string> messages, bool logIfNotAvailable)
+        public static void CheckService(IGeneralLogger logger, string name, IExternalService service, ref HealthStatus result, IList<string> messages, bool logIfNotAvailable, bool serviceIsRequired)
         {
-            CheckService(logger, name, service == null, service.IsAvailable, ref result, messages, logIfNotAvailable);
+            CheckService(logger, name, service == null, service.IsAvailable, ref result, messages, logIfNotAvailable, serviceIsRequired);
         }
-        public static void CheckService(IGeneralLogger logger, string name, bool serviceIsNull, Func<bool> isAvailable, ref bool result, IList<string> messages, bool logIfNotAvailable)
+        public static void CheckService(IGeneralLogger logger, string name, bool serviceIsNull, Func<bool> isAvailable, ref HealthStatus result, IList<string> messages, bool logIfNotAvailable, bool serviceIsRequired)
         {
             if (serviceIsNull)
             {
@@ -176,7 +177,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
                 {
                     logger.Log(message, LogLevel.Warning);
                 }
-                result = false;
+                result = CalculateNotAvailableResult(result, serviceIsRequired);
                 return;
             }
             if (!isAvailable())
@@ -187,36 +188,64 @@ namespace GRYLibrary.Core.APIServer.Utilities
                 {
                     logger.Log(message, LogLevel.Warning);
                 }
-                result = false;
+                result = CalculateNotAvailableResult(result, serviceIsRequired);
                 return;
             }
             //more checks can be added
         }
+
+        public static HealthStatus CalculateNotAvailableResult(HealthStatus resultUntilNow, bool dependencyIsRequired)
+        {
+            if (resultUntilNow == HealthStatus.Unhealthy)
+            {
+                return resultUntilNow;
+            }
+            else
+            {
+                if (dependencyIsRequired)
+                {
+                    return HealthStatus.Unhealthy;
+                }
+                else
+                {
+                    return HealthStatus.Degraded;
+                }
+            }
+        }
 #pragma warning disable IDE0060 // Remove unused parameter
-        public static Task<HealthCheckResult> CheckHealthAsync(IGeneralLogger logger, Func<(bool, IEnumerable<string>)> check, HealthCheckContext context, CancellationToken cancellationToken)
+        public static Task<HealthCheckResult> CheckHealthAsync(IGeneralLogger logger, Func<(HealthStatus, IEnumerable<string>)> check, HealthCheckContext context, CancellationToken cancellationToken)
 #pragma warning restore IDE0060 // Remove unused parameter
         {
-            (bool result, IEnumerable<string> messages) result;
+            (HealthStatus result, IEnumerable<string> messages) result;
             try
             {
                 result = check();
             }
             catch (Exception exception)
             {
-                result = (false, new List<string>() { GUtilities.GetExceptionMessage(exception, "Error while calculating health-status", true) });
+                result = (HealthStatus.Unhealthy, new List<string>() { GUtilities.GetExceptionMessage(exception, "Error while calculating health-status", true) });
             }
             int messageCount = result.messages.Count();
             LogLevel loglevel;
             string message;
-            if (result.result)
+            if (result.result.Equals(HealthStatus.Healthy))
             {
                 message = "Service is healthy.";
                 loglevel = LogLevel.Debug;
             }
-            else
+            else if (result.result.Equals(HealthStatus.Degraded))
+            {
+                message = "Service is degraded.";
+                loglevel = LogLevel.Debug;
+            }
+            else if (result.result.Equals(HealthStatus.Unhealthy))
             {
                 message = "Service is unhealthy.";
                 loglevel = LogLevel.Warning;
+            }
+            else
+            {
+                throw new InternalAlgorithmException($"Unknown healthstatus: {(int)result.result}");
             }
 
             if (messageCount > 0)
@@ -225,13 +254,21 @@ namespace GRYLibrary.Core.APIServer.Utilities
             }
             logger.Log(message, loglevel);
             HealthCheckResult healthCheckResult;
-            if (result.result)
+            if (result.result.Equals(HealthStatus.Healthy))
             {
                 healthCheckResult = HealthCheckResult.Healthy(message);
             }
-            else
+            else if (result.result.Equals(HealthStatus.Degraded))
+            {
+                healthCheckResult = HealthCheckResult.Degraded(message);
+            }
+            else if (result.result.Equals(HealthStatus.Unhealthy))
             {
                 healthCheckResult = HealthCheckResult.Unhealthy(message);
+            }
+            else
+            {
+                throw new InternalAlgorithmException($"Undknown healthstatus: {(int)result.result}");
             }
             return Task.FromResult(healthCheckResult);
         }
