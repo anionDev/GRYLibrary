@@ -88,8 +88,8 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
 
         public override ISet<string> GetSongs(string playlistFile)
         {
-            (ISet<string> songs, ISet<string> notExistingSongs) result = this.GetItemsAndNotExistingItems(playlistFile);
-            return result.songs;
+            (ISet<string> songs, ISet<string> _) = this.GetItemsAndNotExistingItems(playlistFile);
+            return songs;
         }
         private bool Exists(string file)
         {
@@ -116,7 +116,7 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
                 {
                     item = workingDirectory.ResolveToFullPath();
                 }
-                item = item.Replace("\\", "/");
+                item = item.Replace('\\', '/');
             }
             item = item.Trim();
             return item;
@@ -157,7 +157,7 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
             foreach (string item in items)
             {
                 string normalizedItem = this.NormalizedItem(item, workingDirectory);
-                if (normalizedItem.EndsWith("/"))
+                if (normalizedItem.EndsWith('/'))
                 {
                     if (Directory.Exists(normalizedItem))
                     {

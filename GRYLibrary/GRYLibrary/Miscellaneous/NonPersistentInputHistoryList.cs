@@ -9,10 +9,7 @@ namespace GRYLibrary.Core.Miscellaneous
         public void EnterPressed(string input)
         {
             input = input.Trim();
-            if (this.UserInputs.Contains(input))
-            {
-                this.UserInputs.Remove(input);
-            }
+            this.UserInputs.Remove(input);
             this.UserInputs.Add(input);
             this.ResetCurrentReadPosition();
         }

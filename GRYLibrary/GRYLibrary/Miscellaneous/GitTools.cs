@@ -132,6 +132,9 @@ namespace GRYLibrary.Core.Miscellaneous
             foundFile = null;
             return false;
         }
+
+        private static readonly char[] _Separators = new[] { '/' };
+
         /// <returns>
         /// Returns a tuple.
         /// tuple.Item1 represents the remote-name.
@@ -143,7 +146,7 @@ namespace GRYLibrary.Core.Miscellaneous
             {
                 if (line.Contains('/'))
                 {
-                    string[] splitted = line.Split(new[] { '/' }, 2);
+                    string[] splitted = line.Split(_Separators, 2);
                     return new Tuple<string, string>(splitted[0].Trim(), splitted[1].Trim());
                 }
                 else

@@ -8,9 +8,6 @@ namespace GRYLibrary.Core.APIServer.Services.Auth
     /// <summary>
     /// This is a transient <see cref="IUserAuthorizationService"/> for testing purposes.
     /// </summary>
-    /// <remarks>
-    /// Do not use this service in productive-mode because this service does not implement any features to increase security.
-    /// </remarks>
     public class StaticRoleBasedUserAuthorizationService<UserType> : IRoleBasedAuthorizationService
         where UserType : User
     {

@@ -41,8 +41,8 @@ namespace GRYLibrary.Core.APIServer.Services.KeyCloak
                 throw new NotImplementedException();
             });
         }
-
-        public virtual void Register(string username, string password)
+        
+        public virtual void Register(string username, string emailAddress, string password)
         {
             this.EnsureServiceIsConnected(() =>
             {
@@ -57,13 +57,13 @@ namespace GRYLibrary.Core.APIServer.Services.KeyCloak
                 user.Groups = new List<string>();
                 user.ClientRoles = new Dictionary<string, object>();
                 user.Credentials = new List<Credentials>() { };
-                //user.Email = $"{username}@{Realm}";
+                user.Email = emailAddress;
                 user.Enabled = true;
                 Task<string> task = service.CreateAndRetrieveUserIdAsync(this.Settings.Realm, user);
                 task.Wait();
             });
         }
-
+        
         public AccessToken Login(string username, string password)
         {
             return this.EnsureServiceIsConnected<AccessToken>(() =>
