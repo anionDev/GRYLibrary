@@ -14,5 +14,6 @@
         /// The second tuple-item represents the public-key.
         /// </returns>
         public abstract (byte[] privateKey, byte[] publicKey) GenerateRandomKeyPair();
+        public abstract byte[] SignData(byte[] data, byte[] key, HashAlgorithm hashAlgorithm);
     }
 }
