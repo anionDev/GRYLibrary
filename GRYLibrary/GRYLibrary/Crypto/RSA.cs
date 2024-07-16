@@ -52,5 +52,10 @@ namespace GRYLibrary.Core.Crypto
         {
             return Utilities.PadLeft(System.Text.Encoding.ASCII.GetBytes(nameof(RSA)), 10);
         }
+
+        public override byte[] SignData(byte[] data, byte[] key, HashAlgorithm hashAlgorithm)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

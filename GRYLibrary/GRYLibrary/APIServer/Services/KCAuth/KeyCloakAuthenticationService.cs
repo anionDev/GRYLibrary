@@ -137,5 +137,10 @@ namespace GRYLibrary.Core.APIServer.Services.KCZAuth
         {
             throw new System.NotImplementedException();
         }
+
+        public bool UserExistsByName(string userNameAdmin)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

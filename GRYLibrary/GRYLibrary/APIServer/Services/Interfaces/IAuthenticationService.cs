@@ -36,6 +36,7 @@ namespace GRYLibrary.Core.APIServer.Services.Interfaces
         void LogoutEverywhere(string userId);
         public User GetUserByName(string name);
         User GetUserByAccessToken(string accessToken);
+        bool UserExistsByName(string userNameAdmin);
     }
     /// <summary>
     /// Represents a authentication-service with a custom user-type.

@@ -55,7 +55,7 @@ namespace GRYLibrary.Core.Exceptions
         {
             if (httpStatusCode == StatusCodes.Status401Unauthorized)
             {
-                return "Authentication required";
+                return "Authentication required. Please login to authenticate.";
             }
             else if (httpStatusCode == StatusCodes.Status403Forbidden)
             {

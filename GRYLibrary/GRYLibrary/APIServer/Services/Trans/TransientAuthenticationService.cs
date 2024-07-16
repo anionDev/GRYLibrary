@@ -235,5 +235,10 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         {
             throw new NotImplementedException();
         }
+
+        public bool UserExistsByName(string username)
+        {
+            return this._TransientAuthenticationServicePersistence.UserWithNameExists(username);
+        }
     }
 }
