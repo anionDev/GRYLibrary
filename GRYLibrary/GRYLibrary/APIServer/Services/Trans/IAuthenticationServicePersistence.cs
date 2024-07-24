@@ -23,6 +23,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         public UserType GetUserById(object userId);
         public bool RoleExists(string roleName);
         public void AddRoleToUser(string userId, string roleId);
-        bool UserHasRole(string userId, string roleId);
+        public bool UserHasRole(string userId, string roleId);
+        public User GetUserByAccessToken(string accessToken);
     }
 }

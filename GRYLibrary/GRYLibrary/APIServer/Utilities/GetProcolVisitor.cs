@@ -1,6 +1,6 @@
 ﻿using GRYLibrary.Core.APIServer.ExecutionModes;
 using GRYLibrary.Core.APIServer.Settings.Configuration;
-using GRYLibrary.Core.Miscellaneous.FilePath;
+using GRYLibrary.Core.Misc.FilePath;
 
 namespace GRYLibrary.Core.APIServer.Utilities
 {

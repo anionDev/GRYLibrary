@@ -1,4 +1,4 @@
-﻿using GRYLibrary.Core.Miscellaneous.FilePath;
+﻿using GRYLibrary.Core.Misc.FilePath;
 
 namespace GRYLibrary.Core.APIServer.Settings.Configuration
 {

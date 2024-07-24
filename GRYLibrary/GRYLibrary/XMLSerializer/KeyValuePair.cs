@@ -1,5 +1,5 @@
-﻿using GRYLibrary.Core.AdvancedObjectAnalysis;
-using GRYLibrary.Core.AdvancedObjectAnalysis.GenericXMLSerializerHelper;
+﻿using GRYLibrary.Core.AOA;
+using GRYLibrary.Core.AOA.SerializeHelper;
 using System;
 using System.Collections.Generic;
 using System.Xml;

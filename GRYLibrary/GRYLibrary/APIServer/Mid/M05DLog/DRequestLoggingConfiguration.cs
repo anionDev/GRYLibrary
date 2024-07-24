@@ -1,5 +1,5 @@
 ﻿using GRYLibrary.Core.Logging.GRYLogger;
-using GRYLibrary.Core.Miscellaneous.FilePath;
+using GRYLibrary.Core.Misc.FilePath;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Generic;
 

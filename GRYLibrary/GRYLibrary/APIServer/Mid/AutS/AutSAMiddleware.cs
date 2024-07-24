@@ -3,9 +3,10 @@ using GRYLibrary.Core.APIServer.MidT.Auth;
 using GRYLibrary.Core.APIServer.Services.Auth;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
 using GRYLibrary.Core.APIServer.Utilities;
+using GRYLibrary.Core.Exceptions;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
-using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
+using GUtilities = GRYLibrary.Core.Misc.Utilities;
 
 namespace GRYLibrary.Core.APIServer.Mid.AutS
 {
@@ -25,23 +26,32 @@ namespace GRYLibrary.Core.APIServer.Mid.AutS
         }
         public override bool AuthorizationIsRequired(HttpContext context)
         {
-            AuthorizeAttribute authorizeAttribute = this.GetAuthorizeAttribute(context);
-            if (authorizeAttribute == null)
+            if (!(bool)context.Items[AuthenticationMiddleware.IsAuthenticatedInformationName])
             {
                 return false;
             }
-            else
+            if (this.TryGetAuthorizeAttribute(context, out AuthorizeAttribute authorizeAttribute))
             {
                 return authorizeAttribute.Groups.Any();
+            }
+            else
+            {
+                return false;
             }
         }
         protected override bool IsAuthorized(HttpContext context)
         {
-            ActionAttribute actionAttribute = this.GetActionAttribute(context);
-            GUtilities.AssertCondition(this._CredentialsProvider.ContainsCredentials(context));
-            string accessToken = this._CredentialsProvider.ExtractSecret(context);
-            User user = this._AuthenticationService.GetUserByAccessToken(accessToken);
-            return this._AuthorizationService.IsAuthorized(user.Id, actionAttribute.Action);
+            if (this.TryGetAactionAttribute(context, out ActionAttribute actionAttribute))
+            {
+                GUtilities.AssertCondition(this._CredentialsProvider.ContainsCredentials(context));
+                string accessToken = this._CredentialsProvider.ExtractSecret(context);
+                User user = this._AuthenticationService.GetUserByAccessToken(accessToken);
+                return this._AuthorizationService.IsAuthorized(user.Id, actionAttribute.Action);
+            }
+            else
+            {
+                throw new InternalAlgorithmException();
+            }
         }
     }
 }

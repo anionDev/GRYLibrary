@@ -1,6 +1,6 @@
-﻿using GRYLibrary.Core.AdvancedObjectAnalysis;
+﻿using GRYLibrary.Core.AOA;
 using GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets;
-using GRYLibrary.Core.Miscellaneous.FilePath;
+using GRYLibrary.Core.Misc.FilePath;
 using GRYLibrary.Core.XMLSerializer;
 using Microsoft.Extensions.Logging;
 using System;
@@ -67,7 +67,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
             this.PrintEmptyLines = false;
             this.PrintErrorsAsInformation = false;
             this.Name = string.Empty;
-            this.DateFormat = Miscellaneous.Utilities.FormatForDateTimesInFullFormatSimple;
+            this.DateFormat = Misc.Utilities.FormatForDateTimesInFullFormatSimple;
             this.LoggedMessageTypesConfiguration = new List<SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>>
             {
                 new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Trace, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Trace), ConsoleColor = ConsoleColor.Gray }),

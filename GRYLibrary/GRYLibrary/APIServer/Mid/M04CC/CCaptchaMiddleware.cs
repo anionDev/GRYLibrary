@@ -1,6 +1,6 @@
 ﻿using GRYLibrary.Core.APIServer.MidT.Captcha;
-using GRYLibrary.Core.Miscellaneous;
-using GRYLibrary.Core.Miscellaneous.Captcha;
+using GRYLibrary.Core.Misc;
+using GRYLibrary.Core.Misc.Captcha;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using System;
@@ -55,7 +55,7 @@ namespace GRYLibrary.Core.APIServer.Mid.C
                     }
                     //TODO if too many failed requests so that the user should be blocked (maybe in the context of the Blacklist-middleware) send an unreasolvable captcha whose text ist always something like "blocked".
                 }
-                System.Text.Encoding encoding = Miscellaneous.Utilities.GetEncodingByIdentifier(this._CaptchaMiddlewareSettings.Encoding);
+                System.Text.Encoding encoding = Misc.Utilities.GetEncodingByIdentifier(this._CaptchaMiddlewareSettings.Encoding);
                 (string id, byte[] picture) = this.GenerateCaptcha();
                 string captchaBase64 = Convert.ToBase64String(picture);
                 context.Response.StatusCode = (int)statusCode;

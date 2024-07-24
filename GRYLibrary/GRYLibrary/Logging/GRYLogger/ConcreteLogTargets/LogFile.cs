@@ -1,5 +1,5 @@
-﻿using GRYLibrary.Core.Miscellaneous;
-using GRYLibrary.Core.Miscellaneous.FilePath;
+﻿using GRYLibrary.Core.Misc;
+using GRYLibrary.Core.Misc.FilePath;
 using System;
 using System.Collections.Generic;
 using System.Text;

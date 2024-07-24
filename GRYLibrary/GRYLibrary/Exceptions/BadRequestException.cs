@@ -2,7 +2,7 @@
 using GRYLibrary.Core.APIServer.Utilities;
 using Microsoft.AspNetCore.Http;
 using System.Text;
-using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
+using GUtilities = GRYLibrary.Core.Misc.Utilities;
 
 namespace GRYLibrary.Core.Exceptions
 {
@@ -55,7 +55,7 @@ namespace GRYLibrary.Core.Exceptions
         {
             if (httpStatusCode == StatusCodes.Status401Unauthorized)
             {
-                return "Authentication required";
+                return "Authentication required. Please login to authenticate.";
             }
             else if (httpStatusCode == StatusCodes.Status403Forbidden)
             {

@@ -2,6 +2,7 @@ using GRYLibrary.Core.APIServer.Utilities;
 using GRYLibrary.Core.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Controllers;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -25,23 +26,36 @@ namespace GRYLibrary.Core.APIServer.MidT
         {
             return context.GetEndpoint() != null;
         }
-        public AuthorizeAttribute GetAuthorizeAttribute(HttpContext context)
+
+        public bool TryGetAuthenticateAttribute(HttpContext context, out AuthenticateAttribute authenticateAttribute)
         {
-            Endpoint endPoint = context.GetEndpoint() ?? throw new BadRequestException((int)System.Net.HttpStatusCode.NotFound, "Not found");
-            EndpointMetadataCollection metaData = endPoint?.Metadata;
-            ControllerActionDescriptor controllerActionDescriptor = metaData?.GetMetadata<ControllerActionDescriptor>();
-            System.Reflection.MethodInfo methodInfo = controllerActionDescriptor?.MethodInfo;
-            AuthorizeAttribute authorizeAttribute = methodInfo?.GetCustomAttributes(false).OfType<AuthorizeAttribute>().FirstOrDefault();
-            return authorizeAttribute;
+           return this.TryGetAttributeFromContext(context, out authenticateAttribute);
         }
-        public ActionAttribute GetActionAttribute(HttpContext context)
+        public bool TryGetAuthorizeAttribute(HttpContext context, out AuthorizeAttribute authorizedAttribute)
         {
-            Endpoint endPoint = context.GetEndpoint() ?? throw new BadRequestException((int)System.Net.HttpStatusCode.NotFound, "Not found");
-            EndpointMetadataCollection metaData = endPoint?.Metadata;
-            ControllerActionDescriptor controllerActionDescriptor = metaData?.GetMetadata<ControllerActionDescriptor>();
-            System.Reflection.MethodInfo methodInfo = controllerActionDescriptor?.MethodInfo;
-            ActionAttribute actionAttribute = methodInfo?.GetCustomAttributes(false).OfType<ActionAttribute>().FirstOrDefault();
-            return actionAttribute;
+            return this.TryGetAttributeFromContext(context, out authorizedAttribute);
+        }
+        public bool TryGetAactionAttribute(HttpContext context, out ActionAttribute actionAttribute)
+        {
+            return this.TryGetAttributeFromContext(context, out actionAttribute);
+        }
+        private bool TryGetAttributeFromContext<T>(HttpContext context, out T attribute)
+            where T : Attribute
+        {
+            try
+            {
+                Endpoint endPoint = context.GetEndpoint() ?? throw new BadRequestException((int)System.Net.HttpStatusCode.NotFound, "Not found");
+                EndpointMetadataCollection metaData = endPoint?.Metadata;
+                ControllerActionDescriptor controllerActionDescriptor = metaData?.GetMetadata<ControllerActionDescriptor>();
+                System.Reflection.MethodInfo methodInfo = controllerActionDescriptor?.MethodInfo;
+                attribute = methodInfo?.GetCustomAttributes(false).OfType<T>().FirstOrDefault();
+                return attribute!=null;
+            }
+            catch
+            {
+                attribute = null;
+                return false;
+            }
         }
     }
 }

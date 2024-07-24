@@ -1,4 +1,4 @@
-﻿using GRYLibrary.Core.Miscellaneous.CustomDisposables;
+﻿using GRYLibrary.Core.Misc.CustomDisposables;
 
 namespace GRYLibrary.Core.Logging.GRYLogger
 {

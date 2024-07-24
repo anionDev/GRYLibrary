@@ -2,8 +2,8 @@
 using GRYLibrary.Core.APIServer.ConcreteEnvironments;
 using GRYLibrary.Core.APIServer.ExecutionModes;
 using GRYLibrary.Core.APIServer.MaintenanceRoutes;
-using GRYLibrary.Core.Miscellaneous;
-using GRYLibrary.Core.Miscellaneous.FilePath;
+using GRYLibrary.Core.Misc;
+using GRYLibrary.Core.Misc.FilePath;
 using System;
 using System.Collections.Generic;
 

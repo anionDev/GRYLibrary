@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace GRYLibrary.Core.APIServer.Utilities
 {
+    /// <remarks>
+    /// This attributes implies <see cref="AuthenticateAttribute"/>.
+    /// </remarks>
     [AttributeUsage(AttributeTargets.Method)]
     public class AuthorizeAttribute : Attribute
     {

@@ -1,4 +1,4 @@
-﻿using GRYLibrary.Core.AdvancedObjectAnalysis;
+﻿using GRYLibrary.Core.AOA;
 using GRYLibrary.Core.Crypto;
 using GRYLibrary.Core.OperatingSystem;
 using GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems;
@@ -16,7 +16,7 @@ namespace GRYLibrary.Tests.Utilities
             bool actualObjectIsNull = actualObject == null;
             if (expectedObjectIsNull && actualObjectIsNull)
             {
-                Core.Miscellaneous.Utilities.NoOperation();
+                Core.Misc.Utilities.NoOperation();
             }
             if (expectedObjectIsNull && !actualObjectIsNull)
             {
@@ -28,22 +28,22 @@ namespace GRYLibrary.Tests.Utilities
             }
             if (!expectedObjectIsNull && !actualObjectIsNull)
             {
-                Assert.IsTrue(Generic.GenericEquals(expectedObject, actualObject), Core.Miscellaneous.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
+                Assert.IsTrue(Generic.GenericEquals(expectedObject, actualObject), Core.Misc.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
                 Assert.AreEqual(Generic.GenericGetHashCode(expectedObject), Generic.GenericGetHashCode(actualObject));
 
                 if (addDefaultEqualAssertion)
                 {
-                    if (Core.Miscellaneous.EnumerableTools.ObjectIsSet(expectedObject))
+                    if (Core.Misc.EnumerableTools.ObjectIsSet(expectedObject))
                     {
-                        Assert.IsTrue(Core.Miscellaneous.EnumerableTools.ObjectToSet<object>(expectedObject).SetEquals(Core.Miscellaneous.EnumerableTools.ObjectToSet<object>(actualObject)), Core.Miscellaneous.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
+                        Assert.IsTrue(Core.Misc.EnumerableTools.ObjectToSet<object>(expectedObject).SetEquals(Core.Misc.EnumerableTools.ObjectToSet<object>(actualObject)), Core.Misc.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
                     }
-                    else if (Core.Miscellaneous.EnumerableTools.ObjectIsList(expectedObject))
+                    else if (Core.Misc.EnumerableTools.ObjectIsList(expectedObject))
                     {
-                        Assert.IsTrue(Core.Miscellaneous.EnumerableTools.ObjectToList<object>(expectedObject).SequenceEqual(Core.Miscellaneous.EnumerableTools.ObjectToList<object>(actualObject)), Core.Miscellaneous.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
+                        Assert.IsTrue(Core.Misc.EnumerableTools.ObjectToList<object>(expectedObject).SequenceEqual(Core.Misc.EnumerableTools.ObjectToList<object>(actualObject)), Core.Misc.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
                     }
-                    else if (!Core.Miscellaneous.EnumerableTools.ObjectIsEnumerable(expectedObject))
+                    else if (!Core.Misc.EnumerableTools.ObjectIsEnumerable(expectedObject))
                     {
-                        Assert.AreEqual(expectedObject, actualObject, Core.Miscellaneous.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
+                        Assert.AreEqual(expectedObject, actualObject, Core.Misc.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
                         Assert.AreEqual(expectedObject.GetHashCode(), actualObject.GetHashCode());
                     }
                 }
@@ -59,16 +59,16 @@ namespace GRYLibrary.Tests.Utilities
             }
             if (expectedObjectIsNull && !actualObjectIsNull)
             {
-                Core.Miscellaneous.Utilities.NoOperation();
+                Core.Misc.Utilities.NoOperation();
             }
             if (!expectedObjectIsNull && actualObjectIsNull)
             {
-                Core.Miscellaneous.Utilities.NoOperation();
+                Core.Misc.Utilities.NoOperation();
             }
             if (!expectedObjectIsNull && !actualObjectIsNull)
             {
-                Assert.IsFalse(Generic.GenericEquals(expectedObject, actualObject), Core.Miscellaneous.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
-                Assert.AreNotEqual(expectedObject, actualObject, Core.Miscellaneous.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
+                Assert.IsFalse(Generic.GenericEquals(expectedObject, actualObject), Core.Misc.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
+                Assert.AreNotEqual(expectedObject, actualObject, Core.Misc.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
             }
         }
         internal static void AssertPureSHA256ValueIsEqualsToDotNetImplementation(string input)
@@ -82,7 +82,7 @@ namespace GRYLibrary.Tests.Utilities
         internal static void AssertHashValueIsEqualsToDotNetImplementation(HashAlgorithm algorithmUnderTest, HashAlgorithm verificationAlgorithm, string input)
         {
             // arrange
-            byte[] inputAsByteArray = Core.Miscellaneous.Utilities.StringToByteArray(input);
+            byte[] inputAsByteArray = Core.Misc.Utilities.StringToByteArray(input);
             byte[] expectedResult = verificationAlgorithm.Hash(inputAsByteArray);
 
             // act
