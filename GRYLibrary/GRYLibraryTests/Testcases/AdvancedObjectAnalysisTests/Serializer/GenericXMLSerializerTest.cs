@@ -1,4 +1,4 @@
-﻿using GRYLibrary.Core.AdvancedObjectAnalysis;
+﻿using GRYLibrary.Core.AOA;
 using GRYLibrary.Core.AdvancedXMLSerialysis;
 using GRYLibrary.Tests.TestData.TestTypes.ComplexDataStructure;
 using GRYLibrary.Tests.TestData.TestTypes.ComplexDataStructure2;
@@ -42,7 +42,7 @@ namespace GRYLibrary.Tests.Testcases.AdvancedObjectAnalysisTests.Serializer
             CycleA actualObject = serializer.Deserialize<CycleA>(serialized);
 
             // assert
-            Assert.IsTrue(Core.Miscellaneous.Utilities.IsValidXML(serialized));
+            Assert.IsTrue(Core.Misc.Utilities.IsValidXML(serialized));
             TestUtilities.AssertEqual(expectedObject, actualObject);
         }
         [TestMethod]
@@ -57,7 +57,7 @@ namespace GRYLibrary.Tests.Testcases.AdvancedObjectAnalysisTests.Serializer
             CycleA actualObject = serializer.Deserialize<CycleA>(serialized);
 
             // assert
-            Assert.IsTrue(Core.Miscellaneous.Utilities.IsValidXML(serialized));
+            Assert.IsTrue(Core.Misc.Utilities.IsValidXML(serialized));
             TestUtilities.AssertEqual(expectedObject, actualObject);
         }
         [Ignore]
@@ -72,7 +72,7 @@ namespace GRYLibrary.Tests.Testcases.AdvancedObjectAnalysisTests.Serializer
             Company actualObject = Generic.GenericDeserialize<Company>(serialized);
 
             // assert
-            Assert.IsTrue(Core.Miscellaneous.Utilities.IsValidXML(serialized));
+            Assert.IsTrue(Core.Misc.Utilities.IsValidXML(serialized));
             TestUtilities.AssertEqual(expectedObject, actualObject);
         }
         [TestMethod]
@@ -86,7 +86,7 @@ namespace GRYLibrary.Tests.Testcases.AdvancedObjectAnalysisTests.Serializer
             CycleA actualObject = Generic.GenericDeserialize<CycleA>(serialized);
 
             // assert
-            Assert.IsTrue(Core.Miscellaneous.Utilities.IsValidXML(serialized));
+            Assert.IsTrue(Core.Misc.Utilities.IsValidXML(serialized));
             TestUtilities.AssertEqual(expectedObject, actualObject);
         }
 
@@ -105,7 +105,7 @@ namespace GRYLibrary.Tests.Testcases.AdvancedObjectAnalysisTests.Serializer
             Generic.GenericReadXml(actualObject, XmlReader.Create(new StringReader(serializedObject)));
 
             // assert
-            Assert.IsTrue(Core.Miscellaneous.Utilities.IsValidXML(serializedObject));
+            Assert.IsTrue(Core.Misc.Utilities.IsValidXML(serializedObject));
             Assert.AreEqual(8, actualObject.Count);
             TestUtilities.AssertEqual(expectedObject, actualObject);
         }
@@ -125,7 +125,7 @@ namespace GRYLibrary.Tests.Testcases.AdvancedObjectAnalysisTests.Serializer
 
             // assert
             Assert.AreEqual(8, actualObject.Count);
-            Assert.IsTrue(Generic.GenericEquals(expectedObject, actualObject), Core.Miscellaneous.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
+            Assert.IsTrue(Generic.GenericEquals(expectedObject, actualObject), Core.Misc.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
             Assert.AreEqual(Generic.GenericGetHashCode(expectedObject), Generic.GenericGetHashCode(actualObject));
         }
         [TestMethod]
@@ -144,7 +144,7 @@ namespace GRYLibrary.Tests.Testcases.AdvancedObjectAnalysisTests.Serializer
 
             // assert
             Assert.AreEqual(8, actualObject.Count);
-            Assert.IsTrue(Generic.GenericEquals(expectedObject, actualObject), Core.Miscellaneous.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
+            Assert.IsTrue(Generic.GenericEquals(expectedObject, actualObject), Core.Misc.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
             Assert.AreEqual(Generic.GenericGetHashCode(expectedObject), Generic.GenericGetHashCode(actualObject));
         }
 
@@ -165,7 +165,7 @@ namespace GRYLibrary.Tests.Testcases.AdvancedObjectAnalysisTests.Serializer
 
             // assert
             Assert.AreEqual(2, actualObject.List.Count);
-            Assert.IsTrue(Generic.GenericEquals(expectedObject, actualObject), Core.Miscellaneous.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
+            Assert.IsTrue(Generic.GenericEquals(expectedObject, actualObject), Core.Misc.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
             Assert.AreEqual(Generic.GenericGetHashCode(expectedObject), Generic.GenericGetHashCode(actualObject));
         }
         [TestMethod]
@@ -184,7 +184,7 @@ namespace GRYLibrary.Tests.Testcases.AdvancedObjectAnalysisTests.Serializer
 
             // assert
             Assert.AreEqual(2, actualObject.List.Count);
-            Assert.IsTrue(Generic.GenericEquals(expectedObject, actualObject), Core.Miscellaneous.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
+            Assert.IsTrue(Generic.GenericEquals(expectedObject, actualObject), Core.Misc.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
             Assert.AreEqual(Generic.GenericGetHashCode(expectedObject), Generic.GenericGetHashCode(actualObject));
         }
         [TestMethod]
@@ -202,8 +202,8 @@ namespace GRYLibrary.Tests.Testcases.AdvancedObjectAnalysisTests.Serializer
             Generic.GenericReadXml(actualObject, XmlReader.Create(new StringReader(serializedObject)));
 
             // assert
-            Assert.AreEqual(2, Core.Miscellaneous.Utilities.Count(actualObject.Enumerable));
-            Assert.IsTrue(Generic.GenericEquals(expectedObject, actualObject), Core.Miscellaneous.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
+            Assert.AreEqual(2, Core.Misc.Utilities.Count(actualObject.Enumerable));
+            Assert.IsTrue(Generic.GenericEquals(expectedObject, actualObject), Core.Misc.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
             Assert.AreEqual(Generic.GenericGetHashCode(expectedObject), Generic.GenericGetHashCode(actualObject));
         }
         [TestMethod]
@@ -222,7 +222,7 @@ namespace GRYLibrary.Tests.Testcases.AdvancedObjectAnalysisTests.Serializer
 
             // assert
             Assert.AreEqual(2, actualObject.Enumerable.Count());
-            Assert.IsTrue(Generic.GenericEquals(expectedObject, actualObject), Core.Miscellaneous.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
+            Assert.IsTrue(Generic.GenericEquals(expectedObject, actualObject), Core.Misc.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
             Assert.AreEqual(Generic.GenericGetHashCode(expectedObject), Generic.GenericGetHashCode(actualObject));
         }
         [TestMethod]
@@ -241,7 +241,7 @@ namespace GRYLibrary.Tests.Testcases.AdvancedObjectAnalysisTests.Serializer
 
             // assert
             Assert.AreEqual(2, actualObject.Set.Count);
-            Assert.IsTrue(Generic.GenericEquals(expectedObject, actualObject), Core.Miscellaneous.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
+            Assert.IsTrue(Generic.GenericEquals(expectedObject, actualObject), Core.Misc.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
             Assert.AreEqual(Generic.GenericGetHashCode(expectedObject), Generic.GenericGetHashCode(actualObject));
         }
         [TestMethod]
@@ -260,7 +260,7 @@ namespace GRYLibrary.Tests.Testcases.AdvancedObjectAnalysisTests.Serializer
 
             // assert
             Assert.AreEqual(2, actualObject.Dictionary.Count);
-            Assert.IsTrue(Generic.GenericEquals(expectedObject, actualObject), Core.Miscellaneous.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
+            Assert.IsTrue(Generic.GenericEquals(expectedObject, actualObject), Core.Misc.Utilities.GetAssertionFailMessage(expectedObject, actualObject));
             Assert.AreEqual(Generic.GenericGetHashCode(expectedObject), Generic.GenericGetHashCode(actualObject));
         }
         [Ignore]
@@ -306,7 +306,7 @@ namespace GRYLibrary.Tests.Testcases.AdvancedObjectAnalysisTests.Serializer
             TypeWithCommonInterfaces actualObject = Generic.GenericDeserialize<TypeWithCommonInterfaces>(serialized);
 
             // assert
-            Assert.IsTrue(Core.Miscellaneous.Utilities.IsValidXML(serialized));
+            Assert.IsTrue(Core.Misc.Utilities.IsValidXML(serialized));
             TestUtilities.AssertEqual(expectedObject, actualObject);
         }
         [TestMethod]
@@ -372,7 +372,7 @@ namespace GRYLibrary.Tests.Testcases.AdvancedObjectAnalysisTests.Serializer
 
             // assert
             Assert.AreEqual(8, actualObject.Types.Count);// Problem here: the desrializing-function fills the 8 !empty! type-objects in the .Types-list, then the HashSet obviously removes them because the properties which define differences between this 8 objects are not set yet
-            Assert.IsTrue(Core.Miscellaneous.Utilities.IsValidXML(serialized));
+            Assert.IsTrue(Core.Misc.Utilities.IsValidXML(serialized));
             TestUtilities.AssertEqual(expectedObject, actualObject);
         }
     }

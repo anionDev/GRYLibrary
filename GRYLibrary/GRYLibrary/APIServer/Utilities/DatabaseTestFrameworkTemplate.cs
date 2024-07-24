@@ -2,7 +2,7 @@
 using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using MySqlConnector;
 using System;
-using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
+using GUtilities = GRYLibrary.Core.Misc.Utilities;
 
 namespace GRYLibrary.Core.APIServer.Utilities
 {

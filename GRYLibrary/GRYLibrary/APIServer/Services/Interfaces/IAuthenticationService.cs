@@ -1,6 +1,7 @@
 ﻿using GRYLibrary.Core.APIServer.CommonAuthenticationTypes;
 using GRYLibrary.Core.APIServer.CommonDBTypes;
 using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace GRYLibrary.Core.APIServer.Services.Interfaces
 {
@@ -32,11 +33,14 @@ namespace GRYLibrary.Core.APIServer.Services.Interfaces
         public Role GetRoleByName(string roleName);
         public ISet<string> GetRolesOfUser(string userId);
         #endregion
-        void Logout(AccessToken accessToken);
+        void Logout(string accessToken);
+        void Logout(ClaimsPrincipal user);
         void LogoutEverywhere(string userId);
         public User GetUserByName(string name);
         User GetUserByAccessToken(string accessToken);
         bool UserExistsByName(string userNameAdmin);
+        void UpdateRole(Role role);
+        ISet<Role> GetRoles(ClaimsPrincipal user);
     }
     /// <summary>
     /// Represents a authentication-service with a custom user-type.

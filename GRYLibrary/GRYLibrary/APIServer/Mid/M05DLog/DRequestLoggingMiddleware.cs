@@ -4,7 +4,7 @@ using System.Net;
 using System;
 using GRYLibrary.Core.APIServer.Utilities;
 using GRYLibrary.Core.APIServer.Settings;
-using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
+using GUtilities = GRYLibrary.Core.Misc.Utilities;
 using System.Collections.Generic;
 using System.Text;
 using GRYLibrary.Core.Logging.GeneralPurposeLogger;

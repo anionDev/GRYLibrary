@@ -1,6 +1,6 @@
 ﻿using GRYLibrary.Core.Crypto;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static GRYLibrary.Core.Miscellaneous.Utilities;
+using static GRYLibrary.Core.Misc.Utilities;
 using static GRYLibrary.Tests.Utilities.TestUtilities;
 
 namespace GRYLibrary.Tests.Testcases.CryptoSystemsTests

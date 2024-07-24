@@ -2,7 +2,7 @@
 using System.Linq;
 using System;
 using System.Globalization;
-using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
+using GUtilities = GRYLibrary.Core.Misc.Utilities;
 
 namespace GRYLibrary.Core.APIServer.CommonDBTypes
 {

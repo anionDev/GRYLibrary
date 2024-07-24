@@ -5,8 +5,9 @@ using GRYLibrary.Core.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using AccessToken = GRYLibrary.Core.APIServer.CommonAuthenticationTypes.AccessToken;
-using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
+using GUtilities = GRYLibrary.Core.Misc.Utilities;
 using User = GRYLibrary.Core.APIServer.CommonDBTypes.User;
 
 namespace GRYLibrary.Core.APIServer.Services.Trans
@@ -48,7 +49,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             {
                 AccessToken newAccessToken = new AccessToken();
                 newAccessToken.Value = Guid.NewGuid().ToString();
-                newAccessToken.ExpiredMoment = this._TimeService.GetCurrentTime().AddDays(1);
+                newAccessToken.ExpiredMoment = this._TimeService.GetCurrentTime().AddDays(1);//TODO make this configurable
                 user.AccessToken.Add(newAccessToken);
                 return newAccessToken;
             }
@@ -58,18 +59,18 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             }
         }
 
-        public void Logout(AccessToken accessToken)
+
+        public void Logout(string accessToken)
         {
-            if (this._TransientAuthenticationServicePersistence.AccessTokenExists(accessToken.Value, out User user))
+            if (this._TransientAuthenticationServicePersistence.AccessTokenExists(accessToken, out User user))
             {
-                user.AccessToken = user.AccessToken.Where(at => at.Value != accessToken.Value).ToHashSet();
+                user.AccessToken = user.AccessToken.Where(at => at.Value != accessToken).ToHashSet();
             }
             else
             {
                 throw new BadRequestException(400, "Accesstoken not found");
             }
         }
-
         public void LogoutEverywhere(string userId)
         {
             UserType user = this._TransientAuthenticationServicePersistence.GetUserById(userId);
@@ -171,7 +172,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         {
             if (!this.RoleExists(roleName))
             {
-                Role newRole =new Role();
+                Role newRole = new Role();
                 newRole.Id = Guid.NewGuid().ToString();
                 newRole.Name = roleName;
                 newRole.InheritedRoles = new HashSet<Role>();
@@ -186,9 +187,9 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
                 this._TransientAuthenticationServicePersistence.DeleteRoleByName(roleName);
             }
         }
-            public ISet<string> GetRolesOfUser(string userId)
+        public ISet<string> GetRolesOfUser(string userId)
         {
-            return this._TransientAuthenticationServicePersistence.GetUserById(userId).Roles.Select(r=>r.Name).ToHashSet();
+            return this._TransientAuthenticationServicePersistence.GetUserById(userId).Roles.Select(r => r.Name).ToHashSet();
         }
 
         public void AddUserTyped(UserType user)
@@ -218,17 +219,17 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public bool UserWithNameExists(string username)
         {
-           return this._TransientAuthenticationServicePersistence.GetAllUsers().Where(kvp=>kvp.Value.Name == username).Any();
+            return this._TransientAuthenticationServicePersistence.GetAllUsers().Where(kvp => kvp.Value.Name == username).Any();
         }
 
         public User GetUserById(string userId)
         {
-           return this._TransientAuthenticationServicePersistence.GetUserById(userId);
+            return this._TransientAuthenticationServicePersistence.GetUserById(userId);
         }
 
         public User GetUserByAccessToken(string accessToken)
         {
-         return this._TransientAuthenticationServicePersistence.GetUserByAccessToken(accessToken);   
+            return this._TransientAuthenticationServicePersistence.GetUserByAccessToken(accessToken);
         }
 
         public void AddRole(string roleName)
@@ -239,6 +240,21 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         public bool UserExistsByName(string username)
         {
             return this._TransientAuthenticationServicePersistence.UserWithNameExists(username);
+        }
+
+        public void UpdateRole(Role role)
+        {
+            this._TransientAuthenticationServicePersistence.UpdateRole(role);
+        }
+
+        public void Logout(ClaimsPrincipal user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ISet<Role> GetRoles(ClaimsPrincipal user)
+        {
+            throw new NotImplementedException();
         }
     }
 }

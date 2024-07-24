@@ -3,9 +3,10 @@ using GRYLibrary.Core.APIServer.MidT.Auth;
 using GRYLibrary.Core.APIServer.Services.Auth;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
 using GRYLibrary.Core.APIServer.Utilities;
+using GRYLibrary.Core.Exceptions;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
-using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
+using GUtilities = GRYLibrary.Core.Misc.Utilities;
 
 namespace GRYLibrary.Core.APIServer.Mid.Auth
 {
@@ -23,26 +24,37 @@ namespace GRYLibrary.Core.APIServer.Mid.Auth
             this._AuthenticationService = authenticationService;
             this._CredentialsProvider = credentialsProvider;
         }
+
         public override bool AuthorizationIsRequired(HttpContext context)
         {
-            AuthorizeAttribute authorizeAttribute = this.GetAuthorizeAttribute(context);
-            if (authorizeAttribute == null)
+            if (!(bool)context.Items[AuthenticationMiddleware.IsAuthenticatedInformationName])
             {
                 return false;
             }
-            else
+            if (this.TryGetAuthorizeAttribute(context, out AuthorizeAttribute authorizeAttribute))
             {
                 return authorizeAttribute.Groups.Any();
             }
+            else
+            {
+                return false;
+            }
         }
+
         protected override bool IsAuthorized(HttpContext context)
         {
-            AuthorizeAttribute authorizedAttribute = this.GetAuthorizeAttribute(context);
-            GUtilities.AssertCondition(this._CredentialsProvider.ContainsCredentials(context));
-            string accessToken = this._CredentialsProvider.ExtractSecret(context);
-            User user = this._AuthenticationService.GetUserByAccessToken(accessToken);
-            System.Collections.Generic.ISet<string> authorizedGroups = authorizedAttribute.Groups;
-            return this._AuthorizationService.IsAuthorized(user.Id, authorizedGroups);
+            if (this.TryGetAuthorizeAttribute(context, out AuthorizeAttribute authorizedAttribute))
+            {
+                GUtilities.AssertCondition(this._CredentialsProvider.ContainsCredentials(context));
+                string accessToken = this._CredentialsProvider.ExtractSecret(context);
+                User user = this._AuthenticationService.GetUserByAccessToken(accessToken);
+                System.Collections.Generic.ISet<string> authorizedGroups = authorizedAttribute.Groups;
+                return this._AuthorizationService.IsAuthorized(user.Id, authorizedGroups);
+            }
+            else
+            {
+                throw new InternalAlgorithmException();
+            }
         }
     }
 }

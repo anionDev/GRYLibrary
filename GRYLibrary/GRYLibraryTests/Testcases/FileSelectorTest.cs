@@ -1,4 +1,4 @@
-﻿using GRYLibrary.Core.Miscellaneous;
+﻿using GRYLibrary.Core.Misc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 
@@ -19,10 +19,10 @@ namespace GRYLibrary.Tests.Testcases
             string file4 = baseDir + "dir3/file4";
             try
             {
-                Core.Miscellaneous.Utilities.EnsureFileExists(file1, true);
-                Core.Miscellaneous.Utilities.EnsureFileExists(file2, true);
-                Core.Miscellaneous.Utilities.EnsureFileExists(file3, true);
-                Core.Miscellaneous.Utilities.EnsureFileExists(file4, true);
+                Core.Misc.Utilities.EnsureFileExists(file1, true);
+                Core.Misc.Utilities.EnsureFileExists(file2, true);
+                Core.Misc.Utilities.EnsureFileExists(file3, true);
+                Core.Misc.Utilities.EnsureFileExists(file4, true);
 
                 FileSelector fileSelector = FileSelector.SingleFile(file2);
                 Assert.AreEqual(1, fileSelector.Files.Count());
@@ -36,7 +36,7 @@ namespace GRYLibrary.Tests.Testcases
             }
             finally
             {
-                Core.Miscellaneous.Utilities.EnsureDirectoryDoesNotExist(baseDir);
+                Core.Misc.Utilities.EnsureDirectoryDoesNotExist(baseDir);
             }
         }
     }

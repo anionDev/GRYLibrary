@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
+using GUtilities = GRYLibrary.Core.Misc.Utilities;
 using System;
 
 namespace GRYLibrary.Core.Crypto

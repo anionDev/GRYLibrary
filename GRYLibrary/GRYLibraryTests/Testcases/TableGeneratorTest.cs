@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static GRYLibrary.Core.Miscellaneous.TableGenerator;
+using static GRYLibrary.Core.Misc.TableGenerator;
 
 namespace GRYLibrary.Tests.Testcases
 {

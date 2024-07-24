@@ -1,4 +1,4 @@
-﻿using GRYLibrary.Core.Miscellaneous;
+﻿using GRYLibrary.Core.Misc;
 using GRYLibrary.Core.XMLSerializer;
 using GRYLibrary.Tests.TestData.TestTypes.CyclicDataStructure;
 using GRYLibrary.Tests.TestData.TestTypes.SimpleDataStructure;
@@ -15,7 +15,7 @@ using System.Numerics;
 using System.Reflection;
 using System.Text;
 using System.Xml.Serialization;
-using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
+using GUtilities = GRYLibrary.Core.Misc.Utilities;
 
 namespace GRYLibrary.Tests.Testcases
 {

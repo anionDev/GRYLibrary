@@ -2,7 +2,7 @@
 using GRYLibrary.Core.APIServer.Utilities;
 using Microsoft.AspNetCore.Http;
 using System.Text;
-using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
+using GUtilities = GRYLibrary.Core.Misc.Utilities;
 
 namespace GRYLibrary.Core.Exceptions
 {

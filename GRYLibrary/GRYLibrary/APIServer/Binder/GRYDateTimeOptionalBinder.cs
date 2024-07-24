@@ -1,6 +1,6 @@
-﻿using GRYLibrary.Core.Miscellaneous;
+﻿using GRYLibrary.Core.Misc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
+using GUtilities = GRYLibrary.Core.Misc.Utilities;
 using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.APIServer.Binder

@@ -1,4 +1,4 @@
-﻿using GRYLibrary.Core.AdvancedObjectAnalysis;
+﻿using GRYLibrary.Core.AOA;
 using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Schema;

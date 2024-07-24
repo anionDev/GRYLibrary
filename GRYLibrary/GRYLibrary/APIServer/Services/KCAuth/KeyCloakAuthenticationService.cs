@@ -4,7 +4,8 @@ using GRYLibrary.Core.APIServer.Services.Interfaces;
 using GRYLibrary.Core.APIServer.Services.KeyCloak;
 using GRYLibrary.Core.Crypto;
 using System.Collections.Generic;
-using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
+using System.Security.Claims;
+using GUtilities = GRYLibrary.Core.Misc.Utilities;
 
 namespace GRYLibrary.Core.APIServer.Services.KCZAuth
 {
@@ -82,12 +83,6 @@ namespace GRYLibrary.Core.APIServer.Services.KCZAuth
         {
             throw new System.NotImplementedException();
         }
-
-        public void Logout(AccessToken accessToken)
-        {
-            throw new System.NotImplementedException();
-        }
-
         public void LogoutEverywhere(string username)
         {
             throw new System.NotImplementedException();
@@ -139,6 +134,26 @@ namespace GRYLibrary.Core.APIServer.Services.KCZAuth
         }
 
         public bool UserExistsByName(string userNameAdmin)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void UpdateRole(Role role)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void Logout(string accessToken)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void Logout(ClaimsPrincipal user)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public ISet<Role> GetRoles(ClaimsPrincipal user)
         {
             throw new System.NotImplementedException();
         }

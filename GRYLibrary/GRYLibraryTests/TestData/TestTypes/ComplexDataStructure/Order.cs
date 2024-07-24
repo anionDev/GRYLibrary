@@ -1,5 +1,5 @@
-﻿using GRYLibrary.Core.AdvancedObjectAnalysis;
-using GRYLibrary.Core.Miscellaneous;
+﻿using GRYLibrary.Core.AOA;
+using GRYLibrary.Core.Misc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
