@@ -2,7 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using GUtilities = GRYLibrary.Core.Miscellaneous.Utilities;
+using GUtilities = GRYLibrary.Core.Misc.Utilities;
 
 namespace GRYLibrary.Core.APIServer.Utilities
 {

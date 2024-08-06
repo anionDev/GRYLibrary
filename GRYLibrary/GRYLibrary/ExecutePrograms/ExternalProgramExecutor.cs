@@ -1,7 +1,7 @@
 ﻿using GRYLibrary.Core.Exceptions;
 using GRYLibrary.Core.ExecutePrograms.WaitingStates;
 using GRYLibrary.Core.Logging.GRYLogger;
-using GRYLibrary.Core.Miscellaneous;
+using GRYLibrary.Core.Misc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;

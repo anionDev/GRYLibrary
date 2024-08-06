@@ -1,6 +1,6 @@
 ﻿using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets;
-using GRYLibrary.Core.Miscellaneous;
+using GRYLibrary.Core.Misc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;

@@ -1,4 +1,4 @@
-﻿using GRYLibrary.Core.Miscellaneous;
+﻿using GRYLibrary.Core.Misc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GRYLibrary.Tests.Testcases.Miscellaneous

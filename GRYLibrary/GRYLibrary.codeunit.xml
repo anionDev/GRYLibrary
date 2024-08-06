@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<cps:codeunit xmlns:cps="https://projects.aniondev.de/PublicProjects/Common/ProjectTemplates/-/tree/main/Conventions/RepositoryStructure/CommonProjectStructure" codeunitspecificationversion="2.7.10"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://projects.aniondev.de/PublicProjects/Common/ProjectTemplates/-/raw/v2.7.10/Conventions/RepositoryStructure/CommonProjectStructure/codeunit.xsd" enabled="true">
+<cps:codeunit xmlns:cps="https://projects.aniondev.de/PublicProjects/Common/ProjectTemplates/-/tree/main/Conventions/RepositoryStructure/CommonProjectStructure" codeunitspecificationversion="2.8.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://projects.aniondev.de/PublicProjects/Common/ProjectTemplates/-/raw/v2.8.0/Conventions/RepositoryStructure/CommonProjectStructure/codeunit.xsd" enabled="true">
     <cps:name>GRYLibrary</cps:name>
-    <cps:version>0.12.100</cps:version>
-    <cps:properties codeunithastestablesourcecode="true" codeunithasupdatabledependencies="true" throwexceptionifcodeunitfilecannotbevalidated="true" description="GRYLibrary is a collection with some useful .NET classes and functions which are very easy (re)usable.">
+    <cps:version>0.12.105</cps:version>
+    <cps:properties codeunithastestablesourcecode="true" codeunithasupdatabledependencies="true" throwexceptionifcodeunitfilecannotbevalidated="true" developmentState="Active development" description="GRYLibrary is a collection with some useful .NET classes and functions which are very easy (re)usable.">
         <cps:testsettings minimalcodecoverageinpercent="30"/>
-    </cps:properties>
+        <cps:pipelinedemands>
+        </cps:pipelinedemands>
+        <cps:updatesettings>
+            <cps:ignoreddependencies>
+                <cps:ignoreddependency>MSTest.TestAdapter</cps:ignoreddependency>
+                <cps:ignoreddependency>MSTest.TestFramework</cps:ignoreddependency>            
+            </cps:ignoreddependencies>
+        </cps:updatesettings>        
+    </cps:properties>  
     <cps:dependentcodeunits/>
     <cps:developerteam>
         <cps:developer>

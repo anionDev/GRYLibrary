@@ -6,6 +6,5 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
     public interface ITransientAuthenticationServicePersistence<UserType> : IAuthenticationServicePersistence<UserType>
         where UserType : User
     {
-       public User GetUserByAccessToken(string accessToken);
     }
 }

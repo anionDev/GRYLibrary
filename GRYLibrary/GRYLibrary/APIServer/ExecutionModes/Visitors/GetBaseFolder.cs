@@ -33,21 +33,23 @@ namespace GRYLibrary.Core.APIServer.ExecutionModes.Visitors
         private string GetTempFolder()
         {
             string result = Path.Join(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Miscellaneous.Utilities.EnsureDirectoryExists(result);
+            Misc.Utilities.EnsureDirectoryExists(result);
             return result;
         }
 
         public static string GetBaseFolderForProjectInCommonProjectStructure(GRYEnvironment environment, string programFolder, ExecutionMode executionMode)
         {
             string workspaceFolderName = "Workspace";
+            string result;
             if (environment is Development || executionMode is not RunProgram)
             {
-                return Miscellaneous.Utilities.ResolveToFullPath($"../../{workspaceFolderName}", programFolder);//runing locally
+                result = Misc.Utilities.ResolveToFullPath($"../../{workspaceFolderName}", programFolder);//runing locally
             }
             else
             {
-                return $"/{workspaceFolderName}";//running in container
+                result = $"/{workspaceFolderName}";//running in container
             }
+            return result;
         }
     }
 }

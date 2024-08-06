@@ -1,4 +1,4 @@
-﻿using GRYLibrary.Core.Miscellaneous;
+﻿using GRYLibrary.Core.Misc;
 using System;
 using System.Linq;
 using System.Text;

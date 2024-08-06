@@ -1,6 +1,6 @@
 ﻿using GRYLibrary.Core.Exceptions;
 using GRYLibrary.Core.Graph.Exceptions;
-using GRYLibrary.Core.Miscellaneous;
+using GRYLibrary.Core.Misc;
 using System;
 using System.Collections.Generic;
 using System.Linq;

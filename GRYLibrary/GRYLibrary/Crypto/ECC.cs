@@ -1,4 +1,4 @@
-﻿using GRYLibrary.Core.Miscellaneous;
+﻿using GRYLibrary.Core.Misc;
 using System;
 
 namespace GRYLibrary.Core.Crypto
@@ -27,6 +27,11 @@ namespace GRYLibrary.Core.Crypto
         public override byte[] GetIdentifier()
         {
             return Utilities.PadLeft(System.Text.Encoding.ASCII.GetBytes(nameof(ECC)), 10);
+        }
+
+        public override byte[] SignData(byte[] data, byte[] key, HashAlgorithm hashAlgorithm)
+        {
+            throw new NotImplementedException();
         }
     }
 }

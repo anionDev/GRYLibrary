@@ -226,7 +226,7 @@ namespace GRYLibrary.Tests.Testcases.GraphTests
             DirectedGraph graph = this.GetTestGraph();
             double[,] adjacencyMatrix = this.GetTestAdjacencyMatrix();
             double[,] toAdjacencyMatrixResult = graph.ToAdjacencyMatrix();
-            Assert.IsTrue(Core.Miscellaneous.Utilities.TwoDimensionalArrayEquals(adjacencyMatrix, toAdjacencyMatrixResult), $"Expected {Core.Miscellaneous.Utilities.TwoDimensionalArrayToString(adjacencyMatrix)} but was {Core.Miscellaneous.Utilities.TwoDimensionalArrayToString(toAdjacencyMatrixResult)}");
+            Assert.IsTrue(Core.Misc.Utilities.TwoDimensionalArrayEquals(adjacencyMatrix, toAdjacencyMatrixResult), $"Expected {Core.Misc.Utilities.TwoDimensionalArrayToString(adjacencyMatrix)} but was {Core.Misc.Utilities.TwoDimensionalArrayToString(toAdjacencyMatrixResult)}");
         }
 
         [TestMethod]

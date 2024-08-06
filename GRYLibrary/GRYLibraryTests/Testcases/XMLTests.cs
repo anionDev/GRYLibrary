@@ -19,8 +19,8 @@ namespace GRYLibrary.Tests.Testcases
             string xmlWorking = File.ReadAllText(testXML1_MatchsXSD1, this._FileEncoding);
             string xmlNotWorking = File.ReadAllText(testXML2_MatchsXSD1Not, this._FileEncoding);
             string xsd = File.ReadAllText(testXSD1File, this._FileEncoding);
-            Assert.IsTrue(Core.Miscellaneous.Utilities.ValidateXMLAgainstXSD(xmlWorking, xsd, out _));
-            Assert.IsFalse(Core.Miscellaneous.Utilities.ValidateXMLAgainstXSD(xmlNotWorking, xsd, out _));
+            Assert.IsTrue(Core.Misc.Utilities.ValidateXMLAgainstXSD(xmlWorking, xsd, out _));
+            Assert.IsFalse(Core.Misc.Utilities.ValidateXMLAgainstXSD(xmlNotWorking, xsd, out _));
         }
         [TestMethod]
         public void TestXSLT1()
@@ -32,7 +32,7 @@ namespace GRYLibrary.Tests.Testcases
             string xmlSource = File.ReadAllText(testSource, this._FileEncoding);
             string xmlTarget = File.ReadAllText(testTarget, this._FileEncoding);
             string xslt = File.ReadAllText(testXSLT, this._FileEncoding);
-            Assert.AreEqual(xmlTarget, Core.Miscellaneous.Utilities.XmlToString(Core.Miscellaneous.Utilities.ApplyXSLTToXML(xmlSource, xslt), this._FileEncoding));
+            Assert.AreEqual(xmlTarget, Core.Misc.Utilities.XmlToString(Core.Misc.Utilities.ApplyXSLTToXML(xmlSource, xslt), this._FileEncoding));
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using GRYLibrary.Core.AdvancedObjectAnalysis;
+﻿using GRYLibrary.Core.AOA;
 using GRYLibrary.Tests.TestData.TestTypes.CyclicDataStructure;
 using GRYLibrary.Tests.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -22,7 +22,7 @@ namespace GRYLibrary.Tests.Testcases.AdvancedObjectAnalysisTests.Equals
         public void NotEqualCyclicTestObject2()
         {
             CycleA testObject1 = CycleA.GetRandom();
-            CycleA testObject2 = Core.Miscellaneous.Utilities.DeepClone(testObject1);
+            CycleA testObject2 = Core.Misc.Utilities.DeepClone(testObject1);
             testObject2.B.Id = Guid.NewGuid();
             TestUtilities.AssertNotEqual(testObject1, testObject2);
         }
@@ -30,7 +30,7 @@ namespace GRYLibrary.Tests.Testcases.AdvancedObjectAnalysisTests.Equals
         public void EqualCyclicTestObject()
         {
             CycleA testObject1 = CycleA.GetRandom();
-            CycleA testObject2 = Core.Miscellaneous.Utilities.DeepClone(testObject1);
+            CycleA testObject2 = Core.Misc.Utilities.DeepClone(testObject1);
             TestUtilities.AssertEqual(testObject1, testObject2);
         }
 

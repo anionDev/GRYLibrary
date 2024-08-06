@@ -1,4 +1,4 @@
-﻿using GRYLibrary.Core.Miscellaneous;
+﻿using GRYLibrary.Core.Misc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +15,7 @@ namespace GRYLibrary.Tests.Testcases
             string file = "file.xml";
             try
             {
-                Core.Miscellaneous.Utilities.EnsureFileDoesNotExist(file);
+                Core.Misc.Utilities.EnsureFileDoesNotExist(file);
 
                 Encoding encoding = new UTF8Encoding(false);
                 SimpleObjectPersistence<SerializeTestClass> sop1 = SimpleObjectPersistence<SerializeTestClass>.CreateByFile(file);
@@ -56,7 +56,7 @@ namespace GRYLibrary.Tests.Testcases
             }
             finally
             {
-                Core.Miscellaneous.Utilities.EnsureFileDoesNotExist(file);
+                Core.Misc.Utilities.EnsureFileDoesNotExist(file);
             }
         }
         #region TestClass

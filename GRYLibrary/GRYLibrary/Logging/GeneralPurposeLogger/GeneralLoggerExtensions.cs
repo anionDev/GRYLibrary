@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
-using GUtilies = GRYLibrary.Core.Miscellaneous.Utilities;
+using GUtilies = GRYLibrary.Core.Misc.Utilities;
 using System.Diagnostics;
 using GRYLibrary.Core.Logging.GRYLogger;
 using System.Collections.Generic;
