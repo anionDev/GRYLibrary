@@ -3,6 +3,7 @@ using GRYLibrary.Core.APIServer.CommonDBTypes;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
 using GRYLibrary.Core.APIServer.Services.KeyCloak;
 using GRYLibrary.Core.Crypto;
+using Keycloak.Net;
 using System.Collections.Generic;
 using System.Security.Claims;
 using GUtilities = GRYLibrary.Core.Misc.Utilities;

@@ -11,6 +11,11 @@ using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using GRYLibrary.Core.Logging.GRYLogger;
 using GRYLibrary.Core.APIServer.MidT.RLog;
 using System.Text.RegularExpressions;
+using GRYLibrary.Core.APIServer.Services.Interfaces;
+using GRYLibrary.Core.APIServer.CommonDBTypes;
+using GRYLibrary.Core.APIServer.MidT.Auth;
+using System.Security.Principal;
+using System.Security.Claims;
 
 namespace GRYLibrary.Core.APIServer.Mid.DLog
 {
@@ -25,7 +30,7 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
         private readonly IApplicationConstants _AppConstants;
         private readonly Encoding _Encoding = new UTF8Encoding(false);
         /// <inheritdoc/>
-        public DRequestLoggingMiddleware(RequestDelegate next, IDRequestLoggingConfiguration requestLoggingSettings, IApplicationConstants appConstants, IGeneralLogger logger) : base(next)
+        public DRequestLoggingMiddleware(RequestDelegate next, IDRequestLoggingConfiguration requestLoggingSettings, IApplicationConstants appConstants, IGeneralLogger logger, ITimeService timeService) : base(next, timeService)
         {
             this._RequestLoggingSettings = requestLoggingSettings;
             this._AppConstants = appConstants;
@@ -43,8 +48,19 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
             ushort responseHTTPStatusCode = (ushort)context.Response.StatusCode;
             IPAddress clientIP = context.Connection.RemoteIpAddress;
             Request request = new Request(moment, clientIP, context.Request.Method, requestRoute, context.Request.Query, context.Request.Headers, requestBody, null/*TODO*/, responseHTTPStatusCode, context.Response.Headers, responseBody);
-            this.LogHTTPRequest(request, false, new HashSet<GRYLogTarget> { new Logging.GRYLogger.ConcreteLogTargets.Console() });
-            this.LogHTTPRequest(request, this.ShouldLogEntireRequestContentInLogFile(request), new HashSet<GRYLogTarget> { new Logging.GRYLogger.ConcreteLogTargets.LogFile() });
+            TimeSpan? duration = context.Items.ContainsKey("Duration") ? (TimeSpan)context.Items["Duration"] : default;
+            bool isAuthenticated;
+            if (context.Items.ContainsKey(AuthenticationMiddleware.IsAuthenticatedInformationName))
+            {
+                isAuthenticated = (bool)context.Items[AuthenticationMiddleware.IsAuthenticatedInformationName];
+            }
+            else
+            {
+                isAuthenticated = false;
+            }
+            ClaimsPrincipal principal = isAuthenticated && context.User != null && context.User.Identity.IsAuthenticated ? context.User : null;
+            this.LogHTTPRequest(request, false, duration, principal, new HashSet<GRYLogTarget> { new Logging.GRYLogger.ConcreteLogTargets.Console() });
+            this.LogHTTPRequest(request, this.ShouldLogEntireRequestContentInLogFile(request), duration, principal, new HashSet<GRYLogTarget> { new Logging.GRYLogger.ConcreteLogTargets.LogFile() });
         }
 
         public static (string info, string content, byte[] plainContent) BytesToString(byte[] content, Encoding encoding)
@@ -63,7 +79,7 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
             }
         }
 
-        private void LogHTTPRequest(Request request, bool logFullRequest, ISet<GRYLogTarget> logTargets)
+        private void LogHTTPRequest(Request request, bool logFullRequest, TimeSpan? duration, ClaimsPrincipal user, ISet<GRYLogTarget> logTargets)
         {
             try
             {
@@ -73,11 +89,11 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
                     string formatted;
                     if (logFullRequest)
                     {
-                        formatted = this.FormatLogEntryFull(request, this._RequestLoggingSettings.MaximalLengthofRequestBodies, this._RequestLoggingSettings.MaximalLengthofResponseBodies);
+                        formatted = this.FormatLogEntryFull(request, duration, user, this._RequestLoggingSettings.MaximalLengthofRequestBodies, this._RequestLoggingSettings.MaximalLengthofResponseBodies);
                     }
                     else
                     {
-                        formatted = this.FormatLogEntrySummary(request);
+                        formatted = this.FormatLogEntrySummary(request, duration, user);
                     }
                     LogItem logItem = new LogItem(formatted, logLevel)
                     {
@@ -97,7 +113,7 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
             return (request.ResponseStatusCode / 100) switch
             {
                 2 => LogLevel.Information,
-                3 => LogLevel.Information,
+                3 => LogLevel.Debug,
                 4 => LogLevel.Information,
                 5 => LogLevel.Error,
                 _ => LogLevel.Error,
@@ -125,10 +141,10 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
             return false;
         }
 
-        public virtual string FormatLogEntryFull(Request request, uint maximalLengthofRequestBodies, uint maximalLengthofResponseBodies)
+        public virtual string FormatLogEntryFull(Request request, TimeSpan? duration, ClaimsPrincipal user, uint maximalLengthofRequestBodies, uint maximalLengthofResponseBodies)
         {
             string clientIPAsString = this.FormatIPAddress(request.ClientIPAddress);
-            return $"Request received:{Environment.NewLine}"
+            string result = $"Request received:{Environment.NewLine}"
                         + $"  Timestamp: {this.FormatTimestamp(request.Timestamp)}{Environment.NewLine}"
                         + $"  Client-ip: {clientIPAsString}{Environment.NewLine}"
                         + $"  Request-details:{Environment.NewLine}"
@@ -138,6 +154,19 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
                         + $"  Response-details:{Environment.NewLine}"
                         + $"    Statuscode: {request.ResponseStatusCode}{Environment.NewLine}"
                         + $"    Body: {this.FormatBody(request.ResponseBody, maximalLengthofResponseBodies)}{Environment.NewLine}";
+            if (user == null)
+            {
+                result = result + $"  Authentication: (anonymous){Environment.NewLine}";
+            }
+            else
+            {
+                result = result + $"  Authentication: user \"{user.Identity.Name}\"{Environment.NewLine}";
+            }
+            if (duration.HasValue)
+            {
+                result = result + $"  Duration: {GUtilities.DurationToUserFriendlyString(duration.Value, 5)}{Environment.NewLine}";
+            }
+            return result;
         }
 
         private string FormatBody((string info, string content, byte[] plainContent) body, uint maximalLengthofRequestBodies)
@@ -166,24 +195,53 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
             }
             return true;
         }
-        public virtual string FormatLogEntrySummary(Request request)
+        public virtual string FormatLogEntrySummary(Request request, TimeSpan? duration, ClaimsPrincipal? user)
         {
             string clientIPAsString = this.FormatIPAddress(request.ClientIPAddress);
-            string additionalInformation = this.GetAdditionalInformation(request, clientIPAsString);
+            string additionalInformationFinal;
+            string additionalInformation = this.GetAdditionalInformation(request, clientIPAsString, duration, user);
             if (additionalInformation == null)
             {
                 additionalInformation = string.Empty;
             }
             else
             {
-                additionalInformation = $"Additional information: {additionalInformation}";
+                additionalInformation = $" ({additionalInformation})";
             }
-            return $"Request received: {this.FormatTimestamp(request.Timestamp)} {clientIPAsString} requested \"{request.Method} {request.Route}{request.GetFormattedQuery()}\" and got response-code {request.ResponseStatusCode}.{additionalInformation}";
+            additionalInformationFinal = additionalInformation;
+            return $"Request received: {this.FormatTimestamp(request.Timestamp)} {clientIPAsString} requested \"{request.Method} {request.Route}{request.GetFormattedQuery()}\" and got response-code {request.ResponseStatusCode}.{additionalInformationFinal}";
         }
 
-        public virtual string GetAdditionalInformation(Request request, string clientIPAsString)
+        public virtual string GetAdditionalInformation(Request request, string clientIPAsString, TimeSpan? duration, ClaimsPrincipal user)
         {
-            return null;
+            string result = null;
+            if (user == null)
+            {
+                result = this.AddAdditionalInformtion(result, $"Authentication: (anonymous)");
+            }
+            else
+            {
+                result = this.AddAdditionalInformtion(result, $"Authentication: user \"{user.Identity.Name}\"");
+            }
+            if (duration.HasValue)
+            {
+                result = this.AddAdditionalInformtion(result, $"Duration: {GUtilities.DurationToUserFriendlyString(duration.Value, 3)}");
+            }
+            //add more additional information if desired
+            return result;
+        }
+
+        private string AddAdditionalInformtion(string result, string message)
+        {
+
+            if (result == null)
+            {
+                return message;
+            }
+            else
+            {
+                return $"{result}; {message}";
+            }
         }
 
         public virtual string FormatTimestamp(DateTime timestamp)

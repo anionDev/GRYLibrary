@@ -48,7 +48,7 @@ namespace GRYLibrary.Core.Misc
     {
         #region Constants
         public const string EmptyString = "";
-        public const string SpecialCharacterTestString = "<SpecialCharacterTest>äöüßÄÖÜÆÑçéý &← /\\*#^°'`´\" ?|§@$€%-_²⁶₇¬∀∈∑∜∫∰≈≪ﬁ.Доброе утро صبح به خیر शुभ प्रभात 좋은 아침 സുപ്രഭാതം おはようございます ហ្គុនមូហ្កិន</SpecialCharacterTest>";
+        public const string SpecialCharacterTestString = "<SpecialCharacterTest>äöüßÄÖÜÆÑçéý<span>should be visible</span> &← /\\*#^°'`´\" ?|§@$€%-_²⁶₇¬∀∈∑∜∫∰≈≪ﬁ.Доброе утро صبح به خیر शुभ प्रभात 좋은 아침 സുപ്രഭാതം おはようございます ហ្គុនមូហ្កិន</SpecialCharacterTest>";
 
         [GeneratedRegex(@"(PWD|Pwd)=([^;]+)(;|$)")]
         private static partial Regex MariaDBPasswordHideRegex();
@@ -663,9 +663,30 @@ namespace GRYLibrary.Core.Misc
             }
         }
 
-        public static string DurationToUserFriendlyString(TimeSpan timespan)
+        public static string DurationToUserFriendlyString(TimeSpan timespan, uint desiredMilliSecondsDigitsCount = 0)
         {
-            return $"{Math.Floor(timespan.TotalHours).ToString().PadLeft(2, '0')}:{timespan.Minutes.ToString().PadLeft(2, '0')}:{timespan.Seconds.ToString().PadLeft(2, '0')}";
+            string result = $"{Math.Floor(timespan.TotalHours).ToString().PadLeft(2, '0')}:{timespan.Minutes.ToString().PadLeft(2, '0')}:{timespan.Seconds.ToString().PadLeft(2, '0')}";
+            if (desiredMilliSecondsDigitsCount > 0)
+            {
+                string milliSecondsAsString = timespan.Milliseconds.ToString();
+                uint milliSecondsDigits = (uint)milliSecondsAsString.Length;
+
+                string milliSecondsWithCorrectLength;
+                if (desiredMilliSecondsDigitsCount < milliSecondsDigits)
+                {
+                    milliSecondsWithCorrectLength = milliSecondsAsString.Substring(0, (int)desiredMilliSecondsDigitsCount);
+                }
+                else if (milliSecondsDigits < desiredMilliSecondsDigitsCount)
+                {
+                    milliSecondsWithCorrectLength = milliSecondsAsString.PadRight((int)desiredMilliSecondsDigitsCount, '0');
+                }
+                else
+                {
+                    milliSecondsWithCorrectLength = milliSecondsAsString;
+                }
+                result = $"{result}.{milliSecondsWithCorrectLength}";
+            }
+            return result;
         }
 
         public const string FormatForDateTimesInFullFormatISO8601 = "yyyy-MM-ddTHH:mm:sszzz";
@@ -3250,6 +3271,12 @@ namespace GRYLibrary.Core.Misc
                 result = default;
                 return false;
             }
+        }
+        private static readonly Random _Random = new Random();
+
+        public static T RandomChoice<T>(params T[] choices)
+        {
+            return choices[_Random.Next(choices.Count())];
         }
     }
 }
