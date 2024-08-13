@@ -121,7 +121,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public void RemoveUser(string userId)
         {
-            this._TransientAuthenticationServicePersistence.SetAllUsers(this._TransientAuthenticationServicePersistence.GetAllUsers().Values.Where(u => u.Id != userId).ToHashSet());
+            this._TransientAuthenticationServicePersistence.RemoveUser(userId);
         }
 
         public ISet<User> GetAllUser()

@@ -12,9 +12,7 @@ using GRYLibrary.Core.Logging.GRYLogger;
 using GRYLibrary.Core.APIServer.MidT.RLog;
 using System.Text.RegularExpressions;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
-using GRYLibrary.Core.APIServer.CommonDBTypes;
 using GRYLibrary.Core.APIServer.MidT.Auth;
-using System.Security.Principal;
 using System.Security.Claims;
 
 namespace GRYLibrary.Core.APIServer.Mid.DLog

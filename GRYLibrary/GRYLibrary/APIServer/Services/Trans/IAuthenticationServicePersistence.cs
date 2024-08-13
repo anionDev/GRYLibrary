@@ -19,10 +19,10 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         public bool UserWithIdExists(string userId);
         public UserType GetUserById(string userId);
         public UserType GetUserByName(string userName);
-        public void RemoveUser(UserType user);
-        public UserType GetUserById(object userId);
+        public void RemoveUser(string userId);
         public bool RoleExists(string roleName);
         public void AddRoleToUser(string userId, string roleId);
+        public void RemoveRoleFromUser(string userId, string roleId);
         public bool UserHasRole(string userId, string roleId);
         public User GetUserByAccessToken(string accessToken);
     }

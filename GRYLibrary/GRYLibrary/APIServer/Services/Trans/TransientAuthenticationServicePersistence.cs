@@ -1,5 +1,4 @@
 ﻿using GRYLibrary.Core.APIServer.CommonDBTypes;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -70,14 +69,9 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             return this._Users[userId];
         }
 
-        public UserType GetUserById(object userId)
+        public void RemoveUser(string userId)
         {
-            throw new NotImplementedException();
-        }
-
-        public void RemoveUser(UserType user)
-        {
-            throw new NotImplementedException();
+            this._Users.Remove(userId);
         }
 
         public UserType GetUserById(string userId)
@@ -120,7 +114,14 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public void DeleteRoleByName(string roleName)
         {
-            throw new NotImplementedException();
+            foreach (var user in this._Users.Values)
+            {
+                if (this.UserHasRole(user.Id, roleName))
+                {
+                    this.RemoveRoleFromUser(user.Id, roleName);
+                }
+            }
+            this._Roles.Remove(roleName);
         }
 
         public void AddRoleToUser(string userId, string roleId)
@@ -131,6 +132,11 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         public bool UserHasRole(string userId, string roleId)
         {
             return this._Users[userId].Roles.Contains(this._Roles[roleId]);
+        }
+
+        public void RemoveRoleFromUser(string userId, string roleId)
+        {
+            this._Users[userId].Roles.Remove(this._Roles[roleId]);
         }
     }
 }
