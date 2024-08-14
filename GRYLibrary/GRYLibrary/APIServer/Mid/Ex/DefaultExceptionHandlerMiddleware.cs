@@ -4,7 +4,6 @@ using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.IO;
-using System.Net;
 
 namespace GRYLibrary.Core.APIServer.Mid.Ex
 {
@@ -51,18 +50,37 @@ namespace GRYLibrary.Core.APIServer.Mid.Ex
             }
             if (exceptionForFormatting is BadRequestException badHttpRequestException)
             {
-                context.Response.StatusCode = (int)badHttpRequestException.HTTPStatusCode;
+                context.Response.StatusCode = badHttpRequestException.HTTPStatusCode;
+            }
+            else if (exceptionForFormatting is NotAuthorizedException)
+            {
+                context.Response.StatusCode = StatusCodes.Status403Forbidden;
+            }
+            else if (exceptionForFormatting is InternalAlgorithmException)
+            {
+                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             }
             else
             {
                 this._GeneralLogger.LogException(exceptionForFormatting, "Error while processing request");
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             }
-            (string ContentType, string bodyContent) = this.GetResponceContent(context.Response.StatusCode, context, exceptionForFormatting);
+            (string ContentType, string bodyContent) = this.GetExceptionResponceContent(context.Response.StatusCode, context, exceptionForFormatting);
             context.Response.ContentType = ContentType;
             context.Response.WriteAsync(bodyContent).Wait();
         }
-        public virtual (string ContentType, string bodyContent) GetResponceContent(int httpStatusCode, HttpContext context, Exception exception)
+        public virtual (string ContentType, string bodyContent) GetExceptionResponceContent(int httpStatusCode, HttpContext context, Exception exception)
+        {
+            return (null, string.Empty);
+        }
+
+        protected override void HandleNotFound(HttpContext context)
+        {
+            (string ContentType, string bodyContent) = this.GetNotFoundResponseContent(context);
+            context.Response.ContentType = ContentType;
+            context.Response.WriteAsync(bodyContent).Wait();
+        }
+        public virtual (string ContentType, string bodyContent) GetNotFoundResponseContent(HttpContext context)
         {
             return (null, string.Empty);
         }

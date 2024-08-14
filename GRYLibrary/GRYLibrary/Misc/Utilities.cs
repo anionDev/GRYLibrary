@@ -674,7 +674,7 @@ namespace GRYLibrary.Core.Misc
                 string milliSecondsWithCorrectLength;
                 if (desiredMilliSecondsDigitsCount < milliSecondsDigits)
                 {
-                    milliSecondsWithCorrectLength = milliSecondsAsString.Substring(0, (int)desiredMilliSecondsDigitsCount);
+                    milliSecondsWithCorrectLength = milliSecondsAsString[..(int)desiredMilliSecondsDigitsCount];
                 }
                 else if (milliSecondsDigits < desiredMilliSecondsDigitsCount)
                 {

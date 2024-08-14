@@ -35,7 +35,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             return this._Users.ToDictionary();
         }
 
-        public bool AccessTokenExists(string accessToken, out User user)
+        public bool AccessTokenExists(string accessToken, out UserType user)
         {
             UserType result = this.GetAllUsers().Values.Where(u => u.AccessToken.Where(at => at.Value == accessToken).Any()).FirstOrDefault();
             if (result == default)
@@ -84,7 +84,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             return this._Users.Values.Where(u => u.Name == userName).First();
         }
 
-        public User GetUserByAccessToken(string accessToken)
+        public UserType GetUserByAccessToken(string accessToken)
         {
             foreach (UserType user in this._Users.Values)
             {
@@ -137,6 +137,12 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         public void RemoveRoleFromUser(string userId, string roleId)
         {
             this._Users[userId].Roles.Remove(this._Roles[roleId]);
+        }
+
+
+        public void UpdateUser(UserType user)
+        {
+            this._Users[user.Id] = user;
         }
     }
 }

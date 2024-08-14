@@ -62,7 +62,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public void Logout(string accessToken)
         {
-            if (this._TransientAuthenticationServicePersistence.AccessTokenExists(accessToken, out User user))
+            if (this._TransientAuthenticationServicePersistence.AccessTokenExists(accessToken, out UserType user))
             {
                 user.AccessToken = user.AccessToken.Where(at => at.Value != accessToken).ToHashSet();
             }
@@ -86,7 +86,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         public bool AccessTokenIsValid(string accessToken)
         {
 
-            if (this._TransientAuthenticationServicePersistence.AccessTokenExists(accessToken, out User user))
+            if (this._TransientAuthenticationServicePersistence.AccessTokenExists(accessToken, out UserType user))
             {
                 AccessToken at = user.AccessToken.Where(at => at.Value == accessToken).First();
                 return this._TimeService.GetCurrentTime() < at.ExpiredMoment;
@@ -109,7 +109,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public string GetUserName(string accessToken)
         {
-            if (this._TransientAuthenticationServicePersistence.AccessTokenExists(accessToken, out User user))
+            if (this._TransientAuthenticationServicePersistence.AccessTokenExists(accessToken, out UserType user))
             {
                 return user.Name;
             }

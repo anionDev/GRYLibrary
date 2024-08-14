@@ -13,7 +13,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         public void AddRole(Role role);
         public void UpdateRole(Role role);
         public void DeleteRoleByName(string roleName);
-        public bool AccessTokenExists(string accessToken, out User user);
+        public bool AccessTokenExists(string accessToken, out UserType user);
         public void AddUser(UserType newUser);
         public bool UserWithNameExists(string userName);
         public bool UserWithIdExists(string userId);
@@ -24,6 +24,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         public void AddRoleToUser(string userId, string roleId);
         public void RemoveRoleFromUser(string userId, string roleId);
         public bool UserHasRole(string userId, string roleId);
-        public User GetUserByAccessToken(string accessToken);
+        public UserType GetUserByAccessToken(string accessToken);
+        public void UpdateUser(UserType user);
     }
 }

@@ -13,12 +13,17 @@ namespace GRYLibrary.Core.APIServer.MidT.Exception
         {
         }
         protected abstract void HandleException(HttpContext context, System.Exception exception);
+        protected abstract void HandleNotFound(HttpContext context);
         /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
         {
             try
             {
                 this._Next(context).Wait();
+                if (!context.Response.HasStarted && (context.Response.StatusCode == 404))
+                {
+                    this.HandleNotFound(context);
+                }
             }
             catch (System.Exception exception)
             {
