@@ -55,5 +55,6 @@ namespace GRYLibrary.Core.APIServer.Services.Interfaces
         public UserType GetUserByNameTyped(string name);
         bool UserWithNameExists(string username);
         UserType GetUserById(string userId);
+        void UpdateUser(UserType user);
     }
 }

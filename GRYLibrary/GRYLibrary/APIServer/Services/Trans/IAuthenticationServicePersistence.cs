@@ -8,7 +8,6 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         where UserType : User
     {
         public IDictionary<string,UserType> GetAllUsers();
-        public void SetAllUsers(ISet<UserType> users);
         public ISet<Role> GetAllRoles();
         public void AddRole(Role role);
         public void UpdateRole(Role role);

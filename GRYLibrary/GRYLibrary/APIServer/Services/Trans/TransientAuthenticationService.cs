@@ -43,13 +43,13 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
             if (!this._TransientAuthenticationServicePersistence.UserWithNameExists(userName))
             {
-                return ThrowInvalidCredentialsException();
+                return this.ThrowInvalidCredentialsException();
             }
             this._TransientAuthenticationServicePersistence.GetUserByName(userName);
             UserType user = this.GetUserByNameTyped(userName);
             if (this.Hash(password) != user.PasswordHash)
             {
-                return ThrowInvalidCredentialsException();
+                return this.ThrowInvalidCredentialsException();
             }
             if (user.UserIsLocked)
             {
@@ -260,6 +260,11 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         }
 
         public virtual ISet<Role> GetRoles(ClaimsPrincipal user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateUser(UserType user)
         {
             throw new NotImplementedException();
         }
