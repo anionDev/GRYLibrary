@@ -193,7 +193,7 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
             }
             return true;
         }
-        public virtual string FormatLogEntrySummary(Request request, TimeSpan? duration, ClaimsPrincipal? user)
+        public virtual string FormatLogEntrySummary(Request request, TimeSpan? duration, ClaimsPrincipal user)
         {
             string clientIPAsString = this.FormatIPAddress(request.ClientIPAddress);
             string additionalInformationFinal;

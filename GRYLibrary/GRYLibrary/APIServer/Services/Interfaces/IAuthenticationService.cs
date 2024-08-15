@@ -54,6 +54,6 @@ namespace GRYLibrary.Core.APIServer.Services.Interfaces
         public void AddUserTyped(UserType user);
         public UserType GetUserByNameTyped(string name);
         bool UserWithNameExists(string username);
-        User GetUserById(string userId);
+        UserType GetUserById(string userId);
     }
 }
