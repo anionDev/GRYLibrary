@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace GRYLibrary.Core.APIServer.Services.Trans
 {
-    /// Represetns a authenticationservice-persistence where userdata (user, roles, accesstoken, etc.) will be stored.
+    /// Represents a authenticationservice-persistence where userdata (user, roles, accesstoken, etc.) will be stored.
     public interface IAuthenticationServicePersistence<UserType>
         where UserType : User
     {
-        public IDictionary<string,UserType> GetAllUsers();
+        public IDictionary<string, UserType> GetAllUsers();
         public ISet<Role> GetAllRoles();
         public void AddRole(Role role);
         public void UpdateRole(Role role);

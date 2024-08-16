@@ -203,7 +203,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         {
             if (this._TransientAuthenticationServicePersistence.UserWithNameExists(user.Name))
             {
-                throw new BadRequestException((int)System.Net.HttpStatusCode.BadRequest, "User with this name already exists.");
+                throw new BadRequestException(StatusCodes.Status400BadRequest, "User with this name already exists.");
             }
             this._TransientAuthenticationServicePersistence.AddUser(user);
         }
@@ -266,7 +266,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public void UpdateUser(UserType user)
         {
-            throw new NotImplementedException();
+            this._TransientAuthenticationServicePersistence.UpdateUser(user);
         }
     }
 }
