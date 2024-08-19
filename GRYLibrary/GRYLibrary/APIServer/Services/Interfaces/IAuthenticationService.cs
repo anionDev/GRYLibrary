@@ -31,6 +31,7 @@ namespace GRYLibrary.Core.APIServer.Services.Interfaces
         public void EnsureRoleExists(string roleName);
         public void EnsureRoleDoesNotExist(string roleName);
         public Role GetRoleByName(string roleName);
+        /// <returns>Returns all roles of a user including inherited roles</returns>
         public ISet<string> GetRolesOfUser(string userId);
         #endregion
         void Logout(string accessToken);

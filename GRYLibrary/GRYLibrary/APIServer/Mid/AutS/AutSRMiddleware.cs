@@ -33,7 +33,8 @@ namespace GRYLibrary.Core.APIServer.Mid.Auth
             }
             if (this.TryGetAuthorizeAttribute(context, out AuthorizeAttribute authorizeAttribute))
             {
-                return authorizeAttribute.Groups.Any();
+                bool result = authorizeAttribute.Groups.Any();
+                return result;
             }
             else
             {
@@ -49,7 +50,8 @@ namespace GRYLibrary.Core.APIServer.Mid.Auth
                 string accessToken = this._CredentialsProvider.ExtractSecret(context);
                 User user = this._AuthenticationService.GetUserByAccessToken(accessToken);
                 System.Collections.Generic.ISet<string> authorizedGroups = authorizedAttribute.Groups;
-                return this._AuthorizationService.IsAuthorized(user.Id, authorizedGroups);
+                bool result = this._AuthorizationService.IsAuthorized(user.Id, authorizedGroups);
+                return result;
             }
             else
             {

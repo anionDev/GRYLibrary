@@ -94,7 +94,7 @@ namespace GRYLibrary.Core.Misc.Migration
         {
             IList<MigrationInstance> migrationInstances = new List<MigrationInstance>();
             uint i = 0;
-            var resources = assembly.GetManifestResourceNames().Order().ToList();
+            List<string> resources = assembly.GetManifestResourceNames().Order().ToList();
             foreach (string resourceName in resources)
             {
                 if (resourceName.StartsWith(migrationsResourceNamePrefix))

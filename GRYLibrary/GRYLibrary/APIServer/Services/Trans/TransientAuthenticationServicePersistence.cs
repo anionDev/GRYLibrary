@@ -1,7 +1,9 @@
 ﻿using GRYLibrary.Core.APIServer.CommonDBTypes;
+using GRYLibrary.Core.APIServer.Services.Interfaces;
+using GRYLibrary.Core.Exceptions;
 using System.Collections.Generic;
 using System.Linq;
-
+using GUtilities = GRYLibrary.Core.Misc.Utilities;
 namespace GRYLibrary.Core.APIServer.Services.Trans
 {
     public class TransientAuthenticationServicePersistence<UserType> : ITransientAuthenticationServicePersistence<UserType>
@@ -9,10 +11,12 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
     {
         private IDictionary<string/*roleId*/, Role> _Roles;
         private IDictionary<string/*userId*/, UserType> _Users;
-        public TransientAuthenticationServicePersistence()
+        private ITimeService _TimeService;
+        public TransientAuthenticationServicePersistence(ITimeService timeService)
         {
             this._Roles = new Dictionary<string, Role>();
             this._Users = new Dictionary<string, UserType>();
+            _TimeService = timeService;
         }
 
         public void SetAllUsers(ISet<UserType> users)
@@ -88,11 +92,20 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         {
             foreach (UserType user in this._Users.Values)
             {
-                if (user.AccessToken.Where(a => a.Value == accessToken).Any())
+                IEnumerable<CommonAuthenticationTypes.AccessToken> tokens = user.AccessToken.Where(a => a.Value == accessToken);
+                int tokenCount = tokens.Count();
+                if (tokenCount == 0)
                 {
-                    //TODO check validity of accesstoken
-                    return user;
+                    continue;
                 }
+                GUtilities.AssertCondition(tokenCount == 1, "Internal error while checking access token");
+                CommonAuthenticationTypes.AccessToken token = tokens.First();
+                System.DateTime now = _TimeService.GetCurrentTime();
+                if (token.ExpiredMoment < now)
+                {
+                    throw new CredentialsExpiredException();
+                }
+                return user;
             }
             throw new KeyNotFoundException("No user found with given accesstoken.");
         }
@@ -114,7 +127,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public void DeleteRoleByName(string roleName)
         {
-            foreach (var user in this._Users.Values)
+            foreach (UserType user in this._Users.Values)
             {
                 if (this.UserHasRole(user.Id, roleName))
                 {
