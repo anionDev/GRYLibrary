@@ -16,7 +16,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         {
             this._Roles = new Dictionary<string, Role>();
             this._Users = new Dictionary<string, UserType>();
-            _TimeService = timeService;
+            this._TimeService = timeService;
         }
 
         public void SetAllUsers(ISet<UserType> users)
@@ -100,7 +100,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
                 }
                 GUtilities.AssertCondition(tokenCount == 1, "Internal error while checking access token");
                 CommonAuthenticationTypes.AccessToken token = tokens.First();
-                System.DateTime now = _TimeService.GetCurrentTime();
+                System.DateTime now = this._TimeService.GetCurrentTime();
                 if (token.ExpiredMoment < now)
                 {
                     throw new CredentialsExpiredException();
