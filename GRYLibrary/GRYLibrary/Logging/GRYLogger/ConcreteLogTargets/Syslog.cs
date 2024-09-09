@@ -24,22 +24,10 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
             externalProgramExecutor.Run();
         }
 
-        public override HashSet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization()
-        {
-            return new HashSet<Type>();
-        }
-        public override void Dispose()
-        {
-            Utilities.NoOperation();
-        }
-        public override bool Equals(object obj)
-        {
-            return base.Equals(obj);
-        }
+        public override HashSet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization() => new HashSet<Type>();
+        public override void Dispose() => Utilities.NoOperation();
+        public override bool Equals(object obj) => base.Equals(obj);
 
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
+        public override int GetHashCode() => base.GetHashCode();
     }
 }

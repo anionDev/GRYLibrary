@@ -127,10 +127,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
             colorEnd = this._ColorEnd;
             consoleColor = this._ConsoleColor;
         }
-        public readonly bool IsErrorEntry()
-        {
-            return this.LogLevel is LogLevel.Critical or LogLevel.Error;
-        }
+        public readonly bool IsErrorEntry() => this.LogLevel is LogLevel.Critical or LogLevel.Error;
         private readonly void FormatMessage(GRYLogConfiguration configuration, string message, DateTime momentOfLogEntry, LogLevel loglevel, GRYLogLogFormat format, out string formattedMessage, out int colorBegin, out int colorEnd, out ConsoleColor consoleColor, string messageIdValue)
         {
             consoleColor = configuration.GetLoggedMessageTypesConfigurationByLogLevel(loglevel).ConsoleColor;
@@ -176,21 +173,15 @@ namespace GRYLibrary.Core.Logging.GRYLogger
             }
         }
 
-        public override readonly bool Equals(object obj)
-        {
-            return obj is LogItem item &&
+        public override readonly bool Equals(object obj) => obj is LogItem item &&
                    this._PlainMessage == item._PlainMessage &&
                    this.EventId == item.EventId &&
                    this.Category == item.Category &&
                    this.LogLevel == item.LogLevel &&
                    this.MomentOfLogEntry == item.MomentOfLogEntry &&
                    this.MessageId == item.MessageId;
-        }
 
-        public override readonly int GetHashCode()
-        {
-            return HashCode.Combine(this._PlainMessage, this.EventId, this.Category, this.LogLevel, this.MomentOfLogEntry, this.MessageId);
-        }
+        public override readonly int GetHashCode() => HashCode.Combine(this._PlainMessage, this.EventId, this.Category, this.LogLevel, this.MomentOfLogEntry, this.MessageId);
 
         public static bool operator ==(LogItem left, LogItem right)
         {

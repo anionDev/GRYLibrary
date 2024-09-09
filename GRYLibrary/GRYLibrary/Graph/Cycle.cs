@@ -58,10 +58,7 @@ namespace GRYLibrary.Core.Graph
             }
             return true;
         }
-        public override int GetHashCode()
-        {
-            return this._Edges.Count.GetHashCode();
-        }
+        public override int GetHashCode() => this._Edges.Count.GetHashCode();
 
         public static bool RepresentsCycle(IList<Edge> edges)
         {
@@ -93,17 +90,8 @@ namespace GRYLibrary.Core.Graph
             return true;
         }
 
-        private static bool AtLeastOneOutputOfEdge1LeadsToInputOfEdge1(Edge edge1, Edge edge2)
-        {
-            return edge1.GetOutputs().Intersect(edge2.GetInputs()).Count() > 0;
-        }
-        public override string ToString()
-        {
-            return nameof(Cycle) + "(" + string.Join("->", this._Edges) + ")";
-        }
-        public static string CycleSetToString(IEnumerable<Cycle> expectedCycles)
-        {
-            return "{" + string.Join(",", expectedCycles) + "}";
-        }
+        private static bool AtLeastOneOutputOfEdge1LeadsToInputOfEdge1(Edge edge1, Edge edge2) => edge1.GetOutputs().Intersect(edge2.GetInputs()).Count() > 0;
+        public override string ToString() => nameof(Cycle) + "(" + string.Join("->", this._Edges) + ")";
+        public static string CycleSetToString(IEnumerable<Cycle> expectedCycles) => "{" + string.Join(",", expectedCycles) + "}";
     }
 }

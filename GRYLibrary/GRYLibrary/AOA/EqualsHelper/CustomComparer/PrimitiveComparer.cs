@@ -16,18 +16,9 @@ namespace GRYLibrary.Core.AOA.EqualsHelper.CustomComparer
             return result;
         }
 
-        public override int DefaultGetHashCode(object obj)
-        {
-            return this.Configuration.GetHashCode(obj);
-        }
+        public override int DefaultGetHashCode(object obj) => this.Configuration.GetHashCode(obj);
 
-        public override bool IsApplicable(Type typeOfObject1, Type typeOfObject2)
-        {
-            return typeOfObject1.Equals(typeOfObject2) && TypeIsTreatedAsPrimitive(typeOfObject1);
-        }
-        public static bool TypeIsTreatedAsPrimitive(Type type)
-        {
-            return Utilities.TypeIsPrimitive(type);
-        }
+        public override bool IsApplicable(Type typeOfObject1, Type typeOfObject2) => typeOfObject1.Equals(typeOfObject2) && TypeIsTreatedAsPrimitive(typeOfObject1);
+        public static bool TypeIsTreatedAsPrimitive(Type type) => Utilities.TypeIsPrimitive(type);
     }
 }

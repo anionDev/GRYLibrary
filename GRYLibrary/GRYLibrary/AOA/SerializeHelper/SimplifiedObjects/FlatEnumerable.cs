@@ -12,14 +12,8 @@ namespace GRYLibrary.Core.AOA.SerializeHelper.SimplifiedObjects
     {
         public List<Guid> Items { get; set; }
 
-        public override void Accept(IFlatObjectVisitor visitor)
-        {
-            visitor.Handle(this);
-        }
+        public override void Accept(IFlatObjectVisitor visitor) => visitor.Handle(this);
 
-        public override T Accept<T>(IFlatObjectVisitor<T> visitor)
-        {
-            return visitor.Handle(this);
-        }
+        public override T Accept<T>(IFlatObjectVisitor<T> visitor) => visitor.Handle(this);
     }
 }

@@ -34,14 +34,8 @@ namespace GRYLibrary.Core.AdvancedXMLSerialysis
             };
         }
 
-        public static GenericXMLSerializer<object> DefaultInstance()
-        {
-            return new GenericXMLSerializer<object>();
-        }
-        internal static GenericXMLSerializer CreateForObject(object @object)
-        {
-            return new GenericXMLSerializer(@object.GetType());
-        }
+        public static GenericXMLSerializer<object> DefaultInstance() => new GenericXMLSerializer<object>();
+        internal static GenericXMLSerializer CreateForObject(object @object) => new GenericXMLSerializer(@object.GetType());
         private XmlWriterSettings GetXmlWriterSettings()
         {
             XmlWriterSettings result = new()
@@ -84,10 +78,7 @@ namespace GRYLibrary.Core.AdvancedXMLSerialysis
             this.GetSerializer().Serialize(writer, objectForRealSerialization);
         }
 
-        public U Deserialize<U>(string serializedObject)
-        {
-            return (U)this.Deserialize(serializedObject);
-        }
+        public U Deserialize<U>(string serializedObject) => (U)this.Deserialize(serializedObject);
         public object/*T*/ Deserialize(string serializedObject)
         {
             using StringReader stringReader = new(serializedObject);
@@ -100,10 +91,7 @@ namespace GRYLibrary.Core.AdvancedXMLSerialysis
             return gRYSObject.Get();
         }
 
-        private XmlSerializer GetSerializer()
-        {
-            return new XmlSerializer(typeof(GRYSObject), typeof(GRYSObject).Name);//TODO use extra types
-        }
+        private XmlSerializer GetSerializer() => new XmlSerializer(typeof(GRYSObject), typeof(GRYSObject).Name);//TODO use extra types
 
         /// <summary>
         /// Sets the values of all properties of <paramref name="thisObject"/> to the value of the equal property of <paramref name="deserializedObject"/>.
@@ -154,13 +142,7 @@ namespace GRYLibrary.Core.AdvancedXMLSerialysis
     }
     public class GenericXMLSerializer<T> : GenericXMLSerializer
     {
-        public T DeserializeTyped(string serializedObject)
-        {
-            return (T)this.Deserialize(serializedObject);
-        }
-        public T DeserializeTyped(XmlReader reader)
-        {
-            return (T)this.Deserialize(reader);
-        }
+        public T DeserializeTyped(string serializedObject) => (T)this.Deserialize(serializedObject);
+        public T DeserializeTyped(XmlReader reader) => (T)this.Deserialize(reader);
     }
 }

@@ -15,30 +15,18 @@ namespace GRYLibrary.Core.Misc
         private FileSelector()
         {
         }
-        public static FileSelector SingleFile(string file)
+        public static FileSelector SingleFile(string file) => new FileSelector
         {
-            return new FileSelector
-            {
-                Files = new string[] { file }
-            };
-        }
-        public static FileSelector FileList(IEnumerable<string> files)
+            Files = new string[] { file }
+        };
+        public static FileSelector FileList(IEnumerable<string> files) => new FileSelector
         {
-            return new FileSelector
-            {
-                Files = files.Select(Normalize)
-            };
-        }
+            Files = files.Select(Normalize)
+        };
 
-        private static string Normalize(string file)
-        {
-            return file.Trim().ToLower();
-        }
+        private static string Normalize(string file) => file.Trim().ToLower();
 
-        public static FileSelector FilesInFolder(string folder, bool deepSearch = true)
-        {
-            return FilesInFolder(folder, (string file) => true, deepSearch);
-        }
+        public static FileSelector FilesInFolder(string folder, bool deepSearch = true) => FilesInFolder(folder, (string file) => true, deepSearch);
         public static FileSelector RegexOfFilename(string folder, string regexAsString, bool deepSearch = true)
         {
             Regex regex = new(regexAsString);

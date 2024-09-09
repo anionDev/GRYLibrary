@@ -62,10 +62,7 @@ namespace GRYLibrary.Core.Misc
             };
             return GitRepositoryContainsFiles(repositoryFolder, out missingFiles, fileLists);
         }
-        public static void AddGitRemote(string repositoryFolder, string remoteFolder, string remoteName)
-        {
-            ExecuteGitCommand(repositoryFolder, $"remote add {remoteName} \"{remoteFolder}\"", true);
-        }
+        public static void AddGitRemote(string repositoryFolder, string remoteFolder, string remoteName) => ExecuteGitCommand(repositoryFolder, $"remote add {remoteName} \"{remoteFolder}\"", true);
         public static bool GitRemoteIsAvailable(string repositoryFolder, string remoteName)
         {
             try
@@ -78,14 +75,8 @@ namespace GRYLibrary.Core.Misc
             }
         }
         /// <returns>Returns the address of the remote with the given <paramref name="remoteName"/>.</returns>
-        public static string GetGitRemoteAddress(string repository, string remoteName)
-        {
-            return ExtractTextFromOutput(ExecuteGitCommand(repository, $"config --get remote.{remoteName}.url", true).StdOutLines);
-        }
-        public static void SetGitRemoteAddress(string repositoryFolder, string remoteName, string newRemoteAddress)
-        {
-            ExecuteGitCommand(repositoryFolder, $"remote set-url {remoteName} {newRemoteAddress}", true);
-        }
+        public static string GetGitRemoteAddress(string repository, string remoteName) => ExtractTextFromOutput(ExecuteGitCommand(repository, $"config --get remote.{remoteName}.url", true).StdOutLines);
+        public static void SetGitRemoteAddress(string repositoryFolder, string remoteName, string newRemoteAddress) => ExecuteGitCommand(repositoryFolder, $"remote set-url {remoteName} {newRemoteAddress}", true);
         /// <summary>Removes unused internal files in the .git-folder of the given <paramref name="repositoryFolder"/>.</summary>
         /// <remarks>Warning: After executing this function deleted commits can not be restored because then they are really deleted.</remarks>
         public static void GitTidyUp(string repositoryFolder, bool writeOutputToConsole = false, bool repack = true)
@@ -115,10 +106,7 @@ namespace GRYLibrary.Core.Misc
         /// <remarks>
         /// This function does not return the addresses of these remotes.
         /// </remarks>
-        public static IEnumerable<string> GetAllGitRemotes(string repositoryFolder)
-        {
-            return ExecuteGitCommand(repositoryFolder, "remote", true).StdOutLines.Where(line => !string.IsNullOrWhiteSpace(line));
-        }
+        public static IEnumerable<string> GetAllGitRemotes(string repositoryFolder) => ExecuteGitCommand(repositoryFolder, "remote", true).StdOutLines.Where(line => !string.IsNullOrWhiteSpace(line));
         public static bool AtLeastOneFileExistsInFolder(string repositoryFolder, IEnumerable<string> files, out string foundFile)
         {
             foreach (string file in files)
@@ -140,34 +128,22 @@ namespace GRYLibrary.Core.Misc
         /// tuple.Item1 represents the remote-name.
         /// tuple.Item1 represents the remote-branchname.
         /// </returns>
-        public static IEnumerable<Tuple<string/*remote-name*/, string/*branch-name*/>> GetAllGitRemoteBranches(string repository)
-        {
-            return ExecuteGitCommand(repository, "branch -r", true).StdOutLines.Where(line => !string.IsNullOrWhiteSpace(line)).Select(line =>
-            {
-                if (line.Contains('/'))
-                {
-                    string[] splitted = line.Split(_Separators, 2);
-                    return new Tuple<string, string>(splitted[0].Trim(), splitted[1].Trim());
-                }
-                else
-                {
-                    throw new Exception($"'{repository}> git branch -r' contained the unexpected output-line '{line}'.");
-                }
-            });
-        }
+        public static IEnumerable<Tuple<string/*remote-name*/, string/*branch-name*/>> GetAllGitRemoteBranches(string repository) => ExecuteGitCommand(repository, "branch -r", true).StdOutLines.Where(line => !string.IsNullOrWhiteSpace(line)).Select(line =>
+                                                                                                                                              {
+                                                                                                                                                  if (line.Contains('/'))
+                                                                                                                                                  {
+                                                                                                                                                      string[] splitted = line.Split(_Separators, 2);
+                                                                                                                                                      return new Tuple<string, string>(splitted[0].Trim(), splitted[1].Trim());
+                                                                                                                                                  }
+                                                                                                                                                  else
+                                                                                                                                                  {
+                                                                                                                                                      throw new Exception($"'{repository}> git branch -r' contained the unexpected output-line '{line}'.");
+                                                                                                                                                  }
+                                                                                                                                              });
         /// <returns>Returns the names of the remotes of the given <paramref name="repositoryFolder"/>.</returns>
-        public static IEnumerable<string> GetGitRemotes(string repositoryFolder)
-        {
-            return ExecuteGitCommand(repositoryFolder, "remote", true).StdOutLines.Where(line => !string.IsNullOrWhiteSpace(line));
-        }
-        public static void RemoveGitRemote(string repositoryFolder, string remote)
-        {
-            ExecuteGitCommand(repositoryFolder, $"remote remove {remote}", true);
-        }
-        public static IEnumerable<string> GetLocalGitBranchNames(string repositoryFolder)
-        {
-            return ExecuteGitCommand(repositoryFolder, "branch", true).StdOutLines.Where(line => !string.IsNullOrWhiteSpace(line)).Select(line => line.Replace("*", string.Empty).Trim());
-        }
+        public static IEnumerable<string> GetGitRemotes(string repositoryFolder) => ExecuteGitCommand(repositoryFolder, "remote", true).StdOutLines.Where(line => !string.IsNullOrWhiteSpace(line));
+        public static void RemoveGitRemote(string repositoryFolder, string remote) => ExecuteGitCommand(repositoryFolder, $"remote remove {remote}", true);
+        public static IEnumerable<string> GetLocalGitBranchNames(string repositoryFolder) => ExecuteGitCommand(repositoryFolder, "branch", true).StdOutLines.Where(line => !string.IsNullOrWhiteSpace(line)).Select(line => line.Replace("*", string.Empty).Trim());
         /// <returns>Returns the toplevel of the <paramref name="repositoryFolder"/>.</returns>
         public static string GetTopLevelOfGitRepositoryPath(string repositoryFolder)
         {
@@ -180,10 +156,7 @@ namespace GRYLibrary.Core.Misc
                 throw new ArgumentException($"The given folder '{repositoryFolder}' is not a git-repository.");
             }
         }
-        private static string ExtractTextFromOutput(string[] lines)
-        {
-            return string.Join(string.Empty, lines).Trim();
-        }
+        private static string ExtractTextFromOutput(string[] lines) => string.Join(string.Empty, lines).Trim();
         /// <returns>Returns true if and only if <paramref name="repositoryFolder"/> is in a repository which is used as submodule.</returns>
         public static bool IsInGitSubmodule(string repositoryFolder)
         {
@@ -219,10 +192,7 @@ namespace GRYLibrary.Core.Misc
                 throw new ArgumentException($"The given folder '{repositoryFolder}' is not a git-repository.");
             }
         }
-        private static string GetParentGitRepositoryPathHelper(string repositoryFolder)
-        {
-            return ExtractTextFromOutput(ExecuteGitCommand(repositoryFolder, "rev-parse --show-superproject-working-tree", true).StdOutLines);
-        }
+        private static string GetParentGitRepositoryPathHelper(string repositoryFolder) => ExtractTextFromOutput(ExecuteGitCommand(repositoryFolder, "rev-parse --show-superproject-working-tree", true).StdOutLines);
         /// <returns>
         /// Returns true if and only if <paramref name="folder"/> is the toplevel of a git-repository.
         /// </returns>
@@ -270,19 +240,13 @@ namespace GRYLibrary.Core.Misc
             return GetLastGitCommitId(repositoryFolder, "HEAD", writeOutputToConsole);
         }
         /// <returns>Returns the commit-id of the given <paramref name="revision"/>.</returns>
-        public static string GetLastGitCommitId(string repositoryFolder, string revision = "HEAD", bool writeOutputToConsole = false)
-        {
-            return ExecuteGitCommand(repositoryFolder, $"rev-parse {revision}", true, writeOutputToConsole: writeOutputToConsole).GetFirstStdOutLine();
-        }
+        public static string GetLastGitCommitId(string repositoryFolder, string revision = "HEAD", bool writeOutputToConsole = false) => ExecuteGitCommand(repositoryFolder, $"rev-parse {revision}", true, writeOutputToConsole: writeOutputToConsole).GetFirstStdOutLine();
         /// <param name="printErrorsAsInformation">
         /// Represents a value which indicates if the git-output which goes to stderr should be treated as stdout.
         /// The default-value is true since even if no error occurs git write usual information to stderr.
         /// If really an error occures (=the exit-code of git is not 0) then this function throws an exception
         /// </param>
-        public static void GitFetch(string repositoryFolder, string remoteName = "--all", bool printErrorsAsInformation = true, bool writeOutputToConsole = false)
-        {
-            ExecuteGitCommand(repositoryFolder, $"fetch {remoteName} --tags --prune", true, printErrorsAsInformation: printErrorsAsInformation, writeOutputToConsole: writeOutputToConsole);
-        }
+        public static void GitFetch(string repositoryFolder, string remoteName = "--all", bool printErrorsAsInformation = true, bool writeOutputToConsole = false) => ExecuteGitCommand(repositoryFolder, $"fetch {remoteName} --tags --prune", true, printErrorsAsInformation: printErrorsAsInformation, writeOutputToConsole: writeOutputToConsole);
         public static bool GitRepositoryHasUnstagedChanges(string repositoryFolder)
         {
             if (GitRepositoryHasUnstagedChangesOfTrackedFiles(repositoryFolder))
@@ -296,29 +260,14 @@ namespace GRYLibrary.Core.Misc
             return false;
         }
 
-        public static IEnumerable<string> GetFilesOfGitRepository(string repositoryFolder, string revision)
-        {
-            return ExecuteGitCommand(repositoryFolder, $"ls-tree --full-tree -r --name-only {revision}", true).StdOutLines;
-        }
+        public static IEnumerable<string> GetFilesOfGitRepository(string repositoryFolder, string revision) => ExecuteGitCommand(repositoryFolder, $"ls-tree --full-tree -r --name-only {revision}", true).StdOutLines;
 
-        public static bool GitRepositoryHasNewUntrackedFiles(string repositoryFolder)
-        {
-            return GitChangesHelper(repositoryFolder, "ls-files --exclude-standard --others");
-        }
+        public static bool GitRepositoryHasNewUntrackedFiles(string repositoryFolder) => GitChangesHelper(repositoryFolder, "ls-files --exclude-standard --others");
 
-        public static bool GitRepositoryHasUnstagedChangesOfTrackedFiles(string repositoryFolder)
-        {
-            return GitChangesHelper(repositoryFolder, "diff");
-        }
+        public static bool GitRepositoryHasUnstagedChangesOfTrackedFiles(string repositoryFolder) => GitChangesHelper(repositoryFolder, "diff");
 
-        public static bool GitRepositoryHasStagedChanges(string repositoryFolder)
-        {
-            return GitChangesHelper(repositoryFolder, "diff --cached");
-        }
-        public static void GitRenameBranch(string repositoryFolder, string oldBranchName, string newBranchName)
-        {
-            ExecuteGitCommand(repositoryFolder, $"branch -m {oldBranchName} {newBranchName}", true);
-        }
+        public static bool GitRepositoryHasStagedChanges(string repositoryFolder) => GitChangesHelper(repositoryFolder, "diff --cached");
+        public static void GitRenameBranch(string repositoryFolder, string oldBranchName, string newBranchName) => ExecuteGitCommand(repositoryFolder, $"branch -m {oldBranchName} {newBranchName}", true);
 
         private static bool GitChangesHelper(string repositoryFolder, string argument)
         {
@@ -348,20 +297,11 @@ namespace GRYLibrary.Core.Misc
         /// <remarks>
         /// <paramref name="revision"/> can be all kinds of revision-labels, for example "HEAD" or branch-names (e. g. "master") oder revision-ids (e. g. "a1b2c3b4").
         /// </remarks>
-        public static int GetAmountOfCommitsInGitRepository(string repositoryFolder, string revision = "HEAD")
-        {
-            return int.Parse(ExecuteGitCommand(repositoryFolder, $"rev-list --count {revision}", true).GetFirstStdOutLine());
-        }
-        public static string GetCurrentGitRepositoryBranch(string repositoryFolder)
-        {
-            return ExecuteGitCommand(repositoryFolder, $"rev-parse --abbrev-ref HEAD", true).GetFirstStdOutLine();
-        }
+        public static int GetAmountOfCommitsInGitRepository(string repositoryFolder, string revision = "HEAD") => int.Parse(ExecuteGitCommand(repositoryFolder, $"rev-list --count {revision}", true).GetFirstStdOutLine());
+        public static string GetCurrentGitRepositoryBranch(string repositoryFolder) => ExecuteGitCommand(repositoryFolder, $"rev-parse --abbrev-ref HEAD", true).GetFirstStdOutLine();
         /// <remarks>
         /// <paramref name="ancestor"/> and <paramref name="descendant"/> can be all kinds of revision-labels, for example "HEAD" or branch-names (e. g. "master") oder revision-ids (e. g. "a1b2c3b4").
         /// </remarks>
-        public static bool IsGitCommitAncestor(string repositoryFolder, string ancestor, string descendant = "HEAD")
-        {
-            return ExecuteGitCommand(repositoryFolder, $"merge-base --is-ancestor {ancestor} {descendant}", false).ExitCode == 0;
-        }
+        public static bool IsGitCommitAncestor(string repositoryFolder, string ancestor, string descendant = "HEAD") => ExecuteGitCommand(repositoryFolder, $"merge-base --is-ancestor {ancestor} {descendant}", false).ExitCode == 0;
     }
 }

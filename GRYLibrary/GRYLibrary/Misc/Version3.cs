@@ -19,23 +19,14 @@ namespace GRYLibrary.Core.Misc
             this.Patch = patch;
         }
 
-        public override bool Equals(object obj)
-        {
-            return this.Equals(obj as Version3);
-        }
+        public override bool Equals(object obj) => this.Equals(obj as Version3);
 
-        public bool Equals(Version3 other)
-        {
-            return other is not null &&
+        public bool Equals(Version3 other) => other is not null &&
                    this.Major == other.Major &&
                    this.Minor == other.Minor &&
                    this.Patch == other.Patch;
-        }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(this.Major, this.Minor, this.Patch);
-        }
+        public override int GetHashCode() => HashCode.Combine(this.Major, this.Minor, this.Patch);
 
         public static bool operator ==(Version3 left, Version3 right)
         {
@@ -86,10 +77,7 @@ namespace GRYLibrary.Core.Misc
             return !(left < right);
         }
 
-        public override string ToString()
-        {
-            return $"{this.Major}.{this.Minor}.{this.Patch}";
-        }
+        public override string ToString() => $"{this.Major}.{this.Minor}.{this.Patch}";
 
         public static Version3 Parse(string applicationVersion)
         {

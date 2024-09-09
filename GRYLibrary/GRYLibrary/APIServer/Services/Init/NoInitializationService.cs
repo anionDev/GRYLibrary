@@ -2,9 +2,6 @@
 {
     public class NoInitializationService : IInitializationService
     {
-        public void Initialize()
-        {
-            GRYLibrary.Core.Misc.Utilities.NoOperation();
-        }
+        public void Initialize() => GRYLibrary.Core.Misc.Utilities.NoOperation();
     }
 }

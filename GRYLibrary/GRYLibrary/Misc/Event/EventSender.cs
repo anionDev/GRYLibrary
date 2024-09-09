@@ -17,14 +17,8 @@ namespace GRYLibrary.Core.Misc.Event
             this.Initialize(default);
         }
         private ISet<IObserver<SenderType, EventArgumentType>> _Observer = null;
-        public void Register(IObserver<SenderType, EventArgumentType> observer)
-        {
-            this._Observer.Add(observer);
-        }
-        public void Deregister(IObserver<SenderType, EventArgumentType> observer)
-        {
-            this._Observer.Remove(observer);
-        }
+        public void Register(IObserver<SenderType, EventArgumentType> observer) => this._Observer.Add(observer);
+        public void Deregister(IObserver<SenderType, EventArgumentType> observer) => this._Observer.Remove(observer);
         [OnDeserializing()]
         public void Initialize(StreamingContext context)
         {

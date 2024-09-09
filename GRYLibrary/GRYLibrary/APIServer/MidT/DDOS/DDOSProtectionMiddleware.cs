@@ -13,8 +13,7 @@ namespace GRYLibrary.Core.APIServer.MidT.DDOS
         {
         }
         /// <inheritdoc/>
-        public override Task Invoke(HttpContext context)
-        {
+        public override Task Invoke(HttpContext context) =>
             // TODO create a self-learning database and block undesired traffic due to configuration
             // (for example block a request (using a appropriate response-code) when
             // - a source-ip has done more than 61 [configurable] requests in the last 60 seconds or
@@ -26,7 +25,6 @@ namespace GRYLibrary.Core.APIServer.MidT.DDOS
             // - the source-ip tries to do enumeration in the context of penetration-testing/hacking or 
             // - the source-ip has already done this request with the same route/payload in the last 2 seconds
 
-            return this._Next(context);
-        }
+            this._Next(context);
     }
 }

@@ -19,9 +19,6 @@ namespace GRYLibrary.Core.Misc
         public string[] StdOutLines { get; set; }
         public string[] StdErrLines { get; set; }
         public int ExitCode { get; set; }
-        public string GetFirstStdOutLine()
-        {
-            return this.StdOutLines[0].Replace("\r", string.Empty).Replace("\n", string.Empty).Trim();
-        }
+        public string GetFirstStdOutLine() => this.StdOutLines[0].Replace("\r", string.Empty).Replace("\n", string.Empty).Trim();
     }
 }

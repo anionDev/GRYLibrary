@@ -16,9 +16,6 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
         public ISet<string> NotLoggedRoutes { get; set; } = new HashSet<string>();
 
 
-        public ISet<FilterDescriptor> GetFilter()
-        {
-            return new HashSet<FilterDescriptor>();
-        }
+        public ISet<FilterDescriptor> GetFilter() => new HashSet<FilterDescriptor>();
     }
 }

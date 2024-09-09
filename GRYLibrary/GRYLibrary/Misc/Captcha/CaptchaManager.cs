@@ -25,10 +25,7 @@ namespace GRYLibrary.Core.Misc.Captcha
                 throw new NotImplementedException();
             }
         }
-        internal static DateTime GetCurrentTime()
-        {
-            return GUtilities.GetNow();
-        }
+        internal static DateTime GetCurrentTime() => GUtilities.GetNow();
 
         public bool TrySolve(string captchaId, string userInput, out string accessKey, out string failMessage)
         {

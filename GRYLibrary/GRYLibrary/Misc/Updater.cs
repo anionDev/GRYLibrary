@@ -25,15 +25,9 @@ namespace GRYLibrary.Core.Misc
             this._GetArchiveOfLatestVersion = getArchiveOfLatestVersion;
         }
 
-        private string GetAppName()
-        {
-            return Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly().Location);
-        }
+        private string GetAppName() => Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly().Location);
 
-        private string GetCurrentLocation()
-        {
-            return Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
-        }
+        private string GetCurrentLocation() => Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
 
         public void Update()
         {
@@ -70,25 +64,13 @@ namespace GRYLibrary.Core.Misc
         }
 
 
-        private Version GetVersionOfLocation(string location)
-        {
-            return this.GetVersionOfDLLFile(this.GetProductDLLFile(location));
-        }
+        private Version GetVersionOfLocation(string location) => this.GetVersionOfDLLFile(this.GetProductDLLFile(location));
 
-        private string GetProductDLLFile(string location)
-        {
-            return Path.Combine(location, $"{this._AppName}.dll");
-        }
+        private string GetProductDLLFile(string location) => Path.Combine(location, $"{this._AppName}.dll");
 
-        private Version GetVersionOfDLLFile(string file)
-        {
-            return new Version(FileVersionInfo.GetVersionInfo(file).ProductVersion);
-        }
+        private Version GetVersionOfDLLFile(string file) => new Version(FileVersionInfo.GetVersionInfo(file).ProductVersion);
 
-        private void StopCurrentLocation()
-        {
-            Environment.Exit(0);
-        }
+        private void StopCurrentLocation() => Environment.Exit(0);
 
         private void StartLocation(string location)
         {

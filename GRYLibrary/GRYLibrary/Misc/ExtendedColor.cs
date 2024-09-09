@@ -77,14 +77,8 @@ namespace GRYLibrary.Core.Misc
                 return false;
             }
         }
-        public override int GetHashCode()
-        {
-            return this.ColorCode;
-        }
-        public override string ToString()
-        {
-            return $"{nameof(ExtendedColor)}({nameof(this.A)}={this.A},{nameof(this.R)}={this.R},{nameof(this.G)}={this.G},{nameof(this.B)}={this.B})";
-        }
+        public override int GetHashCode() => this.ColorCode;
+        public override string ToString() => $"{nameof(ExtendedColor)}({nameof(this.A)}={this.A},{nameof(this.R)}={this.R},{nameof(this.G)}={this.G},{nameof(this.B)}={this.B})";
         private static (double hue, PercentValue saturation, PercentValue value) ColorToHSV(Color color)
         {
             int max = Math.Max(color.R, Math.Max(color.G, color.B));

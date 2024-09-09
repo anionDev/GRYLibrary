@@ -19,15 +19,9 @@ namespace GRYLibrary.Core.APIServer.ConcreteEnvironments
             }
         }
 
-        public override int GetHashCode()
-        {
-            return this.GetType().GetHashCode();
-        }
+        public override int GetHashCode() => this.GetType().GetHashCode();
 
-        public override string ToString()
-        {
-            return this.GetType().Name;
-        }
+        public override string ToString() => this.GetType().Name;
 
         public static GRYEnvironment Parse(string environment)
         {

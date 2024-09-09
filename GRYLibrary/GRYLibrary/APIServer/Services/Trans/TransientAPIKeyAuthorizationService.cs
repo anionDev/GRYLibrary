@@ -11,9 +11,6 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
     /// </remarks>
     public class TransientAPIKeyAuthorizationService : IAPIKeyAuthorizationService
     {
-        public bool IsAuthorized(string action, string secret)
-        {
-            throw new NotImplementedException();
-        }
+        public bool IsAuthorized(string action, string secret) => throw new NotImplementedException();
     }
 }

@@ -28,14 +28,8 @@ namespace GRYLibrary.Core.Misc
                 this.Cache[tkey] = tvalue;
             }
         }
-        public bool Contains(TKey t)
-        {
-            return this.Cache.ContainsKey(t);
-        }
-        public TValue Get(TKey t)
-        {
-            return this.Cache[t];
-        }
+        public bool Contains(TKey t) => this.Cache.ContainsKey(t);
+        public TValue Get(TKey t) => this.Cache[t];
         public void Set(TKey t, TValue value)
         {
             this.Cache[t] = value;

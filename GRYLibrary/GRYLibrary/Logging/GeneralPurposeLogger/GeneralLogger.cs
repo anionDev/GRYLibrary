@@ -7,10 +7,7 @@ namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
     public class GeneralLogger : IGeneralLogger
     {
         public Action<LogItem> AddLogEntry { get; set; }
-        public static IGeneralLogger CreateUsingGRYLog(GRYLogConfiguration configuration, out GRYLog logger)
-        {
-            return CreateUsingGRYLog(configuration, out logger, Directory.GetCurrentDirectory());
-        }
+        public static IGeneralLogger CreateUsingGRYLog(GRYLogConfiguration configuration, out GRYLog logger) => CreateUsingGRYLog(configuration, out logger, Directory.GetCurrentDirectory());
         public static IGeneralLogger CreateUsingGRYLog(GRYLogConfiguration configuration, out GRYLog logger, string basePath = null)
         {
             GRYLog logObject = GRYLog.Create(configuration);
@@ -22,13 +19,7 @@ namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
             };
         }
 
-        public static GeneralLogger NoLog()
-        {
-            return new GeneralLogger() { AddLogEntry = (logItem) => { } };
-        }
-        public static IGeneralLogger CreateUsingConsole()
-        {
-            return CreateUsingGRYLog(new GRYLogConfiguration(true), out _);
-        }
+        public static GeneralLogger NoLog() => new GeneralLogger() { AddLogEntry = (logItem) => { } };
+        public static IGeneralLogger CreateUsingConsole() => CreateUsingGRYLog(new GRYLogConfiguration(true), out _);
     }
 }

@@ -13,14 +13,8 @@ namespace GRYLibrary.Core.APIServer.Services.APIK
             this._Validator = validator;
         }
 
-        public bool IsAuthorized(string action, string apiKey)
-        {
-            return this._Validator(action, apiKey);
-        }
+        public bool IsAuthorized(string action, string apiKey) => this._Validator(action, apiKey);
 
-        public bool IsAuthorized(HttpContext context, AuthorizeAttribute authorizedAttribute)
-        {
-            throw new NotImplementedException();
-        }
+        public bool IsAuthorized(HttpContext context, AuthorizeAttribute authorizedAttribute) => throw new NotImplementedException();
     }
 }

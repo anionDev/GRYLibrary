@@ -33,14 +33,8 @@ namespace GRYLibrary.Core.AOA.EqualsHelper.CustomComparer
             return true;
         }
 
-        public override int DefaultGetHashCode(object obj)
-        {
-            return this.Configuration.GetHashCode(obj);
-        }
+        public override int DefaultGetHashCode(object obj) => this.Configuration.GetHashCode(obj);
 
-        public override bool IsApplicable(Type typeOfObject1, Type typeOfObject2)
-        {
-            return EnumerableTools.TypeIsListGeneric(typeOfObject1) && EnumerableTools.TypeIsListGeneric(typeOfObject2);
-        }
+        public override bool IsApplicable(Type typeOfObject1, Type typeOfObject2) => EnumerableTools.TypeIsListGeneric(typeOfObject1) && EnumerableTools.TypeIsListGeneric(typeOfObject2);
     }
 }

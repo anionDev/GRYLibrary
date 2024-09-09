@@ -16,19 +16,10 @@ namespace GRYLibrary.Core.AOA.EqualsHelper.CustomComparer
             return result;
         }
 
-        internal bool EqualsTyped(Tuple<object, object> Tuple1, Tuple<object, object> Tuple2)
-        {
-            return this._PropertyEqualsCalculator.Equals(Tuple1.Item1, Tuple2.Item1) && this._PropertyEqualsCalculator.Equals(Tuple1.Item2, Tuple2.Item2);
-        }
+        internal bool EqualsTyped(Tuple<object, object> Tuple1, Tuple<object, object> Tuple2) => this._PropertyEqualsCalculator.Equals(Tuple1.Item1, Tuple2.Item1) && this._PropertyEqualsCalculator.Equals(Tuple1.Item2, Tuple2.Item2);
 
-        public override int DefaultGetHashCode(object obj)
-        {
-            return this.Configuration.GetHashCode(obj);
-        }
+        public override int DefaultGetHashCode(object obj) => this.Configuration.GetHashCode(obj);
 
-        public override bool IsApplicable(Type typeOfObject1, Type typeOfObject2)
-        {
-            return EnumerableTools.TypeIsTuple(typeOfObject1) && EnumerableTools.TypeIsTuple(typeOfObject2);
-        }
+        public override bool IsApplicable(Type typeOfObject1, Type typeOfObject2) => EnumerableTools.TypeIsTuple(typeOfObject1) && EnumerableTools.TypeIsTuple(typeOfObject2);
     }
 }

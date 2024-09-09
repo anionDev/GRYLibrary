@@ -10,9 +10,6 @@ namespace GRYLibrary.Core.APIServer.MidT.RLog
     {
         public bool Enabled { get; set; } = true;
 
-        public ISet<FilterDescriptor> GetFilter()
-        {
-            return new HashSet<FilterDescriptor>();
-        }
+        public ISet<FilterDescriptor> GetFilter() => new HashSet<FilterDescriptor>();
     }
 }

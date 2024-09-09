@@ -35,10 +35,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
 
             output.Flush();
         }
-        public override HashSet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization()
-        {
-            return new HashSet<Type>() { typeof(ConsoleColor) };
-        }
+        public override HashSet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization() => new HashSet<Type>() { typeof(ConsoleColor) };
         private void WriteWithColorToConsole(string message, TextWriter output, LogLevel logLevel, GRYLog logObject)
         {
             if (message.Length > 0)
@@ -55,18 +52,9 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
             }
         }
 
-        public override void Dispose()
-        {
-            Utilities.NoOperation();
-        }
-        public override bool Equals(object obj)
-        {
-            return base.Equals(obj);
-        }
+        public override void Dispose() => Utilities.NoOperation();
+        public override bool Equals(object obj) => base.Equals(obj);
 
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
+        public override int GetHashCode() => base.GetHashCode();
     }
 }

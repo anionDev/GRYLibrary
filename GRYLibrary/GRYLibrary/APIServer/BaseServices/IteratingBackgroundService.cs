@@ -66,9 +66,6 @@ namespace GRYLibrary.Core.APIServer.BaseServices
             return true;
         }
 
-        public virtual void Dispose()
-        {
-            GC.SuppressFinalize(this);
-        }
+        public virtual void Dispose() => GC.SuppressFinalize(this);
     }
 }

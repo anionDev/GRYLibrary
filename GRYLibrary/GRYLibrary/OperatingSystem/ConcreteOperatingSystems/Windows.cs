@@ -5,14 +5,8 @@
         private Windows() { }
         public static OperatingSystem Instance { get; } = new Windows();
 
-        public override void Accept(IOperatingSystemVisitor visitor)
-        {
-            visitor.Handle(this);
-        }
+        public override void Accept(IOperatingSystemVisitor visitor) => visitor.Handle(this);
 
-        public override T Accept<T>(IOperatingSystemVisitor<T> visitor)
-        {
-            return visitor.Handle(this);
-        }
+        public override T Accept<T>(IOperatingSystemVisitor<T> visitor) => visitor.Handle(this);
     }
 }

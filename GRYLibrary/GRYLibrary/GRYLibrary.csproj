@@ -59,10 +59,10 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="CommandLineParser" Version="2.9.1" />
-        <PackageReference Include="DNTCaptcha.Core" Version="5.2.4" />
+        <PackageReference Include="DNTCaptcha.Core" Version="5.2.7" />
         <PackageReference Include="ExtendedXmlSerializer" Version="3.7.18" />
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
-        <PackageReference Include="Keycloak.Net.Core" Version="1.0.27" />
+        <PackageReference Include="Keycloak.Net.Core" Version="1.0.28" />
         <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
         <PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="8.0.0" />
@@ -76,7 +76,7 @@
         <PackageReference Include="NSwag.AspNetCore" Version="14.1.0" />
         <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
         <PackageReference Include="System.Reactive" Version="6.0.1" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.3" />
         <PackageReference Include="TagLibSharp" Version="2.3.0" />
     </ItemGroup>
 </Project>

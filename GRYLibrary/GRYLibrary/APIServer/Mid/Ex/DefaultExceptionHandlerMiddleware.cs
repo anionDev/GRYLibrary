@@ -69,10 +69,7 @@ namespace GRYLibrary.Core.APIServer.Mid.Ex
             context.Response.ContentType = ContentType;
             context.Response.WriteAsync(bodyContent).Wait();
         }
-        public virtual (string ContentType, string bodyContent) GetExceptionResponceContent(int httpStatusCode, HttpContext context, Exception exception)
-        {
-            return (null, string.Empty);
-        }
+        public virtual (string ContentType, string bodyContent) GetExceptionResponceContent(int httpStatusCode, HttpContext context, Exception exception) => (null, string.Empty);
 
         protected override void HandleNotFound(HttpContext context)
         {
@@ -80,9 +77,6 @@ namespace GRYLibrary.Core.APIServer.Mid.Ex
             context.Response.ContentType = ContentType;
             context.Response.WriteAsync(bodyContent).Wait();
         }
-        public virtual (string ContentType, string bodyContent) GetNotFoundResponseContent(HttpContext context)
-        {
-            return (null, string.Empty);
-        }
+        public virtual (string ContentType, string bodyContent) GetNotFoundResponseContent(HttpContext context) => (null, string.Empty);
     }
 }

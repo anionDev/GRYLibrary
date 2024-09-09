@@ -11,9 +11,6 @@
             this.Port = port;
         }
 
-        public override string GetProtocol()
-        {
-            return "http";
-        }
+        public override string GetProtocol() => "http";
     }
 }

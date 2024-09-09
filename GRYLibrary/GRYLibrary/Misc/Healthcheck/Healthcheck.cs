@@ -31,9 +31,6 @@ namespace GRYLibrary.Core.Misc.Healthcheck
             }
             Utilities.AppendLineToFile(this.File, text, this.Encoding);
         }
-        public void Dispose()
-        {
-            this.SetState(HealthcheckValue.NotRunning, "Disposed");
-        }
+        public void Dispose() => this.SetState(HealthcheckValue.NotRunning, "Disposed");
     }
 }

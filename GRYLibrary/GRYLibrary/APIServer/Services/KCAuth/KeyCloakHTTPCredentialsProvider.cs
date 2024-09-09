@@ -6,14 +6,8 @@ namespace GRYLibrary.Core.APIServer.Services.KCAuth
 {
     public class KeyCloakHTTPCredentialsProvider : IHTTPCredentialsProvider
     {
-        public bool ContainsCredentials(HttpContext context)
-        {
-            throw new NotImplementedException();
-        }
+        public bool ContainsCredentials(HttpContext context) => throw new NotImplementedException();
 
-        public string ExtractSecret(HttpContext context)
-        {
-            throw new NotImplementedException();
-        }
+        public string ExtractSecret(HttpContext context) => throw new NotImplementedException();
     }
 }

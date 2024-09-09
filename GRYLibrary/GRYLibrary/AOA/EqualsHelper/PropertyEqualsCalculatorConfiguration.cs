@@ -57,22 +57,10 @@ namespace GRYLibrary.Core.AOA.EqualsHelper
               new AttributeValueComparer(this),
             };
         }
-        internal void AddPending(object object1, object object2)
-        {
-            this.PendingComparisons.Add(new ReferenceTuple(object1, object2));
-        }
-        internal bool ArePending(object object1, object object2)
-        {
-            return this.PendingComparisons.Contains(new ReferenceTuple(object1, object2));
-        }
-        internal void RemovePending(object object1, object object2)
-        {
-            this.PendingComparisons.Remove(new ReferenceTuple(object1, object2));
-        }
-        public int GetHashCode(object @object)
-        {
-            return Generic.GenericGetHashCode(@object);
-        }
+        internal void AddPending(object object1, object object2) => this.PendingComparisons.Add(new ReferenceTuple(object1, object2));
+        internal bool ArePending(object object1, object object2) => this.PendingComparisons.Contains(new ReferenceTuple(object1, object2));
+        internal void RemovePending(object object1, object object2) => this.PendingComparisons.Remove(new ReferenceTuple(object1, object2));
+        public int GetHashCode(object @object) => Generic.GenericGetHashCode(@object);
         /// <remarks>This function requires that <paramref name="object"/> was already assigned to an <see cref="EquivalenceClass"/>.</remarks>
         private EquivalenceClass GetEquivalenceClassOfObject(object @object)
         {
@@ -92,15 +80,9 @@ namespace GRYLibrary.Core.AOA.EqualsHelper
             this.RemovePending(object1, object2);
             this.NotEqualPairs.Add(new ReferenceTuple(object1, object2));
         }
-        internal bool WereMarkedAsNotEqual(object object1, object object2)
-        {
-            return this.NotEqualPairs.Contains(new ReferenceTuple(object1, object2));
-        }
+        internal bool WereMarkedAsNotEqual(object object1, object object2) => this.NotEqualPairs.Contains(new ReferenceTuple(object1, object2));
 
-        private bool BelongsToEquivalenceClass(EquivalenceClass equivalenceClass, object @object)
-        {
-            return equivalenceClass.ContainedObjects.Contains(@object);
-        }
+        private bool BelongsToEquivalenceClass(EquivalenceClass equivalenceClass, object @object) => equivalenceClass.ContainedObjects.Contains(@object);
 
         public bool AreInSameEquivalenceClass(object object1, object object2)
         {

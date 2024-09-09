@@ -66,9 +66,6 @@ namespace GRYLibrary.Core.XMLSerializer
                 writer.WriteEndElement();
             }
         }
-        public System.Xml.Schema.XmlSchema GetSchema()
-        {
-            return null;
-        }
+        public System.Xml.Schema.XmlSchema GetSchema() => null;
     }
 }

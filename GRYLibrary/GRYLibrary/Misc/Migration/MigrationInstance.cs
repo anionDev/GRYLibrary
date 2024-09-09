@@ -16,23 +16,14 @@ namespace GRYLibrary.Core.Misc.Migration
         public string MigrationName { get; set; }
         public string MigrationContent { get; set; }
 
-        public override bool Equals(object obj)
-        {
-            return this.Equals(obj as MigrationInstance);
-        }
+        public override bool Equals(object obj) => this.Equals(obj as MigrationInstance);
 
-        public bool Equals(MigrationInstance other)
-        {
-            return other is not null &&
+        public bool Equals(MigrationInstance other) => other is not null &&
                    this.Index == other.Index &&
                    this.MigrationName == other.MigrationName &&
                    this.MigrationContent == other.MigrationContent;
-        }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(this.Index, this.MigrationName, this.MigrationContent);
-        }
+        public override int GetHashCode() => HashCode.Combine(this.Index, this.MigrationName, this.MigrationContent);
 
         public static bool operator ==(MigrationInstance left, MigrationInstance right)
         {

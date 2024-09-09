@@ -8,9 +8,6 @@ namespace GRYLibrary.Core.APIServer.Mid.NewFolder
     {
         public bool Enabled { get; set; } = true;
 
-        public ISet<FilterDescriptor> GetFilter()
-        {
-            return new HashSet<FilterDescriptor>() { new FilterDescriptor { Type = typeof(APIKeyValidatorFilter), Arguments = Array.Empty<object>() } };
-        }
+        public ISet<FilterDescriptor> GetFilter() => new HashSet<FilterDescriptor>() { new FilterDescriptor { Type = typeof(APIKeyValidatorFilter), Arguments = Array.Empty<object>() } };
     }
 }

@@ -6,18 +6,9 @@ namespace GRYLibrary.Core.Misc
     public class SupervisedThread
     {
         public GRYLog LogObject { get; set; }
-        public static SupervisedThread CreateByLogFile(Action action, string logFile, string name = "", string informationAboutInvoker = "")
-        {
-            return CreateByGRYLog(action, GRYLog.Create(logFile), name, informationAboutInvoker);
-        }
-        public static SupervisedThread CreateByGRYLog(Action action, GRYLog log = null, string name = "", string informationAboutInvoker = "")
-        {
-            return new SupervisedThread(action, log, name, informationAboutInvoker);
-        }
-        public static SupervisedThread Create(Action action, string name = "", string informationAboutInvoker = "")
-        {
-            return CreateByLogFile(action, null, name, informationAboutInvoker);
-        }
+        public static SupervisedThread CreateByLogFile(Action action, string logFile, string name = "", string informationAboutInvoker = "") => CreateByGRYLog(action, GRYLog.Create(logFile), name, informationAboutInvoker);
+        public static SupervisedThread CreateByGRYLog(Action action, GRYLog log = null, string name = "", string informationAboutInvoker = "") => new SupervisedThread(action, log, name, informationAboutInvoker);
+        public static SupervisedThread Create(Action action, string name = "", string informationAboutInvoker = "") => CreateByLogFile(action, null, name, informationAboutInvoker);
 
         private SupervisedThread(Action action, GRYLog log, string name, string informationAboutInvoker)
         {

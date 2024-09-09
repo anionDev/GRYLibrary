@@ -11,14 +11,8 @@ namespace GRYLibrary.Core.AOA.SerializeHelper.SimplifiedObjects
     {
         public List<FlatAttribute> Attributes { get; set; } = new List<FlatAttribute>();
 
-        public override void Accept(IFlatObjectVisitor visitor)
-        {
-            visitor.Handle(this);
-        }
+        public override void Accept(IFlatObjectVisitor visitor) => visitor.Handle(this);
 
-        public override T Accept<T>(IFlatObjectVisitor<T> visitor)
-        {
-            return visitor.Handle(this);
-        }
+        public override T Accept<T>(IFlatObjectVisitor<T> visitor) => visitor.Handle(this);
     }
 }

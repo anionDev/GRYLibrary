@@ -40,10 +40,7 @@ namespace GRYLibrary.Core.Misc
         /// The history contains all T-objects which where set as value for <see cref="Property{T}.Value"/> with the <see cref="DateTime"/> when they were set.
         /// </summary>
         public Stack<KeyValuePair<DateTime, T>> History => new Stack<KeyValuePair<DateTime, T>>(new Stack<KeyValuePair<DateTime, T>>(this._History));
-        public void UnsetValue()
-        {
-            this.Unset = true;
-        }
+        public void UnsetValue() => this.Unset = true;
         public string PropertyName { get => this._PropertyName; set => this._PropertyName = value; }
 
         public Type PropertyValueType => typeof(T);
@@ -135,23 +132,11 @@ namespace GRYLibrary.Core.Misc
             }
         }
 
-        public void ResetToInitialValue()
-        {
-            this.SetValue(this._InitialValue);
-        }
-        public void ResetHistory()
-        {
-            this._History.Clear();
-        }
+        public void ResetToInitialValue() => this.SetValue(this._InitialValue);
+        public void ResetHistory() => this._History.Clear();
 
-        public bool EqualsValue(Property<T> @object)
-        {
-            return this.EqualsValue(@object.Value);
-        }
-        public bool EqualsValue(T @object)
-        {
-            return this.Value.Equals(@object);
-        }
+        public bool EqualsValue(Property<T> @object) => this.EqualsValue(@object.Value);
+        public bool EqualsValue(T @object) => this.Value.Equals(@object);
         public T GetValueByTimestamp(DateTime dateTime)
         {
             Stack<KeyValuePair<DateTime, T>> history = this.History;

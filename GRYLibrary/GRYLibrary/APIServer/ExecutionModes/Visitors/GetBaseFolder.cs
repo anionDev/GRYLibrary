@@ -16,19 +16,10 @@ namespace GRYLibrary.Core.APIServer.ExecutionModes.Visitors
             this._ProgramFolder = programFolder;
         }
 
-        public string Handle(RunProgram runProgram)
-        {
-            return GetBaseFolderForProjectInCommonProjectStructure(this._TargetEnvironmentType, this._ProgramFolder, this._ExecutionMode);
-        }
+        public string Handle(RunProgram runProgram) => GetBaseFolderForProjectInCommonProjectStructure(this._TargetEnvironmentType, this._ProgramFolder, this._ExecutionMode);
 
-        public string Handle(TestRun testRun)
-        {
-            return this.GetTempFolder();
-        }
-        public string Handle(Analysis analysis)
-        {
-            return this.GetTempFolder();
-        }
+        public string Handle(TestRun testRun) => this.GetTempFolder();
+        public string Handle(Analysis analysis) => this.GetTempFolder();
 
         private string GetTempFolder()
         {

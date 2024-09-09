@@ -17,23 +17,11 @@ namespace GRYLibrary.Core.APIServer.Services.Cred
             return result;
         }
 
-        public virtual bool ContainsCredentials(HttpContext context)
-        {
-            return this.TryGetCookieValue(context, out string _);
-        }
-        public virtual bool TryGetCookieValue(HttpContext context, out string cookie)
-        {
-            return context.Request.Cookies.TryGetValue(this.CookieServiceConfiguration.CookieName, out cookie);
-        }
+        public virtual bool ContainsCredentials(HttpContext context) => this.TryGetCookieValue(context, out string _);
+        public virtual bool TryGetCookieValue(HttpContext context, out string cookie) => context.Request.Cookies.TryGetValue(this.CookieServiceConfiguration.CookieName, out cookie);
 
-        public (string key, string value, CookieOptions options) CreateCookie(string username, string value, DateTime expiredMoment)
-        {
-            return CookieTools.GetAccessTokenCookie(username, value, expiredMoment);
-        }
+        public (string key, string value, CookieOptions options) CreateCookie(string username, string value, DateTime expiredMoment) => CookieTools.GetAccessTokenCookie(username, value, expiredMoment);
 
-        public (string key, string value, CookieOptions options) GetAccessTokenExpiredCookie(string name)
-        {
-            return CookieTools.GetAccessTokenExpiredCookie(name);
-        }
+        public (string key, string value, CookieOptions options) GetAccessTokenExpiredCookie(string name) => CookieTools.GetAccessTokenExpiredCookie(name);
     }
 }

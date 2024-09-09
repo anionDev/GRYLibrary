@@ -16,20 +16,11 @@ namespace GRYLibrary.Core.APIServer.Utilities
             this._BaseFolder = baseFolder;
             this._LoggerName = loggerName;
         }
-        public IGeneralLogger Handle(Analysis analysis)
-        {
-            return GeneralLogger.NoLog();// avoid creation of logging-entries when doing something like generate APISpecification-artifact by running "swagger tofile ..."
-        }
+        public IGeneralLogger Handle(Analysis analysis) => GeneralLogger.NoLog();// avoid creation of logging-entries when doing something like generate APISpecification-artifact by running "swagger tofile ..."
 
-        public IGeneralLogger Handle(RunProgram runProgram)
-        {
-            return this.GetUsualLog();
-        }
+        public IGeneralLogger Handle(RunProgram runProgram) => this.GetUsualLog();
 
-        public IGeneralLogger Handle(TestRun testRun)
-        {
-            return this.GetUsualLog();
-        }
+        public IGeneralLogger Handle(TestRun testRun) => this.GetUsualLog();
 
         private IGeneralLogger GetUsualLog()
         {

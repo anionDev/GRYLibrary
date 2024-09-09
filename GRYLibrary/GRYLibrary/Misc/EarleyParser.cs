@@ -44,15 +44,9 @@ namespace GRYLibrary.Core.Misc
             return this.S;
         }
 
-        private Symbol NextElementOfState(State state)
-        {
-            throw new NotImplementedException();
-        }
+        private Symbol NextElementOfState(State state) => throw new NotImplementedException();
 
-        private bool Finished(State state)
-        {
-            throw new NotImplementedException();
-        }
+        private bool Finished(State state) => throw new NotImplementedException();
 
         private void Predictor(State state, int k, Grammar grammar)
         {
@@ -71,10 +65,7 @@ namespace GRYLibrary.Core.Misc
             }
         }
 
-        private IEnumerable<ProductionRule> GrammarRules(List<Symbol> B, Grammar grammar)
-        {
-            throw new NotImplementedException();
-        }
+        private IEnumerable<ProductionRule> GrammarRules(List<Symbol> B, Grammar grammar) => throw new NotImplementedException();
 
         private void Scanner(State state, int k, object[] words)
         {
@@ -93,10 +84,7 @@ namespace GRYLibrary.Core.Misc
             }
         }
 
-        private IEnumerable<Symbol> PartsOfSpeech(object word)
-        {
-            throw new NotImplementedException();
-        }
+        private IEnumerable<Symbol> PartsOfSpeech(object word) => throw new NotImplementedException();
 
         private void Completer(State state, int k)
         {

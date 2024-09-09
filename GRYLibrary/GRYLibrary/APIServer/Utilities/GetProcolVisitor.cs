@@ -20,23 +20,14 @@ namespace GRYLibrary.Core.APIServer.Utilities
             this._HTTP = new HTTP(httpPort);
         }
 
-        public Protocol Handle(Analysis analysis)
-        {
-            return this._HTTP;
-        }
+        public Protocol Handle(Analysis analysis) => this._HTTP;
 
-        public Protocol Handle(RunProgram runProgram)
+        public Protocol Handle(RunProgram runProgram) => new HTTPS(new TLSCertificateInformation
         {
-            return new HTTPS(new TLSCertificateInformation
-            {
-                CertificatePFXFile = AbstractFilePath.FromString($"./{this._Domain}.pfx"),
-                CertificatePasswordFile = AbstractFilePath.FromString($"./{this._Domain}.password"),
-            });
-        }
+            CertificatePFXFile = AbstractFilePath.FromString($"./{this._Domain}.pfx"),
+            CertificatePasswordFile = AbstractFilePath.FromString($"./{this._Domain}.password"),
+        });
 
-        public Protocol Handle(TestRun testRun)
-        {
-            return this._HTTP;
-        }
+        public Protocol Handle(TestRun testRun) => this._HTTP;
     }
 }

@@ -12,15 +12,9 @@ namespace GRYLibrary.Core.Graph
         private readonly ISet<DirectedEdge> _DirectedEdges = new HashSet<DirectedEdge>();
         public DirectedGraph() { }
 
-        public override void Accept(IGraphVisitor visitor)
-        {
-            visitor.Handle(this);
-        }
+        public override void Accept(IGraphVisitor visitor) => visitor.Handle(this);
 
-        public override T Accept<T>(IGraphVisitor<T> visitor)
-        {
-            return visitor.Handle(this);
-        }
+        public override T Accept<T>(IGraphVisitor<T> visitor) => visitor.Handle(this);
 
         public UndirectedGraph ToUndirectedGraph()
         {
@@ -86,10 +80,7 @@ namespace GRYLibrary.Core.Graph
             }
             return false;
         }
-        public override ISet<Edge> GetDirectSuccessorEdges(Vertex vertex)
-        {
-            return new HashSet<Edge>(this.GetOutgoingEdges(vertex).OfType<Edge>());
-        }
+        public override ISet<Edge> GetDirectSuccessorEdges(Vertex vertex) => new HashSet<Edge>(this.GetOutgoingEdges(vertex).OfType<Edge>());
 
         public ISet<DirectedEdge> GetIncomingEdges(Vertex vertex)
         {
@@ -179,14 +170,8 @@ namespace GRYLibrary.Core.Graph
             }
         }
 
-        public override string ToString()
-        {
-            return base.ToString();
-        }
+        public override string ToString() => base.ToString();
 
-        internal override Edge GetNewEdgeBetween(Vertex source, Vertex target)
-        {
-            return new DirectedEdge(source, target);
-        }
+        internal override Edge GetNewEdgeBetween(Vertex source, Vertex target) => new DirectedEdge(source, target);
     }
 }

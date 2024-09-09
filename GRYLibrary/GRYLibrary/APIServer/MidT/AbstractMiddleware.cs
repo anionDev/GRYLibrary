@@ -22,23 +22,11 @@ namespace GRYLibrary.Core.APIServer.MidT
             this._Next = next;
         }
         public abstract Task Invoke(HttpContext context);
-        public bool EndPointAvailable(HttpContext context)
-        {
-            return context.GetEndpoint() != null;
-        }
+        public bool EndPointAvailable(HttpContext context) => context.GetEndpoint() != null;
 
-        public bool TryGetAuthenticateAttribute(HttpContext context, out AuthenticateAttribute authenticateAttribute)
-        {
-           return this.TryGetAttributeFromContext(context, out authenticateAttribute);
-        }
-        public bool TryGetAuthorizeAttribute(HttpContext context, out AuthorizeAttribute authorizedAttribute)
-        {
-            return this.TryGetAttributeFromContext(context, out authorizedAttribute);
-        }
-        public bool TryGetAactionAttribute(HttpContext context, out ActionAttribute actionAttribute)
-        {
-            return this.TryGetAttributeFromContext(context, out actionAttribute);
-        }
+        public bool TryGetAuthenticateAttribute(HttpContext context, out AuthenticateAttribute authenticateAttribute) => this.TryGetAttributeFromContext(context, out authenticateAttribute);
+        public bool TryGetAuthorizeAttribute(HttpContext context, out AuthorizeAttribute authorizedAttribute) => this.TryGetAttributeFromContext(context, out authorizedAttribute);
+        public bool TryGetAactionAttribute(HttpContext context, out ActionAttribute actionAttribute) => this.TryGetAttributeFromContext(context, out actionAttribute);
         private bool TryGetAttributeFromContext<T>(HttpContext context, out T attribute)
             where T : Attribute
         {

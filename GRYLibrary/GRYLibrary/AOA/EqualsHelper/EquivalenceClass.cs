@@ -20,18 +20,9 @@ namespace GRYLibrary.Core.AOA.EqualsHelper
                 this.ReferenceItem
             };
         }
-        public override bool Equals(object @object)
-        {
-            return @object is EquivalenceClass @class && this.Id.Equals(@class.Id);
-        }
-        public override int GetHashCode()
-        {
-            return this.HashChode;
-        }
+        public override bool Equals(object @object) => @object is EquivalenceClass @class && this.Id.Equals(@class.Id);
+        public override int GetHashCode() => this.HashChode;
 
-        internal void Add(object @object)
-        {
-            this._ContainedObjects.Add(@object);
-        }
+        internal void Add(object @object) => this._ContainedObjects.Add(@object);
     }
 }

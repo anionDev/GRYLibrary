@@ -22,30 +22,12 @@ namespace GRYLibrary.Core.Misc
             this._Data = value ?? throw new Exception("No data for byte-array available.");
             this.DataAsHexString = Utilities.ByteArrayToHexString(this._Data);
         }
-        public ByteArray CreateByHexString(string value)
-        {
-            return new ByteArray(Utilities.HexStringToByteArray(value));
-        }
-        public ByteArray CreateByInteger(BigInteger value)
-        {
-            return this.CreateByHexString(Utilities.BigIntegerToHexString(value));
-        }
-        public ByteArray CreateByString(string value)
-        {
-            return this.CreateByString(value, DefaultEncoding);
-        }
-        public ByteArray CreateByString(string value, Encoding encoding)
-        {
-            return new ByteArray(encoding.GetBytes(value));
-        }
-        public string DecodeToString()
-        {
-            return this.DecodeToString(DefaultEncoding);
-        }
-        public string DecodeToString(Encoding encoding)
-        {
-            return encoding.GetString(this._Data);
-        }
+        public ByteArray CreateByHexString(string value) => new ByteArray(Utilities.HexStringToByteArray(value));
+        public ByteArray CreateByInteger(BigInteger value) => this.CreateByHexString(Utilities.BigIntegerToHexString(value));
+        public ByteArray CreateByString(string value) => this.CreateByString(value, DefaultEncoding);
+        public ByteArray CreateByString(string value, Encoding encoding) => new ByteArray(encoding.GetBytes(value));
+        public string DecodeToString() => this.DecodeToString(DefaultEncoding);
+        public string DecodeToString(Encoding encoding) => encoding.GetString(this._Data);
         public static ByteArray operator +(ByteArray first, ByteArray second)
         {
             return new ByteArray(Utilities.Concat(first._Data, second._Data));
@@ -91,10 +73,7 @@ namespace GRYLibrary.Core.Misc
             ByteArray other = obj as ByteArray;
             return other != null && Enumerable.SequenceEqual(this._Data, other._Data);
         }
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(this._Data);
-        }
+        public override int GetHashCode() => HashCode.Combine(this._Data);
 
         public bool StartsWith(ByteArray value)
         {
@@ -111,9 +90,6 @@ namespace GRYLibrary.Core.Misc
             }
             return true;
         }
-        public bool Contains(ByteArray value)
-        {
-            return this._Data.ToList().ContainsSublist(value._Data.ToList(), (@byte) => @byte.ToString());
-        }
+        public bool Contains(ByteArray value) => this._Data.ToList().ContainsSublist(value._Data.ToList(), (@byte) => @byte.ToString());
     }
 }

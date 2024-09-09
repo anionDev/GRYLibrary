@@ -13,10 +13,7 @@ namespace GRYLibrary.Core.APIServer.Mid.NewFolder
         {
             this._APIKeyValidatorSettings = apiKeyValidatorSettings;
         }
-        public virtual (bool provided, string apiKey) TryGetAPIKey(HttpContext context)
-        {
-            return APIKeyValidatorFilter.TryGetAPIKey(context);
-        }
+        public virtual (bool provided, string apiKey) TryGetAPIKey(HttpContext context) => APIKeyValidatorFilter.TryGetAPIKey(context);
         public abstract bool APIKeyIsAuthorized(string apiKey, HttpContext context);
         protected override bool IsAuthorized(HttpContext context)
         {

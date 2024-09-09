@@ -52,13 +52,7 @@ namespace GRYLibrary.Core.AOA.EqualsHelper.CustomComparer
             }
             return false;
         }
-        public override int DefaultGetHashCode(object obj)
-        {
-            return this.Configuration.GetHashCode(obj);
-        }
-        public override bool IsApplicable(Type typeOfObject1, Type typeOfObject2)
-        {
-            return EnumerableTools.TypeIsDictionaryGeneric(typeOfObject1) && EnumerableTools.TypeIsDictionaryGeneric(typeOfObject2);
-        }
+        public override int DefaultGetHashCode(object obj) => this.Configuration.GetHashCode(obj);
+        public override bool IsApplicable(Type typeOfObject1, Type typeOfObject2) => EnumerableTools.TypeIsDictionaryGeneric(typeOfObject1) && EnumerableTools.TypeIsDictionaryGeneric(typeOfObject2);
     }
 }

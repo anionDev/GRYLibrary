@@ -161,10 +161,7 @@ namespace GRYLibrary.Core.AOA.SerializeHelper
                     EnumerableTools.AddItemToEnumerable(enumerable, arguments);
                 }
             }
-            public void Handle(FlatPrimitive simplifiedPrimitive)
-            {
-                Utilities.NoOperation();
-            }
+            public void Handle(FlatPrimitive simplifiedPrimitive) => Utilities.NoOperation();
             private object GetDeserialisedObjectOrDefault(Guid id)
             {
                 if (default(Guid).Equals(id))
@@ -353,10 +350,7 @@ namespace GRYLibrary.Core.AOA.SerializeHelper
             return deserializedObjects[this.RootObjectId];
         }
 
-        public void Dispose()
-        {
-            this.EnableSetFunctionality();
-        }
+        public void Dispose() => this.EnableSetFunctionality();
 
         private void EnableSetFunctionality()
         {

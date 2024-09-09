@@ -12,10 +12,7 @@ namespace GRYLibrary.Core.Graph
         {
         }
 
-        private static string CalculateName(Vertex source, Vertex target)
-        {
-            return $"({source}->{target})";
-        }
+        private static string CalculateName(Vertex source, Vertex target) => $"({source}->{target})";
 
         public DirectedEdge(Vertex source, Vertex target, string name, double weight = 1) : base(name, weight)
         {
@@ -23,14 +20,8 @@ namespace GRYLibrary.Core.Graph
             this.Target = target;
         }
 
-        internal UndirectedEdge ToUndirectedEdge(Vertex equalSourceInUndirectedGraph, Vertex equalTargetInUndirectedGraph)
-        {
-            return new UndirectedEdge(new Vertex[] { equalSourceInUndirectedGraph, equalTargetInUndirectedGraph }, this.Name, this.Weight);
-        }
-        public override bool Connects(Vertex fromVertex, Vertex toVertex)
-        {
-            return this.Source.Equals(fromVertex) && this.Target.Equals(toVertex);
-        }
+        internal UndirectedEdge ToUndirectedEdge(Vertex equalSourceInUndirectedGraph, Vertex equalTargetInUndirectedGraph) => new UndirectedEdge(new Vertex[] { equalSourceInUndirectedGraph, equalTargetInUndirectedGraph }, this.Name, this.Weight);
+        public override bool Connects(Vertex fromVertex, Vertex toVertex) => this.Source.Equals(fromVertex) && this.Target.Equals(toVertex);
         public override bool Equals(object obj)
         {
             if (!base.Equals(obj))
@@ -48,34 +39,16 @@ namespace GRYLibrary.Core.Graph
             }
             return true;
         }
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(base.GetHashCode());
-        }
+        public override int GetHashCode() => HashCode.Combine(base.GetHashCode());
 
-        public override IEnumerable<Vertex> GetConnectedVertices()
-        {
-            return new Vertex[] { this.Source, this.Target };
-        }
-        public override void Accept(IEdgeVisitor visitor)
-        {
-            visitor.Handle(this);
-        }
+        public override IEnumerable<Vertex> GetConnectedVertices() => new Vertex[] { this.Source, this.Target };
+        public override void Accept(IEdgeVisitor visitor) => visitor.Handle(this);
 
-        public override T Accept<T>(IEdgeVisitor<T> visitor)
-        {
-            return visitor.Handle(this);
-        }
+        public override T Accept<T>(IEdgeVisitor<T> visitor) => visitor.Handle(this);
 
-        public override IEnumerable<Vertex> GetInputs()
-        {
-            return new Vertex[] { this.Source };
-        }
+        public override IEnumerable<Vertex> GetInputs() => new Vertex[] { this.Source };
 
-        public override IEnumerable<Vertex> GetOutputs()
-        {
-            return new Vertex[] { this.Target };
-        }
+        public override IEnumerable<Vertex> GetOutputs() => new Vertex[] { this.Target };
 
         public override IEnumerable<Vertex> GetOtherConnectedVerticesVisitor(Vertex vertex)
         {

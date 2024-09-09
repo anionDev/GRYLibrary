@@ -106,17 +106,14 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
             }
         }
 
-        public virtual LogLevel GetLogLevel(Request request)
+        public virtual LogLevel GetLogLevel(Request request) => (request.ResponseStatusCode / 100) switch
         {
-            return (request.ResponseStatusCode / 100) switch
-            {
-                2 => LogLevel.Information,
-                3 => LogLevel.Debug,
-                4 => LogLevel.Information,
-                5 => LogLevel.Error,
-                _ => LogLevel.Error,
-            };
-        }
+            2 => LogLevel.Information,
+            3 => LogLevel.Debug,
+            4 => LogLevel.Information,
+            5 => LogLevel.Error,
+            _ => LogLevel.Error,
+        };
 
         public virtual bool ShouldLogEntireRequestContentInLogFile(Request request)
         {
@@ -242,10 +239,7 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
             }
         }
 
-        public virtual string FormatTimestamp(DateTime timestamp)
-        {
-            return GUtilities.FormatTimestamp(timestamp, this._RequestLoggingSettings.AddMillisecondsInLogTimestamps);
-        }
+        public virtual string FormatTimestamp(DateTime timestamp) => GUtilities.FormatTimestamp(timestamp, this._RequestLoggingSettings.AddMillisecondsInLogTimestamps);
         public virtual string Truncate(string value, uint maxLength, ulong originalLength)
         {
             if (value.Length <= maxLength)

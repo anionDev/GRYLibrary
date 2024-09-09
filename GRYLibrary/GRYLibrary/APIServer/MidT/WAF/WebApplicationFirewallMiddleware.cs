@@ -13,8 +13,7 @@ namespace GRYLibrary.Core.APIServer.MidT.WAF
         {
         }
         /// <inheritdoc/>
-        public override Task Invoke(HttpContext context)
-        {
+        public override Task Invoke(HttpContext context) =>
             // TODO log & block (by default) request when
             // - the route or the payload contains some "strange" context (e.g. only one single quote or something like this (rules/exceptions must be definable for specific routes)) or
             // - the json-/xml-payload is syntactically invalid or
@@ -22,7 +21,6 @@ namespace GRYLibrary.Core.APIServer.MidT.WAF
             // - the response is much longer than expected/allowed (must be configured by the application which is using this middleware)
             // and make this configurable
 
-            return this._Next(context);
-        }
+            this._Next(context);
     }
 }

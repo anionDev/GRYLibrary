@@ -14,15 +14,9 @@ namespace GRYLibrary.Core.Graph
         {
             this.Name = name;
         }
-        private static string CalculateVertexName()
-        {
-            return $"{nameof(Vertex)}_{Guid.NewGuid().ToString()[..8]}";
-        }
+        private static string CalculateVertexName() => $"{nameof(Vertex)}_{Guid.NewGuid().ToString()[..8]}";
 
-        public int Degree()
-        {
-            return this.GetConnectedEdges().Count;
-        }
+        public int Degree() => this.GetConnectedEdges().Count;
         /// <returns>Returns true if and only if the <see cref="Name"/> of the vertices are equal.</returns>
         public override bool Equals(object obj)
         {
@@ -34,19 +28,10 @@ namespace GRYLibrary.Core.Graph
             return this.Name.Equals(typedObject.Name);
         }
         internal List<Edge> ConnectedEdges { get; } = new List<Edge>();
-        public List<Edge> GetConnectedEdges()
-        {
-            return new List<Edge>(this.ConnectedEdges);
-        }
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(this.Name);
-        }
+        public List<Edge> GetConnectedEdges() => new List<Edge>(this.ConnectedEdges);
+        public override int GetHashCode() => HashCode.Combine(this.Name);
 
-        public override string ToString()
-        {
-            return this.Name;
-        }
+        public override string ToString() => this.Name;
 
         internal IEnumerable<Vertex> GetSuccessorVertices()
         {

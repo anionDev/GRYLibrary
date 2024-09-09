@@ -7,9 +7,6 @@ namespace GRYLibrary.Core.APIServer.Binder
 {
     public class GRYDateTimeMandatoryBinder : IModelBinder
     {
-        public Task BindModelAsync(ModelBindingContext bindingContext)
-        {
-            return GUtilities.GenericModelBinder(value => GRYDateTime.FromString(value), nameof(GRYDateTime), true)(bindingContext);
-        }
+        public Task BindModelAsync(ModelBindingContext bindingContext) => GUtilities.GenericModelBinder(value => GRYDateTime.FromString(value), nameof(GRYDateTime), true)(bindingContext);
     }
 }

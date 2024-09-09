@@ -102,9 +102,6 @@ namespace GRYLibrary.Core.AOA
             }
         }
 
-        private string GetIndentation(int currentIndentationLevel)
-        {
-            return string.Empty.PadRight(currentIndentationLevel * 2);
-        }
+        private string GetIndentation(int currentIndentationLevel) => string.Empty.PadRight(currentIndentationLevel * 2);
     }
 }

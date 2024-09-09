@@ -6,14 +6,8 @@
         private Productive()
         {
         }
-        public override void Accept(IEnvironmentVisitor visitor)
-        {
-            visitor.Handle(this);
-        }
+        public override void Accept(IEnvironmentVisitor visitor) => visitor.Handle(this);
 
-        public override T Accept<T>(IEnvironmentVisitor<T> visitor)
-        {
-            return visitor.Handle(this);
-        }
+        public override T Accept<T>(IEnvironmentVisitor<T> visitor) => visitor.Handle(this);
     }
 }

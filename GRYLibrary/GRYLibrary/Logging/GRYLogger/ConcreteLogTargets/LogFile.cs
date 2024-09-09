@@ -47,24 +47,12 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
             this._Pool.Clear();
         }
 
-        public override HashSet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization()
-        {
-            return new HashSet<Type>();
-        }
+        public override HashSet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization() => new HashSet<Type>();
 
-        public override void Dispose()
-        {
-            this.Flush();
-        }
+        public override void Dispose() => this.Flush();
 
-        public override bool Equals(object obj)
-        {
-            return base.Equals(obj);
-        }
+        public override bool Equals(object obj) => base.Equals(obj);
 
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
+        public override int GetHashCode() => base.GetHashCode();
     }
 }

@@ -11,14 +11,8 @@ namespace GRYLibrary.Core.APIServer.Services.Cerbos
         {
             this._AuthenticationService = authenticationService;
         }
-        public bool IsAuthorized(string user, string action)
-        {
-            throw new NotImplementedException();
-        }
+        public bool IsAuthorized(string user, string action) => throw new NotImplementedException();
 
-        public bool IsAuthorized(string user, string action, ISet<string> authorizedGroups)
-        {
-            throw new NotImplementedException();
-        }
+        public bool IsAuthorized(string user, string action, ISet<string> authorizedGroups) => throw new NotImplementedException();
     }
 }
