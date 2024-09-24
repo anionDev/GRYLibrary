@@ -77,14 +77,31 @@ namespace GRYLibrary.Core.APIServer.Mid.C
             }
         }
 
-        private bool UserTriesToSolveCaptcha(HttpContext context) => context.Request.Query.ContainsKey("captchaId") && context.Request.Query.ContainsKey("captchaValue");
+        private bool UserTriesToSolveCaptcha(HttpContext context)
+        {
+            return context.Request.Query.ContainsKey("captchaId") && context.Request.Query.ContainsKey("captchaValue");
+        }
 
-        private bool UserHasAlreadySolvedTheCaptcha(ICCaptchaConfiguration settings, HttpContext context) => this.UserHasAlreadySolvedTheCaptcha(this.GetAccessToken(settings, context), out string _);
+        private bool UserHasAlreadySolvedTheCaptcha(ICCaptchaConfiguration settings, HttpContext context)
+        {
+            return this.UserHasAlreadySolvedTheCaptcha(this.GetAccessToken(settings, context), out string _);
+        }
 
-        private void SetAccessToken(ICCaptchaConfiguration settings, HttpContext context, string accessKey) => context.Response.Cookies.Append(settings.CaptchaCookieName, accessKey);
+        private void SetAccessToken(ICCaptchaConfiguration settings, HttpContext context, string accessKey)
+        {
+            context.Response.Cookies.Append(settings.CaptchaCookieName, accessKey);
+        }
 
-        private string GetAccessToken(ICCaptchaConfiguration settings, HttpContext context) => context.Request.Cookies.Where(c => c.Key == settings.CaptchaCookieName).FirstOrDefault().Value;
-        public bool TrySolve(string captchaId, string userInput, out string accessKey, out string failMessage) => this._CaptchaManager.TrySolve(captchaId, userInput, out accessKey, out failMessage);
+        private string GetAccessToken(ICCaptchaConfiguration settings, HttpContext context)
+        {
+            return context.Request.Cookies.Where(c => c.Key == settings.CaptchaCookieName).FirstOrDefault().Value;
+        }
+
+        public bool TrySolve(string captchaId, string userInput, out string accessKey, out string failMessage)
+        {
+            return this._CaptchaManager.TrySolve(captchaId, userInput, out accessKey, out failMessage);
+        }
+
         public (string id, byte[] picture) GenerateCaptcha()
         {
             CaptchaInstance result = this._CaptchaManager.GetNewCaptcha(this.GetCaptchaSettings());
@@ -103,6 +120,9 @@ namespace GRYLibrary.Core.APIServer.Mid.C
             return result;
         }
 
-        public bool UserHasAlreadySolvedTheCaptcha(string accessToken, out string failMessage) => this._CaptchaManager.UserHasAlreadySolvedTheCaptcha(accessToken, out failMessage);
+        public bool UserHasAlreadySolvedTheCaptcha(string accessToken, out string failMessage)
+        {
+            return this._CaptchaManager.UserHasAlreadySolvedTheCaptcha(accessToken, out failMessage);
+        }
     }
 }

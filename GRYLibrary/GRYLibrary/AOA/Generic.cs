@@ -57,21 +57,36 @@ namespace GRYLibrary.Core.AOA/*AOA=AdvancedObjectAnalysis*/
             return _ObjectReferenceHashCodeCache[type];
         }
 
-        public static bool GenericEquals(object object1, object object2) => new PropertyEqualsCalculator().DefaultEquals(object1, object2);
+        public static bool GenericEquals(object object1, object object2)
+        {
+            return new PropertyEqualsCalculator().DefaultEquals(object1, object2);
+        }
 
-        public static string GenericToString(object @object, int maxOutputLength = int.MaxValue) => AOA.GenericToString.Instance.ToString(@object, maxOutputLength);
+        public static string GenericToString(object @object, int maxOutputLength = int.MaxValue)
+        {
+            return AOA.GenericToString.Instance.ToString(@object, maxOutputLength);
+        }
 
 #pragma warning disable IDE0060 // Suppress "Remove unused parameter 'object'"
-        public static XmlSchema GenericGetSchema(object @object) => null;
+        public static XmlSchema GenericGetSchema(object @object)
+        {
+            return null;
+        }
 
-        public static void GenericWriteXml(object @object, XmlWriter writer) => GenericXMLSerializer.CreateForObject(@object).Serialize(@object, writer);
+        public static void GenericWriteXml(object @object, XmlWriter writer)
+        {
+            GenericXMLSerializer.CreateForObject(@object).Serialize(@object, writer);
+        }
 
         public static void GenericReadXml(object @object, XmlReader reader)
         {
             GenericXMLSerializer genericXMLSerializer = GenericXMLSerializer.CreateForObject(@object);
             genericXMLSerializer.CopyContentOfObject(@object, genericXMLSerializer.Deserialize(reader));
         }
-        public static IEnumerable<(object, Type)> IterateOverObjectTransitively(object @object) => new PropertyIterator().IterateOverObjectTransitively(@object);
+        public static IEnumerable<(object, Type)> IterateOverObjectTransitively(object @object)
+        {
+            return new PropertyIterator().IterateOverObjectTransitively(@object);
+        }
 
         public static string GenericSerialize(object @object)
         {
@@ -83,7 +98,11 @@ namespace GRYLibrary.Core.AOA/*AOA=AdvancedObjectAnalysis*/
             return stringWriter.ToString();
         }
 
-        internal static void GenericSerializeToFile(object @object, string file) => File.WriteAllBytes(file, new UTF8Encoding(false).GetBytes(GenericSerialize(@object)));
+        internal static void GenericSerializeToFile(object @object, string file)
+        {
+            File.WriteAllBytes(file, new UTF8Encoding(false).GetBytes(GenericSerialize(@object)));
+        }
+
         public static T GenericDeserialize<T>(string serializedObject)
         {
             using XmlReader xmlReader = XmlReader.Create(new StringReader(serializedObject));
@@ -91,6 +110,9 @@ namespace GRYLibrary.Core.AOA/*AOA=AdvancedObjectAnalysis*/
             GenericReadXml(result, xmlReader);
             return result;
         }
-        public static T GenericDeserializeFromFile<T>(string file) => GenericDeserialize<T>(new UTF8Encoding(false).GetString(File.ReadAllBytes(file)));
+        public static T GenericDeserializeFromFile<T>(string file)
+        {
+            return GenericDeserialize<T>(new UTF8Encoding(false).GetString(File.ReadAllBytes(file)));
+        }
     }
 }

@@ -100,6 +100,9 @@ namespace GRYLibrary.Core.Misc
                 this._Thread = null;
             }
         }
-        public void Dispose() => this.Stop();
+        public void Dispose()
+        {
+            this.Stop();
+        }
     }
 }

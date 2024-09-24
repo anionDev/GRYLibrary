@@ -62,7 +62,10 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             return newAccessToken;
         }
 
-        private AccessToken ThrowInvalidCredentialsException() => throw new BadRequestException(StatusCodes.Status400BadRequest, "Invalid credentials");
+        private AccessToken ThrowInvalidCredentialsException()
+        {
+            throw new BadRequestException(StatusCodes.Status400BadRequest, "Invalid credentials");
+        }
 
         public virtual void Logout(string accessToken)
         {
@@ -82,7 +85,10 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             user.AccessToken.Clear();
         }
 
-        public virtual bool UserExists(string userId) => this._TransientAuthenticationServicePersistence.UserWithIdExists(userId);
+        public virtual bool UserExists(string userId)
+        {
+            return this._TransientAuthenticationServicePersistence.UserWithIdExists(userId);
+        }
 
         public virtual bool AccessTokenIsValid(string accessToken)
         {
@@ -98,9 +104,15 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             }
         }
 
-        public virtual ISet<UserType> GetAllUserTyped() => this._TransientAuthenticationServicePersistence.GetAllUsers().Values.ToHashSet();
+        public virtual ISet<UserType> GetAllUserTyped()
+        {
+            return this._TransientAuthenticationServicePersistence.GetAllUsers().Values.ToHashSet();
+        }
 
-        public virtual UserType GetUserTyped(string userId) => this._TransientAuthenticationServicePersistence.GetUserById(userId);
+        public virtual UserType GetUserTyped(string userId)
+        {
+            return this._TransientAuthenticationServicePersistence.GetUserById(userId);
+        }
 
         public virtual string GetUserName(string accessToken)
         {
@@ -114,14 +126,31 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             }
         }
 
-        public virtual void RemoveUser(string userId) => this._TransientAuthenticationServicePersistence.RemoveUser(userId);
+        public virtual void RemoveUser(string userId)
+        {
+            this._TransientAuthenticationServicePersistence.RemoveUser(userId);
+        }
 
-        public virtual ISet<User> GetAllUser() => this._TransientAuthenticationServicePersistence.GetAllUsers().Values.Cast<User>().ToHashSet();
+        public virtual ISet<User> GetAllUser()
+        {
+            return this._TransientAuthenticationServicePersistence.GetAllUsers().Values.Cast<User>().ToHashSet();
+        }
 
-        public virtual User GetUser(string userId) => this._TransientAuthenticationServicePersistence.GetUserById(userId);
+        public virtual User GetUser(string userId)
+        {
+            return this._TransientAuthenticationServicePersistence.GetUserById(userId);
+        }
 
-        public virtual Role GetRoleByName(string roleName) => this._TransientAuthenticationServicePersistence.GetAllRoles().Where(r => r.Name == roleName).First();
-        public virtual Role GetRoleById(string roleId) => this._TransientAuthenticationServicePersistence.GetAllRoles().Where(r => r.Id == roleId).First();
+        public virtual Role GetRoleByName(string roleName)
+        {
+            return this._TransientAuthenticationServicePersistence.GetAllRoles().Where(r => r.Name == roleName).First();
+        }
+
+        public virtual Role GetRoleById(string roleId)
+        {
+            return this._TransientAuthenticationServicePersistence.GetAllRoles().Where(r => r.Id == roleId).First();
+        }
+
         public virtual void EnsureUserHasRole(string userId, string roleId)
         {
             Role role = this.GetRoleById(roleId);
@@ -143,7 +172,10 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             return user.Roles.Contains(role);
         }
 
-        public virtual bool RoleExists(string roleName) => this._TransientAuthenticationServicePersistence.GetAllRoles().Where(r => r.Name == roleName).Any();
+        public virtual bool RoleExists(string roleName)
+        {
+            return this._TransientAuthenticationServicePersistence.GetAllRoles().Where(r => r.Name == roleName).Any();
+        }
 
         public virtual void EnsureRoleExists(string roleName)
         {
@@ -164,7 +196,10 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
                 this._TransientAuthenticationServicePersistence.DeleteRoleByName(roleName);
             }
         }
-        public virtual ISet<string> GetRolesOfUser(string userId) => this._TransientAuthenticationServicePersistence.GetUserById(userId).Roles.SelectMany(r => r.InheritedRoles.Select(s => s.Name).Union(new HashSet<string>() { r.Name })).ToHashSet();
+        public virtual ISet<string> GetRolesOfUser(string userId)
+        {
+            return this._TransientAuthenticationServicePersistence.GetUserById(userId).Roles.SelectMany(r => r.InheritedRoles.Select(s => s.Name).Union(new HashSet<string>() { r.Name })).ToHashSet();
+        }
 
         public virtual void AddUserTyped(UserType user)
         {
@@ -175,29 +210,64 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             this._TransientAuthenticationServicePersistence.AddUser(user);
         }
 
-        public virtual void AddUser(User user) => this.AddUserTyped((UserType)user);
+        public virtual void AddUser(User user)
+        {
+            this.AddUserTyped((UserType)user);
+        }
 
+        public virtual UserType GetUserByNameTyped(string username)
+        {
+            return this._TransientAuthenticationServicePersistence.GetAllUsers().Where(kvp => kvp.Value.Name == username).First().Value;
+        }
 
-        public virtual UserType GetUserByNameTyped(string username) => this._TransientAuthenticationServicePersistence.GetAllUsers().Where(kvp => kvp.Value.Name == username).First().Value;
+        public virtual User GetUserByName(string name)
+        {
+            return this.GetUserByNameTyped(name);
+        }
 
-        public virtual User GetUserByName(string name) => this.GetUserByNameTyped(name);
+        public virtual bool UserWithNameExists(string username)
+        {
+            return this._TransientAuthenticationServicePersistence.GetAllUsers().Where(kvp => kvp.Value.Name == username).Any();
+        }
 
-        public virtual bool UserWithNameExists(string username) => this._TransientAuthenticationServicePersistence.GetAllUsers().Where(kvp => kvp.Value.Name == username).Any();
+        public virtual UserType GetUserById(string userId)
+        {
+            return this._TransientAuthenticationServicePersistence.GetUserById(userId);
+        }
 
-        public virtual UserType GetUserById(string userId) => this._TransientAuthenticationServicePersistence.GetUserById(userId);
+        public virtual User GetUserByAccessToken(string accessToken)
+        {
+            return this._TransientAuthenticationServicePersistence.GetUserByAccessToken(accessToken);
+        }
 
-        public virtual User GetUserByAccessToken(string accessToken) => this._TransientAuthenticationServicePersistence.GetUserByAccessToken(accessToken);
+        public virtual void AddRole(string roleName)
+        {
+            throw new NotImplementedException();
+        }
 
-        public virtual void AddRole(string roleName) => throw new NotImplementedException();
+        public virtual bool UserExistsByName(string username)
+        {
+            return this._TransientAuthenticationServicePersistence.UserWithNameExists(username);
+        }
 
-        public virtual bool UserExistsByName(string username) => this._TransientAuthenticationServicePersistence.UserWithNameExists(username);
+        public virtual void UpdateRole(Role role)
+        {
+            this._TransientAuthenticationServicePersistence.UpdateRole(role);
+        }
 
-        public virtual void UpdateRole(Role role) => this._TransientAuthenticationServicePersistence.UpdateRole(role);
+        public virtual void Logout(ClaimsPrincipal user)
+        {
+            throw new NotImplementedException();
+        }
 
-        public virtual void Logout(ClaimsPrincipal user) => throw new NotImplementedException();
+        public virtual ISet<Role> GetRoles(ClaimsPrincipal user)
+        {
+            throw new NotImplementedException();
+        }
 
-        public virtual ISet<Role> GetRoles(ClaimsPrincipal user) => throw new NotImplementedException();
-
-        public void UpdateUser(UserType user) => this._TransientAuthenticationServicePersistence.UpdateUser(user);
+        public void UpdateUser(UserType user)
+        {
+            this._TransientAuthenticationServicePersistence.UpdateUser(user);
+        }
     }
 }

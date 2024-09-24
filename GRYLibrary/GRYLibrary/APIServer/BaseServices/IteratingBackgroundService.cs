@@ -4,6 +4,7 @@ using GUtilities = GRYLibrary.Core.Misc.Utilities;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
+using GRYLibrary.Core.Logging.GRYLogger;
 
 namespace GRYLibrary.Core.APIServer.BaseServices
 {
@@ -11,10 +12,10 @@ namespace GRYLibrary.Core.APIServer.BaseServices
     {
         public bool Enabled { get; set; }
         protected bool Running { get; private set; }
-        protected readonly IGeneralLogger _Logger;
+        protected readonly IGRYLog _Logger;
         private readonly ExecutionMode _ExecutionMode;
         protected abstract void Run();
-        public IteratingBackgroundService(ExecutionMode executionMode, IGeneralLogger logger)
+        public IteratingBackgroundService(ExecutionMode executionMode, IGRYLog logger)
         {
             this._ExecutionMode = executionMode;
             this._Logger = logger;
@@ -66,6 +67,9 @@ namespace GRYLibrary.Core.APIServer.BaseServices
             return true;
         }
 
-        public virtual void Dispose() => GC.SuppressFinalize(this);
+        public virtual void Dispose()
+        {
+            GC.SuppressFinalize(this);
+        }
     }
 }

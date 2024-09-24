@@ -23,7 +23,10 @@ namespace GRYLibrary.Core.Graph
 
         public abstract IEnumerable<Vertex> GetConnectedVertices();
 
-        private static string CalculateEdgeName() => $"{nameof(Edge)}_{Guid.NewGuid().ToString()[..8]}";
+        private static string CalculateEdgeName()
+        {
+            return $"{nameof(Edge)}_{Guid.NewGuid().ToString()[..8]}";
+        }
 
         public override bool Equals(object obj)
         {
@@ -46,9 +49,16 @@ namespace GRYLibrary.Core.Graph
             }
             return true;
         }
-        public override int GetHashCode() => HashCode.Combine(this.Name);
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(this.Name);
+        }
 
-        public override string ToString() => this.Name;
+        public override string ToString()
+        {
+            return this.Name;
+        }
+
         public abstract void Accept(IEdgeVisitor visitor);
         public abstract T Accept<T>(IEdgeVisitor<T> visitor);
 

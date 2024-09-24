@@ -18,7 +18,10 @@ namespace GRYLibrary.Core.Misc
             return newVersion;
         }
 
-        private static string ReplaceStringVariable(string input, string replaceSource, string replaceTarget) => input.Replace($"__[{replaceSource}]__", replaceTarget);
+        private static string ReplaceStringVariable(string input, string replaceSource, string replaceTarget)
+        {
+            return input.Replace($"__[{replaceSource}]__", replaceTarget);
+        }
 
         private static string ReplaceVariablesOneTime(string input, IDictionary<string, string> replacements, IDictionary<string, bool> booleanReplacements, IDictionary<string, Func<string>> variables)
         {

@@ -19,6 +19,9 @@ namespace GRYLibrary.Core.APIServer.Mid.AuthS
             this._AuthenticationService = authenticationService;
         }
 
-        public override bool TryGetAuthentication(HttpContext context, out ClaimsPrincipal principal) => Tools.TryGetAuthentication(this._CredentialsProvider, this._AuthenticationService, context, out principal);
+        public override bool TryGetAuthentication(HttpContext context, out ClaimsPrincipal principal)
+        {
+            return Tools.TryGetAuthentication(this._CredentialsProvider, this._AuthenticationService, context, out principal);
+        }
     }
 }

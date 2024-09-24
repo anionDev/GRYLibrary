@@ -130,7 +130,11 @@ namespace GRYLibrary.Core.Logging.GRYLogger
                 target.Dispose();
             }
         }
-        public static GRYLogConfiguration GetCommonConfiguration(string logFile = null, bool verbose = false) => GetCommonConfiguration(AbstractFilePath.FromString(logFile), verbose);
+        public static GRYLogConfiguration GetCommonConfiguration(string logFile = null, bool verbose = false)
+        {
+            return GetCommonConfiguration(AbstractFilePath.FromString(logFile), verbose);
+        }
+
         public static GRYLogConfiguration GetCommonConfiguration(AbstractFilePath logFile = null, bool verbose = false)
         {
             GRYLogConfiguration result = new GRYLogConfiguration(true);
@@ -155,12 +159,25 @@ namespace GRYLibrary.Core.Logging.GRYLogger
             return result;
         }
         #region Overhead
-        public override bool Equals(object @object) => Generic.GenericEquals(this, @object);
+        public override bool Equals(object @object)
+        {
+            return Generic.GenericEquals(this, @object);
+        }
 
-        public override int GetHashCode() => Generic.GenericGetHashCode(this);
+        public override int GetHashCode()
+        {
+            return Generic.GenericGetHashCode(this);
+        }
 
-        public override string ToString() => Generic.GenericToString(this);
-        public ISet<Type> GetExtraTypesWhichAreRequiredForSerialization() => new HashSet<Type>();
+        public override string ToString()
+        {
+            return Generic.GenericToString(this);
+        }
+
+        public ISet<Type> GetExtraTypesWhichAreRequiredForSerialization()
+        {
+            return new HashSet<Type>();
+        }
         #endregion
     }
 }

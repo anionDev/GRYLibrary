@@ -9,11 +9,20 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         public string CustomText { get; set; }
         public LoggedMessageTypeConfiguration() { }
         #region Overhead
-        public override bool Equals(object @object) => Generic.GenericEquals(this, @object);
+        public override bool Equals(object @object)
+        {
+            return Generic.GenericEquals(this, @object);
+        }
 
-        public override int GetHashCode() => Generic.GenericGetHashCode(this);
+        public override int GetHashCode()
+        {
+            return Generic.GenericGetHashCode(this);
+        }
 
-        public override string ToString() => Generic.GenericToString(this);
+        public override string ToString()
+        {
+            return Generic.GenericToString(this);
+        }
         #endregion
     }
 }

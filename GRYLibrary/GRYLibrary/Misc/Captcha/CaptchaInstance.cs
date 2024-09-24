@@ -23,7 +23,11 @@ namespace GRYLibrary.Core.Misc.Captcha
             this.AccessTokenValidUntil = CaptchaManager.GetCurrentTime().Add(settings.ExpireDurationOfAccessToken);
         }
 
-        internal static string GetNewRandomExpectedUserInput(CaptchaGenerationSettings settings) => new string(Enumerable.Repeat(settings.Alphabet, settings.Length).Select(s => s[_Random.Next(s.Length)]).ToArray());
+        internal static string GetNewRandomExpectedUserInput(CaptchaGenerationSettings settings)
+        {
+            return new string(Enumerable.Repeat(settings.Alphabet, settings.Length).Select(s => s[_Random.Next(s.Length)]).ToArray());
+        }
+
         internal static byte[] GetPictureForString(string expectedUserInput)
         {
             RandomNumberProvider rng = new RandomNumberProvider();

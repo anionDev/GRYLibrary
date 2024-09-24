@@ -14,13 +14,22 @@ namespace GRYLibrary.Core.Misc.Migration
             this.ExecutionTimestamp = executionTimestamp;
         }
 
-        public override bool Equals(object obj) => this.Equals(obj as MigrationExecutionInformation);
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj as MigrationExecutionInformation);
+        }
 
-        public bool Equals(MigrationExecutionInformation other) => other is not null &&
+        public bool Equals(MigrationExecutionInformation other)
+        {
+            return other is not null &&
                    this.MigrationName == other.MigrationName &&
                    this.ExecutionTimestamp == other.ExecutionTimestamp;
+        }
 
-        public override int GetHashCode() => HashCode.Combine(this.MigrationName, this.ExecutionTimestamp);
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(this.MigrationName, this.ExecutionTimestamp);
+        }
 
         public static bool operator ==(MigrationExecutionInformation left, MigrationExecutionInformation right)
         {

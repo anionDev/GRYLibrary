@@ -8,12 +8,29 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
     {
         public Observer() { }
 
-        public override HashSet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization() => new HashSet<Type>();
+        public override HashSet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization()
+        {
+            return new HashSet<Type>();
+        }
 
-        protected override void ExecuteImplementation(LogItem logItem, GRYLog logObject) => logObject.InvokeObserver(logItem);
-        public override void Dispose() => Utilities.NoOperation();
-        public override bool Equals(object obj) => base.Equals(obj);
+        protected override void ExecuteImplementation(LogItem logItem, GRYLog logObject)
+        {
+            logObject.InvokeObserver(logItem);
+        }
 
-        public override int GetHashCode() => base.GetHashCode();
+        public override void Dispose()
+        {
+            Utilities.NoOperation();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

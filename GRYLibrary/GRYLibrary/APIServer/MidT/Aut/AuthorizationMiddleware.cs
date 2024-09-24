@@ -1,5 +1,4 @@
-﻿using GRYLibrary.Core.APIServer.Utilities;
-using GRYLibrary.Core.Exceptions;
+﻿using GRYLibrary.Core.Exceptions;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
@@ -10,15 +9,7 @@ namespace GRYLibrary.Core.APIServer.MidT.Auth
         protected AuthorizationMiddleware(RequestDelegate next) : base(next)
         {
         }
-        public virtual bool AuthorizationIsRequired(HttpContext context)
-        {
-            if (!(bool)context.Items[AuthenticationMiddleware.IsAuthenticatedInformationName])
-            {
-                return false;
-            }
-            return this.TryGetAuthorizeAttribute(context,out AuthorizeAttribute _);
-          
-        }
+        public abstract bool AuthorizationIsRequired(HttpContext context);
         protected abstract bool IsAuthorized(HttpContext context);
         public override Task Invoke(HttpContext context)
         {

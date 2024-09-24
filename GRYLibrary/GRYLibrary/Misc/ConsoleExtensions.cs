@@ -12,7 +12,14 @@ namespace GRYLibrary.Core.Misc
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
         private const int SW_HIDE = 0;
         private const int SW_SHOW = 5;
-        public static void ShowConsoleWindow() => ShowWindow(GetConsoleWindow(), SW_SHOW);
-        public static void HideConsoleWindow() => ShowWindow(GetConsoleWindow(), SW_HIDE);
+        public static void ShowConsoleWindow()
+        {
+            ShowWindow(GetConsoleWindow(), SW_SHOW);
+        }
+
+        public static void HideConsoleWindow()
+        {
+            ShowWindow(GetConsoleWindow(), SW_HIDE);
+        }
     }
 }

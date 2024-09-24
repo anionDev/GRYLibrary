@@ -44,8 +44,14 @@ namespace GRYLibrary.Core.AOA.EqualsHelper.CustomComparer
             return false;
         }
 
-        public override bool IsApplicable(Type typeOfObject1, Type typeOfObject2) => EnumerableTools.TypeIsSet(typeOfObject1) && EnumerableTools.TypeIsSet(typeOfObject2);
+        public override bool IsApplicable(Type typeOfObject1, Type typeOfObject2)
+        {
+            return EnumerableTools.TypeIsSet(typeOfObject1) && EnumerableTools.TypeIsSet(typeOfObject2);
+        }
 
-        public override int DefaultGetHashCode(object obj) => this.Configuration.GetHashCode(obj);
+        public override int DefaultGetHashCode(object obj)
+        {
+            return this.Configuration.GetHashCode(obj);
+        }
     }
 }

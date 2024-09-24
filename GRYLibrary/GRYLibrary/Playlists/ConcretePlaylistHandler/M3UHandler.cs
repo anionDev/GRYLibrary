@@ -18,9 +18,15 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
             File.WriteAllText(playlistFile, content, this.Encoding);
         }
 
-        public override void CreatePlaylist(string file) => Utilities.EnsureFileExists(file);
+        public override void CreatePlaylist(string file)
+        {
+            Utilities.EnsureFileExists(file);
+        }
 
-        public override void DeleteItemsFromPlaylist(string playlistFile, IEnumerable<string> itemsToDelete) => File.AppendAllLines(playlistFile, itemsToDelete.Select(song => '-' + song), this.Encoding);
+        public override void DeleteItemsFromPlaylist(string playlistFile, IEnumerable<string> itemsToDelete)
+        {
+            File.AppendAllLines(playlistFile, itemsToDelete.Select(song => '-' + song), this.Encoding);
+        }
 
         public override (ISet<string> included, ISet<string> excluded) GetItemsAndExcludedItems(string playlistFile)
         {

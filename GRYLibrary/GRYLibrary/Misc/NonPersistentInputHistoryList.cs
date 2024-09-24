@@ -29,7 +29,11 @@ namespace GRYLibrary.Core.Misc
             }
             return this.GetCurrentItem();
         }
-        public void ResetCurrentReadPosition() => this.CurrentuserInputIndex = this.UserInputs.Count;
+        public void ResetCurrentReadPosition()
+        {
+            this.CurrentuserInputIndex = this.UserInputs.Count;
+        }
+
         private string GetCurrentItem()
         {
             if (this.CurrentuserInputIndex == this.UserInputs.Count || this.UserInputs.Count == 0)

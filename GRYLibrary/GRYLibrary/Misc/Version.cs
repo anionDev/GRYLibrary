@@ -352,7 +352,11 @@ namespace GRYLibrary.Core.Misc
             }
             return v1.CompareTo(v2) <= 0;
         }
-        public System.Version ToSystemVersion() => new System.Version(this.major, this.minor, this.build, this.revision);
+        public System.Version ToSystemVersion()
+        {
+            return new System.Version(this.major, this.minor, this.build, this.revision);
+        }
+
         /// <summary>
         /// Toes the string.
         /// </summary>

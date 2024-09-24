@@ -56,6 +56,10 @@ namespace GRYLibrary.Core.APIServer.Mid.Ex
             {
                 context.Response.StatusCode = StatusCodes.Status403Forbidden;
             }
+            else if (exceptionForFormatting is NotFoundException)
+            {
+                context.Response.StatusCode = StatusCodes.Status404NotFound;
+            }
             else if (exceptionForFormatting is InternalAlgorithmException)
             {
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
@@ -69,7 +73,10 @@ namespace GRYLibrary.Core.APIServer.Mid.Ex
             context.Response.ContentType = ContentType;
             context.Response.WriteAsync(bodyContent).Wait();
         }
-        public virtual (string ContentType, string bodyContent) GetExceptionResponceContent(int httpStatusCode, HttpContext context, Exception exception) => (null, string.Empty);
+        public virtual (string ContentType, string bodyContent) GetExceptionResponceContent(int httpStatusCode, HttpContext context, Exception exception)
+        {
+            return (null, string.Empty);
+        }
 
         protected override void HandleNotFound(HttpContext context)
         {
@@ -77,6 +84,9 @@ namespace GRYLibrary.Core.APIServer.Mid.Ex
             context.Response.ContentType = ContentType;
             context.Response.WriteAsync(bodyContent).Wait();
         }
-        public virtual (string ContentType, string bodyContent) GetNotFoundResponseContent(HttpContext context) => (null, string.Empty);
+        public virtual (string ContentType, string bodyContent) GetNotFoundResponseContent(HttpContext context)
+        {
+            return (null, string.Empty);
+        }
     }
 }

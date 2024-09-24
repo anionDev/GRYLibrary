@@ -48,11 +48,25 @@ namespace GRYLibrary.Core.Misc
             }
         }
 
-        public override bool Equals(object obj) => obj is PercentValue value && this.Value == value.Value;
+        public override bool Equals(object obj)
+        {
+            return obj is PercentValue value && this.Value == value.Value;
+        }
 
-        public override int GetHashCode() => HashCode.Combine(this.Value);
-        public override string ToString() => GUtilities.DecimalToString(this.Value);
-        public static PercentValue Random() => new PercentValue(_Random.NextDouble());
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(this.Value);
+        }
+
+        public override string ToString()
+        {
+            return GUtilities.DecimalToString(this.Value);
+        }
+
+        public static PercentValue Random()
+        {
+            return new PercentValue(_Random.NextDouble());
+        }
 
         #region Operators
         public static bool operator ==(PercentValue left, PercentValue right)

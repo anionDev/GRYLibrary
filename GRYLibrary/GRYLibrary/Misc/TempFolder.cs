@@ -10,6 +10,9 @@ namespace GRYLibrary.Core.Misc
             this.Path = System.IO.Path.Join(System.IO.Path.GetTempPath(), Guid.NewGuid().ToString()[..8]);
             Utilities.EnsureDirectoryExists(this.Path);
         }
-        public void Dispose() => Utilities.EnsureDirectoryDoesNotExist(this.Path);
+        public void Dispose()
+        {
+            Utilities.EnsureDirectoryDoesNotExist(this.Path);
+        }
     }
 }

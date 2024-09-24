@@ -19,13 +19,25 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             this._TimeService = timeService;
         }
 
-        public void SetAllUsers(ISet<UserType> users) => this._Users = users.ToDictionary(kvp => kvp.Id);
+        public void SetAllUsers(ISet<UserType> users)
+        {
+            this._Users = users.ToDictionary(kvp => kvp.Id);
+        }
 
-        public ISet<Role> GetAllRoles() => this._Roles.Values.ToHashSet();
+        public ISet<Role> GetAllRoles()
+        {
+            return this._Roles.Values.ToHashSet();
+        }
 
-        public void SetAllRoles(ISet<Role> roles) => this._Roles = roles.ToDictionary(kvp => kvp.Id);
+        public void SetAllRoles(ISet<Role> roles)
+        {
+            this._Roles = roles.ToDictionary(kvp => kvp.Id);
+        }
 
-        public IDictionary<string, UserType> GetAllUsers() => this._Users.ToDictionary();
+        public IDictionary<string, UserType> GetAllUsers()
+        {
+            return this._Users.ToDictionary();
+        }
 
         public bool AccessTokenExists(string accessToken, out UserType user)
         {
@@ -42,18 +54,40 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             }
         }
 
-        public void AddUser(UserType newUser) => this._Users[newUser.Id] = newUser;
+        public void AddUser(UserType newUser)
+        {
+            this._Users[newUser.Id] = newUser;
+        }
 
-        public bool UserWithNameExists(string userName) => this._Users.Values.Where(u => u.Name == userName).Any();
-        public bool UserWithIdExists(string userId) => this._Users.ContainsKey(userId);
+        public bool UserWithNameExists(string userName)
+        {
+            return this._Users.Values.Where(u => u.Name == userName).Any();
+        }
 
-        public UserType GetuserById(string userId) => this._Users[userId];
+        public bool UserWithIdExists(string userId)
+        {
+            return this._Users.ContainsKey(userId);
+        }
 
-        public void RemoveUser(string userId) => this._Users.Remove(userId);
+        public UserType GetuserById(string userId)
+        {
+            return this._Users[userId];
+        }
 
-        public UserType GetUserById(string userId) => this._Users[userId];
+        public void RemoveUser(string userId)
+        {
+            this._Users.Remove(userId);
+        }
 
-        public UserType GetUserByName(string userName) => this._Users.Values.Where(u => u.Name == userName).First();
+        public UserType GetUserById(string userId)
+        {
+            return this._Users[userId];
+        }
+
+        public UserType GetUserByName(string userName)
+        {
+            return this._Users.Values.Where(u => u.Name == userName).First();
+        }
 
         public UserType GetUserByAccessToken(string accessToken)
         {
@@ -77,11 +111,20 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             throw new KeyNotFoundException("No user found with given accesstoken.");
         }
 
-        public bool RoleExists(string roleName) => this._Roles.Where(kvp => kvp.Value.Name == roleName).Any();
+        public bool RoleExists(string roleName)
+        {
+            return this._Roles.Where(kvp => kvp.Value.Name == roleName).Any();
+        }
 
-        public void AddRole(Role role) => this._Roles[role.Id] = role;
+        public void AddRole(Role role)
+        {
+            this._Roles[role.Id] = role;
+        }
 
-        public void UpdateRole(Role role) => this._Roles[role.Id] = role;
+        public void UpdateRole(Role role)
+        {
+            this._Roles[role.Id] = role;
+        }
 
         public void DeleteRoleByName(string roleName)
         {
@@ -95,13 +138,24 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             this._Roles.Remove(roleName);
         }
 
-        public void AddRoleToUser(string userId, string roleId) => this._Users[userId].Roles.Add(this._Roles[roleId]);
+        public void AddRoleToUser(string userId, string roleId)
+        {
+            this._Users[userId].Roles.Add(this._Roles[roleId]);
+        }
 
-        public bool UserHasRole(string userId, string roleId) => this._Users[userId].Roles.Contains(this._Roles[roleId]);
+        public bool UserHasRole(string userId, string roleId)
+        {
+            return this._Users[userId].Roles.Contains(this._Roles[roleId]);
+        }
 
-        public void RemoveRoleFromUser(string userId, string roleId) => this._Users[userId].Roles.Remove(this._Roles[roleId]);
+        public void RemoveRoleFromUser(string userId, string roleId)
+        {
+            this._Users[userId].Roles.Remove(this._Roles[roleId]);
+        }
 
-
-        public void UpdateUser(UserType user) => this._Users[user.Id] = user;
+        public void UpdateUser(UserType user)
+        {
+            this._Users[user.Id] = user;
+        }
     }
 }

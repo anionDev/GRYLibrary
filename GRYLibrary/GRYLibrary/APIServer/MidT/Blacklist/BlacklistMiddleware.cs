@@ -13,8 +13,10 @@ namespace GRYLibrary.Core.APIServer.MidT.Blacklist
         {
         }
         /// <inheritdoc/>
-        public override Task Invoke(HttpContext context) =>
+        public override Task Invoke(HttpContext context)
+        {
             //TODO
-            this._Next(context);
+            return this._Next(context);
+        }
     }
 }

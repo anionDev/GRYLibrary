@@ -9,7 +9,11 @@ namespace GRYLibrary.Core.Tree
         {
             this.Children = new List<TreeItem<ContainedItemType>>();
         }
-        public IList<TreeItem<ContainedItemType>> GetDirectChildren() => new List<TreeItem<ContainedItemType>>(this.Children);
+        public IList<TreeItem<ContainedItemType>> GetDirectChildren()
+        {
+            return new List<TreeItem<ContainedItemType>>(this.Children);
+        }
+
         public IEnumerable<TreeItem<ContainedItemType>> GetDirectAndTransitiveChildren()
         {
             List<TreeItem<ContainedItemType>> result = new();
@@ -23,8 +27,14 @@ namespace GRYLibrary.Core.Tree
             }
             return result;
         }
-        public override void Accept(ITreeItemVisitor visitor) => visitor.Handle(this);
+        public override void Accept(ITreeItemVisitor visitor)
+        {
+            visitor.Handle(this);
+        }
 
-        public override T Accept<T>(ITreeItemVisitor<T> visitor) => visitor.Handle(this);
+        public override T Accept<T>(ITreeItemVisitor<T> visitor)
+        {
+            return visitor.Handle(this);
+        }
     }
 }

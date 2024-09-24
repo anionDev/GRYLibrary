@@ -73,9 +73,15 @@ namespace GRYLibrary.Core.AOA
             }
         }
 
-        private void MarkedAsNotEqual(object object1, object object2) => this.Configuration.MarkedAsNotEqual(object1, object2);
+        private void MarkedAsNotEqual(object object1, object object2)
+        {
+            this.Configuration.MarkedAsNotEqual(object1, object2);
+        }
 
-        private void MarkedAsEqual(object object1, object object2) => this.Configuration.AddEqualObjectsToEquivalenceClasses(object1, object2);
+        private void MarkedAsEqual(object object1, object object2)
+        {
+            this.Configuration.AddEqualObjectsToEquivalenceClasses(object1, object2);
+        }
 
         private bool CustomComparerShouldBeApplied(PropertyEqualsCalculatorConfiguration configurationAndCache, Type object1Type, Type object2Type, out AbstractCustomComparer customComparer)
         {
@@ -90,6 +96,9 @@ namespace GRYLibrary.Core.AOA
             customComparer = null;
             return false;
         }
-        public override int DefaultGetHashCode(object obj) => this.Configuration.GetHashCode(obj);
+        public override int DefaultGetHashCode(object obj)
+        {
+            return this.Configuration.GetHashCode(obj);
+        }
     }
 }

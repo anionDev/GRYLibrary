@@ -14,6 +14,9 @@ namespace GRYLibrary.Core.APIServer.Mid.PreDAPIK
             this._PreDAPIKValidatorConfiguration = apiKeyValidatorSettings;
         }
 
-        public override bool APIKeyIsAuthorized(string apiKey, HttpContext context) => this._PreDAPIKValidatorConfiguration.AuthorizedAPIKeys.Contains(apiKey);
+        public override bool APIKeyIsAuthorized(string apiKey, HttpContext context)
+        {
+            return this._PreDAPIKValidatorConfiguration.AuthorizedAPIKeys.Contains(apiKey);
+        }
     }
 }

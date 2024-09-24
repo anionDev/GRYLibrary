@@ -71,7 +71,10 @@ namespace GRYLibrary.Core.Misc
                 return result.ToArray();
             }
 
-            public string[] Handle(HTMLTable tableOutputType) => throw new NotImplementedException();
+            public string[] Handle(HTMLTable tableOutputType)
+            {
+                throw new NotImplementedException();
+            }
 
             public string[] Handle(CSV csv)
             {
@@ -98,14 +101,30 @@ namespace GRYLibrary.Core.Misc
                 return this.GetLine(tableOutputType.Characters.VerticalLineCharacter, content, ' ', tableOutputType.Characters.VerticalLineCharacter, tableOutputType.Characters.VerticalLineCharacter, columnLengths);
             }
 
-            private string GetHeadlineDividerLineForASCIITable(ASCIITable tableOutputType, int[] columnLengths) => this.GetLine(tableOutputType.Characters.TRightCharacter, this.NTimes(tableOutputType.Characters.HorizontalLineCharacter.ToString(), columnLengths.Length), tableOutputType.Characters.HorizontalLineCharacter, tableOutputType.Characters.CrossCharacter, tableOutputType.Characters.TLeftCharacter, columnLengths);
+            private string GetHeadlineDividerLineForASCIITable(ASCIITable tableOutputType, int[] columnLengths)
+            {
+                return this.GetLine(tableOutputType.Characters.TRightCharacter, this.NTimes(tableOutputType.Characters.HorizontalLineCharacter.ToString(), columnLengths.Length), tableOutputType.Characters.HorizontalLineCharacter, tableOutputType.Characters.CrossCharacter, tableOutputType.Characters.TLeftCharacter, columnLengths);
+            }
 
-            private string GetLastLineForASCIITable(ASCIITable tableOutputType, int[] columnLengths) => this.GetLine(tableOutputType.Characters.LeftLowerCornerCharacter, this.NTimes(tableOutputType.Characters.HorizontalLineCharacter.ToString(), columnLengths.Length), tableOutputType.Characters.HorizontalLineCharacter, tableOutputType.Characters.TUpCharacter, tableOutputType.Characters.RightLowerCornerCharacter, columnLengths);
+            private string GetLastLineForASCIITable(ASCIITable tableOutputType, int[] columnLengths)
+            {
+                return this.GetLine(tableOutputType.Characters.LeftLowerCornerCharacter, this.NTimes(tableOutputType.Characters.HorizontalLineCharacter.ToString(), columnLengths.Length), tableOutputType.Characters.HorizontalLineCharacter, tableOutputType.Characters.TUpCharacter, tableOutputType.Characters.RightLowerCornerCharacter, columnLengths);
+            }
 
-            private string GetHeadlineLineForASCIITable(ASCIITable tableOutputType, int[] columnLengths) => this.GetLineForASCIITable(tableOutputType, columnLengths, 0);
+            private string GetHeadlineLineForASCIITable(ASCIITable tableOutputType, int[] columnLengths)
+            {
+                return this.GetLineForASCIITable(tableOutputType, columnLengths, 0);
+            }
 
-            private string GetFirstLineForASCIITable(ASCIITable tableOutputType, int[] columnLengths) => this.GetLine(tableOutputType.Characters.LeftUpperCornerCharacter, this.NTimes(tableOutputType.Characters.HorizontalLineCharacter.ToString(), columnLengths.Length), tableOutputType.Characters.HorizontalLineCharacter, tableOutputType.Characters.TDownCharacter, tableOutputType.Characters.RightUpperCornerCharacter, columnLengths);
-            private string GetLine(char firstChar, string[] content, char fillCharForContent, char separator, char lastChar, int[] columnLengths) => $"{firstChar}{this.GetContentOfLine(content, fillCharForContent, separator, columnLengths)}{lastChar}";
+            private string GetFirstLineForASCIITable(ASCIITable tableOutputType, int[] columnLengths)
+            {
+                return this.GetLine(tableOutputType.Characters.LeftUpperCornerCharacter, this.NTimes(tableOutputType.Characters.HorizontalLineCharacter.ToString(), columnLengths.Length), tableOutputType.Characters.HorizontalLineCharacter, tableOutputType.Characters.TDownCharacter, tableOutputType.Characters.RightUpperCornerCharacter, columnLengths);
+            }
+
+            private string GetLine(char firstChar, string[] content, char fillCharForContent, char separator, char lastChar, int[] columnLengths)
+            {
+                return $"{firstChar}{this.GetContentOfLine(content, fillCharForContent, separator, columnLengths)}{lastChar}";
+            }
 
             private string GetContentOfLine(string[] content, char fillCharForContent, char separator, int[] columnLengths)
             {
@@ -137,7 +156,11 @@ namespace GRYLibrary.Core.Misc
                 }
             }
 
-            private T[] NTimes<T>(T value, int amount) => Enumerable.Repeat(value, amount).ToArray();
+            private T[] NTimes<T>(T value, int amount)
+            {
+                return Enumerable.Repeat(value, amount).ToArray();
+            }
+
             private int[] GetColumnLengths(string[,] array, int maximalWidth)
             {
                 int[] result = this.NTimes(0, array.GetLength(1));
@@ -245,21 +268,39 @@ namespace GRYLibrary.Core.Misc
 
             public int MaximalWidth { get; set; } = 1000;
             public string Title { get; set; } = string.Empty;
-            public override void Accept(ITableOutputTypeVisitor visitor) => visitor.Handle(this);
+            public override void Accept(ITableOutputTypeVisitor visitor)
+            {
+                visitor.Handle(this);
+            }
 
-            public override T Accept<T>(ITableOutputTypeVisitor<T> visitor) => visitor.Handle(this);
+            public override T Accept<T>(ITableOutputTypeVisitor<T> visitor)
+            {
+                return visitor.Handle(this);
+            }
         }
         public sealed class HTMLTable : TableOutputType
         {
-            public override void Accept(ITableOutputTypeVisitor visitor) => visitor.Handle(this);
+            public override void Accept(ITableOutputTypeVisitor visitor)
+            {
+                visitor.Handle(this);
+            }
 
-            public override T Accept<T>(ITableOutputTypeVisitor<T> visitor) => visitor.Handle(this);
+            public override T Accept<T>(ITableOutputTypeVisitor<T> visitor)
+            {
+                return visitor.Handle(this);
+            }
         }
         public sealed class CSV : TableOutputType
         {
-            public override void Accept(ITableOutputTypeVisitor visitor) => visitor.Handle(this);
+            public override void Accept(ITableOutputTypeVisitor visitor)
+            {
+                visitor.Handle(this);
+            }
 
-            public override T Accept<T>(ITableOutputTypeVisitor<T> visitor) => visitor.Handle(this);
+            public override T Accept<T>(ITableOutputTypeVisitor<T> visitor)
+            {
+                return visitor.Handle(this);
+            }
         }
     }
 }

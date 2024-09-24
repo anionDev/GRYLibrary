@@ -12,12 +12,21 @@ namespace GRYLibrary.Core.Misc
             this.Item2 = item2;
         }
 
-        public override bool Equals(object obj) => this.Equals(obj);
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj);
+        }
 
-        public override int GetHashCode() => nameof(ReferenceTuple).GetHashCode();
+        public override int GetHashCode()
+        {
+            return nameof(ReferenceTuple).GetHashCode();
+        }
 
-        public bool Equals(ReferenceTuple other) => other != null
+        public bool Equals(ReferenceTuple other)
+        {
+            return other != null
                 && Utilities.ImprovedReferenceEquals(this.Item1, other.Item1)
                 && Utilities.ImprovedReferenceEquals(this.Item2, other.Item2);
+        }
     }
 }

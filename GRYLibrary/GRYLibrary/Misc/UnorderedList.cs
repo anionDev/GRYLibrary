@@ -14,12 +14,21 @@ namespace GRYLibrary.Core.Misc
 
         public T this[int index] { get => this._Items[index]; set => this._Items[index] = value; }
 
-        public override int GetHashCode() => HashCode.Combine(this._Items.Count.GetHashCode());
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(this._Items.Count.GetHashCode());
+        }
 
-        public override bool Equals(object obj) => this.Equals(obj as UnorderedList<T>);
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj as UnorderedList<T>);
+        }
 
         /// <returns>Returns true if and only if there is a bijection between this and <paramref name="other"/>.</returns>
-        public bool Equals(UnorderedList<T> other) => this.GetItemsWithCount(this).SetEquals(this.GetItemsWithCount(other));
+        public bool Equals(UnorderedList<T> other)
+        {
+            return this.GetItemsWithCount(this).SetEquals(this.GetItemsWithCount(other));
+        }
 
         private ISet<WriteableTuple<T, ulong>> GetItemsWithCount(UnorderedList<T> items)
         {
@@ -38,24 +47,54 @@ namespace GRYLibrary.Core.Misc
             return new HashSet<WriteableTuple<T, ulong>>(result.Select(kvp => new WriteableTuple<T, ulong>(kvp.Key, kvp.Value)));
         }
 
-        public int IndexOf(T item) => this._Items.IndexOf(item);
+        public int IndexOf(T item)
+        {
+            return this._Items.IndexOf(item);
+        }
 
-        public void Insert(int index, T item) => this._Items.Insert(index, item);
+        public void Insert(int index, T item)
+        {
+            this._Items.Insert(index, item);
+        }
 
-        public void RemoveAt(int index) => this._Items.RemoveAt(index);
+        public void RemoveAt(int index)
+        {
+            this._Items.RemoveAt(index);
+        }
 
-        public void Add(T item) => this._Items.Add(item);
+        public void Add(T item)
+        {
+            this._Items.Add(item);
+        }
 
-        public void Clear() => this._Items.Clear();
+        public void Clear()
+        {
+            this._Items.Clear();
+        }
 
-        public bool Contains(T item) => this._Items.Contains(item);
+        public bool Contains(T item)
+        {
+            return this._Items.Contains(item);
+        }
 
-        public void CopyTo(T[] array, int arrayIndex) => this._Items.CopyTo(array, arrayIndex);
+        public void CopyTo(T[] array, int arrayIndex)
+        {
+            this._Items.CopyTo(array, arrayIndex);
+        }
 
-        public bool Remove(T item) => this._Items.Remove(item);
+        public bool Remove(T item)
+        {
+            return this._Items.Remove(item);
+        }
 
-        public IEnumerator<T> GetEnumerator() => this._Items.GetEnumerator();
+        public IEnumerator<T> GetEnumerator()
+        {
+            return this._Items.GetEnumerator();
+        }
 
-        IEnumerator IEnumerable.GetEnumerator() => this._Items.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this._Items.GetEnumerator();
+        }
     }
 }

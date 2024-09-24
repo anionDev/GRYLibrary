@@ -59,7 +59,10 @@ namespace GRYLibrary.Core.Misc
             ProcessIdOfBackupProcess = backupProcess.Id;
         }
 
-        private static bool ThisProgramIsTheOnlyInstance() => GetAmountOfProcessesWithNameOfCurrentProcess() == 1;
+        private static bool ThisProgramIsTheOnlyInstance()
+        {
+            return GetAmountOfProcessesWithNameOfCurrentProcess() == 1;
+        }
 
         private static int GetAmountOfProcessesWithNameOfCurrentProcess()
         {

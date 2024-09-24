@@ -29,53 +29,92 @@ namespace GRYLibrary.Core.APIServer.Services.KeyCloak
             this.TryConnect(out Exception _);
         }
 
-        protected KeycloakClient GetKeycloakClient() => this.KeycloakClient;
+        protected KeycloakClient GetKeycloakClient()
+        {
+            return this.KeycloakClient;
+        }
 
-        public virtual bool AccessTokenIsValid(string username, string accessToken) => this.EnsureServiceIsConnected<bool>(() =>
-                                                                                                {
-                                                                                                    throw new NotImplementedException();
-                                                                                                });
+        public virtual bool AccessTokenIsValid(string username, string accessToken)
+        {
+            return this.EnsureServiceIsConnected<bool>(() =>
+                                                                                                                                                                                    {
+                                                                                                                                                                                        throw new NotImplementedException();
+                                                                                                                                                                                    });
+        }
 
-        public virtual void Register(string username, string emailAddress, string password) => this.EnsureServiceIsConnected(() =>
-                                                                                                        {
-                                                                                                            KeycloakClient service = this.GetKeycloakClient();
-                                                                                                            KeycloakUser user = new KeycloakUser
-                                                                                                            {
-                                                                                                                Id = Guid.NewGuid().ToString(),
-                                                                                                                UserName = username
-                                                                                                            };
-                                                                                                            user.FirstName = string.Empty;
-                                                                                                            user.LastName = username;
-                                                                                                            user.Groups = new List<string>();
-                                                                                                            user.ClientRoles = new Dictionary<string, object>();
-                                                                                                            user.Credentials = new List<Credentials>() { };
-                                                                                                            user.Email = emailAddress;
-                                                                                                            user.Enabled = true;
-                                                                                                            Task<string> task = service.CreateAndRetrieveUserIdAsync(this.Settings.Realm, user);
-                                                                                                            task.Wait();
-                                                                                                        });
+        public virtual void Register(string username, string emailAddress, string password)
+        {
+            this.EnsureServiceIsConnected(() =>
+                                                                                                                                                                                                    {
+                                                                                                                                                                                                        KeycloakClient service = this.GetKeycloakClient();
+                                                                                                                                                                                                        KeycloakUser user = new KeycloakUser
+                                                                                                                                                                                                        {
+                                                                                                                                                                                                            Id = Guid.NewGuid().ToString(),
+                                                                                                                                                                                                            UserName = username
+                                                                                                                                                                                                        };
+                                                                                                                                                                                                        user.FirstName = string.Empty;
+                                                                                                                                                                                                        user.LastName = username;
+                                                                                                                                                                                                        user.Groups = new List<string>();
+                                                                                                                                                                                                        user.ClientRoles = new Dictionary<string, object>();
+                                                                                                                                                                                                        user.Credentials = new List<Credentials>() { };
+                                                                                                                                                                                                        user.Email = emailAddress;
+                                                                                                                                                                                                        user.Enabled = true;
+                                                                                                                                                                                                        Task<string> task = service.CreateAndRetrieveUserIdAsync(this.Settings.Realm, user);
+                                                                                                                                                                                                        task.Wait();
+                                                                                                                                                                                                    });
+        }
 
-        public AccessToken Login(string username, string password) => this.EnsureServiceIsConnected<AccessToken>(() =>
-                                                                               {
-                                                                                   throw new NotImplementedException();
-                                                                               });
+        public AccessToken Login(string username, string password)
+        {
+            return this.EnsureServiceIsConnected<AccessToken>(() =>
+                                                                                                                                                  {
+                                                                                                                                                      throw new NotImplementedException();
+                                                                                                                                                  });
+        }
 
-        public void Logout(string name) => throw new NotImplementedException();
+        public void Logout(string name)
+        {
+            throw new NotImplementedException();
+        }
 
-        public void EnsureUserIsInGroup(string user, string group) => throw new NotImplementedException();
+        public void EnsureUserIsInGroup(string user, string group)
+        {
+            throw new NotImplementedException();
+        }
 
-        public void EnsureUserIsNotInGroup(string user, string group) => throw new NotImplementedException();
+        public void EnsureUserIsNotInGroup(string user, string group)
+        {
+            throw new NotImplementedException();
+        }
 
-        public bool UserIsInGroup(string user, string group) => throw new NotImplementedException();
+        public bool UserIsInGroup(string user, string group)
+        {
+            throw new NotImplementedException();
+        }
 
-        public void OnStart() => throw new NotImplementedException();
+        public void OnStart()
+        {
+            throw new NotImplementedException();
+        }
 
-        public bool GroupExists(string groupname) => throw new NotImplementedException();
+        public bool GroupExists(string groupname)
+        {
+            throw new NotImplementedException();
+        }
 
-        public void RemoveUser(string username) => throw new NotImplementedException();
+        public void RemoveUser(string username)
+        {
+            throw new NotImplementedException();
+        }
 
-        public bool IsAuthenticated(HttpContext context, AuthorizeAttribute authorizeAttribute) => throw new NotImplementedException();
+        public bool IsAuthenticated(HttpContext context, AuthorizeAttribute authorizeAttribute)
+        {
+            throw new NotImplementedException();
+        }
 
-        public bool TryGetAuthentication(HttpContext context, out ClaimsPrincipal principal) => throw new NotImplementedException();
+        public bool TryGetAuthentication(HttpContext context, out ClaimsPrincipal principal)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

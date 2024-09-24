@@ -22,9 +22,20 @@ namespace GRYLibrary.Core.Misc
             }
             return value;
         }
-        public void ResetCache() => this._Cache.Clear();
-        public void ResetCache(TKey item) => this._Cache.Remove(item);
-        public bool ContainsKey(TKey key) => this._Cache.ContainsKey(key);
+        public void ResetCache()
+        {
+            this._Cache.Clear();
+        }
+
+        public void ResetCache(TKey item)
+        {
+            this._Cache.Remove(item);
+        }
+
+        public bool ContainsKey(TKey key)
+        {
+            return this._Cache.ContainsKey(key);
+        }
     }
     public class CacheDictionaryStore<TKey, TValue>
     {
@@ -33,9 +44,24 @@ namespace GRYLibrary.Core.Misc
         {
             this._CacheDictionaryStore = new CacheDictionaryStore<TKey, TValue, object>((key, _) => getFunction(key));
         }
-        public TValue GetValue(TKey key) => this._CacheDictionaryStore.GetValue(key, default);
-        public void ResetCache() => this._CacheDictionaryStore.ResetCache();
-        public void ResetCache(TKey item) => this._CacheDictionaryStore.ResetCache(item);
-        public bool ContainsKey(TKey key) => this._CacheDictionaryStore.ContainsKey(key);
+        public TValue GetValue(TKey key)
+        {
+            return this._CacheDictionaryStore.GetValue(key, default);
+        }
+
+        public void ResetCache()
+        {
+            this._CacheDictionaryStore.ResetCache();
+        }
+
+        public void ResetCache(TKey item)
+        {
+            this._CacheDictionaryStore.ResetCache(item);
+        }
+
+        public bool ContainsKey(TKey key)
+        {
+            return this._CacheDictionaryStore.ContainsKey(key);
+        }
     }
 }

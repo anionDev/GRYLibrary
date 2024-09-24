@@ -35,6 +35,7 @@ using GRYLibrary.Core.APIServer.Utilities;
 using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using GRYLibrary.Core.APIServer.MidT.RLog;
 using GRYLibrary.Core.APIServer.MaintenanceRoutes;
+using GRYLibrary.Core.Logging.GRYLogger;
 
 namespace GRYLibrary.Core.APIServer
 {
@@ -53,13 +54,17 @@ namespace GRYLibrary.Core.APIServer
         //TODO integrate prometheus-net (https://github.com/prometheus-net/prometheus-net#best-practices-and-usage) for metrics and healthcheck
         private APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> _Configuration;
 
-        public static Func<CommandlineParameterType, GRYConsoleApplicationInitialInformation, int> CreateMain(Action<APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>> init) => (CommandlineParameterType commandlineParameter, GRYConsoleApplicationInitialInformation gryConsoleApplicationInitialInformation) =>
-                                                                                                                                                                                                                                                                  {
-                                                                                                                                                                                                                                                                      APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> apiServerConfiguration = new APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>();
-                                                                                                                                                                                                                                                                      init(apiServerConfiguration);
-                                                                                                                                                                                                                                                                      APIMain(commandlineParameter, gryConsoleApplicationInitialInformation, apiServerConfiguration);
-                                                                                                                                                                                                                                                                      return 0;
-                                                                                                                                                                                                                                                                  };
+        public static Func<CommandlineParameterType, GRYConsoleApplicationInitialInformation, int> CreateMain(Action<APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>> init)
+        {
+            return (CommandlineParameterType commandlineParameter, GRYConsoleApplicationInitialInformation gryConsoleApplicationInitialInformation) =>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> apiServerConfiguration = new APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            init(apiServerConfiguration);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            APIMain(commandlineParameter, gryConsoleApplicationInitialInformation, apiServerConfiguration);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            return 0;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        };
+        }
+
         public static int APIMain(CommandlineParameterType commandlineParameter, GRYConsoleApplicationInitialInformation gryConsoleApplicationInitialInformation, APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> apiServerConfiguration)
         {
             #region Initialize default configuration-values
@@ -130,21 +135,32 @@ namespace GRYLibrary.Core.APIServer
                 this._KnownTypes = knownTypes;
             }
 
-            public IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> Handle(Analysis analysis) => this._MetaConfiguration.InitialValue;
+            public IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> Handle(Analysis analysis)
+            {
+                return this._MetaConfiguration.InitialValue;
+            }
 
-            public IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> Handle(RunProgram runProgram) => this.UsePersistedConfiguration();
+            public IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> Handle(RunProgram runProgram)
+            {
+                return this.UsePersistedConfiguration();
+            }
 
-            public IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> Handle(TestRun testRun) => this.UsePersistedConfiguration();
+            public IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> Handle(TestRun testRun)
+            {
+                return this.UsePersistedConfiguration();
+            }
 
-            private IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> UsePersistedConfiguration() =>
+            private IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> UsePersistedConfiguration()
+            {
                 //TODO add option to define config-file-migrations here
-                MetaConfigurationManager.GetConfiguration(this._MetaConfiguration, this._KnownTypes);
+                return MetaConfigurationManager.GetConfiguration(this._MetaConfiguration, this._KnownTypes);
+            }
         }
         #endregion
 
         public int Run(APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> config, IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedAPIServerConfiguration)
         {
-            IGeneralLogger logger = GeneralLogger.CreateUsingConsole();
+            IGRYLog logger = GeneralLogger.CreateUsingConsole();
             try
             {
                 this.CreateRequiredFolder();
@@ -168,7 +184,7 @@ namespace GRYLibrary.Core.APIServer
 
         private WebApplication CreateWebApplication(
             APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> apiServerConfiguration,
-            IGeneralLogger logger,
+            IGRYLog logger,
             IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedAPIServerConfiguration)
         {
             logger.Log($"BaseFolder: {apiServerConfiguration.InitializationInformation.BaseFolder}", LogLevel.Debug);
@@ -189,6 +205,7 @@ namespace GRYLibrary.Core.APIServer
 
             builder.Services.AddSingleton((serviceProvider) => apiServerConfiguration.InitializationInformation.CommandlineParameter);
             builder.Services.AddSingleton((serviceProvider) => logger);
+            builder.Services.AddSingleton<IGeneralLogger>(sp => sp.GetRequiredService<IGRYLog>());
             builder.Services.AddSingleton((serviceProvider) => persistedAPIServerConfiguration);
             builder.Services.AddSingleton((serviceProvider) => this._Configuration.InitializationInformation.ApplicationConstants);
             builder.Services.AddSingleton<IApplicationConstants>((serviceProvider) => this._Configuration.InitializationInformation.ApplicationConstants);
@@ -404,7 +421,11 @@ namespace GRYLibrary.Core.APIServer
         }
 
         #region Host API Documentation
-        private static bool HostAPIDocumentation(GRYEnvironment environment, bool hostAPISpecificationForInNonDevelopmentEnvironment, ExecutionMode executionMode) => executionMode.Accept(new GetHostAPIDocumentationVisitor(environment, hostAPISpecificationForInNonDevelopmentEnvironment));
+        private static bool HostAPIDocumentation(GRYEnvironment environment, bool hostAPISpecificationForInNonDevelopmentEnvironment, ExecutionMode executionMode)
+        {
+            return executionMode.Accept(new GetHostAPIDocumentationVisitor(environment, hostAPISpecificationForInNonDevelopmentEnvironment));
+        }
+
         private class GetHostAPIDocumentationVisitor : IExecutionModeVisitor<bool>
         {
             private readonly GRYEnvironment _Environment;
@@ -416,7 +437,10 @@ namespace GRYLibrary.Core.APIServer
                 this._HostAPISpecificationForInNonDevelopmentEnvironment = hostAPISpecificationForInNonDevelopmentEnvironment;
             }
 
-            public bool Handle(Analysis analysis) => true;// required for generation of OpenAPI-specification-json-file
+            public bool Handle(Analysis analysis)
+            {
+                return true;// required for generation of OpenAPI-specification-json-file
+            }
 
             public bool Handle(RunProgram runProgram)
             {
@@ -430,7 +454,10 @@ namespace GRYLibrary.Core.APIServer
                 }
             }
 
-            public bool Handle(TestRun testRun) => true;
+            public bool Handle(TestRun testRun)
+            {
+                return true;
+            }
         }
         #endregion
 
@@ -459,7 +486,10 @@ namespace GRYLibrary.Core.APIServer
             }
         }
 
-        private IGeneralLogger GetApplicationLogger(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration) => this._Configuration.InitializationInformation.ApplicationConstants.ExecutionMode.Accept(new GetLoggerVisitor(persistedApplicationSpecificConfiguration.ApplicationLogConfiguration, this._Configuration.InitializationInformation.ApplicationConstants.GetLogFolder(), "Server"));
+        private IGRYLog GetApplicationLogger(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration)
+        {
+            return this._Configuration.InitializationInformation.ApplicationConstants.ExecutionMode.Accept(new GetLoggerVisitor(persistedApplicationSpecificConfiguration.ApplicationLogConfiguration, this._Configuration.InitializationInformation.ApplicationConstants.GetLogFolder(), "Server"));
+        }
 
         private void CreateRequiredFolder()
         {

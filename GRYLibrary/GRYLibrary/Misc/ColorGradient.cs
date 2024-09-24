@@ -12,7 +12,11 @@ namespace GRYLibrary.Core.Misc
             this.DestinationColor = destinationColor;
             this.StartColor = startColor;
         }
-        public ExtendedColor GetColorGradientValue(double gradient) => this.GetColorGradientValue(new PercentValue((decimal)gradient));
+        public ExtendedColor GetColorGradientValue(double gradient)
+        {
+            return this.GetColorGradientValue(new PercentValue((decimal)gradient));
+        }
+
         public ExtendedColor GetColorGradientValue(PercentValue percentValue)
         {
             byte a = this.GetGradient(this.StartColor.A, this.DestinationColor.A, percentValue);
@@ -22,6 +26,9 @@ namespace GRYLibrary.Core.Misc
             return new ExtendedColor(a, r, g, b);
         }
 
-        private byte GetGradient(byte startValue, byte destinationValue, PercentValue gradient) => (byte)Math.Round(startValue + ((destinationValue - startValue) * gradient.Value), 0);
+        private byte GetGradient(byte startValue, byte destinationValue, PercentValue gradient)
+        {
+            return (byte)Math.Round(startValue + ((destinationValue - startValue) * gradient.Value), 0);
+        }
     }
 }

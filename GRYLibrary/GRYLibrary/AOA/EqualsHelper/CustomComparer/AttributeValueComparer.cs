@@ -12,7 +12,10 @@ namespace GRYLibrary.Core.AOA.EqualsHelper.CustomComparer
         {
         }
 
-        public override bool IsApplicable(Type typeOfObject1, Type typeOfObject2) => typeOfObject1.Equals(typeOfObject2);
+        public override bool IsApplicable(Type typeOfObject1, Type typeOfObject2)
+        {
+            return typeOfObject1.Equals(typeOfObject2);
+        }
 
         public override bool DefaultEquals(object object1, object object2)
         {
@@ -36,6 +39,9 @@ namespace GRYLibrary.Core.AOA.EqualsHelper.CustomComparer
             return true;
         }
 
-        public override int DefaultGetHashCode(object @object) => this.Configuration.GetHashCode(@object);
+        public override int DefaultGetHashCode(object @object)
+        {
+            return this.Configuration.GetHashCode(@object);
+        }
     }
 }

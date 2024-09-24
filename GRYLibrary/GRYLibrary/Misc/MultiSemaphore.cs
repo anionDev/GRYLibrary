@@ -13,7 +13,11 @@ namespace GRYLibrary.Core.Misc
             this.LockEnabled = true;
         }
         public override long Value { get => base.Value; set => throw new InvalidOperationException($"Please use the {nameof(Increment)}- and {nameof(Decrement)}-operation to modify the value."); }
-        public void Increment() => base.Value += 1;
+        public void Increment()
+        {
+            base.Value += 1;
+        }
+
         public void Decrement()
         {
             if (this.Value == 0)
@@ -33,6 +37,9 @@ namespace GRYLibrary.Core.Misc
                 return typedObject.Name.Equals(this.Name);
             }
         }
-        public override int GetHashCode() => HashCode.Combine(this.Name);
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(this.Name);
+        }
     }
 }

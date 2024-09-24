@@ -83,11 +83,31 @@ namespace GRYLibrary.Core.APIServer.Settings
         public AbstractFilePath ConfigurationFile { get; set; }
         public AbstractFilePath LogFolder { get; set; }
         public bool ThrowErrorIfConfigurationDoesNotExistInProduction { get; set; } = false;
-        public string GetDataFolder() => this.DataFolder.GetPath(this._BaseFolder);
-        public string GetConfigurationFolder() => this.ConfigurationFolder.GetPath(this._BaseFolder);
-        public string GetCertificateFolder() => this.CertificateFolder.GetPath(this.GetConfigurationFolder());
-        public string GetConfigurationFile() => this.ConfigurationFile.GetPath(this.GetConfigurationFolder());
-        public string GetLogFolder() => this.LogFolder.GetPath(this._BaseFolder);
+        public string GetDataFolder()
+        {
+            return this.DataFolder.GetPath(this._BaseFolder);
+        }
+
+        public string GetConfigurationFolder()
+        {
+            return this.ConfigurationFolder.GetPath(this._BaseFolder);
+        }
+
+        public string GetCertificateFolder()
+        {
+            return this.CertificateFolder.GetPath(this.GetConfigurationFolder());
+        }
+
+        public string GetConfigurationFile()
+        {
+            return this.ConfigurationFile.GetPath(this.GetConfigurationFolder());
+        }
+
+        public string GetLogFolder()
+        {
+            return this.LogFolder.GetPath(this._BaseFolder);
+        }
+
         public CommonRoutesHostInformation CommonRoutesHostInformation { get; set; } = new HostCommonRoutes();
         public AbstractHostMaintenanceInformation HostMaintenanceInformation { get; set; } = new HostMaintenanceRoutes();
         public Type AuthenticationMiddleware { get; set; } = null;
@@ -104,6 +124,9 @@ namespace GRYLibrary.Core.APIServer.Settings
         public IList<Type> CustomMiddlewares2 { get; set; } = new List<Type>();
         public ISet<Type> KnownTypes { get; set; } = new HashSet<Type>();
 
-        public void Initialize(string baseFolder) => this._BaseFolder = baseFolder;
+        public void Initialize(string baseFolder)
+        {
+            this._BaseFolder = baseFolder;
+        }
     }
 }

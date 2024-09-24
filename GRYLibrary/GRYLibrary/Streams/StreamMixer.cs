@@ -21,7 +21,11 @@ namespace GRYLibrary.Core.Streams
                 connection.Stop();
             };
         }
-        public IImmutableSet<StreamPipe> GetConnections() => this._Connections.ToImmutableHashSet();
+        public IImmutableSet<StreamPipe> GetConnections()
+        {
+            return this._Connections.ToImmutableHashSet();
+        }
+
         public class StreamPipe
         {
             public Stream Source { get; }
@@ -59,7 +63,10 @@ namespace GRYLibrary.Core.Streams
                     throw new System.NotImplementedException();
                 }
             }
-            public override int GetHashCode() => this.Source.GetHashCode() ^ this.Target.GetHashCode();
+            public override int GetHashCode()
+            {
+                return this.Source.GetHashCode() ^ this.Target.GetHashCode();
+            }
         }
     }
 }

@@ -12,7 +12,11 @@ namespace GRYLibrary.Core.Misc
     public static class SpecialFileInformation
     {
         #region Execute or open file
-        public static bool FileIsExecutable(string file) => OperatingSystem.OperatingSystem.GetCurrentOperatingSystem().Accept(new FileIsExecutableVisitor(file));
+        public static bool FileIsExecutable(string file)
+        {
+            return OperatingSystem.OperatingSystem.GetCurrentOperatingSystem().Accept(new FileIsExecutableVisitor(file));
+        }
+
         public static ExternalProgramExecutor ExecuteFile(string file)
         {
             if (FileIsExecutable(file))
@@ -27,7 +31,11 @@ namespace GRYLibrary.Core.Misc
             }
         }
 
-        public static void OpenFileWithDefaultProgram(string file) => new ExternalProgramExecutor(new ExternalProgramExecutorConfiguration { Program = file, WaitingState = new RunAsynchronously() }).Run();
+        public static void OpenFileWithDefaultProgram(string file)
+        {
+            new ExternalProgramExecutor(new ExternalProgramExecutorConfiguration { Program = file, WaitingState = new RunAsynchronously() }).Run();
+        }
+
         private class FileIsExecutableVisitor : IOperatingSystemVisitor<bool>
         {
             private readonly string _File;
@@ -37,7 +45,10 @@ namespace GRYLibrary.Core.Misc
                 this._File = file;
             }
 
-            public bool Handle(OSX operatingSystem) => true;
+            public bool Handle(OSX operatingSystem)
+            {
+                return true;
+            }
 
             public bool Handle(Windows operatingSystem)
             {
@@ -47,12 +58,19 @@ namespace GRYLibrary.Core.Misc
                     || fileToLower.EndsWith(".bat");
             }
 
-            public bool Handle(Linux operatingSystem) => true;
+            public bool Handle(Linux operatingSystem)
+            {
+                return true;
+            }
         }
         #endregion
 
         #region Get file extension on windows
-        public static string GetDefaultProgramToOpenFile(string extensionWithDot) => FileExtentionInfo(AssocStr.Executable, extensionWithDot);
+        public static string GetDefaultProgramToOpenFile(string extensionWithDot)
+        {
+            return FileExtentionInfo(AssocStr.Executable, extensionWithDot);
+        }
+
         [DllImport("Shlwapi.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         static extern uint AssocQueryString(AssocF flags, AssocStr str, string pszAssoc, string pszExtra, [Out] StringBuilder pszOut, [In][Out] ref uint pcchOut);
         private static string FileExtentionInfo(AssocStr assocStr, string extensionWithDot)

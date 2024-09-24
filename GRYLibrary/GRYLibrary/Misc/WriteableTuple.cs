@@ -15,7 +15,10 @@ namespace GRYLibrary.Core.Misc
         }
         public new T1 Item1 { get; set; }
         public new T2 Item2 { get; set; }
-        public override int GetHashCode() => Generic.GenericGetHashCode(this.Item1);
+        public override int GetHashCode()
+        {
+            return Generic.GenericGetHashCode(this.Item1);
+        }
 
         public override bool Equals(object obj)
         {

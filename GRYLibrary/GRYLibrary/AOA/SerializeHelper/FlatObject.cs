@@ -22,7 +22,11 @@ namespace GRYLibrary.Core.AOA.SerializeHelper
                 return false;
             }
         }
-        public override int GetHashCode() => HashCode.Combine(this.ObjectId);
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(this.ObjectId);
+        }
+
         public abstract void Accept(IFlatObjectVisitor visitor);
         public abstract T Accept<T>(IFlatObjectVisitor<T> visitor);
         public interface IFlatObjectVisitor

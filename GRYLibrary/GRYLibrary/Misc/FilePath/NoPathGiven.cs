@@ -7,8 +7,14 @@ namespace GRYLibrary.Core.Misc.FilePath
     {
         public override string FilePath { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
 
-        public override string GetPath() => Directory.GetCurrentDirectory();
+        public override string GetPath()
+        {
+            return Directory.GetCurrentDirectory();
+        }
 
-        public override string GetPath(string basePath) => Directory.GetCurrentDirectory();
+        public override string GetPath(string basePath)
+        {
+            return Directory.GetCurrentDirectory();
+        }
     }
 }

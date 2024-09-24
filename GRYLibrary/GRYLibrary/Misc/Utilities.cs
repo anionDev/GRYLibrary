@@ -41,6 +41,7 @@ using GRYLibrary.Core.Logging.GRYLogger;
 using System.Net.Http;
 using System.Data;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using System.Net;
 
 namespace GRYLibrary.Core.Misc
 {
@@ -65,7 +66,11 @@ namespace GRYLibrary.Core.Misc
             Array.Copy(source, index, last, 0, len2);
             return (first, last);
         }
-        public static bool IsAdministrator() => OperatingSystem.OperatingSystem.GetCurrentOperatingSystem().Accept(new IsAdministratorVisitor());
+        public static bool IsAdministrator()
+        {
+            return OperatingSystem.OperatingSystem.GetCurrentOperatingSystem().Accept(new IsAdministratorVisitor());
+        }
+
         private class IsAdministratorVisitor : IOperatingSystemVisitor<bool>
         {
             public bool Handle(OSX operatingSystem)
@@ -106,10 +111,26 @@ namespace GRYLibrary.Core.Misc
                 }
             }
         }
-        public static PercentValue ToPercentValue(this float value) => new PercentValue(value);
-        public static PercentValue ToPercentValue(this int value) => new PercentValue((decimal)value);
-        public static PercentValue ToPercentValue(this double value) => new PercentValue(value);
-        public static PercentValue ToPercentValue(this decimal value) => new PercentValue(value);
+        public static PercentValue ToPercentValue(this float value)
+        {
+            return new PercentValue(value);
+        }
+
+        public static PercentValue ToPercentValue(this int value)
+        {
+            return new PercentValue((decimal)value);
+        }
+
+        public static PercentValue ToPercentValue(this double value)
+        {
+            return new PercentValue(value);
+        }
+
+        public static PercentValue ToPercentValue(this decimal value)
+        {
+            return new PercentValue(value);
+        }
+
         public static void Repeat<T>(this Action<uint> action, uint amountOfExecutions)
         {
             for (uint i = 0; i < amountOfExecutions; i++)
@@ -118,7 +139,10 @@ namespace GRYLibrary.Core.Misc
             }
         }
 
-        public static string NormalizePath(string path) => OperatingSystem.OperatingSystem.GetCurrentOperatingSystem().Accept(new NormalizePathVisitor(path));
+        public static string NormalizePath(string path)
+        {
+            return OperatingSystem.OperatingSystem.GetCurrentOperatingSystem().Accept(new NormalizePathVisitor(path));
+        }
 
         private class NormalizePathVisitor : IOperatingSystemVisitor<string>
         {
@@ -131,11 +155,20 @@ namespace GRYLibrary.Core.Misc
                 this._Path = path;
             }
 
-            public string Handle(OSX operatingSystem) => this._Path.Replace(this.WindowsPathSeparatorChar, this.LinuxAndOSXPathSeparatorChar);
+            public string Handle(OSX operatingSystem)
+            {
+                return this._Path.Replace(this.WindowsPathSeparatorChar, this.LinuxAndOSXPathSeparatorChar);
+            }
 
-            public string Handle(Windows operatingSystem) => this._Path.Replace(this.LinuxAndOSXPathSeparatorChar, this.WindowsPathSeparatorChar);
+            public string Handle(Windows operatingSystem)
+            {
+                return this._Path.Replace(this.LinuxAndOSXPathSeparatorChar, this.WindowsPathSeparatorChar);
+            }
 
-            public string Handle(Linux operatingSystem) => this._Path.Replace(this.WindowsPathSeparatorChar, this.LinuxAndOSXPathSeparatorChar);
+            public string Handle(Linux operatingSystem)
+            {
+                return this._Path.Replace(this.WindowsPathSeparatorChar, this.LinuxAndOSXPathSeparatorChar);
+            }
         }
 
         /// <summary>
@@ -178,10 +211,13 @@ namespace GRYLibrary.Core.Misc
             }
             return result;
         }
-        public static uint SwapEndianness(uint value) => ((value & 0x000000ff) << 24)
+        public static uint SwapEndianness(uint value)
+        {
+            return ((value & 0x000000ff) << 24)
                  + ((value & 0x0000ff00) << 08)
                  + ((value & 0x00ff0000) >> 08)
                  + ((value & 0xff000000) >> 24);
+        }
 
         public static byte[] GetRandomByteArray(long length = 65536)
         {
@@ -193,7 +229,10 @@ namespace GRYLibrary.Core.Misc
         /// <summary>
         /// This is the inverse function of <see cref="ConcatBytesArraysWithLengthInformation"/>
         /// </summary>
-        public static byte[][] GetBytesArraysFromConcatBytesArraysWithLengthInformation(byte[] bytes) => throw new NotImplementedException();
+        public static byte[][] GetBytesArraysFromConcatBytesArraysWithLengthInformation(byte[] bytes)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// This is the inverse function of <see cref="GetBytesArraysFromConcatBytesArraysWithLengthInformation"/>
@@ -238,7 +277,10 @@ namespace GRYLibrary.Core.Misc
             return FormatKeyValuePairs(values);
         }
 
-        public static string FormatKeyValuePairs(Dictionary<string, string> values) => "{" + string.Join(", ", values.Select(kvp => $"'{kvp.Key}':'{kvp.Value}'")) + "}";
+        public static string FormatKeyValuePairs(Dictionary<string, string> values)
+        {
+            return "{" + string.Join(", ", values.Select(kvp => $"'{kvp.Key}':'{kvp.Value}'")) + "}";
+        }
 
         public static void Shuffle<T>(this IList<T> list)
         {
@@ -251,7 +293,10 @@ namespace GRYLibrary.Core.Misc
                 (list[n], list[k]) = (list[k], list[n]);
             }
         }
-        public static bool EqualsIgnoringOrder<T>(this IEnumerable<T> list1, IEnumerable<T> list2) => Enumerable.SequenceEqual(list1.OrderBy(item => item), list2.OrderBy(item => item));
+        public static bool EqualsIgnoringOrder<T>(this IEnumerable<T> list1, IEnumerable<T> list2)
+        {
+            return Enumerable.SequenceEqual(list1.OrderBy(item => item), list2.OrderBy(item => item));
+        }
 
         public static IEnumerable<PropertyInfo> GetPropertiesWhichHaveGetterAndSetter(Type type)
         {
@@ -369,7 +414,11 @@ namespace GRYLibrary.Core.Misc
             }
             return @string;
         }
-        public static bool ObjectIsPrimitive(object @object) => TypeIsPrimitive(@object.GetType());
+        public static bool ObjectIsPrimitive(object @object)
+        {
+            return TypeIsPrimitive(@object.GetType());
+        }
+
         public static bool TypeIsPrimitive(Type type)
         {
             if (type.IsGenericType)
@@ -398,14 +447,21 @@ namespace GRYLibrary.Core.Misc
             }
         }
 
-        public static bool TypeRepresentsType(Type type) => type.FullName is "System.Reflection.Emit.EnumBuilder"
+        public static bool TypeRepresentsType(Type type)
+        {
+            return type.FullName is "System.Reflection.Emit.EnumBuilder"
                 or "System.Reflection.Emit.GenericTypeParameterBuilder"
                 or "System.Reflection.Emit.TypeBuilder"
                 or "System.Reflection.TypeInfo"
                 or "System.RuntimeType"
                 or "System.Type";
+        }
 
-        public static bool IsAssignableFrom(object @object, Type genericTypeToCompare) => TypeIsAssignableFrom(@object.GetType(), genericTypeToCompare);
+        public static bool IsAssignableFrom(object @object, Type genericTypeToCompare)
+        {
+            return TypeIsAssignableFrom(@object.GetType(), genericTypeToCompare);
+        }
+
         public static bool TypeIsAssignableFrom(Type typeForCheck, Type parentType)
         {
             ISet<Type> typesToCheck = GetTypeWithParentTypesAndInterfaces(typeForCheck);
@@ -442,9 +498,15 @@ namespace GRYLibrary.Core.Misc
                 return true;
             }
 
-            public int GetHashCode(Type obj) => obj.GetHashCode();
+            public int GetHashCode(Type obj)
+            {
+                return obj.GetHashCode();
+            }
         }
-        public static void ReplaceUnderscoresInFile(string file, IDictionary<string, string> replacements) => ReplaceUnderscoresInFile(file, replacements, new UTF8Encoding(false));
+        public static void ReplaceUnderscoresInFile(string file, IDictionary<string, string> replacements)
+        {
+            ReplaceUnderscoresInFile(file, replacements, new UTF8Encoding(false));
+        }
 
         public static void ReplaceUnderscoresInFile(string file, IDictionary<string, string> replacements, Encoding encoding)
         {
@@ -480,8 +542,16 @@ namespace GRYLibrary.Core.Misc
             }
             return result;
         }
-        public static string EntryListToCSVString(IList<IList<string>> entryList) => string.Join(Environment.NewLine, entryList.Select(line => string.Join(";", line)));
-        public static string PadCSV(string csvString) => EntryListToCSVString(PadTable(CSVStringToEntryList(csvString)));
+        public static string EntryListToCSVString(IList<IList<string>> entryList)
+        {
+            return string.Join(Environment.NewLine, entryList.Select(line => string.Join(";", line)));
+        }
+
+        public static string PadCSV(string csvString)
+        {
+            return EntryListToCSVString(PadTable(CSVStringToEntryList(csvString)));
+        }
+
         public static IList<IList<string>> PadTable(IList<IList<string>> table)
         {
             List<IList<string>> result = new List<IList<string>>();
@@ -516,7 +586,11 @@ namespace GRYLibrary.Core.Misc
             return result;
         }
 
-        public static T[][] EnumerableOfEnumerableToJaggedArray<T>(IEnumerable<IEnumerable<T>> items) => items.Select(Enumerable.ToArray).ToArray();
+        public static T[][] EnumerableOfEnumerableToJaggedArray<T>(IEnumerable<IEnumerable<T>> items)
+        {
+            return items.Select(Enumerable.ToArray).ToArray();
+        }
+
         public static T[,] JaggedArrayToTwoDimensionalArray<T>(T[][] items)
         {
             int amountOfItemsInFirstDimension = items.Length;
@@ -536,7 +610,11 @@ namespace GRYLibrary.Core.Misc
         /// <returns>
         /// Returns a new <see cref="Guid"/> whose value in the last block is incremented
         /// </returns>
-        public static Guid IncrementGuid(Guid id, long valueToIncrement = 1) => IncrementGuid(id, new BigInteger(valueToIncrement));
+        public static Guid IncrementGuid(Guid id, long valueToIncrement = 1)
+        {
+            return IncrementGuid(id, new BigInteger(valueToIncrement));
+        }
+
         public static Guid IncrementGuid(Guid id, BigInteger valueToIncrement)
         {
             BigInteger value = BigInteger.Parse(id.ToString("N"), NumberStyles.HexNumber);
@@ -650,11 +728,30 @@ namespace GRYLibrary.Core.Misc
             }
             return dateTime.ToString(format, CultureInfo.InvariantCulture);
         }
-        public static string DateTimeToUserFriendlyString(DateTime dateTime) => DateTimeToISO8601String(dateTime, false);
-        public static string DateTimeToUserFriendlyString(GRYDateTime dateTime) => DateTimeToISO8601String(dateTime.ToDateTime(), false);
-        public static string DateTimeForFilename(DateTime dateTime) => dateTime.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture);
-        public static string DateToUserFriendlyString(DateOnly date) => $"{date.Year.ToString().PadLeft(4, '0')}-{date.Month.ToString().PadLeft(2, '0')}-{date.Day.ToString().PadLeft(2, '0')}";
-        public static string TimeToUserFriendlyString(TimeOnly time) => $"{time.Hour.ToString().PadLeft(2, '0')}:{time.Minute.ToString().PadLeft(2, '0')}:{time.Second.ToString().PadLeft(2, '0')}";
+        public static string DateTimeToUserFriendlyString(DateTime dateTime)
+        {
+            return DateTimeToISO8601String(dateTime, false);
+        }
+
+        public static string DateTimeToUserFriendlyString(GRYDateTime dateTime)
+        {
+            return DateTimeToISO8601String(dateTime.ToDateTime(), false);
+        }
+
+        public static string DateTimeForFilename(DateTime dateTime)
+        {
+            return dateTime.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture);
+        }
+
+        public static string DateToUserFriendlyString(DateOnly date)
+        {
+            return $"{date.Year.ToString().PadLeft(4, '0')}-{date.Month.ToString().PadLeft(2, '0')}-{date.Day.ToString().PadLeft(2, '0')}";
+        }
+
+        public static string TimeToUserFriendlyString(TimeOnly time)
+        {
+            return $"{time.Hour.ToString().PadLeft(2, '0')}:{time.Minute.ToString().PadLeft(2, '0')}:{time.Second.ToString().PadLeft(2, '0')}";
+        }
 
         /// <summary>
         /// This function parses a datetime-string.
@@ -721,9 +818,16 @@ namespace GRYLibrary.Core.Misc
             }
         }
 
-        public static bool FileHasAttribute(string file, FileAttributes attribute) => (File.GetAttributes(file) & attribute) == attribute;
+        public static bool FileHasAttribute(string file, FileAttributes attribute)
+        {
+            return (File.GetAttributes(file) & attribute) == attribute;
+        }
 
-        public static string TypeArrayToString(Type[] types) => string.Format("{{{0}}}", string.Join(", ", types.Select((type) => type.Name)));
+        public static string TypeArrayToString(Type[] types)
+        {
+            return string.Format("{{{0}}}", string.Join(", ", types.Select((type) => type.Name)));
+        }
+
         public static void CopyFolderAcrossVolumes(string sourceFolder, string destinationFolder)
         {
             EnsureDirectoryExists(destinationFolder);
@@ -773,9 +877,15 @@ namespace GRYLibrary.Core.Misc
                 DeleteContentOfFolder(folder);
             }
         }
-        public static string TwoDimensionalArrayToString<T>(T[,] array) => string.Join(",", array.OfType<T>().Select((value, index) => new { value, index }).GroupBy(x => x.index / array.GetLength(1)).Select(x => $"{{{string.Join(",", x.Select(y => y.value))}}}"));
+        public static string TwoDimensionalArrayToString<T>(T[,] array)
+        {
+            return string.Join(",", array.OfType<T>().Select((value, index) => new { value, index }).GroupBy(x => x.index / array.GetLength(1)).Select(x => $"{{{string.Join(",", x.Select(y => y.value))}}}"));
+        }
 
-        public static bool TwoDimensionalArrayEquals<T>(T[,] array1, T[,] array2) => array1.Rank == array2.Rank && Enumerable.Range(0, array1.Rank).All(dimension => array1.GetLength(dimension) == array2.GetLength(dimension)) && array1.Cast<T>().SequenceEqual(array2.Cast<T>());
+        public static bool TwoDimensionalArrayEquals<T>(T[,] array1, T[,] array2)
+        {
+            return array1.Rank == array2.Rank && Enumerable.Range(0, array1.Rank).All(dimension => array1.GetLength(dimension) == array2.GetLength(dimension)) && array1.Cast<T>().SequenceEqual(array2.Cast<T>());
+        }
 
         public static void DeleteContentOfFolder(string folder)
         {
@@ -806,7 +916,10 @@ namespace GRYLibrary.Core.Misc
                 this._Programname = programname;
             }
 
-            public (bool, string) Handle(OSX operatingSystem) => throw new NotImplementedException();
+            public (bool, string) Handle(OSX operatingSystem)
+            {
+                throw new NotImplementedException();
+            }
 
             public (bool, string) Handle(Windows operatingSystem)
             {
@@ -867,11 +980,26 @@ namespace GRYLibrary.Core.Misc
             return result;
         }
 
-        public static void MoveContentOfFoldersAcrossVolumes(string sourceFolder, string targetFolder) => MoveContentOfFoldersAcrossVolumes(sourceFolder, targetFolder, FileSelector.FilesInFolder(sourceFolder, true));
-        public static void MoveContentOfFoldersAcrossVolumes(string sourceFolder, string targetFolder, FileSelector fileSelector, bool deleteAlreadyExistingFilesWithoutCopy = false) => MoveContentOfFoldersAcrossVolumes(sourceFolder, targetFolder, fileSelector, (exception) => { }, deleteAlreadyExistingFilesWithoutCopy);
-        public static void MoveContentOfFoldersAcrossVolumes(string sourceFolder, string targetFolder, Func<string, bool> fileSelectorPredicate, bool deleteAlreadyExistingFilesWithoutCopy = false) => MoveContentOfFoldersAcrossVolumes(sourceFolder, targetFolder, fileSelectorPredicate, (exception) => { }, deleteAlreadyExistingFilesWithoutCopy);
+        public static void MoveContentOfFoldersAcrossVolumes(string sourceFolder, string targetFolder)
+        {
+            MoveContentOfFoldersAcrossVolumes(sourceFolder, targetFolder, FileSelector.FilesInFolder(sourceFolder, true));
+        }
 
-        public static void MoveContentOfFoldersAcrossVolumes(string sourceFolder, string targetFolder, FileSelector fileSelector, Action<Exception> errorHandler, bool deleteAlreadyExistingFilesWithoutCopy = false) => MoveContentOfFoldersAcrossVolumes(sourceFolder, targetFolder, (file) => fileSelector.Files.Contains(file), errorHandler, deleteAlreadyExistingFilesWithoutCopy);
+        public static void MoveContentOfFoldersAcrossVolumes(string sourceFolder, string targetFolder, FileSelector fileSelector, bool deleteAlreadyExistingFilesWithoutCopy = false)
+        {
+            MoveContentOfFoldersAcrossVolumes(sourceFolder, targetFolder, fileSelector, (exception) => { }, deleteAlreadyExistingFilesWithoutCopy);
+        }
+
+        public static void MoveContentOfFoldersAcrossVolumes(string sourceFolder, string targetFolder, Func<string, bool> fileSelectorPredicate, bool deleteAlreadyExistingFilesWithoutCopy = false)
+        {
+            MoveContentOfFoldersAcrossVolumes(sourceFolder, targetFolder, fileSelectorPredicate, (exception) => { }, deleteAlreadyExistingFilesWithoutCopy);
+        }
+
+        public static void MoveContentOfFoldersAcrossVolumes(string sourceFolder, string targetFolder, FileSelector fileSelector, Action<Exception> errorHandler, bool deleteAlreadyExistingFilesWithoutCopy = false)
+        {
+            MoveContentOfFoldersAcrossVolumes(sourceFolder, targetFolder, (file) => fileSelector.Files.Contains(file), errorHandler, deleteAlreadyExistingFilesWithoutCopy);
+        }
+
         /// <summary>
         /// Moves the content of <paramref name="sourceFolder"/> to <paramref name="targetFolder"/>.
         /// </summary>
@@ -997,7 +1125,11 @@ namespace GRYLibrary.Core.Misc
         /// <returns>The result of the first finished <paramref name="functions"/>-method.</returns>
         /// <exception cref="ArgumentException">If <paramref name="functions"/> is empty.</exception>
         /// <exception cref="Exception">If every <paramref name="functions"/>-method throws an exception.</exception>
-        public static T RunAllConcurrentAndReturnFirstResult<T>(this ISet<Func<T>> functions, int maximalDegreeOfParallelism = 4) => new RunAllConcurrentAndReturnFirstResultHelper<T>(maximalDegreeOfParallelism).RunAllConcurrentAndReturnFirstResult(functions);
+        public static T RunAllConcurrentAndReturnFirstResult<T>(this ISet<Func<T>> functions, int maximalDegreeOfParallelism = 4)
+        {
+            return new RunAllConcurrentAndReturnFirstResultHelper<T>(maximalDegreeOfParallelism).RunAllConcurrentAndReturnFirstResult(functions);
+        }
+
         private class RunAllConcurrentAndReturnFirstResultHelper<T>
         {
             private T _Result = default;
@@ -1109,12 +1241,20 @@ namespace GRYLibrary.Core.Misc
             return dictionary as ExpandoObject;
         }
 
-        public static T DeepClone<T>(this T @object) => Generic.GenericDeserialize<T>(Generic.GenericSerialize(@object));
+        public static T DeepClone<T>(this T @object)
+        {
+            return Generic.GenericDeserialize<T>(Generic.GenericSerialize(@object));
+        }
+
         /// <summary>
         /// Casts an object to the given type if possible.
         /// This can be useful for example to to cast 'Action&lt;Object&gt;' to 'Action' or 'Func&lt;string&gt;' to 'Func&lt;Object&gt;' to fulfil interface-compatibility.
         /// </summary>
-        internal /*TODO change to public when it works properly*/ static object Cast2(object @object, Type targetType) => Cast(@object, targetType, DefaultConversions);
+        internal /*TODO change to public when it works properly*/ static object Cast2(object @object, Type targetType)
+        {
+            return Cast(@object, targetType, DefaultConversions);
+        }
+
         private static readonly IList<object> _DefaultConversions = new List<object>() { /*TODO*/};
         public static IList<object> DefaultConversions => _DefaultConversions.ToList();
         public static object Cast(object @object, Type targetType, IList<object> customConversions)
@@ -1136,7 +1276,11 @@ namespace GRYLibrary.Core.Misc
             return method.Invoke(null, new object[] { @object });
 
         }
-        private static T CastHelper<T>(object @object) => (T)(dynamic)@object;
+        private static T CastHelper<T>(object @object)
+        {
+            return (T)(dynamic)@object;
+        }
+
         public static long GetTotalFreeSpace(string driveName)
         {
             foreach (DriveInfo drive in DriveInfo.GetDrives())
@@ -1183,10 +1327,26 @@ namespace GRYLibrary.Core.Misc
             return rawCmd.Trim();
         }
 
-        public static bool FileEndsWithEmptyLine(string file) => File.ReadAllBytes(file).Last().Equals(10);
-        public static bool FileIsEmpty(string file) => File.ReadAllBytes(file).Count().Equals(0);
-        public static bool AppendFileDoesNotNeedNewLineCharacter(string file) => FileIsEmpty(file) || FileEndsWithEmptyLine(file);
-        public static bool AppendFileDoesNeedNewLineCharacter(string file) => !AppendFileDoesNotNeedNewLineCharacter(file);
+        public static bool FileEndsWithEmptyLine(string file)
+        {
+            return File.ReadAllBytes(file).Last().Equals(10);
+        }
+
+        public static bool FileIsEmpty(string file)
+        {
+            return File.ReadAllBytes(file).Count().Equals(0);
+        }
+
+        public static bool AppendFileDoesNotNeedNewLineCharacter(string file)
+        {
+            return FileIsEmpty(file) || FileEndsWithEmptyLine(file);
+        }
+
+        public static bool AppendFileDoesNeedNewLineCharacter(string file)
+        {
+            return !AppendFileDoesNotNeedNewLineCharacter(file);
+        }
+
         public static void AppendLineToFile(string file, string content, Encoding encoding)
         {
             string stringToAppend;
@@ -1210,7 +1370,10 @@ namespace GRYLibrary.Core.Misc
                 this._Path = path;
             }
 
-            public bool Handle(OSX operatingSystem) => this._Path.StartsWith('/');
+            public bool Handle(OSX operatingSystem)
+            {
+                return this._Path.StartsWith('/');
+            }
 
             public bool Handle(Windows operatingSystem)
             {
@@ -1254,7 +1417,10 @@ namespace GRYLibrary.Core.Misc
                 }
             }
 
-            public bool Handle(Linux operatingSystem) => this._Path.StartsWith('/');
+            public bool Handle(Linux operatingSystem)
+            {
+                return this._Path.StartsWith('/');
+            }
         }
         public static bool IsAbsoluteLocalFilePath(string path)
         {
@@ -1271,7 +1437,11 @@ namespace GRYLibrary.Core.Misc
                 return OperatingSystem.OperatingSystem.GetCurrentOperatingSystem().Accept(new IsAbsoluteLocalFilePathVisitor(path));
             }
         }
-        public static bool IsRelativeLocalFilePath(string path) => !IsAbsoluteLocalFilePath(path);
+        public static bool IsRelativeLocalFilePath(string path)
+        {
+            return !IsAbsoluteLocalFilePath(path);
+        }
+
         public static string GetAbsolutePath(string basePath, string relativePath)
         {
             if (basePath == null && relativePath == null)
@@ -1306,7 +1476,11 @@ namespace GRYLibrary.Core.Misc
             }
             return Path.GetFullPath(finalPath);
         }
-        public static bool DirectoryIsEmpty(string path) => (Directory.GetFiles(path).Length == 0) && (Directory.GetDirectories(path).Length == 0);
+        public static bool DirectoryIsEmpty(string path)
+        {
+            return (Directory.GetFiles(path).Length == 0) && (Directory.GetDirectories(path).Length == 0);
+        }
+
         public static bool DirectoryDoesNotContainFiles(string path)
         {
             if (Directory.GetFiles(path).Length > 0)
@@ -1322,9 +1496,15 @@ namespace GRYLibrary.Core.Misc
             }
             return true;
         }
-        public static bool DirectoryDoesNotContainFolder(string path) => Directory.GetFiles(path).Length > 0;
+        public static bool DirectoryDoesNotContainFolder(string path)
+        {
+            return Directory.GetFiles(path).Length > 0;
+        }
 
-        public static void ClearFile(string file) => File.WriteAllText(file, string.Empty, Encoding.ASCII);
+        public static void ClearFile(string file)
+        {
+            File.WriteAllText(file, string.Empty, Encoding.ASCII);
+        }
 
         private const char SingleQuote = '\'';
         private const char DoubleQuote = '"';
@@ -1418,8 +1598,15 @@ namespace GRYLibrary.Core.Misc
                 return path;
             }
         }
-        public static string EnsurePathStartsWithoutSlashOrBackslash(this string path) => path.EnsurePathStartsWithoutSlash().EnsurePathStartsWithoutBackslash();
-        public static string EnsurePathEndsWithoutSlashOrBackslash(this string path) => path.EnsurePathEndsWithoutSlash().EnsurePathEndsWithoutBackslash();
+        public static string EnsurePathStartsWithoutSlashOrBackslash(this string path)
+        {
+            return path.EnsurePathStartsWithoutSlash().EnsurePathStartsWithoutBackslash();
+        }
+
+        public static string EnsurePathEndsWithoutSlashOrBackslash(this string path)
+        {
+            return path.EnsurePathEndsWithoutSlash().EnsurePathEndsWithoutBackslash();
+        }
 
         public static string EnsurePathHasNoLeadingOrTrailingQuotes(this string path)
         {
@@ -1450,9 +1637,20 @@ namespace GRYLibrary.Core.Misc
             return true;
         }
 
-        public static byte[] StringToByteArray(string @string) => new UTF8Encoding(false).GetBytes(@string);
-        public static string ByteArrayToString(byte[] bytes) => new UTF8Encoding(false).GetString(bytes);
-        public static string ByteArrayToHexString(byte[] value) => BitConverter.ToString(value).Replace("-", string.Empty);
+        public static byte[] StringToByteArray(string @string)
+        {
+            return new UTF8Encoding(false).GetBytes(@string);
+        }
+
+        public static string ByteArrayToString(byte[] bytes)
+        {
+            return new UTF8Encoding(false).GetString(bytes);
+        }
+
+        public static string ByteArrayToHexString(byte[] value)
+        {
+            return BitConverter.ToString(value).Replace("-", string.Empty);
+        }
 
         public static byte[] HexStringToByteArray(string hexString)
         {
@@ -1475,8 +1673,16 @@ namespace GRYLibrary.Core.Misc
             return val - (val < 58 ? 48 : 55);
         }
 
-        public static string BigIntegerToHexString(BigInteger input) => input.ToString("X");
-        public static BigInteger HexStringToBigInteger(string input) => BigInteger.Parse(input.ToUpper(), NumberStyles.HexNumber);
+        public static string BigIntegerToHexString(BigInteger input)
+        {
+            return input.ToString("X");
+        }
+
+        public static BigInteger HexStringToBigInteger(string input)
+        {
+            return BigInteger.Parse(input.ToUpper(), NumberStyles.HexNumber);
+        }
+
         public static T[] Concat<T>(params T[][] arrays)
         {
             T[] result = Array.Empty<T>();
@@ -1505,7 +1711,10 @@ namespace GRYLibrary.Core.Misc
                 or "yes"
                 or "true";
         }
-        public static string[] SplitOnNewLineCharacter(string input) => input.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).Select(line => line.Replace("\r", string.Empty).Replace("\n", string.Empty)).ToArray();
+        public static string[] SplitOnNewLineCharacter(string input)
+        {
+            return input.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).Select(line => line.Replace("\r", string.Empty).Replace("\n", string.Empty)).ToArray();
+        }
 
         /// <summary>
         /// Throws an exception if <paramref name="condition"/>==false.
@@ -1525,16 +1734,32 @@ namespace GRYLibrary.Core.Misc
                 throw new AssertionException("Assertion failed. Condition is false." + (string.IsNullOrWhiteSpace(messageForFailedAssertion) ? string.Empty : " " + messageForFailedAssertion));
             }
         }
-        public static void FormatCSVFile(string file, string separator = ";", bool firstLineContainsHeadlines = false) => FormatCSVFile(file, new UTF8Encoding(false), separator, firstLineContainsHeadlines);
-        public static void FormatCSVFile(string file, Encoding encoding, string separator = ";", bool firstLineContainsHeadlines = false) => UpdateCSVFileEntry(file, encoding, (line) => line, separator, firstLineContainsHeadlines);
-        public static void UpdateCSVFileEntry(string file, Func<string[], string[]> updateFunction, string separator = ";", bool firstLineContainsHeadlines = false) => UpdateCSVFileEntry(file, new UTF8Encoding(false), updateFunction, separator, firstLineContainsHeadlines);
+        public static void FormatCSVFile(string file, string separator = ";", bool firstLineContainsHeadlines = false)
+        {
+            FormatCSVFile(file, new UTF8Encoding(false), separator, firstLineContainsHeadlines);
+        }
+
+        public static void FormatCSVFile(string file, Encoding encoding, string separator = ";", bool firstLineContainsHeadlines = false)
+        {
+            UpdateCSVFileEntry(file, encoding, (line) => line, separator, firstLineContainsHeadlines);
+        }
+
+        public static void UpdateCSVFileEntry(string file, Func<string[], string[]> updateFunction, string separator = ";", bool firstLineContainsHeadlines = false)
+        {
+            UpdateCSVFileEntry(file, new UTF8Encoding(false), updateFunction, separator, firstLineContainsHeadlines);
+        }
+
         public static void UpdateCSVFileEntry(string file, Encoding encoding, Func<string[], string[]> updateFunction, string separator = ";", bool firstLineContainsHeadlines = false)
         {
             IList<string[]> content = ReadCSVFile(file, encoding, out string[] headlines, separator, firstLineContainsHeadlines);
             content = content.Select(line => updateFunction(line)).ToList();
             WriteCSVFile(file, content, headlines, separator);
         }
-        public static void WriteCSVFile(string file, IList<string[]> content, string[] headLines, string separator = ";") => WriteCSVFile(file, new UTF8Encoding(false), content, headLines, separator);
+        public static void WriteCSVFile(string file, IList<string[]> content, string[] headLines, string separator = ";")
+        {
+            WriteCSVFile(file, new UTF8Encoding(false), content, headLines, separator);
+        }
+
         public static void WriteCSVFile(string file, Encoding encoding, IList<string[]> content, string[] headLines, string separator = ";")
         {
             List<string[]> contentAdjusted = content.ToList();
@@ -1568,7 +1793,11 @@ namespace GRYLibrary.Core.Misc
             return item;
         }
 
-        public static IList<string[]> ReadCSVFile(string file, out string[] headLines, string separator = ";", bool firstLineContainsHeadlines = false, bool trimValues = true, bool treatHashAsComment = false) => ReadCSVFile(file, new UTF8Encoding(false), out headLines, separator, firstLineContainsHeadlines, trimValues, treatHashAsComment);
+        public static IList<string[]> ReadCSVFile(string file, out string[] headLines, string separator = ";", bool firstLineContainsHeadlines = false, bool trimValues = true, bool treatHashAsComment = false)
+        {
+            return ReadCSVFile(file, new UTF8Encoding(false), out headLines, separator, firstLineContainsHeadlines, trimValues, treatHashAsComment);
+        }
+
         public static IList<string[]> ReadCSVFile(string file, Encoding encoding, out string[] headLines, string separator = ";", bool firstLineContainsHeadlines = false, bool trimValues = true, bool treatHashAsComment = false)
         {
             List<string[]> outterList = new();
@@ -1658,7 +1887,11 @@ namespace GRYLibrary.Core.Misc
             return terminatedInGivenTimeSpan;
         }
 
-        public static void WaitUntilPortIsAvailable(string address, ushort port, TimeSpan timeout) => RunWithTimeout(() => WaitUntilPortIsAvailable(address, port), timeout);
+        public static void WaitUntilPortIsAvailable(string address, ushort port, TimeSpan timeout)
+        {
+            RunWithTimeout(() => WaitUntilPortIsAvailable(address, port), timeout);
+        }
+
         public static void WaitUntilPortIsAvailable(string address, ushort port)
         {
             while (!PortIsAvailable(address, port))
@@ -1681,7 +1914,11 @@ namespace GRYLibrary.Core.Misc
                 return false;
             }
         }
-        public static bool WebsiteIsAvailable(string link, bool ensureSuccessStatusCode = true) => WebsiteIsAvailable(link, ensureSuccessStatusCode, new Dictionary<string, string>());
+        public static bool WebsiteIsAvailable(string link, bool ensureSuccessStatusCode = true)
+        {
+            return WebsiteIsAvailable(link, ensureSuccessStatusCode, new Dictionary<string, string>());
+        }
+
         public static bool WebsiteIsAvailable(string link, bool ensureSuccessStatusCode, IDictionary<string, string> extraHeaders)
         {
             try
@@ -1703,7 +1940,11 @@ namespace GRYLibrary.Core.Misc
                 return false;
             }
         }
-        public static string ResolveToFullPath(this string path) => ResolveToFullPath(path, Directory.GetCurrentDirectory());
+        public static string ResolveToFullPath(this string path)
+        {
+            return ResolveToFullPath(path, Directory.GetCurrentDirectory());
+        }
+
         /// <summary>
         /// This function transforms <paramref name="path"/> into an absolute path.
         /// It does not matter if you pass a relative or absolute path: This function checks that.
@@ -1839,11 +2080,31 @@ namespace GRYLibrary.Core.Misc
 
         }
         public static readonly Encoding FormatXMLFile_DefaultEncoding = new UTF8Encoding(false);
-        public static void FormatXMLFile(string file) => FormatXMLFile(file, FormatXMLFile_DefaultEncoding, XMLWriterDefaultSettings);
-        public static void FormatXMLFile(string file, Encoding encoding) => FormatXMLFile(file, encoding, XMLWriterDefaultSettings);
-        public static void FormatXMLFile(string file, XmlWriterSettings settings) => FormatXMLFile(file, FormatXMLFile_DefaultEncoding, settings);
-        public static void FormatXMLFile(string file, Encoding encoding, XmlWriterSettings settings) => File.WriteAllText(file, FormatXMLString(File.ReadAllText(file, encoding), settings), encoding);
-        public static string FormatXMLString(string xmlString) => FormatXMLString(xmlString, XMLWriterDefaultSettings);
+        public static void FormatXMLFile(string file)
+        {
+            FormatXMLFile(file, FormatXMLFile_DefaultEncoding, XMLWriterDefaultSettings);
+        }
+
+        public static void FormatXMLFile(string file, Encoding encoding)
+        {
+            FormatXMLFile(file, encoding, XMLWriterDefaultSettings);
+        }
+
+        public static void FormatXMLFile(string file, XmlWriterSettings settings)
+        {
+            FormatXMLFile(file, FormatXMLFile_DefaultEncoding, settings);
+        }
+
+        public static void FormatXMLFile(string file, Encoding encoding, XmlWriterSettings settings)
+        {
+            File.WriteAllText(file, FormatXMLString(File.ReadAllText(file, encoding), settings), encoding);
+        }
+
+        public static string FormatXMLString(string xmlString)
+        {
+            return FormatXMLString(xmlString, XMLWriterDefaultSettings);
+        }
+
         public static string FormatXMLString(string xmlString, XmlWriterSettings settings)
         {
             using MemoryStream memoryStream = new();
@@ -1856,7 +2117,11 @@ namespace GRYLibrary.Core.Misc
             using StreamReader streamReader = new(memoryStream);
             return streamReader.ReadToEnd();
         }
-        public static uint BinaryStringToUint(string binaryString) => (uint)Convert.ToInt32(binaryString, 2);
+        public static uint BinaryStringToUint(string binaryString)
+        {
+            return (uint)Convert.ToInt32(binaryString, 2);
+        }
+
         public static string UintToBinaryString(uint binaryString, bool padLeft = true)
         {
             string result = Convert.ToString(binaryString, 2);
@@ -1866,12 +2131,31 @@ namespace GRYLibrary.Core.Misc
             }
             return result;
         }
-        public static BigInteger BinaryStringToBigInteger(string binaryString) => throw new NotImplementedException();
-        public static string BigIntegerToBinaryString(BigInteger binaryString) => throw new NotImplementedException();
+        public static BigInteger BinaryStringToBigInteger(string binaryString)
+        {
+            throw new NotImplementedException();
+        }
 
-        public static string XmlToString(XmlDocument xmlDocument) => XmlToString(xmlDocument, new UTF8Encoding(false), XMLWriterDefaultSettings);
-        public static string XmlToString(XmlDocument xmlDocument, Encoding encoding) => XmlToString(xmlDocument, encoding, XMLWriterDefaultSettings);
-        public static string XmlToString(XmlDocument xmlDocument, XmlWriterSettings xmlWriterSettings) => XmlToString(xmlDocument, new UTF8Encoding(false), xmlWriterSettings);
+        public static string BigIntegerToBinaryString(BigInteger binaryString)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static string XmlToString(XmlDocument xmlDocument)
+        {
+            return XmlToString(xmlDocument, new UTF8Encoding(false), XMLWriterDefaultSettings);
+        }
+
+        public static string XmlToString(XmlDocument xmlDocument, Encoding encoding)
+        {
+            return XmlToString(xmlDocument, encoding, XMLWriterDefaultSettings);
+        }
+
+        public static string XmlToString(XmlDocument xmlDocument, XmlWriterSettings xmlWriterSettings)
+        {
+            return XmlToString(xmlDocument, new UTF8Encoding(false), xmlWriterSettings);
+        }
+
         public static string XmlToString(XmlDocument xmlDocument, Encoding encoding, XmlWriterSettings xmlWriterSettings)
         {
             using StringWriterWithEncoding stringWriter = new(encoding);
@@ -1879,7 +2163,11 @@ namespace GRYLibrary.Core.Misc
             xmlDocument.Save(xmlWriter);
             return stringWriter.ToString();
         }
-        public static bool IsSelfSIgned(X509Certificate certificate) => certificate.Subject.Equals(certificate.Issuer);
+        public static bool IsSelfSIgned(X509Certificate certificate)
+        {
+            return certificate.Subject.Equals(certificate.Issuer);
+        }
+
         public static void AddMountPointForVolume(Guid volumeId, string mountPoint)
         {
             if (mountPoint.Length > 3)
@@ -2024,50 +2312,69 @@ namespace GRYLibrary.Core.Misc
             }
             throw new KeyNotFoundException($"No volume could be found which provides the volume accessible at {mountPoint}");
         }
-        public static Func<ModelBindingContext, Task> GenericModelBinder(Func<string, object> parser, string targetTypeName, bool allowDefault) => (ModelBindingContext bindingContext) =>
-                                                                                                                                                            {
-                                                                                                                                                                //see https://learn.microsoft.com/de-de/aspnet/core/mvc/advanced/custom-model-binding?view=aspnetcore-7.0
-                                                                                                                                                                ArgumentNullException.ThrowIfNull(bindingContext);
-                                                                                                                                                                string modelName = bindingContext.ModelName;
-                                                                                                                                                                ValueProviderResult values = bindingContext.ValueProvider.GetValue("moment");
-                                                                                                                                                                ValueProviderResult values2 = bindingContext.ValueProvider.GetValue("{moment}");
-                                                                                                                                                                ValueProviderResult valueProviderResult = bindingContext.ValueProvider.GetValue(modelName);
-                                                                                                                                                                if (valueProviderResult == ValueProviderResult.None)
-                                                                                                                                                                {
-                                                                                                                                                                    return Task.CompletedTask;
-                                                                                                                                                                }
-                                                                                                                                                                bindingContext.ModelState.SetModelValue(modelName, valueProviderResult);
-                                                                                                                                                                string value = valueProviderResult.FirstValue;
-                                                                                                                                                                if (string.IsNullOrEmpty(value))
-                                                                                                                                                                {
-                                                                                                                                                                    if (allowDefault)
-                                                                                                                                                                    {
-                                                                                                                                                                        bindingContext.Result = default;
-                                                                                                                                                                    }
-                                                                                                                                                                    else
-                                                                                                                                                                    {
-                                                                                                                                                                        bindingContext.ModelState.TryAddModelError(modelName, $"No value given to parse to {targetTypeName}.");
-                                                                                                                                                                    }
-                                                                                                                                                                }
-                                                                                                                                                                else
-                                                                                                                                                                {
-                                                                                                                                                                    try
-                                                                                                                                                                    {
-                                                                                                                                                                        object model = parser(value);
-                                                                                                                                                                        bindingContext.Result = ModelBindingResult.Success(model);
-                                                                                                                                                                    }
-                                                                                                                                                                    catch
-                                                                                                                                                                    {
-                                                                                                                                                                        bindingContext.ModelState.TryAddModelError(modelName, $"\"{value}\" can not be parsed to {targetTypeName}.");
-                                                                                                                                                                    }
-                                                                                                                                                                }
-                                                                                                                                                                return Task.CompletedTask;
-                                                                                                                                                            };
+        public static Func<ModelBindingContext, Task> GenericModelBinder(Func<string, object> parser, string targetTypeName, bool allowDefault)
+        {
+            return (ModelBindingContext bindingContext) =>
+                                                                                                                                                                                                                                                                                                            {
+                                                                                                                                                                                                                                                                                                                //see https://learn.microsoft.com/de-de/aspnet/core/mvc/advanced/custom-model-binding?view=aspnetcore-7.0
+                                                                                                                                                                                                                                                                                                                ArgumentNullException.ThrowIfNull(bindingContext);
+                                                                                                                                                                                                                                                                                                                string modelName = bindingContext.ModelName;
+                                                                                                                                                                                                                                                                                                                ValueProviderResult values = bindingContext.ValueProvider.GetValue("moment");
+                                                                                                                                                                                                                                                                                                                ValueProviderResult values2 = bindingContext.ValueProvider.GetValue("{moment}");
+                                                                                                                                                                                                                                                                                                                ValueProviderResult valueProviderResult = bindingContext.ValueProvider.GetValue(modelName);
+                                                                                                                                                                                                                                                                                                                if (valueProviderResult == ValueProviderResult.None)
+                                                                                                                                                                                                                                                                                                                {
+                                                                                                                                                                                                                                                                                                                    return Task.CompletedTask;
+                                                                                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                                                                                                bindingContext.ModelState.SetModelValue(modelName, valueProviderResult);
+                                                                                                                                                                                                                                                                                                                string value = valueProviderResult.FirstValue;
+                                                                                                                                                                                                                                                                                                                if (string.IsNullOrEmpty(value))
+                                                                                                                                                                                                                                                                                                                {
+                                                                                                                                                                                                                                                                                                                    if (allowDefault)
+                                                                                                                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                                                                                                                        bindingContext.Result = default;
+                                                                                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                                                                                    else
+                                                                                                                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                                                                                                                        bindingContext.ModelState.TryAddModelError(modelName, $"No value given to parse to {targetTypeName}.");
+                                                                                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                                                                                                else
+                                                                                                                                                                                                                                                                                                                {
+                                                                                                                                                                                                                                                                                                                    try
+                                                                                                                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                                                                                                                        object model = parser(value);
+                                                                                                                                                                                                                                                                                                                        bindingContext.Result = ModelBindingResult.Success(model);
+                                                                                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                                                                                    catch
+                                                                                                                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                                                                                                                        bindingContext.ModelState.TryAddModelError(modelName, $"\"{value}\" can not be parsed to {targetTypeName}.");
+                                                                                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                                                                                                return Task.CompletedTask;
+                                                                                                                                                                                                                                                                                                            };
+        }
 
-        public static T[] PadLeft<T>(T[] array, int length) => PadLeft(array, default, length);
-        public static T[] PadLeft<T>(T[] array, T fillItem, int length) => PadHelper(array, length, fillItem, true);
-        public static T[] PadRight<T>(T[] array, int length) => PadRight(array, default, length);
-        public static T[] PadRight<T>(T[] array, T fillItem, int length) => PadHelper(array, length, fillItem, false);
+        public static T[] PadLeft<T>(T[] array, int length)
+        {
+            return PadLeft(array, default, length);
+        }
+
+        public static T[] PadLeft<T>(T[] array, T fillItem, int length)
+        {
+            return PadHelper(array, length, fillItem, true);
+        }
+
+        public static T[] PadRight<T>(T[] array, int length)
+        {
+            return PadRight(array, default, length);
+        }
+
+        public static T[] PadRight<T>(T[] array, T fillItem, int length)
+        {
+            return PadHelper(array, length, fillItem, false);
+        }
+
         private static T[] PadHelper<T>(T[] array, int length, T fillItem, bool PadLeft)
         {
             T[] result = array;
@@ -2254,9 +2561,21 @@ namespace GRYLibrary.Core.Misc
             }
         }
         #region Nullsafe-equals-helper
-        public static bool NullSafeEquals(this object @this, object obj) => NullSafeHelper(@this, obj, (obj1, obj2) => obj1.Equals(obj2));
-        public static bool NullSafeSetEquals<T>(this ISet<T> @this, ISet<T> obj, bool treatEmptyAsNull = false) => NullSafeHelper(TreatNullHelper(@this, treatEmptyAsNull), TreatNullHelper(obj, treatEmptyAsNull), (obj1, obj2) => obj1.ToHashSet().SetEquals(obj2));
-        public static bool NullSafeListEquals<T>(this IList<T> @this, IList<T> obj, bool treatEmptyAsNull = false) => NullSafeHelper(TreatNullHelper(@this, treatEmptyAsNull), TreatNullHelper(obj, treatEmptyAsNull), (obj1, obj2) => obj1.SequenceEqual(obj2));
+        public static bool NullSafeEquals(this object @this, object obj)
+        {
+            return NullSafeHelper(@this, obj, (obj1, obj2) => obj1.Equals(obj2));
+        }
+
+        public static bool NullSafeSetEquals<T>(this ISet<T> @this, ISet<T> obj, bool treatEmptyAsNull = false)
+        {
+            return NullSafeHelper(TreatNullHelper(@this, treatEmptyAsNull), TreatNullHelper(obj, treatEmptyAsNull), (obj1, obj2) => obj1.ToHashSet().SetEquals(obj2));
+        }
+
+        public static bool NullSafeListEquals<T>(this IList<T> @this, IList<T> obj, bool treatEmptyAsNull = false)
+        {
+            return NullSafeHelper(TreatNullHelper(@this, treatEmptyAsNull), TreatNullHelper(obj, treatEmptyAsNull), (obj1, obj2) => obj1.SequenceEqual(obj2));
+        }
+
         public static bool NullSafeEnumerableEquals<T>(this IEnumerable<T> @this, IEnumerable<T> obj, bool treatEmptyAsNull = false)
         {
             @this = TreatNullHelper(@this, treatEmptyAsNull);
@@ -2331,9 +2650,21 @@ namespace GRYLibrary.Core.Misc
             }
         }
         #endregion
-        public static DateTime GetTimeFromInternetUtC() => GetTimeFromInternet(TimeZoneInfo.Utc);
-        public static DateTime GetTimeFromInternetCurrentTimeZone() => GetTimeFromInternet(TimeZoneInfo.Local);
-        public static DateTime GetTimeFromInternet(TimeZoneInfo timezone) => GetTimeFromInternet(timezone, "yy-MM-dd HH:mm:ss", "time.nist.gov", 13, 7, 17);
+        public static DateTime GetTimeFromInternetUtC()
+        {
+            return GetTimeFromInternet(TimeZoneInfo.Utc);
+        }
+
+        public static DateTime GetTimeFromInternetCurrentTimeZone()
+        {
+            return GetTimeFromInternet(TimeZoneInfo.Local);
+        }
+
+        public static DateTime GetTimeFromInternet(TimeZoneInfo timezone)
+        {
+            return GetTimeFromInternet(timezone, "yy-MM-dd HH:mm:ss", "time.nist.gov", 13, 7, 17);
+        }
+
         public static DateTime GetTimeFromInternet(TimeZoneInfo timezone, string format, string domain, int port, int begin, int length)
         {
             using TcpClient tcpClient = new TcpClient(domain, port);
@@ -2352,15 +2683,26 @@ namespace GRYLibrary.Core.Misc
             DateTime.UtcNow;
 #endif
 
-        public static string DateTimeToString(DateTime value) => value.ToString("O");
-        public static DateTime DateTimeParse(string value) => DateTime.ParseExact(value, "O", CultureInfo.InvariantCulture);
+        public static string DateTimeToString(DateTime value)
+        {
+            return value.ToString("O");
+        }
+
+        public static DateTime DateTimeParse(string value)
+        {
+            return DateTime.ParseExact(value, "O", CultureInfo.InvariantCulture);
+        }
+
         public static byte[] StreamToByteArray(Stream input)
         {
             using MemoryStream ms = new MemoryStream();
             input.CopyTo(ms);
             return ms.ToArray();
         }
-        public static bool ByteArrayEquals(ReadOnlySpan<byte> array1, ReadOnlySpan<byte> array2) => array1.SequenceEqual(array2);
+        public static bool ByteArrayEquals(ReadOnlySpan<byte> array1, ReadOnlySpan<byte> array2)
+        {
+            return array1.SequenceEqual(array2);
+        }
 
         public static SerializableDictionary<TKey, TValue> ToSerializableDictionary<TKey, TValue>(this IDictionary<TKey, TValue> dictionary)
         {
@@ -2462,9 +2804,16 @@ namespace GRYLibrary.Core.Misc
             }
             return new Tuple<string, string, string>(program, argument, workingDirectory);
         }
-        private static bool HasPath(string str) => str.Contains('/') || str.Contains('\\');
+        private static bool HasPath(string str)
+        {
+            return str.Contains('/') || str.Contains('\\');
+        }
 
-        public static string GetAssertionFailMessage(object expectedObject, object actualObject, int maxLengthPerObject = 1000) => $"Equal failed. Expected: <{Environment.NewLine}{Generic.GenericToString(expectedObject, maxLengthPerObject)}{Environment.NewLine}> Actual: <{Environment.NewLine}{Generic.GenericToString(actualObject, maxLengthPerObject)}{Environment.NewLine}>";
+        public static string GetAssertionFailMessage(object expectedObject, object actualObject, int maxLengthPerObject = 1000)
+        {
+            return $"Equal failed. Expected: <{Environment.NewLine}{Generic.GenericToString(expectedObject, maxLengthPerObject)}{Environment.NewLine}> Actual: <{Environment.NewLine}{Generic.GenericToString(actualObject, maxLengthPerObject)}{Environment.NewLine}>";
+        }
+
         public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
         {
             foreach (T item in source)
@@ -2544,10 +2893,21 @@ namespace GRYLibrary.Core.Misc
             }
         }
 
-        public static string GetNameOfCurrentExecutable() => Process.GetCurrentProcess().ProcessName;
+        public static string GetNameOfCurrentExecutable()
+        {
+            return Process.GetCurrentProcess().ProcessName;
+        }
 
-        public static bool IsNegative(this TimeSpan timeSpan) => timeSpan.Ticks < 0;
-        public static bool IsPositive(this TimeSpan timeSpan) => timeSpan.Ticks > 0;
+        public static bool IsNegative(this TimeSpan timeSpan)
+        {
+            return timeSpan.Ticks < 0;
+        }
+
+        public static bool IsPositive(this TimeSpan timeSpan)
+        {
+            return timeSpan.Ticks > 0;
+        }
+
         public static string ToOnlyFirstCharToUpper(this string input)
         {
             if (string.IsNullOrEmpty(input))
@@ -2562,9 +2922,21 @@ namespace GRYLibrary.Core.Misc
         }
         private static readonly char[] Whitespace = new char[] { ' ' };
         private static readonly char[] WhitespaceAndPartialWordIndicators = new char[] { ' ', '_', '-' };
-        public static string ToOnlyFirstCharOfEveryWordToUpper(this string input) => ToOnlyFirstCharOfEveryWordToUpper(input, (lastCharacter) => Whitespace.Contains(lastCharacter));
-        public static string ToOnlyFirstCharOfEveryWordOrPartialWordToUpper(this string input) => ToOnlyFirstCharOfEveryWordToUpper(input, (lastCharacter) => WhitespaceAndPartialWordIndicators.Contains(lastCharacter));
-        public static string ToOnlyFirstCharOfEveryNewLetterSequenceToUpper(this string input) => ToOnlyFirstCharOfEveryWordToUpper(input, (lastCharacter) => !char.IsLetter(lastCharacter));
+        public static string ToOnlyFirstCharOfEveryWordToUpper(this string input)
+        {
+            return ToOnlyFirstCharOfEveryWordToUpper(input, (lastCharacter) => Whitespace.Contains(lastCharacter));
+        }
+
+        public static string ToOnlyFirstCharOfEveryWordOrPartialWordToUpper(this string input)
+        {
+            return ToOnlyFirstCharOfEveryWordToUpper(input, (lastCharacter) => WhitespaceAndPartialWordIndicators.Contains(lastCharacter));
+        }
+
+        public static string ToOnlyFirstCharOfEveryNewLetterSequenceToUpper(this string input)
+        {
+            return ToOnlyFirstCharOfEveryWordToUpper(input, (lastCharacter) => !char.IsLetter(lastCharacter));
+        }
+
         public static string ToOnlyFirstCharOfEveryWordToUpper(this string input, Func<char, bool> printCharUppercaseDependentOnPreviousChar)
         {
             if (string.IsNullOrWhiteSpace(input))
@@ -2633,8 +3005,15 @@ namespace GRYLibrary.Core.Misc
         }
 
         private static readonly Regex _OneOrMoreHexSigns = OneOrMoreHexSigns();
-        public static bool IsHexString(string result) => _OneOrMoreHexSigns.Match(result.ToLower()).Success;
-        public static bool IsHexDigit(this char @char) => @char is (>= '0' and <= '9') or (>= 'a' and <= 'f') or (>= 'A' and <= 'F');
+        public static bool IsHexString(string result)
+        {
+            return _OneOrMoreHexSigns.Match(result.ToLower()).Success;
+        }
+
+        public static bool IsHexDigit(this char @char)
+        {
+            return @char is (>= '0' and <= '9') or (>= 'a' and <= 'f') or (>= 'A' and <= 'F');
+        }
 
         public static bool DarkModeEnabled
         {
@@ -2723,7 +3102,10 @@ namespace GRYLibrary.Core.Misc
                 this._Enabled = enabled;
             }
 
-            public void Handle(OSX operatingSystem) => throw new NotImplementedException();
+            public void Handle(OSX operatingSystem)
+            {
+                throw new NotImplementedException();
+            }
 
             public void Handle(Windows operatingSystem)
             {
@@ -2736,11 +3118,17 @@ namespace GRYLibrary.Core.Misc
                 }
             }
 
-            public void Handle(Linux operatingSystem) => throw new NotImplementedException();
+            public void Handle(Linux operatingSystem)
+            {
+                throw new NotImplementedException();
+            }
         }
         private class GetDarkModeEnabledVisitor : IOperatingSystemVisitor<bool>
         {
-            public bool Handle(OSX operatingSystem) => throw new NotSupportedException();
+            public bool Handle(OSX operatingSystem)
+            {
+                throw new NotSupportedException();
+            }
 
             public bool Handle(Windows operatingSystem)
             {
@@ -2759,11 +3147,19 @@ namespace GRYLibrary.Core.Misc
                 return false;
             }
 
-            public bool Handle(Linux operatingSystem) => throw new NotSupportedException();
+            public bool Handle(Linux operatingSystem)
+            {
+                throw new NotSupportedException();
+            }
         }
-        public static NullReferenceException CreateNullReferenceExceptionDueToParameter(string parameterName) => new NullReferenceException($"Parameter {parameterName} is null");
+        public static NullReferenceException CreateNullReferenceExceptionDueToParameter(string parameterName)
+        {
+            return new NullReferenceException($"Parameter {parameterName} is null");
+        }
 
-        public static T CreateOrLoadJSONConfigurationFile<T, TBase>(string configurationFile, T initialValue) where T : TBase, new() => CreateOrLoadConfigurationFile<T, TBase>(configurationFile, initialValue,
+        public static T CreateOrLoadJSONConfigurationFile<T, TBase>(string configurationFile, T initialValue) where T : TBase, new()
+        {
+            return CreateOrLoadConfigurationFile<T, TBase>(configurationFile, initialValue,
                 (configurationFile, initialValue) =>
                 {
                     dynamic expando = new ExpandoObject();
@@ -2775,6 +3171,7 @@ namespace GRYLibrary.Core.Misc
                     IConfigurationRoot configurationRoot = new ConfigurationBuilder().AddJsonFile(configurationFile).Build();
                     return configurationRoot.GetRequiredSection(typeof(T).Name).Get<T>();
                 });
+        }
 #pragma warning disable IDE0060 //not used parameter "knownTypes"
         public static T CreateOrLoadXMLConfigurationFile<T, TBase>(string configurationFile, T initialValue, ISet<Type> knownTypes) where T : TBase, new()
 #pragma warning restore IDE0060 
@@ -2914,7 +3311,10 @@ namespace GRYLibrary.Core.Misc
             return result;
         }
 
-        private static IList<string> FormatStackInnerException(Exception exception, uint indentationLevel, bool wrapInOneLine = false) => SplitOnNewLineCharacter(GetExceptionMessage(exception.InnerException, null, wrapInOneLine, indentationLevel + 1, "Inner exception")).ToList();
+        private static IList<string> FormatStackInnerException(Exception exception, uint indentationLevel, bool wrapInOneLine = false)
+        {
+            return SplitOnNewLineCharacter(GetExceptionMessage(exception.InnerException, null, wrapInOneLine, indentationLevel + 1, "Inner exception")).ToList();
+        }
         #endregion
 
         public static bool CheckCancellationToken(IList<string> messages, CancellationToken cancellationToken, out (HealthStatus, IList<string>) result)
@@ -2945,6 +3345,15 @@ namespace GRYLibrary.Core.Misc
         }
         private static readonly Random _Random = new Random();
 
-        public static T RandomChoice<T>(params T[] choices) => choices[_Random.Next(choices.Count())];
+        public static T RandomChoice<T>(params T[] choices)
+        {
+            return choices[_Random.Next(choices.Count())];
+        }
+        public static string HTMLUnescape(string @value)
+        {
+            string result = WebUtility.HtmlEncode(@value);
+            result = result.Replace("\n", "<br />");
+            return result;
+        }
     }
 }

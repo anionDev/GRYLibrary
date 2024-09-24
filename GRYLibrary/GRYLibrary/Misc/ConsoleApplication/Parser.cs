@@ -25,21 +25,29 @@ namespace GRYLibrary.Core.Misc.ConsoleApplication
         protected abstract Type[] GetVerbsImplementation();
         public abstract void Accept(IParserBaseVisitor visitor);
         public abstract T Accept<T>(IParserBaseVisitor<T> visitor);
-        public int Run(ParserResult<object> parsed) => this.RunImplementation(parsed);
-        protected Func<IEnumerable<Error>, int> Error(string argumentsAsString) => errors =>
-                                                                                            {
-                                                                                                int amountOfErrors = errors.Count();
-                                                                                                this._Logger.Log($"Argument '{argumentsAsString}' could not be parsed successfully.", LogLevel.Error);
-                                                                                                if (0 < amountOfErrors)
+        public int Run(ParserResult<object> parsed)
+        {
+            return this.RunImplementation(parsed);
+        }
+
+        protected Func<IEnumerable<Error>, int> Error(string argumentsAsString)
+        {
+            return errors =>
                                                                                                 {
-                                                                                                    this._Logger.Log($"The following error{(amountOfErrors == 1 ? string.Empty : "s")} occurred:", LogLevel.Error);
-                                                                                                    foreach (Error error in errors)
+                                                                                                    int amountOfErrors = errors.Count();
+                                                                                                    this._Logger.Log($"Argument '{argumentsAsString}' could not be parsed successfully.", LogLevel.Error);
+                                                                                                    if (0 < amountOfErrors)
                                                                                                     {
-                                                                                                        this._Logger.Log($"{error.Tag}: {this._SentenceBuilder.FormatError(error)}", LogLevel.Error);
+                                                                                                        this._Logger.Log($"The following error{(amountOfErrors == 1 ? string.Empty : "s")} occurred:", LogLevel.Error);
+                                                                                                        foreach (Error error in errors)
+                                                                                                        {
+                                                                                                            this._Logger.Log($"{error.Tag}: {this._SentenceBuilder.FormatError(error)}", LogLevel.Error);
+                                                                                                        }
                                                                                                     }
-                                                                                                }
-                                                                                                return 1;
-                                                                                            };
+                                                                                                    return 1;
+                                                                                                };
+        }
+
         protected int ShowInformation(Info options)
         {
             options.ParserBase = this;
@@ -74,17 +82,29 @@ namespace GRYLibrary.Core.Misc.ConsoleApplication
             this._Verb01Runner = verb01Runner;
         }
 
-        protected override int RunImplementation(ParserResult<object> parsed) => parsed.MapResult((Help options) => this.ShowHelp(options),
+        protected override int RunImplementation(ParserResult<object> parsed)
+        {
+            return parsed.MapResult((Help options) => this.ShowHelp(options),
                                     (Info options) => this.ShowInformation(options),
                                     (Verb01 options) => this._Verb01Runner(options, this.ApplicationInitialInformation),
                                     this.Error(this.OriginalArgumentsAsString));
+        }
 
-        protected override Type[] GetVerbsImplementation() => new Type[] { typeof(Verb01) };
+        protected override Type[] GetVerbsImplementation()
+        {
+            return new Type[] { typeof(Verb01) };
+        }
 
         #region Overhead
-        public override void Accept(IParserBaseVisitor visitor) => visitor.Handle(this);
+        public override void Accept(IParserBaseVisitor visitor)
+        {
+            visitor.Handle(this);
+        }
 
-        public override T Accept<T>(IParserBaseVisitor<T> visitor) => visitor.Handle(this);
+        public override T Accept<T>(IParserBaseVisitor<T> visitor)
+        {
+            return visitor.Handle(this);
+        }
         #endregion
     }
     public class VerbParser<Verb01, Verb02> : ParserBase
@@ -97,18 +117,30 @@ namespace GRYLibrary.Core.Misc.ConsoleApplication
             this._Verb02Runner = verb02Runner;
         }
 
-        protected override int RunImplementation(ParserResult<object> parsed) => parsed.MapResult((Help options) => this.ShowHelp(options),
+        protected override int RunImplementation(ParserResult<object> parsed)
+        {
+            return parsed.MapResult((Help options) => this.ShowHelp(options),
                                     (Info options) => this.ShowInformation(options),
                                     (Verb01 options) => this._Verb01Runner(options, this.ApplicationInitialInformation),
                                     (Verb02 options) => this._Verb02Runner(options, this.ApplicationInitialInformation),
                                     this.Error(this.OriginalArgumentsAsString));
+        }
 
-        protected override Type[] GetVerbsImplementation() => new Type[] { typeof(Verb01), typeof(Verb02) };
+        protected override Type[] GetVerbsImplementation()
+        {
+            return new Type[] { typeof(Verb01), typeof(Verb02) };
+        }
 
         #region Overhead
-        public override void Accept(IParserBaseVisitor visitor) => visitor.Handle(this);
+        public override void Accept(IParserBaseVisitor visitor)
+        {
+            visitor.Handle(this);
+        }
 
-        public override T Accept<T>(IParserBaseVisitor<T> visitor) => visitor.Handle(this);
+        public override T Accept<T>(IParserBaseVisitor<T> visitor)
+        {
+            return visitor.Handle(this);
+        }
         #endregion
     }
     public class VerbParser<Verb01, Verb02, Verb03> : ParserBase
@@ -123,19 +155,31 @@ namespace GRYLibrary.Core.Misc.ConsoleApplication
             this._Verb03Runner = verb03Runner;
         }
 
-        protected override int RunImplementation(ParserResult<object> parsed) => parsed.MapResult((Help options) => this.ShowHelp(options),
+        protected override int RunImplementation(ParserResult<object> parsed)
+        {
+            return parsed.MapResult((Help options) => this.ShowHelp(options),
                                     (Info options) => this.ShowInformation(options),
                                     (Verb01 options) => this._Verb01Runner(options, this.ApplicationInitialInformation),
                                     (Verb02 options) => this._Verb02Runner(options, this.ApplicationInitialInformation),
                                     (Verb03 options) => this._Verb03Runner(options, this.ApplicationInitialInformation),
                                     this.Error(this.OriginalArgumentsAsString));
+        }
 
-        protected override Type[] GetVerbsImplementation() => new Type[] { typeof(Verb01), typeof(Verb02), typeof(Verb03) };
+        protected override Type[] GetVerbsImplementation()
+        {
+            return new Type[] { typeof(Verb01), typeof(Verb02), typeof(Verb03) };
+        }
 
         #region Overhead
-        public override void Accept(IParserBaseVisitor visitor) => visitor.Handle(this);
+        public override void Accept(IParserBaseVisitor visitor)
+        {
+            visitor.Handle(this);
+        }
 
-        public override T Accept<T>(IParserBaseVisitor<T> visitor) => visitor.Handle(this);
+        public override T Accept<T>(IParserBaseVisitor<T> visitor)
+        {
+            return visitor.Handle(this);
+        }
         #endregion
     }
 }

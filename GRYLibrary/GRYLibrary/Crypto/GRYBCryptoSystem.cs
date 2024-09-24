@@ -35,13 +35,20 @@ namespace GRYLibrary.Core.Crypto
         public HashAlgorithm HashAlgorithm { get; set; } = new SHA256();
 
         /// <inheritdoc/>
-        public override byte[] Encrypt(byte[] unencryptedData) => EncryptAndSerialize(unencryptedData, this.PasswordEncryptionKeys.ToArray(), this.InternalEncryptionAlgorithmForKeys, this.HashAlgorithm);
+        public override byte[] Encrypt(byte[] unencryptedData)
+        {
+            return EncryptAndSerialize(unencryptedData, this.PasswordEncryptionKeys.ToArray(), this.InternalEncryptionAlgorithmForKeys, this.HashAlgorithm);
+        }
 
         /// <inheritdoc/>
         /// <param name="password">
         /// As password you can either use any private key of a public key which was contained in <see cref="PasswordEncryptionKeys"/> when calling <see cref="CommonEncryptionAlgorithm.Encrypt(byte[], byte[])"/>.
         /// </param>
-        public override byte[] Decrypt(byte[] encryptedData, byte[] password) => DeserializeAndDecrypt(encryptedData, password);
+        public override byte[] Decrypt(byte[] encryptedData, byte[] password)
+        {
+            return DeserializeAndDecrypt(encryptedData, password);
+        }
+
         public static byte[] EncryptAndSerialize(byte[] unencryptedData, (byte[], AsymmetricEncryptionAlgorithm)[] unencryptedPublicPasswordEncryptionKeys, SymmetricEncryptionAlgorithm internalEncryptionAlgorithmForKeys, HashAlgorithm hashAlgorithm)
         {
             byte[] internalKey = internalEncryptionAlgorithmForKeys.GenerateRandomKey();
@@ -90,6 +97,9 @@ namespace GRYLibrary.Core.Crypto
             return result;
         }
 
-        public override byte[] GetIdentifier() => Utilities.PadLeft(GRYBCryptoSystemDatasetMagicHeaderBytes, 10);
+        public override byte[] GetIdentifier()
+        {
+            return Utilities.PadLeft(GRYBCryptoSystemDatasetMagicHeaderBytes, 10);
+        }
     }
 }

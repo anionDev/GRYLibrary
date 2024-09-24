@@ -4,8 +4,14 @@
     {
         public static IWaitingStateVisitor<string> GetWaitingStateLabelVisitorInstance { get; } = new GetWaitingStateLabelVisitor();
         private GetWaitingStateLabelVisitor() { }
-        public string Handle(RunAsynchronously runAsynchronously) => "asynchronously";
+        public string Handle(RunAsynchronously runAsynchronously)
+        {
+            return "asynchronously";
+        }
 
-        public string Handle(RunSynchronously runSynchronously) => "synchronously";
+        public string Handle(RunSynchronously runSynchronously)
+        {
+            return "synchronously";
+        }
     }
 }

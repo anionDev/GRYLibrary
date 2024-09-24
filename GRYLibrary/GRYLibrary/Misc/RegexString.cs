@@ -25,7 +25,14 @@ namespace GRYLibrary.Core.Misc
             }
         }
         private Regex _Regex;
-        public Regex GetRegex() => this._Regex;
-        public void SetRegex(Regex regex) => this._Regex = regex;
+        public Regex GetRegex()
+        {
+            return this._Regex;
+        }
+
+        public void SetRegex(Regex regex)
+        {
+            this._Regex = regex;
+        }
     }
 }

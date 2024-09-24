@@ -21,8 +21,14 @@ namespace GRYLibrary.Core.Misc.FilePath
             }
         }
 
-        public override string GetPath(string basePath) => this.GetPath();
+        public override string GetPath(string basePath)
+        {
+            return this.GetPath();
+        }
 
-        public override string GetPath() => this.FilePath;
+        public override string GetPath()
+        {
+            return this.FilePath;
+        }
     }
 }

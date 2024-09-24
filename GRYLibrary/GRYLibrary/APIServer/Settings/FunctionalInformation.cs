@@ -1,4 +1,5 @@
 ﻿using GRYLibrary.Core.APIServer.Settings.Configuration;
+using GRYLibrary.Core.Logging.GRYLogger;
 using Microsoft.AspNetCore.Builder;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace GRYLibrary.Core.APIServer.Settings
             InitializationInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> initializationInformation,
             WebApplicationBuilder webApplicationBuilder,
             IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedAPIServerConfiguration,
-            Logging.GeneralPurposeLogger.IGeneralLogger logger)
+            IGRYLog logger)
         {
             this.InitializationInformation = initializationInformation;
             this.WebApplicationBuilder = webApplicationBuilder;
@@ -25,6 +26,6 @@ namespace GRYLibrary.Core.APIServer.Settings
         public WebApplicationBuilder WebApplicationBuilder { get; internal set; }
         public IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> PersistedAPIServerConfiguration { get; internal set; }
         public ISet<FilterDescriptor> Filter { get; set; } = new HashSet<FilterDescriptor>();
-        public Logging.GeneralPurposeLogger.IGeneralLogger Logger { get; set; }
+        public IGRYLog Logger { get; set; }
     }
 }

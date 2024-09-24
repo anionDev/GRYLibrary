@@ -20,11 +20,17 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
             }
             return result;
         }
-        public override bool Equals(object obj) => this.Equals(obj as Role);
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj as Role);
+        }
 
-        public bool Equals(Role other) => other is not null &&
+        public bool Equals(Role other)
+        {
+            return other is not null &&
                    this.Id == other.Id &&
                    this.Name == other.Name;
+        }
 
         public override int GetHashCode()
         {

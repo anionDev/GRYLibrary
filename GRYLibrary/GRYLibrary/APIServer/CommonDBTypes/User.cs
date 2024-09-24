@@ -26,9 +26,16 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
         {
 
         }
-        public static User CreateNewUser(User resultObject,string username, string passwordHash, out string userId, ITimeService timeService)
+
+        public static User CreateNewUser(string username, string passwordHash, ITimeService timeService)
         {
-            User user = resultObject;
+            return CreateNewUser(new User(), username, passwordHash, timeService);
+        }
+
+        public static T CreateNewUser<T>(T resultObject, string username, string passwordHash, ITimeService timeService)
+            where T : User
+        {
+            T user = resultObject;
             user.Id = Guid.NewGuid().ToString();
             user.Name = username;
             user.PasswordHash = passwordHash;
@@ -36,11 +43,8 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
             user.RefreshToken = new HashSet<RefreshToken>();
             user.AccessToken = new HashSet<AccessToken>();
             user.Roles = new HashSet<Role>();
-
-            userId = user.Id;
             return user;
         }
-        public static User CreateNewUser(string username, string passwordHash, out string userId, ITimeService timeService) => CreateNewUser(new User(), username, passwordHash, out userId, timeService);
         public ISet<Role> GetAllRoles()
         {
             ISet<Role> result = new HashSet<Role>();
@@ -51,9 +55,14 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
             }
             return result;
         }
-        public override bool Equals(object obj) => this.Equals(obj as User);
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj as User);
+        }
 
-        public virtual bool Equals(User other) => other is not null &&
+        public virtual bool Equals(User other)
+        {
+            return other is not null &&
                    this.Id == other.Id &&
                    this.Name == other.Name &&
                    this.EMailAddress == other.EMailAddress &&
@@ -62,6 +71,7 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
                    this.UserIsLocked == other.UserIsLocked &&
                    this.RefreshToken.SetEquals(other.RefreshToken) &&
                    this.AccessToken.SetEquals(other.AccessToken);
+        }
 
         public override int GetHashCode()
         {

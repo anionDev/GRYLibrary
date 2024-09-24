@@ -25,14 +25,27 @@ namespace GRYLibrary.Core.Logging.GRYLogger
             };
         public bool Enabled { get; set; } = true;
         public abstract HashSet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization();
-        internal void Execute(LogItem logItem, GRYLog logObject) => this.ExecuteImplementation(logItem, logObject);
+        internal void Execute(LogItem logItem, GRYLog logObject)
+        {
+            this.ExecuteImplementation(logItem, logObject);
+        }
+
         protected abstract void ExecuteImplementation(LogItem logItem, GRYLog logObject);
         #region Overhead
-        public override bool Equals(object @object) => @object is not null && @object.GetType().Equals(this.GetType());
+        public override bool Equals(object @object)
+        {
+            return @object is not null && @object.GetType().Equals(this.GetType());
+        }
 
-        public override int GetHashCode() => this.GetType().GetHashCode();
+        public override int GetHashCode()
+        {
+            return this.GetType().GetHashCode();
+        }
 
-        public override string ToString() => Generic.GenericToString(this);
+        public override string ToString()
+        {
+            return Generic.GenericToString(this);
+        }
 
         public abstract void Dispose();
 

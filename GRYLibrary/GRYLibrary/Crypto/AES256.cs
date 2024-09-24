@@ -116,7 +116,10 @@ namespace GRYLibrary.Core.Crypto
             algorithmImplementation.GenerateKey();
             return algorithmImplementation.Key;
         }
-        public override byte[] GetIdentifier() => Utilities.PadLeft(System.Text.Encoding.ASCII.GetBytes(nameof(AES256)), 10);
+        public override byte[] GetIdentifier()
+        {
+            return Utilities.PadLeft(System.Text.Encoding.ASCII.GetBytes(nameof(AES256)), 10);
+        }
 #pragma warning restore SYSLIB0022 // Typ oder Element ist veraltet
         #endregion
     }

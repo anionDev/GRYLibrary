@@ -7,7 +7,11 @@ namespace GRYLibrary.Core.Crypto
 {
     public class SHA256PureCSharp : HashAlgorithm
     {
-        public override byte[] GetIdentifier() => Utilities.PadLeft(Encoding.ASCII.GetBytes("SHA256PC#"), 10);
+        public override byte[] GetIdentifier()
+        {
+            return Utilities.PadLeft(Encoding.ASCII.GetBytes("SHA256PC#"), 10);
+        }
+
         public uint[] H_InitialValue = new uint[8] {
             0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19,
         };
@@ -105,16 +109,35 @@ namespace GRYLibrary.Core.Crypto
            .ToArray();
         }
 
-        public static uint CalculateS1(uint e) => XOr(XOr(RightRotate(e, 6), RightRotate(e, 11)), RightRotate(e, 25));
+        public static uint CalculateS1(uint e)
+        {
+            return XOr(XOr(RightRotate(e, 6), RightRotate(e, 11)), RightRotate(e, 25));
+        }
 
-        public static uint CalculateCh(uint e, uint f, uint g) => XOr(And(e, f), And(Not(e), g));
-        public static uint CalculateTemp1(uint h, uint s1, uint ch, uint ki, uint wi) => Add(h, s1, ch, ki, wi);
+        public static uint CalculateCh(uint e, uint f, uint g)
+        {
+            return XOr(And(e, f), And(Not(e), g));
+        }
 
-        public static uint CalculateS0(uint a) => XOr(XOr(RightRotate(a, 2), RightRotate(a, 13)), RightRotate(a, 22));
+        public static uint CalculateTemp1(uint h, uint s1, uint ch, uint ki, uint wi)
+        {
+            return Add(h, s1, ch, ki, wi);
+        }
 
-        public static uint CalculateMaj(uint a, uint b, uint c) => XOr(XOr(And(a, b), And(a, c)), And(b, c));
+        public static uint CalculateS0(uint a)
+        {
+            return XOr(XOr(RightRotate(a, 2), RightRotate(a, 13)), RightRotate(a, 22));
+        }
 
-        public static uint CalculateTemp2(uint s0, uint maj) => Add(s0, maj);
+        public static uint CalculateMaj(uint a, uint b, uint c)
+        {
+            return XOr(XOr(And(a, b), And(a, c)), And(b, c));
+        }
+
+        public static uint CalculateTemp2(uint s0, uint maj)
+        {
+            return Add(s0, maj);
+        }
 
         public static uint Add(params uint[] summands)
         {
@@ -125,14 +148,29 @@ namespace GRYLibrary.Core.Crypto
             }
             return result;
         }
-        public static uint XOr(uint left, uint right) => left ^ right;
-        public static uint RightShift(uint value, byte amountOfDigits) => value >> amountOfDigits;
+        public static uint XOr(uint left, uint right)
+        {
+            return left ^ right;
+        }
+
+        public static uint RightShift(uint value, byte amountOfDigits)
+        {
+            return value >> amountOfDigits;
+        }
+
         public static uint RightRotate(uint value, byte amountOfDigits)
         {
             Utilities.AssertCondition(amountOfDigits < 32);
             return (value >> amountOfDigits) | (value << (32 - amountOfDigits));
         }
-        public static uint And(uint left, uint right) => left & right;
-        public static uint Not(uint value) => ~value;
+        public static uint And(uint left, uint right)
+        {
+            return left & right;
+        }
+
+        public static uint Not(uint value)
+        {
+            return ~value;
+        }
     }
 }

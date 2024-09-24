@@ -194,7 +194,10 @@ namespace GRYLibrary.Core.Graph
             return result;
         }
 
-        private IList<Vertex> GetOrderedVertices() => this.Vertices.OrderBy(vertex => vertex.Name).ToList();
+        private IList<Vertex> GetOrderedVertices()
+        {
+            return this.Vertices.OrderBy(vertex => vertex.Name).ToList();
+        }
 
         /// <remarks>This operations does not work yet due to missing implementation of <see cref="GetAllCyclesThroughASpecificVertex"/>.</remarks>
         public ISet<Cycle> GetAllCycles()
@@ -207,9 +210,17 @@ namespace GRYLibrary.Core.Graph
             return result;
         }
         /// <remarks>This operations is not implemented yet.</remarks>
-        public ISet<Cycle> GetAllCyclesThroughASpecificVertex(Vertex vertex) => throw new NotImplementedException();//todo implement using Backtracking
+        public ISet<Cycle> GetAllCyclesThroughASpecificVertex(Vertex vertex)
+        {
+            throw new NotImplementedException();//todo implement using Backtracking
+        }
+
         /// <remarks>This operations is not implemented yet.</remarks>
-        public IList<Edge> GetShortestPath(Vertex start, Vertex destination) => throw new NotImplementedException();//todo implement using Dijkstra's algorithm with Fibonacci heap
+        public IList<Edge> GetShortestPath(Vertex start, Vertex destination)
+        {
+            throw new NotImplementedException();//todo implement using Dijkstra's algorithm with Fibonacci heap
+        }
+
         public override string ToString()
         {
             double[,] matrix = this.ToAdjacencyMatrix();
@@ -217,7 +228,11 @@ namespace GRYLibrary.Core.Graph
             return string.Join(Environment.NewLine, table);
         }
         public abstract ISet<Edge> GetDirectSuccessorEdges(Vertex vertex);
-        public void BreadthFirstSearch(Func<Vertex/*current vertex*/, IList<Edge>/*path*/, bool/*continue search*/> customAction) => this.BreadthFirstSearch(customAction, this.Vertices.First());
+        public void BreadthFirstSearch(Func<Vertex/*current vertex*/, IList<Edge>/*path*/, bool/*continue search*/> customAction)
+        {
+            this.BreadthFirstSearch(customAction, this.Vertices.First());
+        }
+
         public void BreadthFirstSearch(Func<Vertex/*current vertex*/, IList<Edge>/*path*/, bool/*continue search*/> customAction, Vertex startVertex)
         {
             this.InitializeSearchAndDoSomeChecks(startVertex, out Dictionary<Vertex, bool> visitedMap);
@@ -256,7 +271,11 @@ namespace GRYLibrary.Core.Graph
             }
         }
 
-        public void DepthFirstSearch(Func<Vertex/*current vertex*/, IList<Edge>/*path*/, bool/*continue search*/> customAction, bool doNotWalkAgainstDirectedEdges = true) => this.DepthFirstSearch(customAction, this.Vertices.First(), doNotWalkAgainstDirectedEdges);
+        public void DepthFirstSearch(Func<Vertex/*current vertex*/, IList<Edge>/*path*/, bool/*continue search*/> customAction, bool doNotWalkAgainstDirectedEdges = true)
+        {
+            this.DepthFirstSearch(customAction, this.Vertices.First(), doNotWalkAgainstDirectedEdges);
+        }
+
         public void DepthFirstSearch(Func<Vertex/*current vertex*/, IList<Edge>/*path*/, bool/*continue search*/> customAction, Vertex startVertex, bool doNotWalkAgainstDirectedEdges = true)
         {
             this.InitializeSearchAndDoSomeChecks(startVertex, out Dictionary<Vertex, bool> visitedMap);
@@ -337,9 +356,17 @@ namespace GRYLibrary.Core.Graph
             bool verticesEquals = this.Vertices.SequenceEqual(typedObj.Vertices);
             return arraysEquals && verticesEquals;
         }
-        public override int GetHashCode() => this._Vertices.Count.GetHashCode() ^ this.Edges.Count.GetHashCode();
+        public override int GetHashCode()
+        {
+            return this._Vertices.Count.GetHashCode() ^ this.Edges.Count.GetHashCode();
+        }
+
         /// <remarks>This operations is not implemented yet.</remarks>
-        public bool IsSubgraph(Graph subgraph, out IDictionary<Vertex, Vertex> mappingFromSubgraphToThisGraph) => throw new NotImplementedException();
+        public bool IsSubgraph(Graph subgraph, out IDictionary<Vertex, Vertex> mappingFromSubgraphToThisGraph)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <remarks>This operations does not work yet due to missing implementation of <see cref="IsSubgraph"/>.</remarks>
         public bool IsSubgraphOf(Graph graph, out IDictionary<Vertex, Vertex> mappingFromgraphToThisGraph)
         {
@@ -391,8 +418,15 @@ namespace GRYLibrary.Core.Graph
             result = null;
             return false;
         }
-        public int GetMinimumDegree() => this.Vertices.Min(vertex => vertex.Degree());
-        public int GetMaximumDegree() => this.Vertices.Max(vertex => vertex.Degree());
+        public int GetMinimumDegree()
+        {
+            return this.Vertices.Min(vertex => vertex.Degree());
+        }
+
+        public int GetMaximumDegree()
+        {
+            return this.Vertices.Max(vertex => vertex.Degree());
+        }
     }
     public interface IGraphVisitor
     {

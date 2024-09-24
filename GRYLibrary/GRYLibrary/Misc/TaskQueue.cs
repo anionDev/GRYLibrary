@@ -19,7 +19,11 @@ namespace GRYLibrary.Core.Misc
         }
 
         /// <remarks>The string-value is supposed to be the name of the action.</remarks>
-        public void Queue(Tuple<string, Action> action) => this._ActionQueue.Enqueue(action);
+        public void Queue(Tuple<string, Action> action)
+        {
+            this._ActionQueue.Enqueue(action);
+        }
+
         public MultiSemaphore CurrentAmountOfThreads { get; private set; }
         public bool IsRunning { get; private set; }
         public bool InfiniteMode { get; }
@@ -71,9 +75,15 @@ namespace GRYLibrary.Core.Misc
             }
         }
 
-        private bool IsFinished() => 0 == this._ActionQueue.Count && this.CurrentAmountOfThreads.Value == 0;
+        private bool IsFinished()
+        {
+            return 0 == this._ActionQueue.Count && this.CurrentAmountOfThreads.Value == 0;
+        }
 
-        private bool NewThreadCanBeStarted() => 0 < this._ActionQueue.Count && this.CurrentAmountOfThreads.Value < this.MaxDegreeOfParallelism && this.Enabled;
+        private bool NewThreadCanBeStarted()
+        {
+            return 0 < this._ActionQueue.Count && this.CurrentAmountOfThreads.Value < this.MaxDegreeOfParallelism && this.Enabled;
+        }
 
         private void ExecuteTask(Tuple<string, Action> action)
         {

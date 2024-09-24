@@ -36,7 +36,11 @@ namespace GRYLibrary.Core.Crypto
                 Q = parameters[6],
             };
         }
-        public static byte[] RSAParametersToPassword(RSAParameters parameters) => Utilities.ConcatBytesArraysWithLengthInformation(parameters.D, parameters.DP, parameters.Exponent, parameters.InverseQ, parameters.Modulus, parameters.P, parameters.Q);
+        public static byte[] RSAParametersToPassword(RSAParameters parameters)
+        {
+            return Utilities.ConcatBytesArraysWithLengthInformation(parameters.D, parameters.DP, parameters.Exponent, parameters.InverseQ, parameters.Modulus, parameters.P, parameters.Q);
+        }
+
         /// <inheritdoc/>
         public override (byte[] privateKey, byte[] publicKey) GenerateRandomKeyPair()
         {
@@ -45,8 +49,14 @@ namespace GRYLibrary.Core.Crypto
         }
 
         /// <inheritdoc/>
-        public override byte[] GetIdentifier() => Utilities.PadLeft(System.Text.Encoding.ASCII.GetBytes(nameof(RSA)), 10);
+        public override byte[] GetIdentifier()
+        {
+            return Utilities.PadLeft(System.Text.Encoding.ASCII.GetBytes(nameof(RSA)), 10);
+        }
 
-        public override byte[] SignData(byte[] data, byte[] key, HashAlgorithm hashAlgorithm) => throw new System.NotImplementedException();
+        public override byte[] SignData(byte[] data, byte[] key, HashAlgorithm hashAlgorithm)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

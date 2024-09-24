@@ -13,9 +13,11 @@ namespace GRYLibrary.Core.APIServer.MidT.Counter
         {
         }
         /// <inheritdoc/>
-        public override Task Invoke(HttpContext context) =>
+        public override Task Invoke(HttpContext context)
+        {
             // TODO if response is 200 then add it to database or else return "429 Too Many Requests"
 
-            this._Next(context);
+            return this._Next(context);
+        }
     }
 }

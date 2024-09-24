@@ -20,6 +20,9 @@ namespace GRYLibrary.Core.Misc
             }
             Utilities.EnsureFileExists(this.Path);
         }
-        public void Dispose() => Utilities.EnsureFileDoesNotExist(this.Path);
+        public void Dispose()
+        {
+            Utilities.EnsureFileDoesNotExist(this.Path);
+        }
     }
 }

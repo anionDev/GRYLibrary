@@ -25,11 +25,17 @@ namespace GRYLibrary.Core.APIServer.MaintenanceRoutes
 
         [HttpGet]
         [Route(nameof(AvailabilityCheck))]
-        public IActionResult AvailabilityCheck() => this.Ok();
+        public IActionResult AvailabilityCheck()
+        {
+            return this.Ok();
+        }
 
         [HttpGet]
         [Route(nameof(CurrentVersion))]
-        public IActionResult CurrentVersion() => this.Ok(Assembly.GetEntryAssembly().GetName().Version.ToString(3));
+        public IActionResult CurrentVersion()
+        {
+            return this.Ok(Assembly.GetEntryAssembly().GetName().Version.ToString(3));
+        }
 
         [HttpGet(nameof(ShowAllEndpoints))]
         public IActionResult ShowAllEndpoints()

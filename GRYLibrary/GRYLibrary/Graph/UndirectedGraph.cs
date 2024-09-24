@@ -10,9 +10,16 @@ namespace GRYLibrary.Core.Graph
         public ISet<Edge> UndirectedEdges => new HashSet<Edge>(this._UndirectedEdges);
         private readonly ISet<UndirectedEdge> _UndirectedEdges = new HashSet<UndirectedEdge>();
         public UndirectedGraph() { }
-        public override void Accept(IGraphVisitor visitor) => visitor.Handle(this);
+        public override void Accept(IGraphVisitor visitor)
+        {
+            visitor.Handle(this);
+        }
 
-        public override T Accept<T>(IGraphVisitor<T> visitor) => visitor.Handle(this);
+        public override T Accept<T>(IGraphVisitor<T> visitor)
+        {
+            return visitor.Handle(this);
+        }
+
         /// <returns>
         /// Returns a set of all vertices which have a connection to this vertex in this graph.
         /// </returns>
@@ -94,8 +101,14 @@ namespace GRYLibrary.Core.Graph
                 this.OnEdgeRemoved(edge);
             }
         }
-        public override string ToString() => base.ToString();
+        public override string ToString()
+        {
+            return base.ToString();
+        }
 
-        internal override Edge GetNewEdgeBetween(Vertex vertex1, Vertex vertex2) => new UndirectedEdge(new Vertex[] { vertex1, vertex2 });
+        internal override Edge GetNewEdgeBetween(Vertex vertex1, Vertex vertex2)
+        {
+            return new UndirectedEdge(new Vertex[] { vertex1, vertex2 });
+        }
     }
 }

@@ -25,7 +25,10 @@ namespace GRYLibrary.Core.Graph
         {
         }
 
-        private static string CalculateName(IEnumerable<Vertex> connectedVertices) => $"({string.Join("<->", connectedVertices)})";
+        private static string CalculateName(IEnumerable<Vertex> connectedVertices)
+        {
+            return $"({string.Join("<->", connectedVertices)})";
+        }
 
         public override bool Connects(Vertex fromVertex, Vertex toVertex)
         {
@@ -49,16 +52,35 @@ namespace GRYLibrary.Core.Graph
             }
             return true;
         }
-        public override int GetHashCode() => HashCode.Combine(base.GetHashCode());
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(base.GetHashCode());
+        }
 
-        public override IEnumerable<Vertex> GetConnectedVertices() => this.ConnectedVertices;
+        public override IEnumerable<Vertex> GetConnectedVertices()
+        {
+            return this.ConnectedVertices;
+        }
 
-        public override void Accept(IEdgeVisitor visitor) => visitor.Handle(this);
+        public override void Accept(IEdgeVisitor visitor)
+        {
+            visitor.Handle(this);
+        }
 
-        public override T Accept<T>(IEdgeVisitor<T> visitor) => visitor.Handle(this);
-        public override IEnumerable<Vertex> GetInputs() => new List<Vertex>(this.ConnectedVertices);
+        public override T Accept<T>(IEdgeVisitor<T> visitor)
+        {
+            return visitor.Handle(this);
+        }
 
-        public override IEnumerable<Vertex> GetOutputs() => new List<Vertex>(this.ConnectedVertices);
+        public override IEnumerable<Vertex> GetInputs()
+        {
+            return new List<Vertex>(this.ConnectedVertices);
+        }
+
+        public override IEnumerable<Vertex> GetOutputs()
+        {
+            return new List<Vertex>(this.ConnectedVertices);
+        }
 
         public override IEnumerable<Vertex> GetOtherConnectedVerticesVisitor(Vertex vertex)
         {

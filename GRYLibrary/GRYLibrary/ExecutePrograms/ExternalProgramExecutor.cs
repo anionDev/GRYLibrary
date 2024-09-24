@@ -61,7 +61,11 @@ namespace GRYLibrary.Core.ExecutePrograms
         public bool IsRunning => this._Running;
         private readonly object _LockObject = new();
         private readonly ConcurrentQueue<(LogLevel, string)> _NotLoggedOutputLines = new();
-        public void Run() => this.Configuration.WaitingState.Accept(new WaitingStateRunVisitor(this));
+        public void Run()
+        {
+            this.Configuration.WaitingState.Accept(new WaitingStateRunVisitor(this));
+        }
+
         private class WaitingStateRunVisitor : IWaitingStateVisitor
         {
             private readonly ExternalProgramExecutor _ExternalProgramExecutor;
@@ -71,9 +75,15 @@ namespace GRYLibrary.Core.ExecutePrograms
                 this._ExternalProgramExecutor = externalProgramExecutor;
             }
 
-            public void Handle(RunAsynchronously runAsynchronously) => this._ExternalProgramExecutor.StartAsynchronously();
+            public void Handle(RunAsynchronously runAsynchronously)
+            {
+                this._ExternalProgramExecutor.StartAsynchronously();
+            }
 
-            public void Handle(RunSynchronously runSynchronously) => this._ExternalProgramExecutor.StartSynchronously();
+            public void Handle(RunSynchronously runSynchronously)
+            {
+                this._ExternalProgramExecutor.StartSynchronously();
+            }
         }
         private Task StartAsynchronously()
         {
@@ -180,7 +190,10 @@ namespace GRYLibrary.Core.ExecutePrograms
         private static readonly IWaitingStateVisitor<string> _GetWaitingStateCreateEpewArgumentStringVisitor = new GetWaitingStateCreateEpewArgumentStringVisitor();
         private class GetWaitingStateCreateEpewArgumentStringVisitor : IWaitingStateVisitor<string>
         {
-            public string Handle(RunAsynchronously runAsynchronously) => "--NotSynchronous";
+            public string Handle(RunAsynchronously runAsynchronously)
+            {
+                return "--NotSynchronous";
+            }
 
             public string Handle(RunSynchronously runSynchronously)
             {
@@ -239,8 +252,16 @@ namespace GRYLibrary.Core.ExecutePrograms
             }
             this.LogObject.Log($"Program which will be executed: {this.CMD}", LogLevel.Debug);
         }
-        private void LogImmediatelyAfterStart(int processId) => this.LogObject.Log($"Process-Id of started program: " + processId, LogLevel.Debug);
-        private void LogException(Exception exception) => this.LogObject.Log(exception);
+        private void LogImmediatelyAfterStart(int processId)
+        {
+            this.LogObject.Log($"Process-Id of started program: " + processId, LogLevel.Debug);
+        }
+
+        private void LogException(Exception exception)
+        {
+            this.LogObject.Log(exception);
+        }
+
         private void LogEnd()
         {
             this.LogObject.Log($"Finished executing program", LogLevel.Debug);
@@ -356,7 +377,10 @@ namespace GRYLibrary.Core.ExecutePrograms
                 this._StopWatch = stopWatch;
             }
 
-            public void Handle(RunAsynchronously runAsynchronously) => Utilities.NoOperation();
+            public void Handle(RunAsynchronously runAsynchronously)
+            {
+                Utilities.NoOperation();
+            }
 
             public void Handle(RunSynchronously runSynchronously)
             {
@@ -433,7 +457,11 @@ namespace GRYLibrary.Core.ExecutePrograms
             this._Running = false;
             this.CurrentExecutionState = ExecutionState.Terminated;
         }
-        public void WaitUntilTerminated() => Utilities.WaitUntilConditionIsTrue(() => this.CurrentExecutionState == ExecutionState.Terminated);
+        public void WaitUntilTerminated()
+        {
+            Utilities.WaitUntilConditionIsTrue(() => this.CurrentExecutionState == ExecutionState.Terminated);
+        }
+
         private void CheckIfStartOperationWasAlreadyCalled()
         {
             lock (this._LockObject)

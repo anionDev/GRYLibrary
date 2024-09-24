@@ -15,6 +15,9 @@
             this.Port = port;
             this.TLSCertificateInformation = tlsCertificateInformation;
         }
-        public override string GetProtocol() => "https";
+        public override string GetProtocol()
+        {
+            return "https";
+        }
     }
 }

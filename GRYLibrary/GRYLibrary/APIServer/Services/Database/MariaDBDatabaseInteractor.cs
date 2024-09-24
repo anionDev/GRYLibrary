@@ -6,7 +6,10 @@ namespace GRYLibrary.Core.APIServer.Services.Database
 {
     public class MariaDBDatabaseInteractor : IGenericDatabaseInteractor
     {
-        public DbCommand CreateCommand(string sql, DbConnection connection) => new MySqlCommand(sql, (MySqlConnection)connection);
+        public DbCommand CreateCommand(string sql, DbConnection connection)
+        {
+            return new MySqlCommand(sql, (MySqlConnection)connection);
+        }
 
         public IList<string> GetAllTableNames(DbConnection connection)
         {
