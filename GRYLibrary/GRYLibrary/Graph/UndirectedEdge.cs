@@ -71,6 +71,7 @@ namespace GRYLibrary.Core.Graph
         {
             return visitor.Handle(this);
         }
+
         public override IEnumerable<Vertex> GetInputs()
         {
             return new List<Vertex>(this.ConnectedVertices);

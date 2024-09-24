@@ -25,6 +25,7 @@ namespace GRYLibrary.Core.AOA.EqualsHelper.CustomComparer
         {
             return typeOfObject1.Equals(typeOfObject2) && TypeIsTreatedAsPrimitive(typeOfObject1);
         }
+
         public static bool TypeIsTreatedAsPrimitive(Type type)
         {
             return Utilities.TypeIsPrimitive(type);

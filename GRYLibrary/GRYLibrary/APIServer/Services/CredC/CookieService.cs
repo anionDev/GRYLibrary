@@ -21,6 +21,7 @@ namespace GRYLibrary.Core.APIServer.Services.Cred
         {
             return this.TryGetCookieValue(context, out string _);
         }
+
         public virtual bool TryGetCookieValue(HttpContext context, out string cookie)
         {
             return context.Request.Cookies.TryGetValue(this.CookieServiceConfiguration.CookieName, out cookie);

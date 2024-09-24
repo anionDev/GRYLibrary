@@ -214,11 +214,13 @@ namespace GRYLibrary.Core.Graph
         {
             throw new NotImplementedException();//todo implement using Backtracking
         }
+
         /// <remarks>This operations is not implemented yet.</remarks>
         public IList<Edge> GetShortestPath(Vertex start, Vertex destination)
         {
             throw new NotImplementedException();//todo implement using Dijkstra's algorithm with Fibonacci heap
         }
+
         public override string ToString()
         {
             double[,] matrix = this.ToAdjacencyMatrix();
@@ -230,6 +232,7 @@ namespace GRYLibrary.Core.Graph
         {
             this.BreadthFirstSearch(customAction, this.Vertices.First());
         }
+
         public void BreadthFirstSearch(Func<Vertex/*current vertex*/, IList<Edge>/*path*/, bool/*continue search*/> customAction, Vertex startVertex)
         {
             this.InitializeSearchAndDoSomeChecks(startVertex, out Dictionary<Vertex, bool> visitedMap);
@@ -272,6 +275,7 @@ namespace GRYLibrary.Core.Graph
         {
             this.DepthFirstSearch(customAction, this.Vertices.First(), doNotWalkAgainstDirectedEdges);
         }
+
         public void DepthFirstSearch(Func<Vertex/*current vertex*/, IList<Edge>/*path*/, bool/*continue search*/> customAction, Vertex startVertex, bool doNotWalkAgainstDirectedEdges = true)
         {
             this.InitializeSearchAndDoSomeChecks(startVertex, out Dictionary<Vertex, bool> visitedMap);
@@ -356,11 +360,13 @@ namespace GRYLibrary.Core.Graph
         {
             return this._Vertices.Count.GetHashCode() ^ this.Edges.Count.GetHashCode();
         }
+
         /// <remarks>This operations is not implemented yet.</remarks>
         public bool IsSubgraph(Graph subgraph, out IDictionary<Vertex, Vertex> mappingFromSubgraphToThisGraph)
         {
             throw new NotImplementedException();
         }
+
         /// <remarks>This operations does not work yet due to missing implementation of <see cref="IsSubgraph"/>.</remarks>
         public bool IsSubgraphOf(Graph graph, out IDictionary<Vertex, Vertex> mappingFromgraphToThisGraph)
         {
@@ -416,6 +422,7 @@ namespace GRYLibrary.Core.Graph
         {
             return this.Vertices.Min(vertex => vertex.Degree());
         }
+
         public int GetMaximumDegree()
         {
             return this.Vertices.Max(vertex => vertex.Degree());

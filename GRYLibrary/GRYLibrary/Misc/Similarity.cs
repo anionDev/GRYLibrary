@@ -113,10 +113,12 @@ namespace GRYLibrary.Core.Misc
         {
             return CalculateSimilarityHelperGetIntersection(string1, string2).Count() / (double)CalculateSimilarityHelperGetUnion(string1, string2).Count();
         }
+
         public static PercentValue CalculateJaccardSimilarity(string string1, string string2)
         {
             return new PercentValue(CalculateJaccardIndex(string1, string2) * 2);
         }
+
         private static string CalculateSimilarityHelperGetIntersection(string string1, string string2)
         {
             IList<char> list = new List<char>();
@@ -150,6 +152,7 @@ namespace GRYLibrary.Core.Misc
         {
             return new string((string1 + string2).ToCharArray());
         }
+
         private static HashSet<string> CalculateSimilarityHelperGetIntersectionOfCharSet(ICollection<string> keys1, ICollection<string> keys2)
         {
             HashSet<string> result = new();

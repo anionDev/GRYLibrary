@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.Logging.GRYLogger
 {
-    public sealed class GRYLog : IDisposable, ILogger, IGeneralLogger
+    public sealed class GRYLog : IGRYLog
     {
         public GRYLogConfiguration Configuration { get; set; }
         /// <summary>
@@ -59,14 +59,17 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         {
             return Create(new GRYLogConfiguration(true));
         }
+
         public static GRYLog Create(string logFile)
         {
             return Create(GRYLogConfiguration.GetCommonConfiguration(logFile, false));
         }
+
         public static GRYLog Create(GRYLogConfiguration configuration)
         {
             return new GRYLog(configuration);
         }
+
         public override int GetHashCode()
         {
             return HashCode.Combine(this.Configuration);
@@ -94,10 +97,12 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         {
             return this._AmountOfErrors;
         }
+
         public int GetAmountOfWarnings()
         {
             return this._AmountOfWarnings;
         }
+
         public void LogGeneralProgramInformation()
         {
             ProcessModule module = Process.GetProcessById(Environment.ProcessId).MainModule;
@@ -119,10 +124,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
 
         private void LogDriveStatistics(string drive)
         {
-            this.Log($"Total free bytes on drive '{drive}': {Utilities.GetTotalFreeSpace(drive)}", LogLevel.Information);
-            //todo print ram usage
-            //todo print cpu usage
-            //todo print if internetconnection exists
+            this.Log($"Total free bytes on drive '{drive}': {Utilities.GetTotalFreeSpace(drive)}", LogLevel.Information);//todo print ram usage//todo print cpu usage//todo print if internetconnection exists
         }
 
         public void LogSummary()
@@ -152,14 +154,17 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         {
             this.Log(message, LogLevel.Information, messagId);
         }
+
         public void Log(string message, Exception exception, string messageId = null)
         {
             this.Log(message, LogLevel.Error, exception, messageId);
         }
+
         public void Log(string message, LogLevel logLevel, Exception exception, string messageId)
         {
             this.Log(new LogItem(message, logLevel, exception, messageId));
         }
+
         public void Log(string message, LogLevel logLevel, string messageId = null)
         {
             this.Log(() => message, logLevel, messageId);
@@ -169,26 +174,32 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         {
             this.Log(getMessage, LogLevel.Information, messageId);
         }
+
         public void Log(Func<string> getMessage, Exception exception, string messageId = null)
         {
             this.Log(getMessage, LogLevel.Error, exception, messageId);
         }
+
         public void Log(Exception exception, string messageId = null)
         {
             this.Log(LogLevel.Error, exception, messageId);
         }
+
         public void Log(LogLevel logLevel, Exception exception, string messageId = null)
         {
             this.Log(() => "An exception occurred", logLevel, exception, messageId);
         }
+
         public void Log(Func<string> getMessage, LogLevel logLevel, Exception exception, string messageId = null)
         {
             this.Log(new LogItem(getMessage(), logLevel, exception, messageId));
         }
+
         public void Log(Func<string> getMessage, LogLevel logLevel, string messageId = null)
         {
             this.Log(new LogItem(getMessage, logLevel, messageId));
         }
+
         public void Log(LogItem logitem)
         {
             if (this.Configuration.WriteLogEntriesAsynchronous)
@@ -281,27 +292,28 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         {
             return logLevel.Equals(LogLevel.Error) || logLevel.Equals(LogLevel.Critical);
         }
+
         [Obsolete($"Use {nameof(GeneralLoggerExtensions)}.{nameof(GeneralLoggerExtensions.LogLoopExecution)} instead.")]
         public void ExecuteAndLogForEach<T>(IEnumerable<T> items, Action<T> itemAction, string nameOfEntireLoopAction, string subNamespaceOfEntireLoopAction, Func<T, string> nameOfSingleItemFunc, Func<T, string> subNamespaceOfSingleItemFunc, bool preventThrowingExceptions = false, LogLevel logLevelForOverhead = LogLevel.Debug)
         {
             GeneralLoggerExtensions.Log(this, nameOfEntireLoopAction, logLevelForOverhead, !preventThrowingExceptions, true, false, true, true, () =>
-            {
-                List<T> itemsAsList = items.ToList();
-                uint amountOfItems = (uint)itemsAsList.Count;
-                for (uint currentIndex = 0; currentIndex < itemsAsList.Count; currentIndex++)
-                {
-                    try
-                    {
-                        T currentItem = itemsAsList[(int)currentIndex];
-                        string nameOfSingleItem = nameOfSingleItemFunc(currentItem);
-                        GeneralLoggerExtensions.Log(this, nameOfSingleItemFunc(currentItem), logLevelForOverhead, !preventThrowingExceptions, true, false, true, false, () => itemAction(currentItem));
-                    }
-                    finally
-                    {
-                        this.LogProgress(currentIndex + 1, amountOfItems);
-                    }
-                }
-            });
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  List<T> itemsAsList = items.ToList();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  uint amountOfItems = (uint)itemsAsList.Count;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  for (uint currentIndex = 0; currentIndex < itemsAsList.Count; currentIndex++)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      try
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          T currentItem = itemsAsList[(int)currentIndex];
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          string nameOfSingleItem = nameOfSingleItemFunc(currentItem);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          GeneralLoggerExtensions.Log(this, nameOfSingleItemFunc(currentItem), logLevelForOverhead, !preventThrowingExceptions, true, false, true, false, () => itemAction(currentItem));
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      finally
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          this.LogProgress(currentIndex + 1, amountOfItems);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              });
         }
 
         public void LogProgress(uint enumerator, uint denominator)
@@ -393,6 +405,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         {
             return new GRYLogSubNamespaceProvider(this, state.ToString());
         }
+
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
             this.Log(() => $"{this.FormatEvent(eventId)} | {formatter(state, exception)}", logLevel, 0x78200004.ToString());

@@ -83,6 +83,7 @@ namespace GRYLibrary.Core.APIServer.Services.KCZAuth
         {
             throw new System.NotImplementedException();
         }
+
         public void LogoutEverywhere(string username)
         {
             throw new System.NotImplementedException();

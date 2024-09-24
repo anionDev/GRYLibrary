@@ -131,6 +131,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         {
             return this.LogLevel is LogLevel.Critical or LogLevel.Error;
         }
+
         private readonly void FormatMessage(GRYLogConfiguration configuration, string message, DateTime momentOfLogEntry, LogLevel loglevel, GRYLogLogFormat format, out string formattedMessage, out int colorBegin, out int colorEnd, out ConsoleColor consoleColor, string messageIdValue)
         {
             consoleColor = configuration.GetLoggedMessageTypesConfigurationByLogLevel(loglevel).ConsoleColor;

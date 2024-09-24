@@ -1,6 +1,6 @@
 ﻿using GRYLibrary.Core.APIServer.CommonDBTypes;
 using GRYLibrary.Core.APIServer.MidT.Auth;
-using GRYLibrary.Core.APIServer.Services.Auth;
+using GRYLibrary.Core.APIServer.Services.Auth.R;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
 using GRYLibrary.Core.APIServer.Utilities;
 using GRYLibrary.Core.Exceptions;
@@ -33,7 +33,8 @@ namespace GRYLibrary.Core.APIServer.Mid.Auth
             }
             if (this.TryGetAuthorizeAttribute(context, out AuthorizeAttribute authorizeAttribute))
             {
-                return authorizeAttribute.Groups.Any();
+                bool result = authorizeAttribute.Groups.Any();
+                return result;
             }
             else
             {
@@ -49,7 +50,8 @@ namespace GRYLibrary.Core.APIServer.Mid.Auth
                 string accessToken = this._CredentialsProvider.ExtractSecret(context);
                 User user = this._AuthenticationService.GetUserByAccessToken(accessToken);
                 System.Collections.Generic.ISet<string> authorizedGroups = authorizedAttribute.Groups;
-                return this._AuthorizationService.IsAuthorized(user.Id, authorizedGroups);
+                bool result = this._AuthorizationService.IsAuthorized(user.GetAllRoles().Select(r => r.Name).ToHashSet(), authorizedGroups);
+                return result;
             }
             else
             {

@@ -134,6 +134,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         {
             return GetCommonConfiguration(AbstractFilePath.FromString(logFile), verbose);
         }
+
         public static GRYLogConfiguration GetCommonConfiguration(AbstractFilePath logFile = null, bool verbose = false)
         {
             GRYLogConfiguration result = new GRYLogConfiguration(true);
@@ -172,6 +173,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         {
             return Generic.GenericToString(this);
         }
+
         public ISet<Type> GetExtraTypesWhichAreRequiredForSerialization()
         {
             return new HashSet<Type>();

@@ -25,6 +25,7 @@ namespace GRYLibrary.Core.Streams
         {
             return this._Connections.ToImmutableHashSet();
         }
+
         public class StreamPipe
         {
             public Stream Source { get; }

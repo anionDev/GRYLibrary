@@ -9,10 +9,7 @@ namespace GRYLibrary.Core.Misc
         public void EnterPressed(string input)
         {
             input = input.Trim();
-            if (this.UserInputs.Contains(input))
-            {
-                this.UserInputs.Remove(input);
-            }
+            this.UserInputs.Remove(input);
             this.UserInputs.Add(input);
             this.ResetCurrentReadPosition();
         }
@@ -36,6 +33,7 @@ namespace GRYLibrary.Core.Misc
         {
             this.CurrentuserInputIndex = this.UserInputs.Count;
         }
+
         private string GetCurrentItem()
         {
             if (this.CurrentuserInputIndex == this.UserInputs.Count || this.UserInputs.Count == 0)

@@ -29,18 +29,22 @@ namespace GRYLibrary.Core.GenericAPIClient
         {
             return decimal.Parse(await this.GetAsStringAsync(route), CultureInfo.InvariantCulture);
         }
+
         public async Task<string> GetAsStringAsync(string route)
         {
             return await this.SendAsStringAsync(route, HttpMethod.Get);
         }
+
         public async Task PostAsync(string route, string body)
         {
             await this.GetResponse(route, HttpMethod.Post, body);
         }
+
         public async Task PutAsync(string route, string body)
         {
             await this.GetResponse(route, HttpMethod.Put, body);
         }
+
         private async Task<string> SendAsStringAsync(string route, HttpMethod method)
         {
             HttpResponseMessage response = await this.GetResponse(route, method, null);

@@ -27,6 +27,7 @@ namespace GRYLibrary.Core.Misc.Captcha
         {
             return new string(Enumerable.Repeat(settings.Alphabet, settings.Length).Select(s => s[_Random.Next(s.Length)]).ToArray());
         }
+
         internal static byte[] GetPictureForString(string expectedUserInput)
         {
             RandomNumberProvider rng = new RandomNumberProvider();

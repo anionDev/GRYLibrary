@@ -38,10 +38,12 @@ namespace GRYLibrary.Core.AdvancedXMLSerialysis
         {
             return new GenericXMLSerializer<object>();
         }
+
         internal static GenericXMLSerializer CreateForObject(object @object)
         {
             return new GenericXMLSerializer(@object.GetType());
         }
+
         private XmlWriterSettings GetXmlWriterSettings()
         {
             XmlWriterSettings result = new()
@@ -88,6 +90,7 @@ namespace GRYLibrary.Core.AdvancedXMLSerialysis
         {
             return (U)this.Deserialize(serializedObject);
         }
+
         public object/*T*/ Deserialize(string serializedObject)
         {
             using StringReader stringReader = new(serializedObject);
@@ -158,6 +161,7 @@ namespace GRYLibrary.Core.AdvancedXMLSerialysis
         {
             return (T)this.Deserialize(serializedObject);
         }
+
         public T DeserializeTyped(XmlReader reader)
         {
             return (T)this.Deserialize(reader);

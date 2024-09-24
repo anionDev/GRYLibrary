@@ -21,6 +21,7 @@ namespace GRYLibrary.Core.XMLSerializer
                                                                 .Emit(EmitBehaviors.Classic)
                                                                 .Create();
         }
+
         public string Serialize(T @object)
         {
             string document = this.GetSerializer().Serialize(new XmlWriterSettings { Indent = true }, @object);

@@ -17,6 +17,7 @@ namespace GRYLibrary.Core.Crypto
         {
             throw new NotImplementedException();
         }
+
         /// <inheritdoc/>
         public override (byte[] privateKey, byte[] publicKey) GenerateRandomKeyPair()
         {

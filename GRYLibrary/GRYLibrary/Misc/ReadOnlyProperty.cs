@@ -14,7 +14,11 @@ namespace GRYLibrary.Core.Misc
     {
         private readonly Property<T> _Property;
         private readonly Func<Tuple<bool/*calculateValueWasSuccessful*/, T/*value*/>> _SetValueFunction;
-        public DateTime LastUpdate() { return this._Property.LastWriteTime; }
+        public DateTime LastUpdate()
+        {
+            return this._Property.LastWriteTime;
+        }
+
         /// <param name="setValueFunction">
         /// Represents the function which can update the <see cref="Value"/>.
         /// This function must return a tuple which contains

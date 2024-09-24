@@ -1,6 +1,6 @@
 ﻿using GRYLibrary.Core.APIServer.CommonDBTypes;
 using GRYLibrary.Core.APIServer.MidT.Auth;
-using GRYLibrary.Core.APIServer.Services.Auth;
+using GRYLibrary.Core.APIServer.Services.Auth.A;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
 using GRYLibrary.Core.APIServer.Utilities;
 using GRYLibrary.Core.Exceptions;

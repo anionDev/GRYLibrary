@@ -13,10 +13,17 @@ namespace GRYLibrary.Core.APIServer.Mid.NewFolder
         {
             this._APIKeyValidatorSettings = apiKeyValidatorSettings;
         }
+
+        public override bool AuthorizationIsRequired(HttpContext context)
+        {
+            return false;//API-keys only check for authorization, not for authentication.
+        }
+
         public virtual (bool provided, string apiKey) TryGetAPIKey(HttpContext context)
         {
             return APIKeyValidatorFilter.TryGetAPIKey(context);
         }
+
         public abstract bool APIKeyIsAuthorized(string apiKey, HttpContext context);
         protected override bool IsAuthorized(HttpContext context)
         {

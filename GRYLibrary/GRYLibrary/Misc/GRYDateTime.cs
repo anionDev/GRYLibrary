@@ -4,21 +4,28 @@ using System.Globalization;
 namespace GRYLibrary.Core.Misc
 {
     /// <summary>
-    /// Represents a datetime without milliseconds.
+    /// Represents a datetime without milliseconds in the gregorian calendar in UTC.
     /// </summary>
     public struct GRYDateTime : IEquatable<GRYDateTime>, IComparable<GRYDateTime>, IComparable
     {
-        internal static readonly string DateFormat = "yyyy-MM-dd HH:mm:ss";
-        public int Year { get; set; }
-        public int Month { get; set; }
-        public int Day { get; set; }
-        public int Hour { get; set; }
-        public int Minute { get; set; }
-        public int Second { get; set; }
-        public static GRYDateTime GetCurrentDateTime() { return FromDateTime(DateTime.Now); }
-        public static GRYDateTime GetCurrentDateTimeInUTC() { return FromDateTime(DateTime.UtcNow); }
+        public static readonly string DateFormat = "yyyy-MM-dd HH:mm:ss";
+        public uint Year { get; set; }
+        public uint Month { get; set; }
+        public uint Day { get; set; }
+        public uint Hour { get; set; }
+        public uint Minute { get; set; }
+        public uint Second { get; set; }
+        public static GRYDateTime GetCurrentDateTime()
+        {
+            return FromDateTime(DateTime.Now);
+        }
 
-        public GRYDateTime(int year, int month, int day, int hour, int minute, int second)
+        public static GRYDateTime GetCurrentDateTimeInUTC()
+        {
+            return FromDateTime(DateTime.UtcNow);
+        }
+
+        public GRYDateTime(uint year, uint month, uint day, uint hour, uint minute, uint second)
         {
             this.Year = year;
             this.Month = month;
@@ -30,24 +37,29 @@ namespace GRYLibrary.Core.Misc
         }
         public readonly DateTime ToDateTime()
         {
-            return new DateTime(this.Year, this.Month, this.Day, this.Hour, this.Minute, this.Second);
+            return new DateTime((int)this.Year, (int)this.Month, (int)this.Day, (int)this.Hour, (int)this.Minute, (int)this.Second);
         }
+
         public readonly GRYTime ToGRYTime()
         {
             return new GRYTime(this.Hour, this.Minute, this.Second);
         }
+
         public readonly GRYDate ToGRYDate()
         {
             return new GRYDate(this.Year, this.Month, this.Day);
         }
+
         public static GRYDateTime FromGRYDateAndTime(GRYDate date, GRYTime time)
         {
             return new GRYDateTime(date.Year, date.Month, date.Day, time.Hour, time.Minute, time.Second);
         }
+
         public static GRYDateTime FromDateTime(DateTime value)
         {
-            return new GRYDateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second);
+            return new GRYDateTime((uint)value.Year, (uint)value.Month, (uint)value.Day, (uint)value.Hour, (uint)value.Minute, (uint)value.Second);
         }
+
         public static GRYDateTime FromString(string @string)
         {
             return FromDateTime(DateTime.ParseExact(@string, DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None));
@@ -62,6 +74,7 @@ namespace GRYLibrary.Core.Misc
         {
             return $"{this.Year.ToString().PadLeft(4, '0')}-{this.Month.ToString().PadLeft(2, '0')}-{this.Day.ToString().PadLeft(2, '0')} {this.Hour.ToString().PadLeft(2, '0')}:{this.Minute.ToString().PadLeft(2, '0')}:{this.Second.ToString().PadLeft(2, '0')}";
         }
+
         public readonly string ToURLEncodedString()
         {
             return this.ToString().Replace(" ", "%20").Replace(":", "%3A");
@@ -91,9 +104,30 @@ namespace GRYLibrary.Core.Misc
         {
             return this.ToDateTime().CompareTo(obj);
         }
-        public GRYDateTime ToFullHour()
+
+        public readonly GRYDateTime ToFullHour()
         {
             return new GRYDateTime(this.Year, this.Month, this.Day, this.Hour, 0, 0);
+        }
+
+        public readonly GRYDateTime AddDays(int amountOfDays)
+        {
+            return FromDateTime(this.ToDateTime().AddDays(amountOfDays));
+        }
+
+        public readonly GRYDateTime AddHours(int amountOfHours)
+        {
+            return FromDateTime(this.ToDateTime().AddHours(amountOfHours));
+        }
+
+        public readonly GRYDateTime AddMinutes(int amountOfMinuts)
+        {
+            return FromDateTime(this.ToDateTime().AddMinutes(amountOfMinuts));
+        }
+
+        public readonly GRYDateTime AddSeconds(int amountOfSeconds)
+        {
+            return FromDateTime(this.ToDateTime().AddSeconds(amountOfSeconds));
         }
 
         public static bool operator ==(GRYDateTime left, GRYDateTime right)

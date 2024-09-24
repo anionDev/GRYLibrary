@@ -81,10 +81,12 @@ namespace GRYLibrary.Core.Misc
         {
             return this.ColorCode;
         }
+
         public override string ToString()
         {
             return $"{nameof(ExtendedColor)}({nameof(this.A)}={this.A},{nameof(this.R)}={this.R},{nameof(this.G)}={this.G},{nameof(this.B)}={this.B})";
         }
+
         private static (double hue, PercentValue saturation, PercentValue value) ColorToHSV(Color color)
         {
             int max = Math.Max(color.R, Math.Max(color.G, color.B));

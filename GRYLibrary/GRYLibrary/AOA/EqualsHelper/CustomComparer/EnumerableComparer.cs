@@ -49,6 +49,7 @@ namespace GRYLibrary.Core.AOA.EqualsHelper.CustomComparer
         {
             return this.Configuration.GetHashCode(obj);
         }
+
         public override bool IsApplicable(Type typeOfObject1, Type typeOfObject2)
         {
             return EnumerableTools.TypeIsEnumerable(typeOfObject1) && EnumerableTools.TypeIsEnumerable(typeOfObject2);

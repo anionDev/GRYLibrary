@@ -48,6 +48,7 @@ namespace GRYLibrary.Core.Crypto
         {
             return DeserializeAndDecrypt(encryptedData, password);
         }
+
         public static byte[] EncryptAndSerialize(byte[] unencryptedData, (byte[], AsymmetricEncryptionAlgorithm)[] unencryptedPublicPasswordEncryptionKeys, SymmetricEncryptionAlgorithm internalEncryptionAlgorithmForKeys, HashAlgorithm hashAlgorithm)
         {
             byte[] internalKey = internalEncryptionAlgorithmForKeys.GenerateRandomKey();

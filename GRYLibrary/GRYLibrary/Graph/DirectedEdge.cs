@@ -27,10 +27,12 @@ namespace GRYLibrary.Core.Graph
         {
             return new UndirectedEdge(new Vertex[] { equalSourceInUndirectedGraph, equalTargetInUndirectedGraph }, this.Name, this.Weight);
         }
+
         public override bool Connects(Vertex fromVertex, Vertex toVertex)
         {
             return this.Source.Equals(fromVertex) && this.Target.Equals(toVertex);
         }
+
         public override bool Equals(object obj)
         {
             if (!base.Equals(obj))
@@ -57,6 +59,7 @@ namespace GRYLibrary.Core.Graph
         {
             return new Vertex[] { this.Source, this.Target };
         }
+
         public override void Accept(IEdgeVisitor visitor)
         {
             visitor.Handle(this);

@@ -97,10 +97,12 @@ namespace GRYLibrary.Core.Graph
         {
             return edge1.GetOutputs().Intersect(edge2.GetInputs()).Count() > 0;
         }
+
         public override string ToString()
         {
             return nameof(Cycle) + "(" + string.Join("->", this._Edges) + ")";
         }
+
         public static string CycleSetToString(IEnumerable<Cycle> expectedCycles)
         {
             return "{" + string.Join(",", expectedCycles) + "}";

@@ -60,17 +60,19 @@ namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
         {
             throw new NotImplementedException();
         }
+
         public static void LogException(this IGeneralLogger logger, Exception exception, string message)
         {
             logger.LogException(exception, message, LogLevel.Error);
         }
+
         public static void LogException(this IGeneralLogger logger, Exception exception, string message, LogLevel logLevel)
         {
             LogItem logItem = new LogItem(message, logLevel, exception);
             logger.AddLogEntry(logItem);
         }
 
-        public static GRYLog SetupLogger(GRYLogConfiguration configuration, string basePath, string subnamespace)
+        public static IGRYLog SetupLogger(GRYLogConfiguration configuration, string basePath, string subnamespace)
         {
             GRYLog result = GRYLog.Create(configuration);
             result.UseSubNamespace(subnamespace);

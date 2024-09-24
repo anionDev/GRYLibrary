@@ -12,6 +12,12 @@ namespace GRYLibrary.Core.Exceptions
     public class BadRequestException : UserFormattedException
     {
         public ushort HTTPStatusCode { get; }
+        public BadRequestException() : this(StatusCodes.Status400BadRequest, GetMessage(StatusCodes.Status400BadRequest))
+        {
+        }
+        public BadRequestException(string message) : this(StatusCodes.Status400BadRequest, message)
+        {
+        }
         public BadRequestException(ushort httpStatusCode) : this(httpStatusCode, GetMessage(httpStatusCode))
         {
         }
@@ -32,7 +38,9 @@ namespace GRYLibrary.Core.Exceptions
             string bodyLog;
             if (verbose)
             {
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
                 (string bodyInfo, string bodyContent, byte[] bodyPlainContent) = DRequestLoggingMiddleware.BytesToString(request.Body, new UTF8Encoding(false));
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
                 bodyLog = $" ;Body ({bodyInfo}): {bodyContent}";
             }
             else

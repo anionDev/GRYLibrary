@@ -1,8 +1,9 @@
 ﻿using GRYLibrary.Core.APIServer.CommonDBTypes;
-using System;
+using GRYLibrary.Core.APIServer.Services.Interfaces;
+using GRYLibrary.Core.Exceptions;
 using System.Collections.Generic;
 using System.Linq;
-
+using GUtilities = GRYLibrary.Core.Misc.Utilities;
 namespace GRYLibrary.Core.APIServer.Services.Trans
 {
     public class TransientAuthenticationServicePersistence<UserType> : ITransientAuthenticationServicePersistence<UserType>
@@ -10,10 +11,12 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
     {
         private IDictionary<string/*roleId*/, Role> _Roles;
         private IDictionary<string/*userId*/, UserType> _Users;
-        public TransientAuthenticationServicePersistence()
+        private ITimeService _TimeService;
+        public TransientAuthenticationServicePersistence(ITimeService timeService)
         {
             this._Roles = new Dictionary<string, Role>();
             this._Users = new Dictionary<string, UserType>();
+            this._TimeService = timeService;
         }
 
         public void SetAllUsers(ISet<UserType> users)
@@ -36,7 +39,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             return this._Users.ToDictionary();
         }
 
-        public bool AccessTokenExists(string accessToken, out User user)
+        public bool AccessTokenExists(string accessToken, out UserType user)
         {
             UserType result = this.GetAllUsers().Values.Where(u => u.AccessToken.Where(at => at.Value == accessToken).Any()).FirstOrDefault();
             if (result == default)
@@ -60,6 +63,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         {
             return this._Users.Values.Where(u => u.Name == userName).Any();
         }
+
         public bool UserWithIdExists(string userId)
         {
             return this._Users.ContainsKey(userId);
@@ -70,14 +74,9 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             return this._Users[userId];
         }
 
-        public UserType GetUserById(object userId)
+        public void RemoveUser(string userId)
         {
-            throw new NotImplementedException();
-        }
-
-        public void RemoveUser(UserType user)
-        {
-            throw new NotImplementedException();
+            this._Users.Remove(userId);
         }
 
         public UserType GetUserById(string userId)
@@ -90,15 +89,24 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             return this._Users.Values.Where(u => u.Name == userName).First();
         }
 
-        public User GetUserByAccessToken(string accessToken)
+        public UserType GetUserByAccessToken(string accessToken)
         {
             foreach (UserType user in this._Users.Values)
             {
-                if (user.AccessToken.Where(a => a.Value == accessToken).Any())
+                IEnumerable<CommonAuthenticationTypes.AccessToken> tokens = user.AccessToken.Where(a => a.Value == accessToken);
+                int tokenCount = tokens.Count();
+                if (tokenCount == 0)
                 {
-                    //TODO check validity of accesstoken
-                    return user;
+                    continue;
                 }
+                GUtilities.AssertCondition(tokenCount == 1, "Internal error while checking access token");
+                CommonAuthenticationTypes.AccessToken token = tokens.First();
+                System.DateTime now = this._TimeService.GetCurrentTime();
+                if (token.ExpiredMoment < now)
+                {
+                    throw new CredentialsExpiredException();
+                }
+                return user;
             }
             throw new KeyNotFoundException("No user found with given accesstoken.");
         }
@@ -120,7 +128,14 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public void DeleteRoleByName(string roleName)
         {
-            throw new NotImplementedException();
+            foreach (UserType user in this._Users.Values)
+            {
+                if (this.UserHasRole(user.Id, roleName))
+                {
+                    this.RemoveRoleFromUser(user.Id, roleName);
+                }
+            }
+            this._Roles.Remove(roleName);
         }
 
         public void AddRoleToUser(string userId, string roleId)
@@ -131,6 +146,16 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         public bool UserHasRole(string userId, string roleId)
         {
             return this._Users[userId].Roles.Contains(this._Roles[roleId]);
+        }
+
+        public void RemoveRoleFromUser(string userId, string roleId)
+        {
+            this._Users[userId].Roles.Remove(this._Roles[roleId]);
+        }
+
+        public void UpdateUser(UserType user)
+        {
+            this._Users[user.Id] = user;
         }
     }
 }

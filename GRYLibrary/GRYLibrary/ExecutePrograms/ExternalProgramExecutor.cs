@@ -63,9 +63,9 @@ namespace GRYLibrary.Core.ExecutePrograms
         private readonly ConcurrentQueue<(LogLevel, string)> _NotLoggedOutputLines = new();
         public void Run()
         {
-
             this.Configuration.WaitingState.Accept(new WaitingStateRunVisitor(this));
         }
+
         private class WaitingStateRunVisitor : IWaitingStateVisitor
         {
             private readonly ExternalProgramExecutor _ExternalProgramExecutor;
@@ -256,10 +256,12 @@ namespace GRYLibrary.Core.ExecutePrograms
         {
             this.LogObject.Log($"Process-Id of started program: " + processId, LogLevel.Debug);
         }
+
         private void LogException(Exception exception)
         {
             this.LogObject.Log(exception);
         }
+
         private void LogEnd()
         {
             this.LogObject.Log($"Finished executing program", LogLevel.Debug);
@@ -459,6 +461,7 @@ namespace GRYLibrary.Core.ExecutePrograms
         {
             Utilities.WaitUntilConditionIsTrue(() => this.CurrentExecutionState == ExecutionState.Terminated);
         }
+
         private void CheckIfStartOperationWasAlreadyCalled()
         {
             lock (this._LockObject)

@@ -8,14 +8,21 @@ namespace GRYLibrary.Core.Misc
     /// </summary>
     public struct GRYDate : IEquatable<GRYDate>, IComparable<GRYDate>, IComparable
     {
-        internal static readonly string DateFormat = "yyyy-MM-dd";
-        public int Year { get; set; }
-        public int Month { get; set; }
-        public int Day { get; set; }
-        public static GRYDate GetCurrentDate() { return GRYDateTime.GetCurrentDateTime().ToGRYDate(); }
-        public static GRYDate GetCurrentDateInUTC() { return GRYDateTime.GetCurrentDateTimeInUTC().ToGRYDate(); }
+        public static readonly string DateFormat = "yyyy-MM-dd";
+        public uint Year { get; set; }
+        public uint Month { get; set; }
+        public uint Day { get; set; }
+        public static GRYDate GetCurrentDate()
+        {
+            return GRYDateTime.GetCurrentDateTime().ToGRYDate();
+        }
 
-        public GRYDate(int year, int month, int day)
+        public static GRYDate GetCurrentDateInUTC()
+        {
+            return GRYDateTime.GetCurrentDateTimeInUTC().ToGRYDate();
+        }
+
+        public GRYDate(uint year, uint month, uint day)
         {
             this.Year = year;
             this.Month = month;
@@ -24,12 +31,14 @@ namespace GRYLibrary.Core.Misc
         }
         public readonly DateOnly ToDate()
         {
-            return new DateOnly(this.Year, this.Month, this.Day);
+            return new DateOnly((int)this.Year, (int)this.Month, (int)this.Day);
         }
+
         public static GRYDate FromDate(DateOnly value)
         {
-            return new GRYDate(value.Year, value.Month, value.Day);
+            return new GRYDate((uint)value.Year, (uint)value.Month, (uint)value.Day);
         }
+
         public static GRYDate FromString(string @string)
         {
             return FromDate(DateOnly.ParseExact(@string, DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None));
@@ -44,6 +53,7 @@ namespace GRYLibrary.Core.Misc
         {
             return $"{this.Year.ToString().PadLeft(4, '0')}-{this.Month.ToString().PadLeft(2, '0')}-{this.Day.ToString().PadLeft(2, '0')}";
         }
+
         public override readonly bool Equals(object obj)
         {
             return obj is GRYDate time && this.Equals(time);
@@ -56,14 +66,19 @@ namespace GRYLibrary.Core.Misc
                    this.Day == other.Day;
         }
 
-        public int CompareTo(GRYDate other)
+        public readonly int CompareTo(GRYDate other)
         {
             return this.ToDate().CompareTo(other.ToDate());
         }
 
-        public int CompareTo(object obj)
+        public readonly int CompareTo(object obj)
         {
             return this.ToDate().CompareTo(obj);
+        }
+
+        public readonly GRYDate AddDays(int amountOfDays)
+        {
+            return FromDate(this.ToDate().AddDays(amountOfDays));
         }
 
         public static bool operator ==(GRYDate left, GRYDate right)

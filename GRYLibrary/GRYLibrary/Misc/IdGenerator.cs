@@ -41,6 +41,7 @@ namespace GRYLibrary.Core.Misc
         {
             return new IdGenerator<int>((int lastGeneratedId) => lastGeneratedId + 1);
         }
+
         /// <summary>
         /// Represents an id-generator which generates increasing ids beginning with 0.
         /// </summary>
@@ -48,6 +49,7 @@ namespace GRYLibrary.Core.Misc
         {
             return new IdGenerator<long>((long lastGeneratedId) => lastGeneratedId + 1);
         }
+
         /// <summary>
         /// Represents an id-generator which generates increasing ids beginning with 0.
         /// </summary>
@@ -55,6 +57,7 @@ namespace GRYLibrary.Core.Misc
         {
             return new IdGenerator<BigInteger>((BigInteger lastGeneratedId) => lastGeneratedId + 1);
         }
+
         /// <summary>
         /// Represents an id-generator which generates random guids.
         /// </summary>

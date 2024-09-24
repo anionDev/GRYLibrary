@@ -49,6 +49,7 @@ namespace GRYLibrary.Core.Crypto
         {
             return this * 2;
         }
+
         public static Point operator *(Point left, long right)
         {
             return left * new BigInteger(right);
@@ -65,6 +66,7 @@ namespace GRYLibrary.Core.Crypto
         {
             throw new NotImplementedException();
         }
+
         private static BigInteger Mod(BigInteger left, BigInteger right)
         {
             throw new NotImplementedException();
