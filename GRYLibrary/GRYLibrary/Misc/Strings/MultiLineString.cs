@@ -13,17 +13,17 @@ namespace GRYLibrary.Core.Misc.Strings
         {
             get
             {
-                return _Value;
+                return this._Value;
             }
             set
             {
-                if (_ReplaceCRAutomatically)
+                if (this._ReplaceCRAutomatically)
                 {
-                    _Value = ReplaceCR(value);
+                    this._Value = ReplaceCR(value);
                 }
                 else
                 {
-                    _Value = value;
+                    this._Value = value;
                 }
             }
         }
@@ -57,7 +57,7 @@ namespace GRYLibrary.Core.Misc.Strings
 
         public string ToHTMLString()
         {
-            return Utilities.HTMLUnescape(_Value);
+            return Utilities.HTMLUnescape(this._Value);
         }
 
         public static bool operator ==(MultiLineString left, MultiLineString right)

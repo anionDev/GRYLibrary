@@ -9,11 +9,11 @@ namespace GRYLibrary.Core.Misc.Strings
         {
             get
             {
-                return _Value;
+                return this._Value;
             }
             set
             {
-                _Value = value;
+                this._Value = value;
             }
         }
 
