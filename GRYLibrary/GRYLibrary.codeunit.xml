@@ -2,7 +2,7 @@
 <cps:codeunit xmlns:cps="https://projects.aniondev.de/PublicProjects/Common/ProjectTemplates/-/tree/main/Conventions/RepositoryStructure/CommonProjectStructure" codeunitspecificationversion="2.8.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://projects.aniondev.de/PublicProjects/Common/ProjectTemplates/-/raw/v2.8.0/Conventions/RepositoryStructure/CommonProjectStructure/codeunit.xsd" enabled="true">
     <cps:name>GRYLibrary</cps:name>
-    <cps:version>0.12.106</cps:version>
+    <cps:version>0.12.107</cps:version>
     <cps:properties codeunithastestablesourcecode="true" codeunithasupdatabledependencies="true" throwexceptionifcodeunitfilecannotbevalidated="true" developmentState="Active development" description="GRYLibrary is a collection with some useful .NET classes and functions which are very easy (re)usable.">
         <cps:testsettings minimalcodecoverageinpercent="25"/>
         <cps:pipelinedemands>
