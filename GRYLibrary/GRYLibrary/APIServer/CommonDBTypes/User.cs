@@ -26,7 +26,7 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
         {
 
         }
-        public static User CreateNewUser(User resultObject,string username, string passwordHash, out string userId, ITimeService timeService)
+        public static User CreateNewUser(User resultObject, string username, string passwordHash, out string userId, ITimeService timeService)
         {
             User user = resultObject;
             user.Id = Guid.NewGuid().ToString();

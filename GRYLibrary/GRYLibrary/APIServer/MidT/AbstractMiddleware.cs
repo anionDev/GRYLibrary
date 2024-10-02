@@ -29,7 +29,7 @@ namespace GRYLibrary.Core.APIServer.MidT
 
         public bool TryGetAuthenticateAttribute(HttpContext context, out AuthenticateAttribute authenticateAttribute)
         {
-           return this.TryGetAttributeFromContext(context, out authenticateAttribute);
+            return this.TryGetAttributeFromContext(context, out authenticateAttribute);
         }
         public bool TryGetAuthorizeAttribute(HttpContext context, out AuthorizeAttribute authorizedAttribute)
         {
@@ -49,7 +49,7 @@ namespace GRYLibrary.Core.APIServer.MidT
                 ControllerActionDescriptor controllerActionDescriptor = metaData?.GetMetadata<ControllerActionDescriptor>();
                 System.Reflection.MethodInfo methodInfo = controllerActionDescriptor?.MethodInfo;
                 attribute = methodInfo?.GetCustomAttributes(false).OfType<T>().FirstOrDefault();
-                return attribute!=null;
+                return attribute != null;
             }
             catch
             {

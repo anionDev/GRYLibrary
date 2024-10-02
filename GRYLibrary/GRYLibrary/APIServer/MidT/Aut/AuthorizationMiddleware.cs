@@ -16,8 +16,8 @@ namespace GRYLibrary.Core.APIServer.MidT.Auth
             {
                 return false;
             }
-            return this.TryGetAuthorizeAttribute(context,out AuthorizeAttribute _);
-          
+            return this.TryGetAuthorizeAttribute(context, out AuthorizeAttribute _);
+
         }
         protected abstract bool IsAuthorized(HttpContext context);
         public override Task Invoke(HttpContext context)

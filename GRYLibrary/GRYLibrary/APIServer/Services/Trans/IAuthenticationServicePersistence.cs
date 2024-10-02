@@ -7,7 +7,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
     public interface IAuthenticationServicePersistence<UserType>
         where UserType : User
     {
-        public IDictionary<string,UserType> GetAllUsers();
+        public IDictionary<string, UserType> GetAllUsers();
         public void SetAllUsers(ISet<UserType> users);
         public ISet<Role> GetAllRoles();
         public void AddRole(Role role);

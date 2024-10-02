@@ -41,7 +41,7 @@ namespace GRYLibrary.Core.APIServer.Services.KeyCloak
                 throw new NotImplementedException();
             });
         }
-        
+
         public virtual void Register(string username, string emailAddress, string password)
         {
             this.EnsureServiceIsConnected(() =>
@@ -63,7 +63,7 @@ namespace GRYLibrary.Core.APIServer.Services.KeyCloak
                 task.Wait();
             });
         }
-        
+
         public AccessToken Login(string username, string password)
         {
             return this.EnsureServiceIsConnected<AccessToken>(() =>

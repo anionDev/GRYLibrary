@@ -72,7 +72,7 @@ namespace GRYLibrary.Core.APIServer.Mid.C
                 IDictionary<string, bool> booleanReplacements = new Dictionary<string, bool>();
                 IDictionary<string, Func<string>> variables = new Dictionary<string, Func<string>>();
                 ReplacementTools.ReplaceVariables(html, replacements, booleanReplacements, variables);
-                context.Response.BodyWriter.WriteAsync(encoding.GetBytes(html));
+                context.Response.BodyWriter.WriteAsync(encoding.GetBytes(html)).AsTask().Wait();
                 return Task.CompletedTask;
             }
         }

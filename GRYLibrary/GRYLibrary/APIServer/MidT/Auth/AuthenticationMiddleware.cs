@@ -17,7 +17,7 @@ namespace GRYLibrary.Core.APIServer.MidT.Auth
         }
         public virtual bool AuthenticationIsRequired(HttpContext context)
         {
-            foreach (var routesWhereUnauthenticatedAccessIsAllowed in this._AuthenticationConfiguration.RoutesWhereUnauthenticatedAccessIsAllowed)
+            foreach (string routesWhereUnauthenticatedAccessIsAllowed in this._AuthenticationConfiguration.RoutesWhereUnauthenticatedAccessIsAllowed)
             {
                 if (new Regex(routesWhereUnauthenticatedAccessIsAllowed).IsMatch(context.Request.Path.Value))
                 {
