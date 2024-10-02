@@ -12,6 +12,12 @@ namespace GRYLibrary.Core.Exceptions
     public class BadRequestException : UserFormattedException
     {
         public ushort HTTPStatusCode { get; }
+        public BadRequestException() : this(StatusCodes.Status400BadRequest, GetMessage(StatusCodes.Status400BadRequest))
+        {
+        }
+        public BadRequestException(string message) : this(StatusCodes.Status400BadRequest, message)
+        {
+        }
         public BadRequestException(ushort httpStatusCode) : this(httpStatusCode, GetMessage(httpStatusCode))
         {
         }

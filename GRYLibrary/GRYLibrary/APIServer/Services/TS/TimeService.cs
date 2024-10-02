@@ -1,5 +1,6 @@
 ﻿using GRYLibrary.Core.APIServer.Services.Interfaces;
 using System;
+using GUtilities = GRYLibrary.Core.Misc.Utilities;
 
 namespace GRYLibrary.Core.APIServer.Services.TS
 {
@@ -7,7 +8,7 @@ namespace GRYLibrary.Core.APIServer.Services.TS
     {
         public DateTime GetCurrentTime()
         {
-            return DateTime.Now;
+            return GUtilities.GetNow();
         }
     }
 }

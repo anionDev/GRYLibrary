@@ -31,14 +31,17 @@ namespace GRYLibrary.Core.APIServer.MidT
         {
             return this.TryGetAttributeFromContext(context, out authenticateAttribute);
         }
+
         public bool TryGetAuthorizeAttribute(HttpContext context, out AuthorizeAttribute authorizedAttribute)
         {
             return this.TryGetAttributeFromContext(context, out authorizedAttribute);
         }
+
         public bool TryGetAactionAttribute(HttpContext context, out ActionAttribute actionAttribute)
         {
             return this.TryGetAttributeFromContext(context, out actionAttribute);
         }
+
         private bool TryGetAttributeFromContext<T>(HttpContext context, out T attribute)
             where T : Attribute
         {

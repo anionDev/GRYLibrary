@@ -120,6 +120,7 @@ namespace GRYLibrary.Core.Misc
             {
                 return this.GetLine(tableOutputType.Characters.LeftUpperCornerCharacter, this.NTimes(tableOutputType.Characters.HorizontalLineCharacter.ToString(), columnLengths.Length), tableOutputType.Characters.HorizontalLineCharacter, tableOutputType.Characters.TDownCharacter, tableOutputType.Characters.RightUpperCornerCharacter, columnLengths);
             }
+
             private string GetLine(char firstChar, string[] content, char fillCharForContent, char separator, char lastChar, int[] columnLengths)
             {
                 return $"{firstChar}{this.GetContentOfLine(content, fillCharForContent, separator, columnLengths)}{lastChar}";
@@ -159,6 +160,7 @@ namespace GRYLibrary.Core.Misc
             {
                 return Enumerable.Repeat(value, amount).ToArray();
             }
+
             private int[] GetColumnLengths(string[,] array, int maximalWidth)
             {
                 int[] result = this.NTimes(0, array.GetLength(1));

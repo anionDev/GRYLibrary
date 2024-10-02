@@ -3,7 +3,7 @@ using GRYLibrary.Core.APIServer.Services.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GRYLibrary.Core.APIServer.Services.Auth
+namespace GRYLibrary.Core.APIServer.Services.Auth.A
 {
     /// <summary>
     /// This is a transient <see cref="IUserAuthorizationService"/> for testing purposes.
@@ -12,8 +12,8 @@ namespace GRYLibrary.Core.APIServer.Services.Auth
         where UserType : User
     {
         private readonly IAuthenticationService<UserType> _AuthenticationService;
-        private readonly IStaticRoleBasedUserAuthorizationServiceConfiguration _StaticGroupUserAuthorizationServiceConfiguration;
-        public StaticActionsUserAuthorizationService(IAuthenticationService<UserType> authenticationService, IStaticRoleBasedUserAuthorizationServiceConfiguration staticGroupUserAuthorizationServiceConfiguration)
+        private readonly IStaticActionBasedUserAuthorizationServiceConfiguration _StaticGroupUserAuthorizationServiceConfiguration;
+        public StaticActionsUserAuthorizationService(IAuthenticationService<UserType> authenticationService, IStaticActionBasedUserAuthorizationServiceConfiguration staticGroupUserAuthorizationServiceConfiguration)
         {
             this._AuthenticationService = authenticationService;
             this._StaticGroupUserAuthorizationServiceConfiguration = staticGroupUserAuthorizationServiceConfiguration;

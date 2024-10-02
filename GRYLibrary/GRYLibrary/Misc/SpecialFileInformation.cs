@@ -16,6 +16,7 @@ namespace GRYLibrary.Core.Misc
         {
             return OperatingSystem.OperatingSystem.GetCurrentOperatingSystem().Accept(new FileIsExecutableVisitor(file));
         }
+
         public static ExternalProgramExecutor ExecuteFile(string file)
         {
             if (FileIsExecutable(file))
@@ -34,6 +35,7 @@ namespace GRYLibrary.Core.Misc
         {
             new ExternalProgramExecutor(new ExternalProgramExecutorConfiguration { Program = file, WaitingState = new RunAsynchronously() }).Run();
         }
+
         private class FileIsExecutableVisitor : IOperatingSystemVisitor<bool>
         {
             private readonly string _File;
@@ -68,6 +70,7 @@ namespace GRYLibrary.Core.Misc
         {
             return FileExtentionInfo(AssocStr.Executable, extensionWithDot);
         }
+
         [DllImport("Shlwapi.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         static extern uint AssocQueryString(AssocF flags, AssocStr str, string pszAssoc, string pszExtra, [Out] StringBuilder pszOut, [In][Out] ref uint pcchOut);
         private static string FileExtentionInfo(AssocStr assocStr, string extensionWithDot)

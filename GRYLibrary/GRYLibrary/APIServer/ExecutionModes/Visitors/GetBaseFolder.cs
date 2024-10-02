@@ -25,6 +25,7 @@ namespace GRYLibrary.Core.APIServer.ExecutionModes.Visitors
         {
             return this.GetTempFolder();
         }
+
         public string Handle(Analysis analysis)
         {
             return this.GetTempFolder();

@@ -13,6 +13,7 @@ namespace GRYLibrary.Core.Tree
         {
             return new List<TreeItem<ContainedItemType>>(this.Children);
         }
+
         public IEnumerable<TreeItem<ContainedItemType>> GetDirectAndTransitiveChildren()
         {
             List<TreeItem<ContainedItemType>> result = new();

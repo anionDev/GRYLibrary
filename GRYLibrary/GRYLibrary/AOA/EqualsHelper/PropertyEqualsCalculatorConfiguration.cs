@@ -61,18 +61,22 @@ namespace GRYLibrary.Core.AOA.EqualsHelper
         {
             this.PendingComparisons.Add(new ReferenceTuple(object1, object2));
         }
+
         internal bool ArePending(object object1, object object2)
         {
             return this.PendingComparisons.Contains(new ReferenceTuple(object1, object2));
         }
+
         internal void RemovePending(object object1, object object2)
         {
             this.PendingComparisons.Remove(new ReferenceTuple(object1, object2));
         }
+
         public int GetHashCode(object @object)
         {
             return Generic.GenericGetHashCode(@object);
         }
+
         /// <remarks>This function requires that <paramref name="object"/> was already assigned to an <see cref="EquivalenceClass"/>.</remarks>
         private EquivalenceClass GetEquivalenceClassOfObject(object @object)
         {

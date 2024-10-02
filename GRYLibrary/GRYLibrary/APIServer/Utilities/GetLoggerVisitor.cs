@@ -5,7 +5,7 @@ using GRYLibrary.Core.Logging.GRYLogger;
 namespace GRYLibrary.Core.APIServer.Utilities
 {
 
-    public class GetLoggerVisitor : IExecutionModeVisitor<IGeneralLogger>
+    public class GetLoggerVisitor : IExecutionModeVisitor<IGRYLog>
     {
         private readonly GRYLogConfiguration _LogConfiguration;
         private readonly string _BaseFolder;
@@ -16,26 +16,26 @@ namespace GRYLibrary.Core.APIServer.Utilities
             this._BaseFolder = baseFolder;
             this._LoggerName = loggerName;
         }
-        public IGeneralLogger Handle(Analysis analysis)
+        public IGRYLog Handle(Analysis analysis)
         {
-            return GeneralLogger.NoLog();// avoid creation of logging-entries when doing something like generate APISpecification-artifact by running "swagger tofile ..."
+            return GeneralLogger.NoLogAsGRYLog();// avoid creation of logging-entries when doing something like generate APISpecification-artifact by running "swagger tofile ..."
         }
 
-        public IGeneralLogger Handle(RunProgram runProgram)
+        public IGRYLog Handle(RunProgram runProgram)
         {
             return this.GetUsualLog();
         }
 
-        public IGeneralLogger Handle(TestRun testRun)
+        public IGRYLog Handle(TestRun testRun)
         {
             return this.GetUsualLog();
         }
 
-        private IGeneralLogger GetUsualLog()
+        private IGRYLog GetUsualLog()
         {
-            IGeneralLogger result = GeneralLogger.CreateUsingGRYLog(this._LogConfiguration, out GRYLog logger, this._BaseFolder);
-            logger.BasePath = this._BaseFolder;
-            logger.UseSubNamespace(this._LoggerName);
+            IGRYLog result = GeneralLogger.CreateUsingGRYLog(this._LogConfiguration, this._BaseFolder);
+            result.BasePath = this._BaseFolder;
+            result.UseSubNamespace(this._LoggerName);
             return result;
         }
     }

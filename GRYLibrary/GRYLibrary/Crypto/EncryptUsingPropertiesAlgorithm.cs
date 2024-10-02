@@ -12,6 +12,7 @@ namespace GRYLibrary.Core.Crypto
         {
             return Utilities.ByteArrayToHexString(this.Encrypt(this.Encoding.GetBytes(unencryptedData)));
         }
+
         /// <summary>
         /// Use this function to decrypt data.
         /// </summary>

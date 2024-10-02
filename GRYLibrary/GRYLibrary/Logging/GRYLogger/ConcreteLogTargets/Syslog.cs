@@ -28,10 +28,12 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
         {
             return new HashSet<Type>();
         }
+
         public override void Dispose()
         {
             Utilities.NoOperation();
         }
+
         public override bool Equals(object obj)
         {
             return base.Equals(obj);

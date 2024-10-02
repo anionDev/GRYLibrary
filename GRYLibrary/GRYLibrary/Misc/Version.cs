@@ -356,6 +356,7 @@ namespace GRYLibrary.Core.Misc
         {
             return new System.Version(this.major, this.minor, this.build, this.revision);
         }
+
         /// <summary>
         /// Toes the string.
         /// </summary>

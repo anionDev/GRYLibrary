@@ -10,6 +10,7 @@ namespace GRYLibrary.Core.Crypto
         {
             throw new NotImplementedException();
         }
+
         public override byte[] GetIdentifier()
         {
             return GUtilities.PadLeft(Encoding.ASCII.GetBytes(nameof(Argon2)), 10);

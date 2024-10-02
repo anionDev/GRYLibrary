@@ -16,6 +16,7 @@ namespace GRYLibrary.Core.Misc
         {
             return this.GetColorGradientValue(new PercentValue((decimal)gradient));
         }
+
         public ExtendedColor GetColorGradientValue(PercentValue percentValue)
         {
             byte a = this.GetGradient(this.StartColor.A, this.DestinationColor.A, percentValue);

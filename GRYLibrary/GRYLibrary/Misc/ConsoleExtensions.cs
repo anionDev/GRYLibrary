@@ -16,6 +16,7 @@ namespace GRYLibrary.Core.Misc
         {
             ShowWindow(GetConsoleWindow(), SW_SHOW);
         }
+
         public static void HideConsoleWindow()
         {
             ShowWindow(GetConsoleWindow(), SW_HIDE);

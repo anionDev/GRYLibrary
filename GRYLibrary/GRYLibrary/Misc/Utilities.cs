@@ -41,6 +41,7 @@ using GRYLibrary.Core.Logging.GRYLogger;
 using System.Net.Http;
 using System.Data;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using System.Net;
 
 namespace GRYLibrary.Core.Misc
 {
@@ -48,7 +49,7 @@ namespace GRYLibrary.Core.Misc
     {
         #region Constants
         public const string EmptyString = "";
-        public const string SpecialCharacterTestString = "<SpecialCharacterTest>äöüßÄÖÜÆÑçéý &← /\\*#^°'`´\" ?|§@$€%-_²⁶₇¬∀∈∑∜∫∰≈≪ﬁ.Доброе утро صبح به خیر शुभ प्रभात 좋은 아침 സുപ്രഭാതം おはようございます ហ្គុនមូហ្កិន</SpecialCharacterTest>";
+        public const string SpecialCharacterTestString = "<SpecialCharacterTest>äöüßÄÖÜÆÑçéý<span>should be visible</span> &← /\\*#^°'`´\" ?|§@$€%-_²⁶₇¬∀∈∑∜∫∰≈≪ﬁ.Доброе утро صبح به خیر शुभ प्रभात 좋은 아침 സുപ്രഭാതം おはようございます ហ្គុនមូហ្កិន</SpecialCharacterTest>";
 
         [GeneratedRegex(@"(PWD|Pwd)=([^;]+)(;|$)")]
         private static partial Regex MariaDBPasswordHideRegex();
@@ -69,6 +70,7 @@ namespace GRYLibrary.Core.Misc
         {
             return OperatingSystem.OperatingSystem.GetCurrentOperatingSystem().Accept(new IsAdministratorVisitor());
         }
+
         private class IsAdministratorVisitor : IOperatingSystemVisitor<bool>
         {
             public bool Handle(OSX operatingSystem)
@@ -113,18 +115,22 @@ namespace GRYLibrary.Core.Misc
         {
             return new PercentValue(value);
         }
+
         public static PercentValue ToPercentValue(this int value)
         {
             return new PercentValue((decimal)value);
         }
+
         public static PercentValue ToPercentValue(this double value)
         {
             return new PercentValue(value);
         }
+
         public static PercentValue ToPercentValue(this decimal value)
         {
             return new PercentValue(value);
         }
+
         public static void Repeat<T>(this Action<uint> action, uint amountOfExecutions)
         {
             for (uint i = 0; i < amountOfExecutions; i++)
@@ -412,6 +418,7 @@ namespace GRYLibrary.Core.Misc
         {
             return TypeIsPrimitive(@object.GetType());
         }
+
         public static bool TypeIsPrimitive(Type type)
         {
             if (type.IsGenericType)
@@ -454,6 +461,7 @@ namespace GRYLibrary.Core.Misc
         {
             return TypeIsAssignableFrom(@object.GetType(), genericTypeToCompare);
         }
+
         public static bool TypeIsAssignableFrom(Type typeForCheck, Type parentType)
         {
             ISet<Type> typesToCheck = GetTypeWithParentTypesAndInterfaces(typeForCheck);
@@ -538,10 +546,12 @@ namespace GRYLibrary.Core.Misc
         {
             return string.Join(Environment.NewLine, entryList.Select(line => string.Join(";", line)));
         }
+
         public static string PadCSV(string csvString)
         {
             return EntryListToCSVString(PadTable(CSVStringToEntryList(csvString)));
         }
+
         public static IList<IList<string>> PadTable(IList<IList<string>> table)
         {
             List<IList<string>> result = new List<IList<string>>();
@@ -580,6 +590,7 @@ namespace GRYLibrary.Core.Misc
         {
             return items.Select(Enumerable.ToArray).ToArray();
         }
+
         public static T[,] JaggedArrayToTwoDimensionalArray<T>(T[][] items)
         {
             int amountOfItemsInFirstDimension = items.Length;
@@ -603,6 +614,7 @@ namespace GRYLibrary.Core.Misc
         {
             return IncrementGuid(id, new BigInteger(valueToIncrement));
         }
+
         public static Guid IncrementGuid(Guid id, BigInteger valueToIncrement)
         {
             BigInteger value = BigInteger.Parse(id.ToString("N"), NumberStyles.HexNumber);
@@ -663,9 +675,30 @@ namespace GRYLibrary.Core.Misc
             }
         }
 
-        public static string DurationToUserFriendlyString(TimeSpan timespan)
+        public static string DurationToUserFriendlyString(TimeSpan timespan, uint desiredMilliSecondsDigitsCount = 0)
         {
-            return $"{Math.Floor(timespan.TotalHours).ToString().PadLeft(2, '0')}:{timespan.Minutes.ToString().PadLeft(2, '0')}:{timespan.Seconds.ToString().PadLeft(2, '0')}";
+            string result = $"{Math.Floor(timespan.TotalHours).ToString().PadLeft(2, '0')}:{timespan.Minutes.ToString().PadLeft(2, '0')}:{timespan.Seconds.ToString().PadLeft(2, '0')}";
+            if (desiredMilliSecondsDigitsCount > 0)
+            {
+                string milliSecondsAsString = timespan.Milliseconds.ToString();
+                uint milliSecondsDigits = (uint)milliSecondsAsString.Length;
+
+                string milliSecondsWithCorrectLength;
+                if (desiredMilliSecondsDigitsCount < milliSecondsDigits)
+                {
+                    milliSecondsWithCorrectLength = milliSecondsAsString[..(int)desiredMilliSecondsDigitsCount];
+                }
+                else if (milliSecondsDigits < desiredMilliSecondsDigitsCount)
+                {
+                    milliSecondsWithCorrectLength = milliSecondsAsString.PadRight((int)desiredMilliSecondsDigitsCount, '0');
+                }
+                else
+                {
+                    milliSecondsWithCorrectLength = milliSecondsAsString;
+                }
+                result = $"{result}.{milliSecondsWithCorrectLength}";
+            }
+            return result;
         }
 
         public const string FormatForDateTimesInFullFormatISO8601 = "yyyy-MM-ddTHH:mm:sszzz";
@@ -699,18 +732,22 @@ namespace GRYLibrary.Core.Misc
         {
             return DateTimeToISO8601String(dateTime, false);
         }
+
         public static string DateTimeToUserFriendlyString(GRYDateTime dateTime)
         {
             return DateTimeToISO8601String(dateTime.ToDateTime(), false);
         }
+
         public static string DateTimeForFilename(DateTime dateTime)
         {
             return dateTime.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture);
         }
+
         public static string DateToUserFriendlyString(DateOnly date)
         {
             return $"{date.Year.ToString().PadLeft(4, '0')}-{date.Month.ToString().PadLeft(2, '0')}-{date.Day.ToString().PadLeft(2, '0')}";
         }
+
         public static string TimeToUserFriendlyString(TimeOnly time)
         {
             return $"{time.Hour.ToString().PadLeft(2, '0')}:{time.Minute.ToString().PadLeft(2, '0')}:{time.Second.ToString().PadLeft(2, '0')}";
@@ -790,6 +827,7 @@ namespace GRYLibrary.Core.Misc
         {
             return string.Format("{{{0}}}", string.Join(", ", types.Select((type) => type.Name)));
         }
+
         public static void CopyFolderAcrossVolumes(string sourceFolder, string destinationFolder)
         {
             EnsureDirectoryExists(destinationFolder);
@@ -946,10 +984,12 @@ namespace GRYLibrary.Core.Misc
         {
             MoveContentOfFoldersAcrossVolumes(sourceFolder, targetFolder, FileSelector.FilesInFolder(sourceFolder, true));
         }
+
         public static void MoveContentOfFoldersAcrossVolumes(string sourceFolder, string targetFolder, FileSelector fileSelector, bool deleteAlreadyExistingFilesWithoutCopy = false)
         {
             MoveContentOfFoldersAcrossVolumes(sourceFolder, targetFolder, fileSelector, (exception) => { }, deleteAlreadyExistingFilesWithoutCopy);
         }
+
         public static void MoveContentOfFoldersAcrossVolumes(string sourceFolder, string targetFolder, Func<string, bool> fileSelectorPredicate, bool deleteAlreadyExistingFilesWithoutCopy = false)
         {
             MoveContentOfFoldersAcrossVolumes(sourceFolder, targetFolder, fileSelectorPredicate, (exception) => { }, deleteAlreadyExistingFilesWithoutCopy);
@@ -959,6 +999,7 @@ namespace GRYLibrary.Core.Misc
         {
             MoveContentOfFoldersAcrossVolumes(sourceFolder, targetFolder, (file) => fileSelector.Files.Contains(file), errorHandler, deleteAlreadyExistingFilesWithoutCopy);
         }
+
         /// <summary>
         /// Moves the content of <paramref name="sourceFolder"/> to <paramref name="targetFolder"/>.
         /// </summary>
@@ -1088,6 +1129,7 @@ namespace GRYLibrary.Core.Misc
         {
             return new RunAllConcurrentAndReturnFirstResultHelper<T>(maximalDegreeOfParallelism).RunAllConcurrentAndReturnFirstResult(functions);
         }
+
         private class RunAllConcurrentAndReturnFirstResultHelper<T>
         {
             private T _Result = default;
@@ -1203,6 +1245,7 @@ namespace GRYLibrary.Core.Misc
         {
             return Generic.GenericDeserialize<T>(Generic.GenericSerialize(@object));
         }
+
         /// <summary>
         /// Casts an object to the given type if possible.
         /// This can be useful for example to to cast 'Action&lt;Object&gt;' to 'Action' or 'Func&lt;string&gt;' to 'Func&lt;Object&gt;' to fulfil interface-compatibility.
@@ -1211,6 +1254,7 @@ namespace GRYLibrary.Core.Misc
         {
             return Cast(@object, targetType, DefaultConversions);
         }
+
         private static readonly IList<object> _DefaultConversions = new List<object>() { /*TODO*/};
         public static IList<object> DefaultConversions => _DefaultConversions.ToList();
         public static object Cast(object @object, Type targetType, IList<object> customConversions)
@@ -1236,6 +1280,7 @@ namespace GRYLibrary.Core.Misc
         {
             return (T)(dynamic)@object;
         }
+
         public static long GetTotalFreeSpace(string driveName)
         {
             foreach (DriveInfo drive in DriveInfo.GetDrives())
@@ -1286,18 +1331,22 @@ namespace GRYLibrary.Core.Misc
         {
             return File.ReadAllBytes(file).Last().Equals(10);
         }
+
         public static bool FileIsEmpty(string file)
         {
             return File.ReadAllBytes(file).Count().Equals(0);
         }
+
         public static bool AppendFileDoesNotNeedNewLineCharacter(string file)
         {
             return FileIsEmpty(file) || FileEndsWithEmptyLine(file);
         }
+
         public static bool AppendFileDoesNeedNewLineCharacter(string file)
         {
             return !AppendFileDoesNotNeedNewLineCharacter(file);
         }
+
         public static void AppendLineToFile(string file, string content, Encoding encoding)
         {
             string stringToAppend;
@@ -1392,6 +1441,7 @@ namespace GRYLibrary.Core.Misc
         {
             return !IsAbsoluteLocalFilePath(path);
         }
+
         public static string GetAbsolutePath(string basePath, string relativePath)
         {
             if (basePath == null && relativePath == null)
@@ -1430,6 +1480,7 @@ namespace GRYLibrary.Core.Misc
         {
             return (Directory.GetFiles(path).Length == 0) && (Directory.GetDirectories(path).Length == 0);
         }
+
         public static bool DirectoryDoesNotContainFiles(string path)
         {
             if (Directory.GetFiles(path).Length > 0)
@@ -1551,6 +1602,7 @@ namespace GRYLibrary.Core.Misc
         {
             return path.EnsurePathStartsWithoutSlash().EnsurePathStartsWithoutBackslash();
         }
+
         public static string EnsurePathEndsWithoutSlashOrBackslash(this string path)
         {
             return path.EnsurePathEndsWithoutSlash().EnsurePathEndsWithoutBackslash();
@@ -1589,10 +1641,12 @@ namespace GRYLibrary.Core.Misc
         {
             return new UTF8Encoding(false).GetBytes(@string);
         }
+
         public static string ByteArrayToString(byte[] bytes)
         {
             return new UTF8Encoding(false).GetString(bytes);
         }
+
         public static string ByteArrayToHexString(byte[] value)
         {
             return BitConverter.ToString(value).Replace("-", string.Empty);
@@ -1623,10 +1677,12 @@ namespace GRYLibrary.Core.Misc
         {
             return input.ToString("X");
         }
+
         public static BigInteger HexStringToBigInteger(string input)
         {
             return BigInteger.Parse(input.ToUpper(), NumberStyles.HexNumber);
         }
+
         public static T[] Concat<T>(params T[][] arrays)
         {
             T[] result = Array.Empty<T>();
@@ -1682,14 +1738,17 @@ namespace GRYLibrary.Core.Misc
         {
             FormatCSVFile(file, new UTF8Encoding(false), separator, firstLineContainsHeadlines);
         }
+
         public static void FormatCSVFile(string file, Encoding encoding, string separator = ";", bool firstLineContainsHeadlines = false)
         {
             UpdateCSVFileEntry(file, encoding, (line) => line, separator, firstLineContainsHeadlines);
         }
+
         public static void UpdateCSVFileEntry(string file, Func<string[], string[]> updateFunction, string separator = ";", bool firstLineContainsHeadlines = false)
         {
             UpdateCSVFileEntry(file, new UTF8Encoding(false), updateFunction, separator, firstLineContainsHeadlines);
         }
+
         public static void UpdateCSVFileEntry(string file, Encoding encoding, Func<string[], string[]> updateFunction, string separator = ";", bool firstLineContainsHeadlines = false)
         {
             IList<string[]> content = ReadCSVFile(file, encoding, out string[] headlines, separator, firstLineContainsHeadlines);
@@ -1700,6 +1759,7 @@ namespace GRYLibrary.Core.Misc
         {
             WriteCSVFile(file, new UTF8Encoding(false), content, headLines, separator);
         }
+
         public static void WriteCSVFile(string file, Encoding encoding, IList<string[]> content, string[] headLines, string separator = ";")
         {
             List<string[]> contentAdjusted = content.ToList();
@@ -1737,6 +1797,7 @@ namespace GRYLibrary.Core.Misc
         {
             return ReadCSVFile(file, new UTF8Encoding(false), out headLines, separator, firstLineContainsHeadlines, trimValues, treatHashAsComment);
         }
+
         public static IList<string[]> ReadCSVFile(string file, Encoding encoding, out string[] headLines, string separator = ";", bool firstLineContainsHeadlines = false, bool trimValues = true, bool treatHashAsComment = false)
         {
             List<string[]> outterList = new();
@@ -1829,8 +1890,8 @@ namespace GRYLibrary.Core.Misc
         public static void WaitUntilPortIsAvailable(string address, ushort port, TimeSpan timeout)
         {
             RunWithTimeout(() => WaitUntilPortIsAvailable(address, port), timeout);
-
         }
+
         public static void WaitUntilPortIsAvailable(string address, ushort port)
         {
             while (!PortIsAvailable(address, port))
@@ -1857,6 +1918,7 @@ namespace GRYLibrary.Core.Misc
         {
             return WebsiteIsAvailable(link, ensureSuccessStatusCode, new Dictionary<string, string>());
         }
+
         public static bool WebsiteIsAvailable(string link, bool ensureSuccessStatusCode, IDictionary<string, string> extraHeaders)
         {
             try
@@ -1882,6 +1944,7 @@ namespace GRYLibrary.Core.Misc
         {
             return ResolveToFullPath(path, Directory.GetCurrentDirectory());
         }
+
         /// <summary>
         /// This function transforms <paramref name="path"/> into an absolute path.
         /// It does not matter if you pass a relative or absolute path: This function checks that.
@@ -2021,22 +2084,27 @@ namespace GRYLibrary.Core.Misc
         {
             FormatXMLFile(file, FormatXMLFile_DefaultEncoding, XMLWriterDefaultSettings);
         }
+
         public static void FormatXMLFile(string file, Encoding encoding)
         {
             FormatXMLFile(file, encoding, XMLWriterDefaultSettings);
         }
+
         public static void FormatXMLFile(string file, XmlWriterSettings settings)
         {
             FormatXMLFile(file, FormatXMLFile_DefaultEncoding, settings);
         }
+
         public static void FormatXMLFile(string file, Encoding encoding, XmlWriterSettings settings)
         {
             File.WriteAllText(file, FormatXMLString(File.ReadAllText(file, encoding), settings), encoding);
         }
+
         public static string FormatXMLString(string xmlString)
         {
             return FormatXMLString(xmlString, XMLWriterDefaultSettings);
         }
+
         public static string FormatXMLString(string xmlString, XmlWriterSettings settings)
         {
             using MemoryStream memoryStream = new();
@@ -2053,6 +2121,7 @@ namespace GRYLibrary.Core.Misc
         {
             return (uint)Convert.ToInt32(binaryString, 2);
         }
+
         public static string UintToBinaryString(uint binaryString, bool padLeft = true)
         {
             string result = Convert.ToString(binaryString, 2);
@@ -2066,6 +2135,7 @@ namespace GRYLibrary.Core.Misc
         {
             throw new NotImplementedException();
         }
+
         public static string BigIntegerToBinaryString(BigInteger binaryString)
         {
             throw new NotImplementedException();
@@ -2075,14 +2145,17 @@ namespace GRYLibrary.Core.Misc
         {
             return XmlToString(xmlDocument, new UTF8Encoding(false), XMLWriterDefaultSettings);
         }
+
         public static string XmlToString(XmlDocument xmlDocument, Encoding encoding)
         {
             return XmlToString(xmlDocument, encoding, XMLWriterDefaultSettings);
         }
+
         public static string XmlToString(XmlDocument xmlDocument, XmlWriterSettings xmlWriterSettings)
         {
             return XmlToString(xmlDocument, new UTF8Encoding(false), xmlWriterSettings);
         }
+
         public static string XmlToString(XmlDocument xmlDocument, Encoding encoding, XmlWriterSettings xmlWriterSettings)
         {
             using StringWriterWithEncoding stringWriter = new(encoding);
@@ -2094,6 +2167,7 @@ namespace GRYLibrary.Core.Misc
         {
             return certificate.Subject.Equals(certificate.Issuer);
         }
+
         public static void AddMountPointForVolume(Guid volumeId, string mountPoint)
         {
             if (mountPoint.Length > 3)
@@ -2241,62 +2315,66 @@ namespace GRYLibrary.Core.Misc
         public static Func<ModelBindingContext, Task> GenericModelBinder(Func<string, object> parser, string targetTypeName, bool allowDefault)
         {
             return (ModelBindingContext bindingContext) =>
-            {
-                //see https://learn.microsoft.com/de-de/aspnet/core/mvc/advanced/custom-model-binding?view=aspnetcore-7.0
-                ArgumentNullException.ThrowIfNull(bindingContext);
-                string modelName = bindingContext.ModelName;
-                ValueProviderResult values = bindingContext.ValueProvider.GetValue("moment");
-                ValueProviderResult values2 = bindingContext.ValueProvider.GetValue("{moment}");
-                ValueProviderResult valueProviderResult = bindingContext.ValueProvider.GetValue(modelName);
-                if (valueProviderResult == ValueProviderResult.None)
-                {
-                    return Task.CompletedTask;
-                }
-                bindingContext.ModelState.SetModelValue(modelName, valueProviderResult);
-                string value = valueProviderResult.FirstValue;
-                if (string.IsNullOrEmpty(value))
-                {
-                    if (allowDefault)
-                    {
-                        bindingContext.Result = default;
-                    }
-                    else
-                    {
-                        bindingContext.ModelState.TryAddModelError(modelName, $"No value given to parse to {targetTypeName}.");
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        object model = parser(value);
-                        bindingContext.Result = ModelBindingResult.Success(model);
-                    }
-                    catch
-                    {
-                        bindingContext.ModelState.TryAddModelError(modelName, $"\"{value}\" can not be parsed to {targetTypeName}.");
-                    }
-                }
-                return Task.CompletedTask;
-            };
+                                                                                                                                                                                                                                                                                                            {
+                                                                                                                                                                                                                                                                                                                //see https://learn.microsoft.com/de-de/aspnet/core/mvc/advanced/custom-model-binding?view=aspnetcore-7.0
+                                                                                                                                                                                                                                                                                                                ArgumentNullException.ThrowIfNull(bindingContext);
+                                                                                                                                                                                                                                                                                                                string modelName = bindingContext.ModelName;
+                                                                                                                                                                                                                                                                                                                ValueProviderResult values = bindingContext.ValueProvider.GetValue("moment");
+                                                                                                                                                                                                                                                                                                                ValueProviderResult values2 = bindingContext.ValueProvider.GetValue("{moment}");
+                                                                                                                                                                                                                                                                                                                ValueProviderResult valueProviderResult = bindingContext.ValueProvider.GetValue(modelName);
+                                                                                                                                                                                                                                                                                                                if (valueProviderResult == ValueProviderResult.None)
+                                                                                                                                                                                                                                                                                                                {
+                                                                                                                                                                                                                                                                                                                    return Task.CompletedTask;
+                                                                                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                                                                                                bindingContext.ModelState.SetModelValue(modelName, valueProviderResult);
+                                                                                                                                                                                                                                                                                                                string value = valueProviderResult.FirstValue;
+                                                                                                                                                                                                                                                                                                                if (string.IsNullOrEmpty(value))
+                                                                                                                                                                                                                                                                                                                {
+                                                                                                                                                                                                                                                                                                                    if (allowDefault)
+                                                                                                                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                                                                                                                        bindingContext.Result = default;
+                                                                                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                                                                                    else
+                                                                                                                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                                                                                                                        bindingContext.ModelState.TryAddModelError(modelName, $"No value given to parse to {targetTypeName}.");
+                                                                                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                                                                                                else
+                                                                                                                                                                                                                                                                                                                {
+                                                                                                                                                                                                                                                                                                                    try
+                                                                                                                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                                                                                                                        object model = parser(value);
+                                                                                                                                                                                                                                                                                                                        bindingContext.Result = ModelBindingResult.Success(model);
+                                                                                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                                                                                    catch
+                                                                                                                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                                                                                                                        bindingContext.ModelState.TryAddModelError(modelName, $"\"{value}\" can not be parsed to {targetTypeName}.");
+                                                                                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                                                                                                return Task.CompletedTask;
+                                                                                                                                                                                                                                                                                                            };
         }
 
         public static T[] PadLeft<T>(T[] array, int length)
         {
             return PadLeft(array, default, length);
         }
+
         public static T[] PadLeft<T>(T[] array, T fillItem, int length)
         {
             return PadHelper(array, length, fillItem, true);
         }
+
         public static T[] PadRight<T>(T[] array, int length)
         {
             return PadRight(array, default, length);
         }
+
         public static T[] PadRight<T>(T[] array, T fillItem, int length)
         {
             return PadHelper(array, length, fillItem, false);
         }
+
         private static T[] PadHelper<T>(T[] array, int length, T fillItem, bool PadLeft)
         {
             T[] result = array;
@@ -2487,14 +2565,17 @@ namespace GRYLibrary.Core.Misc
         {
             return NullSafeHelper(@this, obj, (obj1, obj2) => obj1.Equals(obj2));
         }
+
         public static bool NullSafeSetEquals<T>(this ISet<T> @this, ISet<T> obj, bool treatEmptyAsNull = false)
         {
             return NullSafeHelper(TreatNullHelper(@this, treatEmptyAsNull), TreatNullHelper(obj, treatEmptyAsNull), (obj1, obj2) => obj1.ToHashSet().SetEquals(obj2));
         }
+
         public static bool NullSafeListEquals<T>(this IList<T> @this, IList<T> obj, bool treatEmptyAsNull = false)
         {
             return NullSafeHelper(TreatNullHelper(@this, treatEmptyAsNull), TreatNullHelper(obj, treatEmptyAsNull), (obj1, obj2) => obj1.SequenceEqual(obj2));
         }
+
         public static bool NullSafeEnumerableEquals<T>(this IEnumerable<T> @this, IEnumerable<T> obj, bool treatEmptyAsNull = false)
         {
             @this = TreatNullHelper(@this, treatEmptyAsNull);
@@ -2573,14 +2654,17 @@ namespace GRYLibrary.Core.Misc
         {
             return GetTimeFromInternet(TimeZoneInfo.Utc);
         }
+
         public static DateTime GetTimeFromInternetCurrentTimeZone()
         {
             return GetTimeFromInternet(TimeZoneInfo.Local);
         }
+
         public static DateTime GetTimeFromInternet(TimeZoneInfo timezone)
         {
             return GetTimeFromInternet(timezone, "yy-MM-dd HH:mm:ss", "time.nist.gov", 13, 7, 17);
         }
+
         public static DateTime GetTimeFromInternet(TimeZoneInfo timezone, string format, string domain, int port, int begin, int length)
         {
             using TcpClient tcpClient = new TcpClient(domain, port);
@@ -2592,22 +2676,23 @@ namespace GRYLibrary.Core.Misc
         /// If Development-configuration: This function returns <see cref="DateTime.Now"/> using the timezone of the current machine.
         /// Any else configuration: This function returns <see cref="DateTime.UtcNow"/> which is more appropriate for productive usage.
         /// </returns>
-        public static DateTime GetNow()
-        {
+        public static DateTime GetNow() =>
 #if Development
-            return DateTime.Now;
+            DateTime.Now;
 #else
-            return DateTime.UtcNow;
+            DateTime.UtcNow;
 #endif
-        }
+
         public static string DateTimeToString(DateTime value)
         {
             return value.ToString("O");
         }
+
         public static DateTime DateTimeParse(string value)
         {
             return DateTime.ParseExact(value, "O", CultureInfo.InvariantCulture);
         }
+
         public static byte[] StreamToByteArray(Stream input)
         {
             using MemoryStream ms = new MemoryStream();
@@ -2728,6 +2813,7 @@ namespace GRYLibrary.Core.Misc
         {
             return $"Equal failed. Expected: <{Environment.NewLine}{Generic.GenericToString(expectedObject, maxLengthPerObject)}{Environment.NewLine}> Actual: <{Environment.NewLine}{Generic.GenericToString(actualObject, maxLengthPerObject)}{Environment.NewLine}>";
         }
+
         public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
         {
             foreach (T item in source)
@@ -2816,10 +2902,12 @@ namespace GRYLibrary.Core.Misc
         {
             return timeSpan.Ticks < 0;
         }
+
         public static bool IsPositive(this TimeSpan timeSpan)
         {
             return timeSpan.Ticks > 0;
         }
+
         public static string ToOnlyFirstCharToUpper(this string input)
         {
             if (string.IsNullOrEmpty(input))
@@ -2838,14 +2926,17 @@ namespace GRYLibrary.Core.Misc
         {
             return ToOnlyFirstCharOfEveryWordToUpper(input, (lastCharacter) => Whitespace.Contains(lastCharacter));
         }
+
         public static string ToOnlyFirstCharOfEveryWordOrPartialWordToUpper(this string input)
         {
             return ToOnlyFirstCharOfEveryWordToUpper(input, (lastCharacter) => WhitespaceAndPartialWordIndicators.Contains(lastCharacter));
         }
+
         public static string ToOnlyFirstCharOfEveryNewLetterSequenceToUpper(this string input)
         {
             return ToOnlyFirstCharOfEveryWordToUpper(input, (lastCharacter) => !char.IsLetter(lastCharacter));
         }
+
         public static string ToOnlyFirstCharOfEveryWordToUpper(this string input, Func<char, bool> printCharUppercaseDependentOnPreviousChar)
         {
             if (string.IsNullOrWhiteSpace(input))
@@ -2918,6 +3009,7 @@ namespace GRYLibrary.Core.Misc
         {
             return _OneOrMoreHexSigns.Match(result.ToLower()).Success;
         }
+
         public static bool IsHexDigit(this char @char)
         {
             return @char is (>= '0' and <= '9') or (>= 'a' and <= 'f') or (>= 'A' and <= 'F');
@@ -3250,6 +3342,18 @@ namespace GRYLibrary.Core.Misc
                 result = default;
                 return false;
             }
+        }
+        private static readonly Random _Random = new Random();
+
+        public static T RandomChoice<T>(params T[] choices)
+        {
+            return choices[_Random.Next(choices.Count())];
+        }
+        public static string HTMLUnescape(string @value)
+        {
+            string result = WebUtility.HtmlEncode(@value);
+            result = result.Replace("\n", "<br />");
+            return result;
         }
     }
 }

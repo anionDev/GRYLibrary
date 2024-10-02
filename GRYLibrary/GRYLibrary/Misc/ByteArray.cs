@@ -26,26 +26,32 @@ namespace GRYLibrary.Core.Misc
         {
             return new ByteArray(Utilities.HexStringToByteArray(value));
         }
+
         public ByteArray CreateByInteger(BigInteger value)
         {
             return this.CreateByHexString(Utilities.BigIntegerToHexString(value));
         }
+
         public ByteArray CreateByString(string value)
         {
             return this.CreateByString(value, DefaultEncoding);
         }
+
         public ByteArray CreateByString(string value, Encoding encoding)
         {
             return new ByteArray(encoding.GetBytes(value));
         }
+
         public string DecodeToString()
         {
             return this.DecodeToString(DefaultEncoding);
         }
+
         public string DecodeToString(Encoding encoding)
         {
             return encoding.GetString(this._Data);
         }
+
         public static ByteArray operator +(ByteArray first, ByteArray second)
         {
             return new ByteArray(Utilities.Concat(first._Data, second._Data));

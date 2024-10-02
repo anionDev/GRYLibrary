@@ -27,6 +27,7 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
         {
             this.GetHandlerForFile(playlistFile).AddItemsToPlaylist(playlistFile, this.Replace(itemsToDelete));
         }
+
         public override (ISet<string> included, ISet<string> excluded) GetItemsAndExcludedItems(string playlistFile)
         {
             ISet<string> notExistingItems = new HashSet<string>();
@@ -63,27 +64,27 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
         private ISet<string> RemoveDuplicatesByMetadataCeck(ISet<string> items)
         {
             return new HashSet<string>(items.GroupBy(item =>
-            {
-                try
-                {
-                    if (this.IsLink(item))
-                    {
-                        return item;
-                    }
-                    else
-                    {
-                        using TagLib.File tagFile = TagLib.File.Create(item);
-                        string title = tagFile.Tag.Title;
-                        ISet<string> artists = tagFile.Tag.Performers.ToHashSet();
-                        string artistsList = string.Join(';', artists.OrderBy(artist => $"\"{artist}\""));
-                        return $"\"{title}\":{artistsList}".ToLower();
-                    }
-                }
-                catch
-                {
-                    return item;
-                }
-            }).Select(group => group.First()));
+                                                                                                                                                                            {
+                                                                                                                                                                                try
+                                                                                                                                                                                {
+                                                                                                                                                                                    if (this.IsLink(item))
+                                                                                                                                                                                    {
+                                                                                                                                                                                        return item;
+                                                                                                                                                                                    }
+                                                                                                                                                                                    else
+                                                                                                                                                                                    {
+                                                                                                                                                                                        using TagLib.File tagFile = TagLib.File.Create(item);
+                                                                                                                                                                                        string title = tagFile.Tag.Title;
+                                                                                                                                                                                        ISet<string> artists = tagFile.Tag.Performers.ToHashSet();
+                                                                                                                                                                                        string artistsList = string.Join(';', artists.OrderBy(artist => $"\"{artist}\""));
+                                                                                                                                                                                        return $"\"{title}\":{artistsList}".ToLower();
+                                                                                                                                                                                    }
+                                                                                                                                                                                }
+                                                                                                                                                                                catch
+                                                                                                                                                                                {
+                                                                                                                                                                                    return item;
+                                                                                                                                                                                }
+                                                                                                                                                                            }).Select(group => group.First()));
         }
 
         public override ISet<string> GetSongs(string playlistFile)
@@ -142,6 +143,7 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
         {
             return items.Select(this.Replace);
         }
+
         private string Replace(string item)
         {
             foreach (KeyValuePair<string, string> replacement in this.Replacements)
@@ -189,6 +191,7 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
         {
             return item.EndsWith(".m3u") || item.EndsWith(".pls");
         }
+
         public PlaylistFileHandler GetHandlerForFile(string item)
         {
             if (item.EndsWith(".m3u"))

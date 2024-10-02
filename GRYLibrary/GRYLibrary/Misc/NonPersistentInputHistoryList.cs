@@ -33,6 +33,7 @@ namespace GRYLibrary.Core.Misc
         {
             this.CurrentuserInputIndex = this.UserInputs.Count;
         }
+
         private string GetCurrentItem()
         {
             if (this.CurrentuserInputIndex == this.UserInputs.Count || this.UserInputs.Count == 0)

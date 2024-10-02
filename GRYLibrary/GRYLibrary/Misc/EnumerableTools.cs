@@ -17,44 +17,54 @@ namespace GRYLibrary.Core.Misc
         {
             return @object is IEnumerable;
         }
+
         public static bool TypeIsEnumerable(this Type type)
         {
             return TypeIsAssignableFrom(type, typeof(IEnumerable)) && !typeof(string).Equals(type);
         }
+
         /// <returns>Returns true if and only if the most concrete type of <paramref name="object"/> implements <see cref="ISet{T}"/>.</returns>
         public static bool ObjectIsSet(this object @object)
         {
             return TypeIsSet(@object.GetType());
         }
+
         public static bool TypeIsSet(this Type type)
         {
             return TypeIsAssignableFrom(type, typeof(ISet<>));
         }
+
         public static bool ObjectIsList(this object @object)
         {
             return TypeIsList(@object.GetType());
         }
+
         public static bool TypeIsList(this Type type)
         {
             return TypeIsListNotGeneric(type) || TypeIsListGeneric(type);
         }
+
         public static bool TypeIsListNotGeneric(this Type type)
         {
             return TypeIsAssignableFrom(type, typeof(IList));
         }
+
         public static bool TypeIsListGeneric(this Type type)
         {
             return TypeIsAssignableFrom(type, typeof(IList<>));
         }
+
         public static bool TypeIsArrayGeneric(this Type type)
         {
             return type.IsArray;
         }
+
         /// <returns>Returns true if and only if the most concrete type of <paramref name="object"/> implements <see cref="IDictionary{TKey, TValue}"/> or <see cref="IDictionary"/>.</returns>
         public static bool ObjectIsDictionary(this object @object)
         {
             return TypeIsDictionary(@object.GetType());
         }
+
         public static void AddItemToEnumerable(object enumerable, object[] addMethodArguments)
         {
             List<object> castedArguments = new();
@@ -75,34 +85,42 @@ namespace GRYLibrary.Core.Misc
         {
             return TypeIsDictionaryNotGeneric(type) || TypeIsDictionaryGeneric(type);
         }
+
         public static bool TypeIsDictionaryNotGeneric(this Type type)
         {
             return TypeIsAssignableFrom(type, typeof(IDictionary));
         }
+
         public static bool TypeIsDictionaryGeneric(this Type type)
         {
             return TypeIsAssignableFrom(type, typeof(IDictionary<,>));
         }
+
         public static bool ObjectIsKeyValuePair(this object @object)
         {
             return TypeIsKeyValuePair(@object.GetType());
         }
+
         public static bool TypeIsKeyValuePair(this Type type)
         {
             return TypeIsAssignableFrom(type, typeof(KeyValuePair<,>)) || TypeIsAssignableFrom(type, typeof(XMLSerializer.KeyValuePair<object, object>));
         }
+
         public static bool ObjectIsDictionaryEntry(this object @object)
         {
             return TypeIsDictionaryEntry(@object.GetType());
         }
+
         public static bool TypeIsDictionaryEntry(this Type type)
         {
             return TypeIsAssignableFrom(type, typeof(DictionaryEntry));
         }
+
         public static bool ObjectIsTuple(this object @object)
         {
             return TypeIsTuple(@object.GetType());
         }
+
         public static bool TypeIsTuple(this Type type)
         {
             return TypeIsAssignableFrom(type, typeof(Tuple<,>));
@@ -173,6 +191,7 @@ namespace GRYLibrary.Core.Misc
         {
             return ObjectToList<object>(@object).ToList();
         }
+
         public static IList<T> ObjectToList<T>(this object @object)
         {
             if (!ObjectIsList(@object))
@@ -299,32 +318,39 @@ namespace GRYLibrary.Core.Misc
         {
             return new EnumerableComparer(new PropertyEqualsCalculatorConfiguration()).EqualsTyped(enumerable1, enumerable2);
         }
+
         /// <returns>Returns true if and only if the items in <paramref name="set1"/> and <paramref name="set2"/> are equal (ignoring the order) using the GRYLibrary-AdvancedObjectAnalysis for object-comparison.</returns>
         public static bool SetEquals<T>(this ISet<T> set1, ISet<T> set2)
         {
             return new SetComparer(new PropertyEqualsCalculatorConfiguration()).EqualsTyped(set1, set2);
         }
+
         public static bool ListEquals(this IList list1, IList list2)
         {
             return new ListComparer(new PropertyEqualsCalculatorConfiguration()).Equals(list1, list2);
         }
+
         /// <returns>Returns true if and only if the items in <paramref name="list1"/> and <paramref name="list2"/> are equal using the GRYLibrary-AdvancedObjectAnalysis for object-comparison.</returns>
         public static bool ListEquals<T>(this IList<T> list1, IList<T> list2)
         {
             return new ListComparer(new PropertyEqualsCalculatorConfiguration()).EqualsTyped(list1, list2);
         }
+
         public static bool DictionaryEquals(this IDictionary dictionary1, IDictionary dictionary2)
         {
             return new DictionaryComparer(new PropertyEqualsCalculatorConfiguration()).Equals(dictionary1, dictionary2);
         }
+
         public static bool DictionaryEquals<TKey, TValue>(this IDictionary<TKey, TValue> dictionary1, IDictionary<TKey, TValue> dictionary2)
         {
             return new DictionaryComparer(new PropertyEqualsCalculatorConfiguration()).DefaultEquals(dictionary1, dictionary2);
         }
+
         public static bool KeyValuePairEquals<TKey, TValue>(this KeyValuePair<TKey, TValue> keyValuePair1, KeyValuePair<TKey, TValue> keyValuePair2)
         {
             return new KeyValuePairComparer(new PropertyEqualsCalculatorConfiguration()).Equals(keyValuePair1, keyValuePair2);
         }
+
         public static bool TupleEquals<TKey, TValue>(this Tuple<TKey, TValue> tuple1, Tuple<TKey, TValue> tuple2)
         {
             return new TupleComparer(new PropertyEqualsCalculatorConfiguration()).Equals(tuple1, tuple2);

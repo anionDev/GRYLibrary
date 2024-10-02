@@ -19,6 +19,7 @@ namespace GRYLibrary.Core.Graph
         {
             return visitor.Handle(this);
         }
+
         /// <returns>
         /// Returns a set of all vertices which have a connection to this vertex in this graph.
         /// </returns>

@@ -11,6 +11,7 @@ namespace GRYLibrary.Core.Crypto
         {
             return Utilities.PadLeft(Encoding.ASCII.GetBytes("SHA256PC#"), 10);
         }
+
         public uint[] H_InitialValue = new uint[8] {
             0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19,
         };
@@ -117,6 +118,7 @@ namespace GRYLibrary.Core.Crypto
         {
             return XOr(And(e, f), And(Not(e), g));
         }
+
         public static uint CalculateTemp1(uint h, uint s1, uint ch, uint ki, uint wi)
         {
             return Add(h, s1, ch, ki, wi);
@@ -150,10 +152,12 @@ namespace GRYLibrary.Core.Crypto
         {
             return left ^ right;
         }
+
         public static uint RightShift(uint value, byte amountOfDigits)
         {
             return value >> amountOfDigits;
         }
+
         public static uint RightRotate(uint value, byte amountOfDigits)
         {
             Utilities.AssertCondition(amountOfDigits < 32);
@@ -163,6 +167,7 @@ namespace GRYLibrary.Core.Crypto
         {
             return left & right;
         }
+
         public static uint Not(uint value)
         {
             return ~value;

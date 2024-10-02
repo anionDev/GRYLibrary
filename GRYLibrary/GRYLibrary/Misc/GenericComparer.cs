@@ -16,18 +16,22 @@ namespace GRYLibrary.Core.Misc
         {
             return CreateComparer(comparer, (_) => 0);
         }
+
         public static IEqualityComparer<T> CreateEqualityComparer(Func<T, T, int> comparer)
         {
             return CreateEqualityComparer(comparer, (_) => 0);
         }
+
         public static IComparer<T> CreateComparer(Func<T, T, int> comparer, Func<T, int> getHashCode)
         {
             return new GenericComparer<T>(comparer, getHashCode);
         }
+
         public static IEqualityComparer<T> CreateEqualityComparer(Func<T, T, int> comparer, Func<T, int> getHashCode)
         {
             return new GenericComparer<T>(comparer, getHashCode);
         }
+
         public int Compare(T x, T y)
         {
             return this._Comparer(x, y);

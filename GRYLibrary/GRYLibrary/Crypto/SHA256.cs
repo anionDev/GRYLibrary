@@ -8,6 +8,7 @@ namespace GRYLibrary.Core.Crypto
         {
             return System.Security.Cryptography.SHA256.HashData(data);
         }
+
         public override byte[] GetIdentifier()
         {
             return Utilities.PadLeft(System.Text.Encoding.ASCII.GetBytes(nameof(SHA256)), 10);

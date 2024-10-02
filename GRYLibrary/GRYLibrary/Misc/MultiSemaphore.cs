@@ -17,6 +17,7 @@ namespace GRYLibrary.Core.Misc
         {
             base.Value += 1;
         }
+
         public void Decrement()
         {
             if (this.Value == 0)

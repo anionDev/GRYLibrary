@@ -40,6 +40,7 @@ namespace GRYLibrary.Core.Crypto
         {
             return Utilities.ConcatBytesArraysWithLengthInformation(parameters.D, parameters.DP, parameters.Exponent, parameters.InverseQ, parameters.Modulus, parameters.P, parameters.Q);
         }
+
         /// <inheritdoc/>
         public override (byte[] privateKey, byte[] publicKey) GenerateRandomKeyPair()
         {

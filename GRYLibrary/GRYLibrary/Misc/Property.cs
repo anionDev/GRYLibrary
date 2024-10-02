@@ -44,6 +44,7 @@ namespace GRYLibrary.Core.Misc
         {
             this.Unset = true;
         }
+
         public string PropertyName { get => this._PropertyName; set => this._PropertyName = value; }
 
         public Type PropertyValueType => typeof(T);
@@ -139,6 +140,7 @@ namespace GRYLibrary.Core.Misc
         {
             this.SetValue(this._InitialValue);
         }
+
         public void ResetHistory()
         {
             this._History.Clear();
@@ -148,10 +150,12 @@ namespace GRYLibrary.Core.Misc
         {
             return this.EqualsValue(@object.Value);
         }
+
         public bool EqualsValue(T @object)
         {
             return this.Value.Equals(@object);
         }
+
         public T GetValueByTimestamp(DateTime dateTime)
         {
             Stack<KeyValuePair<DateTime, T>> history = this.History;

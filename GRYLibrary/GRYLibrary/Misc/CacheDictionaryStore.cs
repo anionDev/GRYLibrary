@@ -26,10 +26,12 @@ namespace GRYLibrary.Core.Misc
         {
             this._Cache.Clear();
         }
+
         public void ResetCache(TKey item)
         {
             this._Cache.Remove(item);
         }
+
         public bool ContainsKey(TKey key)
         {
             return this._Cache.ContainsKey(key);
@@ -46,14 +48,17 @@ namespace GRYLibrary.Core.Misc
         {
             return this._CacheDictionaryStore.GetValue(key, default);
         }
+
         public void ResetCache()
         {
             this._CacheDictionaryStore.ResetCache();
         }
+
         public void ResetCache(TKey item)
         {
             this._CacheDictionaryStore.ResetCache(item);
         }
+
         public bool ContainsKey(TKey key)
         {
             return this._CacheDictionaryStore.ContainsKey(key);

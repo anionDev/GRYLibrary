@@ -96,10 +96,12 @@ namespace GRYLibrary.Core.APIServer.Mid.C
         {
             return context.Request.Cookies.Where(c => c.Key == settings.CaptchaCookieName).FirstOrDefault().Value;
         }
+
         public bool TrySolve(string captchaId, string userInput, out string accessKey, out string failMessage)
         {
             return this._CaptchaManager.TrySolve(captchaId, userInput, out accessKey, out failMessage);
         }
+
         public (string id, byte[] picture) GenerateCaptcha()
         {
             CaptchaInstance result = this._CaptchaManager.GetNewCaptcha(this.GetCaptchaSettings());

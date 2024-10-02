@@ -8,14 +8,21 @@ namespace GRYLibrary.Core.Misc
     /// </summary>
     public struct GRYTime : IEquatable<GRYTime>, IComparable<GRYTime>, IComparable
     {
-        internal static readonly string TimeFormat = "HH:mm:ss";
-        public int Hour { get; set; }
-        public int Minute { get; set; }
-        public int Second { get; set; }
-        public static GRYTime GetCurrentTime() { return GRYDateTime.GetCurrentDateTime().ToGRYTime(); }
-        public static GRYTime GetCurrentTimeInUTC() { return GRYDateTime.GetCurrentDateTimeInUTC().ToGRYTime(); }
+        public static readonly string TimeFormat = "HH:mm:ss";
+        public uint Hour { get; set; }
+        public uint Minute { get; set; }
+        public uint Second { get; set; }
+        public static GRYTime GetCurrentTime()
+        {
+            return GRYDateTime.GetCurrentDateTime().ToGRYTime();
+        }
 
-        public GRYTime(int hour, int minute, int second)
+        public static GRYTime GetCurrentTimeInUTC()
+        {
+            return GRYDateTime.GetCurrentDateTimeInUTC().ToGRYTime();
+        }
+
+        public GRYTime(uint hour, uint minute, uint second)
         {
             this.Hour = hour;
             this.Minute = minute;
@@ -24,15 +31,17 @@ namespace GRYLibrary.Core.Misc
         }
         public readonly TimeOnly ToTime()
         {
-            return new TimeOnly(this.Hour, this.Minute, this.Second);
+            return new TimeOnly((int)this.Hour, (int)this.Minute, (int)this.Second);
         }
-        public static GRYTime FromDateTime(TimeOnly value)
+
+        public static GRYTime FromTime(TimeOnly value)
         {
-            return new GRYTime(value.Hour, value.Minute, value.Second);
+            return new GRYTime((uint)value.Hour, (uint)value.Minute, (uint)value.Second);
         }
+
         public static GRYTime FromString(string @string)
         {
-            return FromDateTime(TimeOnly.ParseExact(@string, TimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None));
+            return FromTime(TimeOnly.ParseExact(@string, TimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None));
         }
 
         public override readonly int GetHashCode()
@@ -57,12 +66,12 @@ namespace GRYLibrary.Core.Misc
                    this.Second == other.Second;
         }
 
-        public int CompareTo(GRYTime other)
+        public readonly int CompareTo(GRYTime other)
         {
             return this.ToTime().CompareTo(other.ToTime());
         }
 
-        public int CompareTo(object obj)
+        public readonly int CompareTo(object obj)
         {
             return this.ToTime().CompareTo(obj);
         }
@@ -92,6 +101,27 @@ namespace GRYLibrary.Core.Misc
         public static bool operator >=(GRYTime left, GRYTime right)
         {
             return left.ToTime() >= right.ToTime();
+        }
+        public readonly GRYTime AddHours(int amountOfHours)
+        {
+            GRYDate date = new GRYDate(2000, 1, 1);
+            GRYDateTime dateTime = GRYDateTime.FromGRYDateAndTime(date, new GRYTime(this.Hour, this.Minute, this.Second));
+            GRYTime result = dateTime.AddHours(amountOfHours).ToGRYTime();
+            return result;
+        }
+        public readonly GRYTime AddMinutes(int amountOfMinuts)
+        {
+            GRYDate date = new GRYDate(2000, 1, 1);
+            GRYDateTime dateTime = GRYDateTime.FromGRYDateAndTime(date, new GRYTime(this.Hour, this.Minute, this.Second));
+            GRYTime result = dateTime.AddMinutes(amountOfMinuts).ToGRYTime();
+            return result;
+        }
+        public readonly GRYTime AddSeconds(int amountOfSeconds)
+        {
+            GRYDate date = new GRYDate(2000, 1, 1);
+            GRYDateTime dateTime = GRYDateTime.FromGRYDateAndTime(date, new GRYTime(this.Hour, this.Minute, this.Second));
+            GRYTime result = dateTime.AddSeconds(amountOfSeconds).ToGRYTime();
+            return result;
         }
     }
 }

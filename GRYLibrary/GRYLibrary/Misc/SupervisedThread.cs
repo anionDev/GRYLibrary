@@ -10,10 +10,12 @@ namespace GRYLibrary.Core.Misc
         {
             return CreateByGRYLog(action, GRYLog.Create(logFile), name, informationAboutInvoker);
         }
+
         public static SupervisedThread CreateByGRYLog(Action action, GRYLog log = null, string name = "", string informationAboutInvoker = "")
         {
             return new SupervisedThread(action, log, name, informationAboutInvoker);
         }
+
         public static SupervisedThread Create(Action action, string name = "", string informationAboutInvoker = "")
         {
             return CreateByLogFile(action, null, name, informationAboutInvoker);

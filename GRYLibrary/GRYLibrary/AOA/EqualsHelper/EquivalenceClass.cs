@@ -24,6 +24,7 @@ namespace GRYLibrary.Core.AOA.EqualsHelper
         {
             return @object is EquivalenceClass @class && this.Id.Equals(@class.Id);
         }
+
         public override int GetHashCode()
         {
             return this.HashChode;

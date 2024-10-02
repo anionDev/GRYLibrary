@@ -21,25 +21,18 @@ namespace GRYLibrary.Core.APIServer.MidT.Auth
             {
                 if (new Regex(routesWhereUnauthenticatedAccessIsAllowed).IsMatch(context.Request.Path.Value))
                 {
-                    return this.Return(false, context);
+                    return false;
                 }
             }
             if (this.TryGetAuthenticateAttribute(context, out AuthenticateAttribute _))
             {
-                return this.Return(true, context);
+                return true;
             }
             if (this.TryGetAuthorizeAttribute(context, out AuthorizeAttribute _))
             {
-                return this.Return(true, context);
+                return true;
             }
-
-            return this.Return(false, context);
-        }
-
-        private bool Return(bool authenticationIsRequired, HttpContext context)
-        {
-            context.Items[IsAuthenticatedInformationName] = authenticationIsRequired;
-            return authenticationIsRequired;
+            return false;
         }
 
         public abstract bool TryGetAuthentication(HttpContext context, out ClaimsPrincipal principal);
@@ -57,15 +50,18 @@ namespace GRYLibrary.Core.APIServer.MidT.Auth
 
         public virtual bool IsAuthenticatedInternal(HttpContext context)
         {
+            bool result;
             if (this.TryGetAuthentication(context, out ClaimsPrincipal principal))
             {
                 context.User = principal;
-                return true;
+                result = true;
             }
             else
             {
-                return false;
+                result = false;
             }
+            context.Items[IsAuthenticatedInformationName] = result;
+            return result;
         }
     }
 }

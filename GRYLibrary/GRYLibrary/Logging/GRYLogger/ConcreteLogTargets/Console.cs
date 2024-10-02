@@ -39,6 +39,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
         {
             return new HashSet<Type>() { typeof(ConsoleColor) };
         }
+
         private void WriteWithColorToConsole(string message, TextWriter output, LogLevel logLevel, GRYLog logObject)
         {
             if (message.Length > 0)
@@ -59,6 +60,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
         {
             Utilities.NoOperation();
         }
+
         public override bool Equals(object obj)
         {
             return base.Equals(obj);

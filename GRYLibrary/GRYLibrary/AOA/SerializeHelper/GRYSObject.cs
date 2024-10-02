@@ -165,6 +165,7 @@ namespace GRYLibrary.Core.AOA.SerializeHelper
             {
                 Utilities.NoOperation();
             }
+
             private object GetDeserialisedObjectOrDefault(Guid id)
             {
                 if (default(Guid).Equals(id))

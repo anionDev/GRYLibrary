@@ -17,10 +17,12 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
         {
             logObject.InvokeObserver(logItem);
         }
+
         public override void Dispose()
         {
             Utilities.NoOperation();
         }
+
         public override bool Equals(object obj)
         {
             return base.Equals(obj);

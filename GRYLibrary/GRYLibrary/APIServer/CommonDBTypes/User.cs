@@ -26,9 +26,16 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
         {
 
         }
-        public static User CreateNewUser(User resultObject, string username, string passwordHash, out string userId, ITimeService timeService)
+
+        public static User CreateNewUser(string username, string passwordHash, ITimeService timeService)
         {
-            User user = resultObject;
+            return CreateNewUser(new User(), username, passwordHash, timeService);
+        }
+
+        public static T CreateNewUser<T>(T resultObject, string username, string passwordHash, ITimeService timeService)
+            where T : User
+        {
+            T user = resultObject;
             user.Id = Guid.NewGuid().ToString();
             user.Name = username;
             user.PasswordHash = passwordHash;
@@ -36,13 +43,7 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
             user.RefreshToken = new HashSet<RefreshToken>();
             user.AccessToken = new HashSet<AccessToken>();
             user.Roles = new HashSet<Role>();
-
-            userId = user.Id;
             return user;
-        }
-        public static User CreateNewUser(string username, string passwordHash, out string userId, ITimeService timeService)
-        {
-            return CreateNewUser(new User(), username, passwordHash, out userId, timeService);
         }
         public ISet<Role> GetAllRoles()
         {

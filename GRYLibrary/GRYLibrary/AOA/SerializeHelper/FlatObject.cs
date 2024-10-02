@@ -26,6 +26,7 @@ namespace GRYLibrary.Core.AOA.SerializeHelper
         {
             return HashCode.Combine(this.ObjectId);
         }
+
         public abstract void Accept(IFlatObjectVisitor visitor);
         public abstract T Accept<T>(IFlatObjectVisitor<T> visitor);
         public interface IFlatObjectVisitor

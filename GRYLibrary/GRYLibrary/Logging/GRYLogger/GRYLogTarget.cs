@@ -29,6 +29,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         {
             this.ExecuteImplementation(logItem, logObject);
         }
+
         protected abstract void ExecuteImplementation(LogItem logItem, GRYLog logObject);
         #region Overhead
         public override bool Equals(object @object)

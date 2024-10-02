@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace GRYLibrary.Core.APIServer.Services.Auth
+namespace GRYLibrary.Core.APIServer.Services.Auth.A
 {
-    public interface IStaticRoleBasedUserAuthorizationServiceConfiguration
+    public interface IStaticActionBasedUserAuthorizationServiceConfiguration
     {
         /// <summary>
         /// Key: Action

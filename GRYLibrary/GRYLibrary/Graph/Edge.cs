@@ -58,6 +58,7 @@ namespace GRYLibrary.Core.Graph
         {
             return this.Name;
         }
+
         public abstract void Accept(IEdgeVisitor visitor);
         public abstract T Accept<T>(IEdgeVisitor<T> visitor);
 

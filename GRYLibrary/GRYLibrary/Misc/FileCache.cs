@@ -32,10 +32,12 @@ namespace GRYLibrary.Core.Misc
         {
             return this.Cache.ContainsKey(t);
         }
+
         public TValue Get(TKey t)
         {
             return this.Cache[t];
         }
+
         public void Set(TKey t, TValue value)
         {
             this.Cache[t] = value;

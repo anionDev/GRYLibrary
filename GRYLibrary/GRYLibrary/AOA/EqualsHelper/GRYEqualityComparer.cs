@@ -25,6 +25,7 @@ namespace GRYLibrary.Core.AOA.EqualsHelper
         {
             return this.DefaultGetHashCode(@object);
         }
+
         public bool Equals(T item1, T item2)
         {
             return this.DefaultEquals(item1, item2);

@@ -22,6 +22,7 @@ namespace GRYLibrary.Core.Misc
                 Files = new string[] { file }
             };
         }
+
         public static FileSelector FileList(IEnumerable<string> files)
         {
             return new FileSelector
@@ -39,6 +40,7 @@ namespace GRYLibrary.Core.Misc
         {
             return FilesInFolder(folder, (string file) => true, deepSearch);
         }
+
         public static FileSelector RegexOfFilename(string folder, string regexAsString, bool deepSearch = true)
         {
             Regex regex = new(regexAsString);

@@ -57,10 +57,12 @@ namespace GRYLibrary.Core.Misc
         {
             return HashCode.Combine(this.Value);
         }
+
         public override string ToString()
         {
             return GUtilities.DecimalToString(this.Value);
         }
+
         public static PercentValue Random()
         {
             return new PercentValue(_Random.NextDouble());

@@ -23,6 +23,7 @@ namespace GRYLibrary.Core.Misc
         {
             this._ActionQueue.Enqueue(action);
         }
+
         public MultiSemaphore CurrentAmountOfThreads { get; private set; }
         public bool IsRunning { get; private set; }
         public bool InfiniteMode { get; }

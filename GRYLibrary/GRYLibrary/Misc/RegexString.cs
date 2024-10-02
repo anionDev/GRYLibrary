@@ -29,6 +29,7 @@ namespace GRYLibrary.Core.Misc
         {
             return this._Regex;
         }
+
         public void SetRegex(Regex regex)
         {
             this._Regex = regex;

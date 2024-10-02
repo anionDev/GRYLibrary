@@ -69,7 +69,6 @@ namespace GRYLibrary.Core.AOA/*AOA=AdvancedObjectAnalysis*/
 
 #pragma warning disable IDE0060 // Suppress "Remove unused parameter 'object'"
         public static XmlSchema GenericGetSchema(object @object)
-#pragma warning restore IDE0060
         {
             return null;
         }
@@ -103,6 +102,7 @@ namespace GRYLibrary.Core.AOA/*AOA=AdvancedObjectAnalysis*/
         {
             File.WriteAllBytes(file, new UTF8Encoding(false).GetBytes(GenericSerialize(@object)));
         }
+
         public static T GenericDeserialize<T>(string serializedObject)
         {
             using XmlReader xmlReader = XmlReader.Create(new StringReader(serializedObject));
