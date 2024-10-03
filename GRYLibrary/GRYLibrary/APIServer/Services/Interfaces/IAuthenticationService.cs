@@ -41,7 +41,6 @@ namespace GRYLibrary.Core.APIServer.Services.Interfaces
         User GetUserByAccessToken(string accessToken);
         bool UserExistsByName(string userNameAdmin);
         void UpdateRole(Role role);
-        ISet<Role> GetRoles(ClaimsPrincipal user);
     }
     /// <summary>
     /// Represents a authentication-service with a custom user-type.
