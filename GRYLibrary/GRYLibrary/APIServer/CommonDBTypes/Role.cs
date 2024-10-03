@@ -12,7 +12,7 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
         public HashSet<Role> InheritedRoles { get; set; }
         public ISet<Role> GetAllInheritedRoles()
         {
-            ISet<Role> result= new HashSet<Role>();
+            ISet<Role> result = new HashSet<Role>();
             foreach (Role inheritedRole in this.InheritedRoles)
             {
                 result.Add(inheritedRole);

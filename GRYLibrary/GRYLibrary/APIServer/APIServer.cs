@@ -36,6 +36,8 @@ using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using GRYLibrary.Core.APIServer.MidT.RLog;
 using GRYLibrary.Core.APIServer.MaintenanceRoutes;
 using GRYLibrary.Core.Logging.GRYLogger;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace GRYLibrary.Core.APIServer
 {
@@ -323,6 +325,10 @@ namespace GRYLibrary.Core.APIServer
             builder.Services.AddLogging(c => c.ClearProviders());
             WebApplication app = builder.Build();
             app.UseRouting();
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
 
             #region Add middlewares
             foreach (Type middleware in specialMiddlewares1)
