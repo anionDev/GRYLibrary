@@ -13,7 +13,7 @@ namespace GRYLibrary.Core.APIServer.Mid.AuthS
     {
         private readonly ICredentialsProvider _CredentialsProvider;
         private readonly IAuthenticationService _AuthenticationService;
-        public AuthSMiddleware(RequestDelegate next, ICredentialsProvider credentialsProvider, IAuthenticationService authenticationService, IAuthenticationConfiguration  authenticationConfiguration) : base(next, authenticationConfiguration)
+        public AuthSMiddleware(RequestDelegate next, ICredentialsProvider credentialsProvider, IAuthenticationService authenticationService, IAuthenticationConfiguration authenticationConfiguration) : base(next, authenticationConfiguration)
         {
             this._CredentialsProvider = credentialsProvider;
             this._AuthenticationService = authenticationService;

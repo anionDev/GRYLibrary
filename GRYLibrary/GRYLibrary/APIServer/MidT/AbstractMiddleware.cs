@@ -52,7 +52,7 @@ namespace GRYLibrary.Core.APIServer.MidT
                 ControllerActionDescriptor controllerActionDescriptor = metaData?.GetMetadata<ControllerActionDescriptor>();
                 System.Reflection.MethodInfo methodInfo = controllerActionDescriptor?.MethodInfo;
                 attribute = methodInfo?.GetCustomAttributes(false).OfType<T>().FirstOrDefault();
-                return attribute!=null;
+                return attribute != null;
             }
             catch
             {

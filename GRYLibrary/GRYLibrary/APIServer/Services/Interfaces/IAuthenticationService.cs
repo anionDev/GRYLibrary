@@ -41,14 +41,13 @@ namespace GRYLibrary.Core.APIServer.Services.Interfaces
         User GetUserByAccessToken(string accessToken);
         bool UserExistsByName(string userNameAdmin);
         void UpdateRole(Role role);
-        ISet<Role> GetRoles(ClaimsPrincipal user);
     }
     /// <summary>
     /// Represents a authentication-service with a custom user-type.
     /// </summary>
     /// <typeparam name="UserType"></typeparam>
-        public interface IAuthenticationService<UserType>: IAuthenticationService
-        where UserType : User
+    public interface IAuthenticationService<UserType> : IAuthenticationService
+    where UserType : User
     {
         public ISet<UserType> GetAllUserTyped();
         public UserType GetUserTyped(string userId);
