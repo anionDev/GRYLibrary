@@ -2,9 +2,9 @@
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <Authors>Marius Göcke</Authors>
-        <Version>0.12.109</Version>
-        <AssemblyVersion>0.12.109</AssemblyVersion>
-        <FileVersion>0.12.109</FileVersion>
+        <Version>0.12.110</Version>
+        <AssemblyVersion>0.12.110</AssemblyVersion>
+        <FileVersion>0.12.110</FileVersion>
         <SelfContained>false</SelfContained>
         <IsPackable>false</IsPackable>
         <PreserveCompilationContext>false</PreserveCompilationContext>
@@ -63,6 +63,7 @@
         <PackageReference Include="ExtendedXmlSerializer" Version="3.7.18" />
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
         <PackageReference Include="Keycloak.Net.Core" Version="1.0.29" />
+        <PackageReference Include="Microsoft.AspNetCore.HttpOverrides" Version="2.2.0" />
         <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
         <PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="8.0.0" />
@@ -76,7 +77,7 @@
         <PackageReference Include="NSwag.AspNetCore" Version="14.1.0" />
         <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
         <PackageReference Include="System.Reactive" Version="6.0.1" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.8.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.8.1" />
         <PackageReference Include="TagLibSharp" Version="2.3.0" />
     </ItemGroup>
 </Project>
