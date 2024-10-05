@@ -62,7 +62,7 @@
         <PackageReference Include="DNTCaptcha.Core" Version="5.2.7" />
         <PackageReference Include="ExtendedXmlSerializer" Version="3.7.18" />
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
-        <PackageReference Include="Keycloak.Net.Core" Version="1.0.29" />
+        <PackageReference Include="Keycloak.Net.Core" Version="1.0.30" />
         <PackageReference Include="Microsoft.AspNetCore.HttpOverrides" Version="2.2.0" />
         <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
