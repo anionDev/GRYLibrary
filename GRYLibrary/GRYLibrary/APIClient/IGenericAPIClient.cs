@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace GRYLibrary.Core.GenericAPIClient
+namespace GRYLibrary.Core.APIClient
 {
     public interface IGenericAPIClient : IDisposable
     {

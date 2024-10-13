@@ -1,5 +1,4 @@
-﻿using GRYLibrary.Core.AOA;
-using GRYLibrary.Core.AOA.SerializeHelper;
+﻿using GRYLibrary.Core.AOA.SerializeHelper;
 using GRYLibrary.Core.Misc;
 using System;
 using System.Collections;
@@ -11,7 +10,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace GRYLibrary.Core.AdvancedXMLSerialysis
+namespace GRYLibrary.Core.AOA
 {
     /// <summary>
     /// Represents a generic xml-serializer for nearly arbitrary types.
@@ -28,8 +27,8 @@ namespace GRYLibrary.Core.AdvancedXMLSerialysis
             this._T = type;
             this.SerializationConfiguration = new SerializationConfiguration
             {
-                PropertySelector = (PropertyInfo propertyInfo) => propertyInfo.CanWrite && propertyInfo.CanRead && propertyInfo.GetMethod.IsPublic,
-                FieldSelector = (FieldInfo fieldInfo) => false,
+                PropertySelector = (propertyInfo) => propertyInfo.CanWrite && propertyInfo.CanRead && propertyInfo.GetMethod.IsPublic,
+                FieldSelector = (fieldInfo) => false,
                 Encoding = new UTF8Encoding(false)
             };
         }
@@ -134,7 +133,7 @@ namespace GRYLibrary.Core.AdvancedXMLSerialysis
             if (!thisIsNull && !deserializedObjectIsNull)
             {
                 Type type = thisObject.GetType();
-                if (EnumerableTools.TypeIsEnumerable(type))
+                if (type.TypeIsEnumerable())
                 {
                     foreach (object item in deserializedObject as IEnumerable)
                     {

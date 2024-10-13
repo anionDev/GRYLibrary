@@ -1,13 +1,13 @@
 ﻿using GRYLibrary.Core.APIServer.CommonAuthenticationTypes;
 using GRYLibrary.Core.APIServer.CommonDBTypes;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
-using GRYLibrary.Core.APIServer.Services.KeyCloak;
+using GRYLibrary.Core.APIServer.Services.KC;
 using GRYLibrary.Core.Crypto;
 using System.Collections.Generic;
 using System.Security.Claims;
 using GUtilities = GRYLibrary.Core.Misc.Utilities;
 
-namespace GRYLibrary.Core.APIServer.Services.KCZAuth
+namespace GRYLibrary.Core.APIServer.Services.KCAuth
 {
     public class KeyCloakAuthenticationService : IKeyCloakAuthenticationService
     {

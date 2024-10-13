@@ -1,6 +1,6 @@
-﻿using GRYLibrary.Core.APIServer.MidT.Auth;
+﻿using GRYLibrary.Core.APIServer.MidT.Aut;
 
-namespace GRYLibrary.Core.APIServer.Mid.NewFolder
+namespace GRYLibrary.Core.APIServer.Mid.M01APIK
 {
     public interface IAPIKeyValidatorConfiguration : IAuthorizationConfiguration
     {

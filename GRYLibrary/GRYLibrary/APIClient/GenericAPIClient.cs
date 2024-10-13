@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace GRYLibrary.Core.GenericAPIClient
+namespace GRYLibrary.Core.APIClient
 {
     public class GenericAPIClient : IGenericAPIClient
     {

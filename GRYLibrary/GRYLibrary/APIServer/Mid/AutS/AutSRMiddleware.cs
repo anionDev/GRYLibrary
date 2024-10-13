@@ -1,4 +1,5 @@
 ﻿using GRYLibrary.Core.APIServer.CommonDBTypes;
+using GRYLibrary.Core.APIServer.MidT.Aut;
 using GRYLibrary.Core.APIServer.MidT.Auth;
 using GRYLibrary.Core.APIServer.Services.Auth.R;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 using System.Linq;
 using GUtilities = GRYLibrary.Core.Misc.Utilities;
 
-namespace GRYLibrary.Core.APIServer.Mid.Auth
+namespace GRYLibrary.Core.APIServer.Mid.AutS
 {
     /// <summary>
     /// Represents an <see cref="AuthorizationMiddleware"/> which implements role-based authorizaton-checks using a <see cref="IRoleBasedAuthorizationService"/>.

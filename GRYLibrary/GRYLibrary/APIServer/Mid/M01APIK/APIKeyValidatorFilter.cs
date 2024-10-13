@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GUtilities = GRYLibrary.Core.Misc.Utilities;
 
-namespace GRYLibrary.Core.APIServer.Mid.NewFolder
+namespace GRYLibrary.Core.APIServer.Mid.M01APIK
 {
     public class APIKeyValidatorFilter : IOperationFilter
     {

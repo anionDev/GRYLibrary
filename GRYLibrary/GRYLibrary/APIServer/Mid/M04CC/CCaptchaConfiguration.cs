@@ -1,7 +1,7 @@
 ﻿using GRYLibrary.Core.APIServer.MidT.Captcha;
 using System;
 
-namespace GRYLibrary.Core.APIServer.Mid.C
+namespace GRYLibrary.Core.APIServer.Mid.M04CC
 {
     public class CCaptchaConfiguration : CaptchaConfiguration, ICCaptchaConfiguration
     {

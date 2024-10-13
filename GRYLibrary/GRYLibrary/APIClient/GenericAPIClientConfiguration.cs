@@ -1,7 +1,6 @@
-﻿
-using System.Net.Http;
+﻿using System.Net.Http;
 
-namespace GRYLibrary.Core.GenericAPIClient
+namespace GRYLibrary.Core.APIClient
 {
     public class GenericAPIClientConfiguration : IGenericAPIClientConfiguration
     {

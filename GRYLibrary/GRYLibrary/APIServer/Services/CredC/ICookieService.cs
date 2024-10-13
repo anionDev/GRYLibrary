@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using System;
 
-namespace GRYLibrary.Core.APIServer.Services.Cred
+namespace GRYLibrary.Core.APIServer.Services.CredC
 {
     public interface ICookieService : ICredentialsProvider
     {

@@ -9,7 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace GRYLibrary.Core.APIServer.Mid.C
+namespace GRYLibrary.Core.APIServer.Mid.M04CC
 {
     public abstract class CCaptchaMiddleware : CaptchaMiddleware
     {

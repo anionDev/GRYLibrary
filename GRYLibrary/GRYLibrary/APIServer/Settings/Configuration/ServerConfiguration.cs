@@ -7,12 +7,13 @@
         public void SetDomainAndPublichUrlToDefault(string domain)
         {
             this.Domain = domain;
-            this.PublicUrl = $"https://{domain}:443";
+            this.PublicUrl = $"{this.Protocol.GetProtocol()}://{domain}:{this.Protocol.Port}";
         }
         public Protocol Protocol { get; set; }
         public string DevelopmentCertificatePasswordHex { get; set; }
         public string DevelopmentCertificatePFXHex { get; set; }
         public bool HostAPISpecificationForInNonDevelopmentEnvironment { get; set; } = false;
+        public bool TrustForwardedHeader { get; set; } = false;
         public const string APIRoutePrefix = "/API";
         public const string APISpecificationDocumentName = "APISpecification";
         public const string ResourcesSubPath = $"Other/Resources";

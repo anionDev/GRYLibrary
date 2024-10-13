@@ -36,9 +36,9 @@ using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using GRYLibrary.Core.APIServer.MidT.RLog;
 using GRYLibrary.Core.APIServer.MaintenanceRoutes;
 using GRYLibrary.Core.Logging.GRYLogger;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using Microsoft.AspNetCore.HttpOverrides;
-using ExtendedXmlSerializer.ExtensionModel;
+using GRYLibrary.Core.APIServer.MidT.Aut;
+using GRYLibrary.Core.APIServer.Mid.General;
 
 namespace GRYLibrary.Core.APIServer
 {
@@ -227,6 +227,8 @@ namespace GRYLibrary.Core.APIServer
             List<Type> businessMiddlewares2 = new List<Type>();
 
             IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration = apiServerConfiguration.FunctionalInformation.PersistedAPIServerConfiguration;
+
+            specialMiddlewares1.Add(typeof(GeneralMiddleware<PersistedApplicationSpecificConfiguration>));
             #region General Threat-Protection
             if (this._Configuration.InitializationInformation.ApplicationConstants.Environment is not Development)
             {
@@ -327,16 +329,9 @@ namespace GRYLibrary.Core.APIServer
 
             builder.Services.AddLogging(c => c.ClearProviders());
 
-            builder.Services.Configure<ForwardedHeadersOptions>(options =>
-            {
-                options.ForwardedHeaders =
-                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-            });
-
             WebApplication app = builder.Build();
             app.UseRouting();
-            app.UseForwardedHeaders();
-         
+
             #region Add middlewares
             foreach (Type middleware in specialMiddlewares1)
             {

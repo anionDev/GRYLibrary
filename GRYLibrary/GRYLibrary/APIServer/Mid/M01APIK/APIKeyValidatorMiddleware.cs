@@ -1,7 +1,7 @@
-﻿using GRYLibrary.Core.APIServer.MidT.Auth;
+﻿using GRYLibrary.Core.APIServer.MidT.Aut;
 using Microsoft.AspNetCore.Http;
 
-namespace GRYLibrary.Core.APIServer.Mid.NewFolder
+namespace GRYLibrary.Core.APIServer.Mid.M01APIK
 {
     /// <summary>
     /// Represents an <see cref="AuthorizationMiddleware"/> which implements authorizaton-checks using API-keys.

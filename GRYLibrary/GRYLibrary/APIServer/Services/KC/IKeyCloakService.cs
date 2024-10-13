@@ -1,4 +1,4 @@
-﻿namespace GRYLibrary.Core.APIServer.Services.KeyCloak
+﻿namespace GRYLibrary.Core.APIServer.Services.KC
 {
     /// <summary>
     /// Represents a service which is able to communicate with a keycloak-server.

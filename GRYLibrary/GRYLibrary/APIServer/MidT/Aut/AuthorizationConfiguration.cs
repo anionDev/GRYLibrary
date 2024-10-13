@@ -1,7 +1,7 @@
 ﻿using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Generic;
 
-namespace GRYLibrary.Core.APIServer.MidT.Auth
+namespace GRYLibrary.Core.APIServer.MidT.Aut
 {
     public class AuthorizationConfiguration : IAuthorizationConfiguration
     {

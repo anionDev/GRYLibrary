@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace GRYLibrary.Core.APIServer.Mid.NewFolder
+namespace GRYLibrary.Core.APIServer.Mid.M01APIK
 {
     public abstract class APIKeyValidatorConfiguration : IAPIKeyValidatorConfiguration
     {
