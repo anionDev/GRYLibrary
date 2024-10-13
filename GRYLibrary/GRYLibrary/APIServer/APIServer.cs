@@ -37,7 +37,6 @@ using GRYLibrary.Core.APIServer.MidT.RLog;
 using GRYLibrary.Core.APIServer.MaintenanceRoutes;
 using GRYLibrary.Core.Logging.GRYLogger;
 using Microsoft.AspNetCore.HttpOverrides;
-using GRYLibrary.Core.APIServer.MidT.General;
 using GRYLibrary.Core.APIServer.MidT.Aut;
 using GRYLibrary.Core.APIServer.Mid.General;
 

@@ -13,7 +13,7 @@ namespace GRYLibrary.Core.APIServer.Mid.General
         private readonly IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> _PersistedAPIServerConfiguration;
         public GeneralMiddleware(RequestDelegate next, IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedAPIServerConfiguration) : base(next)
         {
-            _PersistedAPIServerConfiguration = persistedAPIServerConfiguration;
+            this._PersistedAPIServerConfiguration = persistedAPIServerConfiguration;
         }
 
         public override Task Invoke(HttpContext context)
@@ -25,7 +25,7 @@ namespace GRYLibrary.Core.APIServer.Mid.General
         private IPAddress GetIPAddress(HttpContext context)
         {
             IPAddress result = context.Connection.RemoteIpAddress;
-            if (_PersistedAPIServerConfiguration.ServerConfiguration.TrustForwardedHeader)
+            if (this._PersistedAPIServerConfiguration.ServerConfiguration.TrustForwardedHeader)
             {
                 throw new NotImplementedException();//TODO process forwardheader 
             }
