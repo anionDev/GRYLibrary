@@ -1,4 +1,4 @@
-﻿namespace GRYLibrary.Core.APIServer.Services.KCZAuth
+﻿namespace GRYLibrary.Core.APIServer.Services.KCAuth
 {
     public interface IKeyCloakAuthenticationConfiguration
     {

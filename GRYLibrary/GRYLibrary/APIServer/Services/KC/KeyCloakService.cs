@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Http;
 using GRYLibrary.Core.APIServer.Utilities;
 using System.Security.Claims;
 
-namespace GRYLibrary.Core.APIServer.Services.KeyCloak
+namespace GRYLibrary.Core.APIServer.Services.KC
 {
     public abstract class KeyCloakService : ExternalService, IKeyCloakService
     {

@@ -1,4 +1,4 @@
-﻿namespace GRYLibrary.Core.APIServer.Services.KeyCloak
+﻿namespace GRYLibrary.Core.APIServer.Services.KC
 {
     public class KeyCloakServiceSettings : IKeyCloakServiceSettings
     {

@@ -1,6 +1,6 @@
 ﻿using System.Net.Http;
 
-namespace GRYLibrary.Core.GenericAPIClient
+namespace GRYLibrary.Core.APIClient
 {
     public interface IGenericAPIClientConfiguration
     {

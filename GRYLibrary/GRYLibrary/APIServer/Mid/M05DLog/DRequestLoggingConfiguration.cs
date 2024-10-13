@@ -3,7 +3,7 @@ using GRYLibrary.Core.Misc.FilePath;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Generic;
 
-namespace GRYLibrary.Core.APIServer.Mid.DLog
+namespace GRYLibrary.Core.APIServer.Mid.M05DLog
 {
     public class DRequestLoggingConfiguration : IDRequestLoggingConfiguration
     {

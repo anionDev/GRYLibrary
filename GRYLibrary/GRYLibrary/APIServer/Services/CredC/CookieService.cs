@@ -1,8 +1,7 @@
-﻿using GRYLibrary.Core.APIServer.Services.CredC;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System;
 
-namespace GRYLibrary.Core.APIServer.Services.Cred
+namespace GRYLibrary.Core.APIServer.Services.CredC
 {
     public class CookieService : ICookieService
     {

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace GRYLibrary.Core.APIServer.MidT.Auth
+namespace GRYLibrary.Core.APIServer.MidT.Aut
 {
     public abstract class AuthorizationMiddleware : AbstractMiddleware
     {

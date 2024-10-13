@@ -15,7 +15,7 @@ using GRYLibrary.Core.APIServer.Services.Interfaces;
 using GRYLibrary.Core.APIServer.MidT.Auth;
 using System.Security.Claims;
 
-namespace GRYLibrary.Core.APIServer.Mid.DLog
+namespace GRYLibrary.Core.APIServer.Mid.M05DLog
 {
     /// <summary>
     /// Represents a middleware which logs the requests.
@@ -44,7 +44,7 @@ namespace GRYLibrary.Core.APIServer.Mid.DLog
             (string info, string content, byte[] plainContent) responseBody = BytesToString(responseBodyBytes, this._Encoding);
             string requestRoute = context.Request.Path;
             ushort responseHTTPStatusCode = (ushort)context.Response.StatusCode;
-            IPAddress clientIP = context.Connection.RemoteIpAddress;
+            IPAddress clientIP = (IPAddress)context.Items["RemoteIPAddress"];
             Request request = new Request(moment, clientIP, context.Request.Method, requestRoute, context.Request.Query, context.Request.Headers, requestBody, null/*TODO*/, responseHTTPStatusCode, context.Response.Headers, responseBody);
             TimeSpan? duration = context.Items.ContainsKey("Duration") ? (TimeSpan)context.Items["Duration"] : default;
             bool isAuthenticated;

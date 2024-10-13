@@ -2,7 +2,7 @@
 using GRYLibrary.Core.Logging.GRYLogger;
 using System.Collections.Generic;
 
-namespace GRYLibrary.Core.APIServer.Mid.DLog
+namespace GRYLibrary.Core.APIServer.Mid.M05DLog
 {
     public interface IDRequestLoggingConfiguration : IRequestLoggingConfiguration
     {

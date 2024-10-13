@@ -1,5 +1,4 @@
 ﻿using GRYLibrary.Core.AOA;
-using GRYLibrary.Core.AdvancedXMLSerialysis;
 using GRYLibrary.Tests.TestData.TestTypes.ComplexDataStructure;
 using GRYLibrary.Tests.TestData.TestTypes.ComplexDataStructure2;
 using GRYLibrary.Tests.TestData.TestTypes.CyclicDataStructure;
