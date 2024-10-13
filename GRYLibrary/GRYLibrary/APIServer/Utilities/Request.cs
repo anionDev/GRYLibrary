@@ -10,7 +10,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
     {
         public DateTime Timestamp { get; set; }
         public bool LogClientIP { get; set; }
-        public IPAddress ClientIPAddress { get; set; }
+        public IPAddress? ClientIPAddress { get; set; }
         public string Method { get; set; }
         public string Route { get; set; }
         public IHeaderDictionary RequestHeader { get; set; }
@@ -23,7 +23,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
         public Request()
         {
         }
-        public Request(DateTime timestamp, IPAddress clientIPAddress, string method, string route, IQueryCollection query, IHeaderDictionary requestHeader, (string info, string content, byte[] plainContent) requestBody, IDictionary<object, object> informationFromController, ushort responseStatusCode, IHeaderDictionary responseHeader, (string info, string content, byte[] plainContent) responseBody)
+        public Request(DateTime timestamp, IPAddress? clientIPAddress, string method, string route, IQueryCollection query, IHeaderDictionary requestHeader, (string info, string content, byte[] plainContent) requestBody, IDictionary<object, object> informationFromController, ushort responseStatusCode, IHeaderDictionary responseHeader, (string info, string content, byte[] plainContent) responseBody)
         {
             this.Timestamp = timestamp;
             this.ClientIPAddress = clientIPAddress;
