@@ -44,7 +44,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
             (string info, string content, byte[] plainContent) responseBody = BytesToString(responseBodyBytes, this._Encoding);
             string requestRoute = context.Request.Path;
             ushort responseHTTPStatusCode = (ushort)context.Response.StatusCode;
-            IPAddress clientIP = (IPAddress)context.Items["RemoteIPAddress"];
+            IPAddress? clientIP = (IPAddress?)context.Items["ClientIPAddress"];
             Request request = new Request(moment, clientIP, context.Request.Method, requestRoute, context.Request.Query, context.Request.Headers, requestBody, null/*TODO*/, responseHTTPStatusCode, context.Response.Headers, responseBody);
             TimeSpan? duration = context.Items.ContainsKey("Duration") ? (TimeSpan)context.Items["Duration"] : default;
             bool isAuthenticated;

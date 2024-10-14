@@ -329,15 +329,8 @@ namespace GRYLibrary.Core.APIServer
 
             builder.Services.AddLogging(c => c.ClearProviders());
 
-            builder.Services.Configure<ForwardedHeadersOptions>(options =>
-            {
-                options.ForwardedHeaders =
-                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-            });
-
             WebApplication app = builder.Build();
             app.UseRouting();
-            app.UseForwardedHeaders();
 
             #region Add middlewares
             foreach (Type middleware in specialMiddlewares1)
