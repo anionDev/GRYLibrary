@@ -2,9 +2,9 @@
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <Authors>Marius Göcke</Authors>
-        <Version>0.12.111</Version>
-        <AssemblyVersion>0.12.111</AssemblyVersion>
-        <FileVersion>0.12.111</FileVersion>
+        <Version>0.12.112</Version>
+        <AssemblyVersion>0.12.112</AssemblyVersion>
+        <FileVersion>0.12.112</FileVersion>
         <SelfContained>false</SelfContained>
         <IsPackable>false</IsPackable>
         <PreserveCompilationContext>false</PreserveCompilationContext>
@@ -77,7 +77,7 @@
         <PackageReference Include="NSwag.AspNetCore" Version="14.1.0" />
         <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
         <PackageReference Include="System.Reactive" Version="6.0.1" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.8.1" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
         <PackageReference Include="TagLibSharp" Version="2.3.0" />
     </ItemGroup>
 </Project>
