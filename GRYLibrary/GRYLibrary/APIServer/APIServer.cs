@@ -167,7 +167,7 @@ namespace GRYLibrary.Core.APIServer
             {
                 this.CreateRequiredFolder();
                 logger = this.GetApplicationLogger(persistedAPIServerConfiguration);
-                logger.Log($"Start {this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName}", LogLevel.Information);
+                logger.Log($"Start {this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName} (v{this._Configuration.InitializationInformation.ApplicationConstants.ApplicationVersion})", LogLevel.Information);
                 logger.Log($"Environment: {this._Configuration.InitializationInformation.ApplicationConstants.Environment}", LogLevel.Debug);
                 logger.Log($"Executionmode: {this._Configuration.InitializationInformation.ApplicationConstants.ExecutionMode}", LogLevel.Debug);
                 this.EnsureCertificateIsAvailableIfRequired(persistedAPIServerConfiguration);

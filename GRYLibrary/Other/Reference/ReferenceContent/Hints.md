@@ -11,12 +11,13 @@ The public key token of all official GRYLibrary-releases is `fa37b6e9de549c68`. 
 The following tools from the [tools-list](https://github.com/anionDev/ScriptCollection/blob/main/ScriptCollection/Other/Reference/ReferenceContent/Articles/RequirementsForCommonProjectStructure.md) are required to build this code-unit:
 
 - `docfx`
+- `dotnet`
 - `dotnet-coverage`
 - `git`
 - `gitversion`
 - `python`
 - `pygmentize`
-- `eportgenerator`
+- `reportgenerator`
 - `scriptcollection`
 
 ## IDE
