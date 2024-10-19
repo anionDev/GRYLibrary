@@ -15,7 +15,7 @@ namespace GRYLibrary.Core.APIServer.Mid.General
         private readonly IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> _PersistedAPIServerConfiguration;
         public GeneralMiddleware(RequestDelegate next, IGRYLog log, IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedAPIServerConfiguration) : base(next)
         {
-            _Log = log;
+            this._Log = log;
             this._PersistedAPIServerConfiguration = persistedAPIServerConfiguration;
         }
 
@@ -32,7 +32,7 @@ namespace GRYLibrary.Core.APIServer.Mid.General
             {
                 if (context.Request.Headers.TryGetValue("X-Forwarded-For", out Microsoft.Extensions.Primitives.StringValues value) && (value != default(string)))
                 {
-                    _Log.Log($"Retrieved IP by X-Forwarded-For-header which changed the result-ip-address from {result} to '{value}'.",Microsoft.Extensions.Logging.LogLevel.Debug);
+                    this._Log.Log($"Retrieved IP by X-Forwarded-For-header which changed the result-ip-address from {result} to '{value}'.",Microsoft.Extensions.Logging.LogLevel.Debug);
                     result = IPAddress.Parse((string)value!);
                 }
             }

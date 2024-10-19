@@ -3,12 +3,14 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
 {
     public sealed class Console : GRYLogTarget
     {
         public bool WriteWarningsToStdErr { get; set; } = true;
+        private static readonly object _Lock = new object();
         public Console() { }
         protected override void ExecuteImplementation(LogItem logItem, GRYLog logObject)
         {
@@ -22,17 +24,23 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
                 output = System.Console.Out;
             }
             logItem.Format(logObject.Configuration, out string formattedMessage, out int cb, out int ce, out ConsoleColor _, this.Format, logItem.MessageId);
-            //TODO refactor to do this in one write-statement by using the codes described in https://stackoverflow.com/a/74807043/3905529
-
             string part1 = formattedMessage.AsSpan(0, cb).ToString();
-            output.Write(part1);
-
             string part2 = formattedMessage[cb..ce];
-            this.WriteWithColorToConsole(part2, output, logItem.LogLevel, logObject);
-
             string part3 = formattedMessage[ce..] + Environment.NewLine;
-            output.Write(part3);
-
+            lock (_Lock)
+            {
+                //TODO refactor to do this in one write-statement by using the codes described in https://stackoverflow.com/a/74807043/3905529
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    output.Write(part1);
+                    this.WriteWithColorToConsole(part2, output, logItem.LogLevel, logObject);
+                    output.Write(part3);
+                }
+                else
+                {
+                    output.Write(part1 + part2 + part3);
+                }
+            }
             output.Flush();
         }
         public override HashSet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization()

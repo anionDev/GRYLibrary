@@ -127,6 +127,7 @@ namespace GRYLibrary.Core.Misc
         }
 
         #endregion
+     
         #region ToEnumerable
         public static IEnumerable ObjectToEnumerable(this object @object)
         {
@@ -313,6 +314,7 @@ namespace GRYLibrary.Core.Misc
         }
 
         #endregion
+    
         #region EqualsEnumerable
         public static bool EnumerableEquals(this IEnumerable enumerable1, IEnumerable enumerable2)
         {

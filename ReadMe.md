@@ -12,7 +12,7 @@ You should say what you want to do, and not how to do it. This paradigm results 
 
 ## Getting Started
 
-### Installation
+### Usage
 
 [![NuGet](https://img.shields.io/nuget/v/GRYLibrary.svg?color=green)](https://www.nuget.org/packages/GRYLibrary) ![Nuget](https://img.shields.io/nuget/dt/GRYLibrary.svg)
 
@@ -22,36 +22,35 @@ Install the GRYLibrary as NuGet-package using the Package Manager Console:
 Install-Package GRYLibrary
 ```
 
-### Reference
+## Reference
 
 The GRYLibrary-reference can be found [here](https://aniondev.github.io/GRYLibraryReference).
 
-## Hints
+## Build
 
-### Platform
+This product requires to use `scbuildcodeunits` implemented/provided by [ScriptCollection](https://github.com/anionDev/ScriptCollection) to build the project.
 
-The latest NuGet-package is designed for .NET 6.0.
+## Changelog
 
-### Signing
+See the [Changelog-folder](./Other/Resources/Changelog).
 
-The GRYLibrary-NuGet-packages are always signed. You can check the public key token by using [sn](https://docs.microsoft.com/en/dotnet/framework/tools/sn-exe-strong-name-tool): `sn -T GRYLibrary.dll`
+## Contribue
 
-The public key token of all official GRYLibrary-releases is `fa37b6e9de549c68`. For security-reasons you should only use GRYLibrary.dll-files which you have compiled by yourself from the source code in this repository or which have this public key token.
+Contributions are always welcome.
 
-### Contribute
+This product has the contribution-requirements defines by [DefaultOpenSourceContributionProcess](https://projects.aniondev.de/PublicProjects/Common/ProjectTemplates/-/blob/main/Conventions/Contributing/DefaultOpenSourceContributionProcess/DefaultOpenSourceContributionProcess.md).
 
-#### General
+## Repository-structure
 
-Feel free to contribute to this product by creating [issues](https://github.com/anionDev/GRYLibrary/issues) for feature-requests, bug-reports, etc.
-Since the GRYLibrary is not an open-source-project in the [conventional sense of free software](https://www.gnu.org/philosophy/free-sw.en.html) contributing by creating a pullrequest is a little bit tricky (concerning license-issues). If you want to contribute to this project then please contact the owner of the GRYLibrary.
+This product uses the [CommonProjectStructure](https://projects.aniondev.de/PublicProjects/Common/ProjectTemplates/-/blob/main/Conventions/RepositoryStructure/CommonProjectStructure/CommonProjectStructure.md) as repository-structure.
 
-#### Branching-system
+## Branching-system
 
-This repository applies the [GitFlowSimplified](https://projects.aniondev.de/CommonUtilities/Templates/ProjectTemplates/-/blob/main/Templates/Conventions/BranchingSystem/GitFlowSimplified.md)-branching-system.
+This product follows the [GitFlowSimplified](https://projects.aniondev.de/PublicProjects/Common/ProjectTemplates/-/blob/main/Conventions/BranchingSystem/GitFlowSimplified/GitFlowSimplified.md)-branching-system.
 
-#### Developer-hints
+## Versioning
 
-To compile GRYLibrary and running testcases `echo` and the copy-program `cp` must be available as commandline command on your system.
+This product follows the [SemVerPractise](https://projects.aniondev.de/PublicProjects/Common/ProjectTemplates/-/blob/main/Conventions/Versioning/SemVerPractise/SemVerPractise.md)-versioning-system.
 
 ## License
 
