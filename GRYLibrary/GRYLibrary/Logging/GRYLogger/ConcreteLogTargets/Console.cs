@@ -9,13 +9,13 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
     public sealed class Console : GRYLogTarget
     {
         public bool WriteWarningsToStdErr { get; set; } = true;
-        public bool UseColors { get; set; } = true;
+        private bool _UseColors = true;
         private static readonly object _Lock = new object();
         public Console() { }
         protected override void ExecuteImplementation(LogItem logItem, GRYLog logObject)
         {
             TextWriter output;
-            if (logItem.IsErrorEntry() || this.WriteWarningsToStdErr && logItem.LogLevel == LogLevel.Warning)
+            if (logItem.IsErrorEntry() || (this.WriteWarningsToStdErr && logItem.LogLevel == LogLevel.Warning))
             {
                 output = System.Console.Error;
             }
@@ -30,7 +30,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
             lock (_Lock)
             {
                 //TODO refactor to do this in one write-statement by using the codes described in https://stackoverflow.com/a/74807043/3905529
-                if (this.UseColors)
+                if (this._UseColors)
                 {
                     output.Write(part1);
                     this.WriteWithColorToConsole(part2, output, logItem.LogLevel, logObject);
@@ -77,6 +77,14 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
         public override int GetHashCode()
         {
             return base.GetHashCode();
+        }
+        public void EnableColors()
+        {
+            _UseColors = true;
+        }
+        public void DisableColors()
+        {
+            _UseColors = false;
         }
     }
 }
