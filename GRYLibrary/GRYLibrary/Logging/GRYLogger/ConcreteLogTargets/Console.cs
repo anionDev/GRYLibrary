@@ -3,13 +3,13 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
 
 namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
 {
     public sealed class Console : GRYLogTarget
     {
         public bool WriteWarningsToStdErr { get; set; } = true;
+        public bool UseColors { get; set; } = true;
         private static readonly object _Lock = new object();
         public Console() { }
         protected override void ExecuteImplementation(LogItem logItem, GRYLog logObject)
@@ -30,7 +30,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
             lock (_Lock)
             {
                 //TODO refactor to do this in one write-statement by using the codes described in https://stackoverflow.com/a/74807043/3905529
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                if (this.UseColors)
                 {
                     output.Write(part1);
                     this.WriteWithColorToConsole(part2, output, logItem.LogLevel, logObject);
