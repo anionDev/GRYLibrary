@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
     <metadata minClientVersion="2.12">
         <id>GRYLibrary</id>
-        <version>0.12.113</version>
+        <version>0.12.114</version>
         <title>GRYLibrary</title>
         <authors>Marius Göcke</authors>
         <owners>Marius Göcke</owners>
@@ -16,14 +16,14 @@
         </dependencies>
         <projectUrl>https://github.com/anionDev/GRYLibrary</projectUrl>
         <repository type="git" url="https://github.com/anionDev/GRYLibrary.git" branch="main" commit="$commitid$" />
-        <icon>images\GRYLibraryIcon.png</icon>
+        <icon>Images\GRYLibraryIcon.png</icon>
         <readme>Documentation\ReadMe.md</readme>
     </metadata>
     <files>
         <file src="../Artifacts/BuildResult_DotNet_win-x64/GRYLibrary.dll" target="lib/net8" />
         <file src="../Artifacts/BuildResult_DotNet_win-x64/GRYLibrary.License.txt" target="lib/net8" />
         <file src="../Artifacts/BuildResult_DotNet_win-x64/GRYLibrary.deps.json" target="lib/net8" />
-        <file src="../Resources/Logo/GRYLibraryIcon.png" target="images\" />
-        <file src="..\..\..\ReadMe.md" target="Documentation\" />
+        <file src="../Resources/Logo/GRYLibraryIcon.png" target="Images\" />
+        <file src="..\..\ReadMe.md" target="Documentation\" />
     </files>
 </package>
