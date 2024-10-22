@@ -9,7 +9,7 @@
             this.Domain = domain;
             this.PublicUrl = $"{this.Protocol.GetProtocol()}://{domain}:{this.Protocol.Port}";
         }
-        public Protocol Protocol { get; set; }
+        public Protocol Protocol { get; set; } = new HTTPS();
         public string DevelopmentCertificatePasswordHex { get; set; }
         public string DevelopmentCertificatePFXHex { get; set; }
         public bool HostAPISpecificationForInNonDevelopmentEnvironment { get; set; } = false;
