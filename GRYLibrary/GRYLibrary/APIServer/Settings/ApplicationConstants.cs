@@ -46,6 +46,7 @@ namespace GRYLibrary.Core.APIServer.Settings
         public Type RequestCounterMiddleware { get; set; }
         public Type LoggingMiddleware { get; set; }
         public Type WebApplicationFirewallMiddleware { get; set; }
+        public Type MaintenanceSiteMiddleware { get; set; }
         public IList<Type> CustomMiddlewares1 { get; set; }
         public IList<Type> CustomMiddlewares2 { get; set; }
         public ISet<Type> KnownTypes { get; set; }
@@ -120,6 +121,7 @@ namespace GRYLibrary.Core.APIServer.Settings
         public Type RequestCounterMiddleware { get; set; } = null;
         public Type LoggingMiddleware { get; set; } = null;
         public Type WebApplicationFirewallMiddleware { get; set; } = null;
+        public Type MaintenanceSiteMiddleware { get; set; } = null;
         public IList<Type> CustomMiddlewares1 { get; set; } = new List<Type>();
         public IList<Type> CustomMiddlewares2 { get; set; } = new List<Type>();
         public ISet<Type> KnownTypes { get; set; } = new HashSet<Type>();

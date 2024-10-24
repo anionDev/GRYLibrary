@@ -30,7 +30,7 @@ namespace GRYLibrary.Core.Misc.Strings
 
         private static string ReplaceCR(string value)
         {
-            value = value.Replace("\r",string.Empty);
+            value = value.Replace("\r", string.Empty);
             //TODO this function can probably be improved to handle lineendings for example like Notepad++.
             return value;
         }

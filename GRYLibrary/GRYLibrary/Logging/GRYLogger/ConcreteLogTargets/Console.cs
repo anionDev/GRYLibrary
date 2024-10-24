@@ -80,11 +80,11 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
         }
         public void EnableColors()
         {
-            _UseColors = true;
+            this._UseColors = true;
         }
         public void DisableColors()
         {
-            _UseColors = false;
+            this._UseColors = false;
         }
     }
 }

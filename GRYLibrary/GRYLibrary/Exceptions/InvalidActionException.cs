@@ -2,7 +2,7 @@
 
 namespace GRYLibrary.Core.Exceptions
 {
-    public class InvalidActionException:Exception
+    public class InvalidActionException : Exception
     {
     }
 }

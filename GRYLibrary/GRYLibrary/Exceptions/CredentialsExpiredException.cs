@@ -2,7 +2,7 @@
 
 namespace GRYLibrary.Core.Exceptions
 {
-    public class CredentialsExpiredException:Exception
+    public class CredentialsExpiredException : Exception
     {
     }
 }

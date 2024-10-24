@@ -19,10 +19,10 @@ namespace GRYLibrary.Core.APIServer.MidT.RLog
         /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
         {
-            DateTime begin= this._TimeService.GetCurrentTime();
+            DateTime begin = this._TimeService.GetCurrentTime();
             (byte[] requestBodyBytes, byte[] responseBodyBytes) = Tools.ExecuteNextMiddlewareAndGetRequestAndResponseBody(context, this._Next);
             DateTime end = this._TimeService.GetCurrentTime();
-            TimeSpan duration=end-begin;
+            TimeSpan duration = end - begin;
             context.Items["Duration"] = duration;
             //TODO provide resposne-status-code and duration also as metrics.
             this.Log(context, requestBodyBytes, responseBodyBytes);

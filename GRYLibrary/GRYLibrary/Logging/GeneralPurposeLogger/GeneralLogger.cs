@@ -36,7 +36,7 @@ namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
         public static IGRYLog CreateUsingConsole()
         {
             GRYLog logObject = GRYLog.Create();
-            logObject.Configuration.LogTargets = logObject.Configuration.LogTargets.Where(target=>target is GRYLogger.ConcreteLogTargets.Console).ToList();
+            logObject.Configuration.LogTargets = logObject.Configuration.LogTargets.Where(target => target is GRYLogger.ConcreteLogTargets.Console).ToList();
             return logObject;
         }
     }
