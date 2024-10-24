@@ -74,7 +74,7 @@ namespace GRYLibrary.Core.Misc.Strings
 
         public override string ToString()
         {
-            throw new NotSupportedException();
+            throw new NotSupportedException($"Not supported. Please use the {Value}-property to access the value of this {this.GetType().FullName}.");
         }
     }
 }

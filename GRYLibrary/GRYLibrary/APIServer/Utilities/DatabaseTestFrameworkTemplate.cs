@@ -19,9 +19,10 @@ namespace GRYLibrary.Core.APIServer.Utilities
         {
             this.IsConnected = false;
             this._TestDatabaseFolder = testDatabaseFolder;
-            this._DockerComposeArgumentPrefix = $"compose -p {dockerProjectName}";
+            this._DockerComposeArgumentPrefix = $"compose --project-name {dockerProjectName}";
             this.ConnectionString = connectionString;
-            using (ExternalProgramExecutor externalProgramExecutor = new ExternalProgramExecutor("docker", $"{this._DockerComposeArgumentPrefix} up -d", this._TestDatabaseFolder))
+            ExternalProgramExecutor externalProgramExecutor;
+            using ( externalProgramExecutor = new ExternalProgramExecutor("docker", $"{this._DockerComposeArgumentPrefix} up --force-recreate --detach", this._TestDatabaseFolder))
             {
                 externalProgramExecutor.Run();
             }

@@ -102,27 +102,27 @@ namespace GRYLibrary.Core.APIServer.Utilities
         public static void ConnectToDatabase(Action connectAction, IGeneralLogger logger, string adaptedConnectionString, TimeSpan timeout)
         {
             GUtilities.RunWithTimeout(() =>
-                                                                                                                                                                                                                                                                                                            {
-                                                                                                                                                                                                                                                                                                                bool connected = false;
-                                                                                                                                                                                                                                                                                                                while (!connected)
-                                                                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                                                                    try
-                                                                                                                                                                                                                                                                                                                    {
-                                                                                                                                                                                                                                                                                                                        logger.Log($"Try to connect to database using connection-string \"{adaptedConnectionString}\".", LogLevel.Debug);
-                                                                                                                                                                                                                                                                                                                        connectAction();
-                                                                                                                                                                                                                                                                                                                        logger.Log($"Connected successfully.", LogLevel.Information);
-                                                                                                                                                                                                                                                                                                                        connected = true;
-                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                    catch (Exception exception)
-                                                                                                                                                                                                                                                                                                                    {
-                                                                                                                                                                                                                                                                                                                        logger.LogException(exception, "Could not connect to database.", LogLevel.Warning);
-                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                    finally
-                                                                                                                                                                                                                                                                                                                    {
-                                                                                                                                                                                                                                                                                                                        Thread.Sleep(TimeSpan.FromSeconds(2));
-                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                }
-                                                                                                                                                                                                                                                                                                            }, timeout);
+            {
+                bool connected = false;
+                while (!connected)
+                {
+                    try
+                    {
+                        logger.Log($"Try to connect to database using connection-string \"{adaptedConnectionString}\".", LogLevel.Debug);
+                        connectAction();
+                        logger.Log($"Connected successfully.", LogLevel.Information);
+                        connected = true;
+                    }
+                    catch (Exception exception)
+                    {
+                        logger.LogException(exception, "Could not connect to database.", LogLevel.Warning);
+                    }
+                    finally
+                    {
+                        Thread.Sleep(TimeSpan.FromSeconds(2));
+                    }
+                }
+            }, timeout);
         }
 
         public static bool TryGetAuthentication(ICredentialsProvider credentialsProvider, IAuthenticationService authenticationService, HttpContext context, out ClaimsPrincipal principal)

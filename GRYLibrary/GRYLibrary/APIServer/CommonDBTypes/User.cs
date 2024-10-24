@@ -79,5 +79,10 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
             hash.Add(this.Id);
             return hash.ToHashCode();
         }
+
+        public override string? ToString()
+        {
+            return $"User \"{this.Name}\" (Id: {this.Id})";
+        }
     }
 }
