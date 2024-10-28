@@ -1,8 +1,6 @@
 ﻿using GRYLibrary.Core.APIServer.MidT.General;
 using GRYLibrary.Core.APIServer.Settings.Configuration;
-using GRYLibrary.Core.Logging.GRYLogger;
 using Microsoft.AspNetCore.Http;
-using System;
 using System.Net;
 using System.Threading.Tasks;
 
