@@ -31,6 +31,5 @@ namespace GRYLibrary.Core.APIServer.MidT.Exception
             }
             return Task.CompletedTask;
         }
-
     }
 }

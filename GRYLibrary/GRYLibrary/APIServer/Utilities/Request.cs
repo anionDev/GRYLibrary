@@ -6,6 +6,7 @@ using System.Net;
 
 namespace GRYLibrary.Core.APIServer.Utilities
 {
+    //Represents an entire request-handling-object, including its response.
     public class Request
     {
         public DateTime Timestamp { get; set; }

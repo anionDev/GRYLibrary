@@ -6,6 +6,7 @@ GRYLibrary uses dependencies which are released under their own license:
  - ExtendedXmlSerializer is licensed under the terms of the MIT-license. (See appendix 2.)
  - DNTCaptcha.Core is licensed under the terms of the Apache-license version 2.0. (See appendix 3.)
  - Keycloak.Net.Core is licensed under the terms of the MIT-license. (See appendix 2.)
+ - HtmlAgilityPack is licensed under the terms of the MIT-license. (See appendix 2.)
  - Microsoft.AspNetCore.Http is licensed under the terms of the Apache-license version 2.0. (See appendix 3.)
  - Microsoft.CSharp is licensed under the terms of the MIT-license. (See appendix 2.)
  - Microsoft.EntityFrameworkCore is licensed under the MIT-license. (See appendix 2.)

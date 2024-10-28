@@ -42,6 +42,7 @@ using System.Net.Http;
 using System.Data;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System.Net;
+using HtmlAgilityPack;
 
 namespace GRYLibrary.Core.Misc
 {
@@ -3354,6 +3355,23 @@ namespace GRYLibrary.Core.Misc
             string result = WebUtility.HtmlEncode(@value);
             result = result.Replace("\n", "<br />");
             return result;
+        }
+
+        internal static bool HasDangerousCharacters(string @value)
+        {
+            if (@value.Where(char.IsControl).Any())
+            {
+                return true;
+            }
+            //add more characters if desired
+            return false;
+        }
+
+        internal static bool IsValidHTML(string @value)
+        {
+            HtmlDocument htmlDoc = new HtmlDocument();
+            htmlDoc.LoadHtml(@value);
+            return htmlDoc.ParseErrors.Any();
         }
     }
 }

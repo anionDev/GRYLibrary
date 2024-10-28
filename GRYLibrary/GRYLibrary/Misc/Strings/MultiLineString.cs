@@ -1,6 +1,8 @@
-﻿using System;
+﻿using GRYLibrary.Core.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Net;
+using GUtilities = GRYLibrary.Core.Misc.Utilities;
 
 namespace GRYLibrary.Core.Misc.Strings
 {
@@ -23,14 +25,31 @@ namespace GRYLibrary.Core.Misc.Strings
                 }
                 else
                 {
+                    EnsureValueIsValid(value);
                     this._Value = value;
                 }
             }
         }
+        public static void EnsureValueIsValid(string value)
+        {
+            if (!ValueIsValid(value))
+            {
+                throw new InvalidFormatException($"The given value is invalid as {nameof(MultiLineString)}.");
+            }
+        }
+
+        public static bool ValueIsValid(string value)
+        {
+            if (GUtilities.HasDangerousCharacters(value))
+            {
+                return false;
+            }
+            return true;
+        }
 
         private static string ReplaceCR(string value)
         {
-            value = value.Replace("\r",string.Empty);
+            value = value.Replace("\r", string.Empty);
             //TODO this function can probably be improved to handle lineendings for example like Notepad++.
             return value;
         }
@@ -72,7 +91,7 @@ namespace GRYLibrary.Core.Misc.Strings
 
         public override string ToString()
         {
-            throw new NotSupportedException();
+            throw new NotSupportedException($"Not supported. Please use the {this.Value}-property to access the value of this {this.GetType().FullName}.");
         }
 
         public static MultiLineString FromHTML(string @value)

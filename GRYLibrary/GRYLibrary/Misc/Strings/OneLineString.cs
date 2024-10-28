@@ -1,6 +1,7 @@
 ﻿using GRYLibrary.Core.Exceptions;
 using System;
 using System.Collections.Generic;
+using GUtilities = GRYLibrary.Core.Misc.Utilities;
 
 namespace GRYLibrary.Core.Misc.Strings
 {
@@ -35,6 +36,10 @@ namespace GRYLibrary.Core.Misc.Strings
                 return false;
             }
             if (value.Contains('\r'))
+            {
+                return false;
+            }
+            if (GUtilities.HasDangerousCharacters(value))
             {
                 return false;
             }
@@ -74,7 +79,7 @@ namespace GRYLibrary.Core.Misc.Strings
 
         public override string ToString()
         {
-            throw new NotSupportedException();
+            throw new NotSupportedException($"Not supported. Please use the {this.Value}-property to access the value of this {this.GetType().FullName}.");
         }
     }
 }

@@ -37,6 +37,7 @@ using GRYLibrary.Core.APIServer.MidT.RLog;
 using GRYLibrary.Core.Logging.GRYLogger;
 using GRYLibrary.Core.APIServer.MidT.Aut;
 using GRYLibrary.Core.APIServer.Mid.General;
+using GRYLibrary.Core.APIServer.MidT.Maint;
 
 namespace GRYLibrary.Core.APIServer
 {
@@ -48,6 +49,7 @@ namespace GRYLibrary.Core.APIServer
         where ApplicationSpecificConstants : new()
         where CommandlineParameterType : class, ICommandlineParameter
     {
+        private bool _MaintenanceModeEnabled = false;
         public APIServer()
         {
 
@@ -243,6 +245,7 @@ namespace GRYLibrary.Core.APIServer
             #endregion
 
             #region Bussiness-implementation
+            this.AddDefinedMiddleware((ISupportMaintenanceSiteMiddleware c) => c.ConfigurationForMaintenanceSiteMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.MaintenanceSiteMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares2, logger);
             this.AddDefinedMiddleware((ISupportAuthenticationMiddleware c) => c.ConfigurationForAuthenticationMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.AuthenticationMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares2, logger);
             this.AddDefinedMiddleware((ISupportAuthorizationMiddleware c) => c.ConfigurationForAuthorizationMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.AuthorizationMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares2, logger);
             if (this._Configuration.InitializationInformation.ApplicationConstants.Environment is not Development)
@@ -382,6 +385,10 @@ namespace GRYLibrary.Core.APIServer
             apiServerConfiguration.ConfigureWebApplication(apiServerConfiguration.FunctionalInformationForWebApplication);
             logger.Log($"The API will now be available under the following URL:", LogLevel.Information);
             logger.Log(apiLink, LogLevel.Information);
+            if (this._MaintenanceModeEnabled)
+            {
+                logger.Log($"Maintenancemode is enabled.", LogLevel.Information);
+            }
             return app;
         }
 
@@ -411,8 +418,23 @@ namespace GRYLibrary.Core.APIServer
                         }
                         else
                         {
-                            middlewares.Add(middlewareType);
-                            logger.Log($"Added middleware {middlewareType.FullName}.", LogLevel.Debug);
+                            if (middlewareType.IsAbstract || middlewareType.IsInterface)
+                            {
+                                throw new ArgumentException($"The type {middlewareType.FullName} can not be used as middleware because the type is not a nonabstract class.");
+                            }
+                            else
+                            {
+                                middlewares.Add(middlewareType);
+                                logger.Log($"Added middleware {middlewareType.FullName}.", LogLevel.Debug);
+                                if (middlewareType.IsAssignableTo(typeof(MaintenanceSiteMiddleware)))
+                                {
+                                    IMaintenanceSiteConfiguration maintenanceSiteConfiguration = (IMaintenanceSiteConfiguration)middlewareConfiguration;
+                                    if (maintenanceSiteConfiguration.MaintenanceModeEnabled)
+                                    {
+                                        this._MaintenanceModeEnabled = true;
+                                    }
+                                }
+                            }
                         }
                     }
                     else
