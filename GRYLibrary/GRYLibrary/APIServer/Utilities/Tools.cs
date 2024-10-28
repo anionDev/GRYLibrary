@@ -84,6 +84,10 @@ namespace GRYLibrary.Core.APIServer.Utilities
         {
             return context.Request.Path.ToString().StartsWith($"{ServerConfiguration.APIRoutePrefix}/{ServerConfiguration.ResourcesSubPath}/{ServerConfiguration.APISpecificationDocumentName}/");
         }
+        public static bool IsMaintenanceRequest(HttpContext context)
+        {
+            return context.Request.Path.ToString().StartsWith($"{ServerConfiguration.APIRoutePrefix}/Other/Maintenance/");
+        }
 
         public static int RunAPIServer<GCodeUnitSpecificCommandlineParameter, GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration>(string codeUnitName, string codeUnitDescription, Version3 codeUnitVersion, GRYEnvironment environmentTargetType, ExecutionMode executionMode, string[] commandlineArguments, Action<APIServerConfiguration<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>> initializer)
             where GCodeUnitSpecificConfiguration : new()

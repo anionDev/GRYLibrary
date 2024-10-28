@@ -22,21 +22,21 @@ namespace GRYLibrary.Core.APIServer.CommonRoutes
 
         [HttpGet]
         [Route(nameof(TermsOfService))]
-        public IActionResult TermsOfService()
+        public virtual IActionResult TermsOfService()
         {
             return this.Redirect(this._CommonRoutesInformation.TermsOfServiceLink);
         }
 
         [HttpGet]
         [Route(nameof(Contact))]
-        public IActionResult Contact()
+        public virtual IActionResult Contact()
         {
             return this.Redirect(this._CommonRoutesInformation.ContactLink);
         }
 
         [HttpGet]
         [Route(nameof(License))]
-        public IActionResult License()
+        public virtual IActionResult License()
         {
             return this.Redirect(this._CommonRoutesInformation.LicenseLink);
         }
