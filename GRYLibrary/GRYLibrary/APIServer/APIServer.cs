@@ -34,9 +34,7 @@ using GUtilities = GRYLibrary.Core.Misc.Utilities;
 using GRYLibrary.Core.APIServer.Utilities;
 using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using GRYLibrary.Core.APIServer.MidT.RLog;
-using GRYLibrary.Core.APIServer.MaintenanceRoutes;
 using GRYLibrary.Core.Logging.GRYLogger;
-using Microsoft.AspNetCore.HttpOverrides;
 using GRYLibrary.Core.APIServer.MidT.Aut;
 using GRYLibrary.Core.APIServer.Mid.General;
 
@@ -195,16 +193,14 @@ namespace GRYLibrary.Core.APIServer
                 ApplicationName = this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName,
                 EnvironmentName = this._Configuration.InitializationInformation.ApplicationConstants.Environment.GetType().Name
             });
-            IMvcBuilder mvcBuilder = builder.Services.AddControllers();
-            if (this._Configuration.InitializationInformation.ApplicationConstants.CommonRoutesHostInformation is HostCommonRoutes)
-            {
-                mvcBuilder.AddApplicationPart(typeof(CommonRoutesController).Assembly);
-            }
-            if (this._Configuration.InitializationInformation.ApplicationConstants.HostMaintenanceInformation is HostMaintenanceRoutes)
-            {
-                mvcBuilder.AddApplicationPart(typeof(MaintenanceRoutesController).Assembly);
-            }
-
+            IMvcBuilder mvcBuilder = builder.Services
+                .AddControllers()//TODO add handling for /robots.txt
+                .ConfigureApplicationPartManager(manager =>
+                {
+                    manager.FeatureProviders.Clear();
+                    manager.FeatureProviders.Add(new CustomControllerFeatureProvider<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>(this._Configuration, logger));
+                });
+            mvcBuilder.AddApplicationPart(this.GetType().Assembly);
             builder.Services.AddSingleton((serviceProvider) => apiServerConfiguration.InitializationInformation.CommandlineParameter);
             builder.Services.AddSingleton((serviceProvider) => logger);
             builder.Services.AddSingleton<IGeneralLogger>(sp => sp.GetRequiredService<IGRYLog>());

@@ -25,20 +25,20 @@ namespace GRYLibrary.Core.APIServer.MaintenanceRoutes
 
         [HttpGet]
         [Route(nameof(AvailabilityCheck))]
-        public IActionResult AvailabilityCheck()
+        public virtual IActionResult AvailabilityCheck()
         {
             return this.Ok();
         }
 
         [HttpGet]
         [Route(nameof(CurrentVersion))]
-        public IActionResult CurrentVersion()
+        public virtual IActionResult CurrentVersion()
         {
             return this.Ok(Assembly.GetEntryAssembly().GetName().Version.ToString(3));
         }
 
         [HttpGet(nameof(ShowAllEndpoints))]
-        public IActionResult ShowAllEndpoints()
+        public virtual IActionResult ShowAllEndpoints()
         {
             IEnumerable<RouteEndpoint> endpoints = this._EndpointSources.SelectMany(es => es.Endpoints).OfType<RouteEndpoint>();
             var output = endpoints.Select(endPoint =>

@@ -1,7 +1,10 @@
-﻿namespace GRYLibrary.Core.APIServer.CommonRoutes
+﻿using System;
+
+namespace GRYLibrary.Core.APIServer.CommonRoutes
 {
     public class HostCommonRoutes : CommonRoutesHostInformation
     {
+        public Type ControllerType { get; set; } = typeof(CommonRoutesController);
         #region Overhead
         public override void Accept(ICommonRoutesHostInformationVisitor visitor)
         {
