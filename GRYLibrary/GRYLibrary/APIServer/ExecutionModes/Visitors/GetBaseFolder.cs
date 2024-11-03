@@ -44,7 +44,7 @@ namespace GRYLibrary.Core.APIServer.ExecutionModes.Visitors
             string result;
             if (environment is Development || executionMode is not RunProgram)
             {
-                result = Misc.Utilities.ResolveToFullPath($"../../{workspaceFolderName}", programFolder);//runing locally
+                result = Misc.Utilities.ResolveToFullPath($"../../{workspaceFolderName}", programFolder);//running locally
             }
             else
             {
