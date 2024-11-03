@@ -3373,5 +3373,12 @@ namespace GRYLibrary.Core.Misc
             htmlDoc.LoadHtml(@value);
             return htmlDoc.ParseErrors.Any();
         }
+        public static bool RunningInContainer
+        {
+            get
+            {
+                return Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+            }
+        }
     }
 }

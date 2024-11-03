@@ -9,7 +9,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
     public sealed class Console : GRYLogTarget
     {
         public bool WriteWarningsToStdErr { get; set; } = true;
-        private bool _UseColors = true;
+        private bool _UseColors = Utilities.RunningInContainer;
         private static readonly object _Lock = new object();
         public Console() { }
         protected override void ExecuteImplementation(LogItem logItem, GRYLog logObject)
@@ -29,7 +29,6 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
             string part3 = formattedMessage[ce..] + Environment.NewLine;
             lock (_Lock)
             {
-                //TODO refactor to do this in one write-statement by using the codes described in https://stackoverflow.com/a/74807043/3905529
                 if (this._UseColors)
                 {
                     output.Write(part1);
