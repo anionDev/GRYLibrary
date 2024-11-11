@@ -9,7 +9,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
     public sealed class Console : GRYLogTarget
     {
         public bool WriteWarningsToStdErr { get; set; } = true;
-        private bool _UseColors = Utilities.RunningInContainer;
+        private bool _UseColors = !Utilities.RunningInContainer;
         private static readonly object _Lock = new object();
         public Console() { }
         protected override void ExecuteImplementation(LogItem logItem, GRYLog logObject)

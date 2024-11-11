@@ -3371,7 +3371,7 @@ namespace GRYLibrary.Core.Misc
         {
             HtmlDocument htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(@value);
-            return htmlDoc.ParseErrors.Any();
+            return !htmlDoc.ParseErrors.Any();
         }
         public static bool RunningInContainer
         {
