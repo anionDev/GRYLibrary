@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Routing;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using GRYLibrary.Core.Misc;
+using System.IO;
 
 namespace GRYLibrary.Core.APIServer.MaintenanceRoutes
 {
@@ -16,11 +19,13 @@ namespace GRYLibrary.Core.APIServer.MaintenanceRoutes
         private readonly IApplicationConstants _Configuration;
         private readonly IMaintenanceRoutesInformation _MaintenanceRoutesInformation;
         private readonly IEnumerable<EndpointDataSource> _EndpointSources;
-        public MaintenanceRoutesController(IApplicationConstants configuration, IMaintenanceRoutesInformation maintenanceRoutesInformation, IEnumerable<EndpointDataSource> endpointSources)
+        private readonly IHealthCheck _HealthCheck;
+        public MaintenanceRoutesController(IApplicationConstants configuration, IMaintenanceRoutesInformation maintenanceRoutesInformation, IEnumerable<EndpointDataSource> endpointSources, IHealthCheck healthCheck)
         {
             this._Configuration = configuration;
             this._MaintenanceRoutesInformation = maintenanceRoutesInformation;
             this._EndpointSources = endpointSources;
+            this._HealthCheck = healthCheck;
         }
 
         [HttpGet]
@@ -55,6 +60,35 @@ namespace GRYLibrary.Core.APIServer.MaintenanceRoutes
                 };
             });
             return this.Json(output);
+        }
+
+        [HttpGet]
+        [Route(nameof(HealthCheck))]
+        ///<returns>
+        ///Returns a JSON with a "status"-property.
+        ///Status-meaning:
+        ///0 = Unhealthy
+        ///1 = Degraded
+        ///2 = Healthy
+        ///</returns>
+        ///<example>
+        ///{"data":{},"description":"Service is healthy.","exception":null,"status":2}
+        /// </example>
+        public virtual IActionResult HealthCheck()
+        {
+            return this.Ok(this._HealthCheck.CheckHealthAsync(new HealthCheckContext()).WaitAndGetResult());
+        }
+
+        [HttpGet]
+        [Route(nameof(Metrics))]
+        public virtual IActionResult Metrics()
+        {
+            using MemoryStream ms = new MemoryStream();
+            Prometheus.Metrics.DefaultRegistry.CollectAndExportAsTextAsync(ms);
+            ms.Position = 0;
+            using StreamReader sr = new StreamReader(ms);
+            var allmetrics = sr.ReadToEndAsync().WaitAndGetResult();
+            return this.Ok(allmetrics);
         }
     }
 }

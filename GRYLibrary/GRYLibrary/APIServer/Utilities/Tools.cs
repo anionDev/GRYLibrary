@@ -243,12 +243,12 @@ namespace GRYLibrary.Core.APIServer.Utilities
             else if (result.result.Equals(HealthStatus.Degraded))
             {
                 message = "Service is degraded.";
-                loglevel = LogLevel.Debug;
+                loglevel = LogLevel.Warning;
             }
             else if (result.result.Equals(HealthStatus.Unhealthy))
             {
                 message = "Service is unhealthy.";
-                loglevel = LogLevel.Warning;
+                loglevel = LogLevel.Error;
             }
             else
             {
