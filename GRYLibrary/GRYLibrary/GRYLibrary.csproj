@@ -61,7 +61,7 @@
         <PackageReference Include="CommandLineParser" Version="2.9.1" />
         <PackageReference Include="DNTCaptcha.Core" Version="5.2.7" />
         <PackageReference Include="ExtendedXmlSerializer" Version="3.8.0" />
-        <PackageReference Include="HtmlAgilityPack" Version="1.11.70" />
+        <PackageReference Include="HtmlAgilityPack" Version="1.11.71" />
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
         <PackageReference Include="Keycloak.Net.Core" Version="1.0.30" />
         <PackageReference Include="Microsoft.AspNetCore.HttpOverrides" Version="2.2.0" />
@@ -70,6 +70,7 @@
         <PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="8.0.1" />
         <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
         <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
+        <PackageReference Include="prometheus-net" Version="8.2.1" />
         <PackageReference Include="System.Collections.Immutable" Version="8.0.0" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
         <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />

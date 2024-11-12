@@ -12,6 +12,7 @@ namespace GRYLibrary.Core.APIServer.BaseServices
     {
         public bool Enabled { get; set; }
         protected bool Running { get; private set; }
+        public TimeSpan AdditionalDelay { get; set; } = TimeSpan.FromSeconds(0);
         protected readonly IGRYLog _Logger;
         private readonly ExecutionMode _ExecutionMode;
         protected abstract void Run();
@@ -33,6 +34,7 @@ namespace GRYLibrary.Core.APIServer.BaseServices
                         while (this.Enabled)
                         {
                             Thread.Sleep(50);
+                            Thread.Sleep(this.AdditionalDelay);
                             this._Logger.Log($"Execute {this.GetType().Name}", Microsoft.Extensions.Logging.LogLevel.Debug, false, false, true, false, false, this.Run);
                         }
                     });

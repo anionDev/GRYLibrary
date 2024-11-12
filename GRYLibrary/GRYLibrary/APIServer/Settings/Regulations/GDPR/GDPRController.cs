@@ -12,7 +12,7 @@ namespace GRYLibrary.Core.APIServer.Settings.Regulations.GDPR
         private readonly IGDPRService _GDPRService;
         public GDPRController(IGDPRService gdprService)
         {
-            _GDPRService = gdprService;
+            this._GDPRService = gdprService;
             //TODO add authentication-middleware for this controller
         }
 
@@ -20,14 +20,14 @@ namespace GRYLibrary.Core.APIServer.Settings.Regulations.GDPR
         [Route(nameof(GetPersonalData))]
         public ISet<PersonalData> GetPersonalData([FromQuery] string personIdentifier)
         {
-            return _GDPRService.GetPersonalData(personIdentifier);
+            return this._GDPRService.GetPersonalData(personIdentifier);
         }
 
         [HttpGet]
         [Route(nameof(DeleteDeletablePersonalData))]
         public void DeleteDeletablePersonalData([FromQuery] string personIdentifier)
         {
-            _GDPRService.DeleteDeletablePersonalData(personIdentifier);
+            this._GDPRService.DeleteDeletablePersonalData(personIdentifier);
         }
     }
 }
