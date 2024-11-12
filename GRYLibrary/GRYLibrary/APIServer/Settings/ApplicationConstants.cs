@@ -16,6 +16,7 @@ namespace GRYLibrary.Core.APIServer.Settings
     {
         public string ApplicationName { get; set; }
         public string ApplicationDescription { get; set; }
+        public IList<Regulation> Regulations { get; set; }
         public Version3 ApplicationVersion { get; set; }
         public ExecutionMode ExecutionMode { get; set; }
         public GRYEnvironment Environment { get; set; }
@@ -74,6 +75,7 @@ namespace GRYLibrary.Core.APIServer.Settings
         private string _BaseFolder;
         public string ApplicationName { get; set; }
         public string ApplicationDescription { get; set; }
+        public IList<Regulation> Regulations { get; set; }=new List<Regulation>();
         public Version3 ApplicationVersion { get; set; }
         public ExecutionMode ExecutionMode { get; set; }
         public GRYEnvironment Environment { get; set; }

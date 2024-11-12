@@ -1,10 +1,12 @@
 ﻿using GRYLibrary.Core.APIServer.CommonRoutes;
 using GRYLibrary.Core.APIServer.MaintenanceRoutes;
 using GRYLibrary.Core.APIServer.Settings;
+using GRYLibrary.Core.APIServer.Settings.Regulations.GDPR;
 using GRYLibrary.Core.Logging.GRYLogger;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Reflection;
 
 namespace GRYLibrary.Core.APIServer.Utilities
@@ -54,6 +56,30 @@ namespace GRYLibrary.Core.APIServer.Utilities
                 else
                 {
                     return false;
+                }
+            }
+            if (type.IsAssignableTo(typeof(GDPRController)))
+            {
+                Regulation? regulation = this._Configuration.InitializationInformation.ApplicationConstants.Regulations.FirstOrDefault(t => t is GDPRegulation);
+                if (regulation == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    if (regulation is GDPRegulation gdpregulation)
+                    {
+                        bool result= gdpregulation.ServiceProcessesPersonalData && gdpregulation.ServiceIsSubjectOfGDPR;
+                        if (result)
+                        {
+                            //TODO check if IGDPRService is injectable
+                        }
+                        return result;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
             }
             return base.IsController(typeInfo);
