@@ -11,16 +11,16 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
     public class User : IEquatable<User>
     {
         public string Id { get; set; }
-        public string Name { get; set; } = default;
-        public string PasswordHash { get; set; } = default;
-        public string EMailAddress { get; set; } = default;
+        public string Name { get; set; } 
+        public string? PasswordHash { get; set; } = default;
+        public string? EMailAddress { get; set; } = default;
         public bool UserIsActivated { get; set; } = true;
         public bool UserIsLocked { get; set; } = false;
         public DateTime RegistrationMoment { get; set; } = default;
-        public HashSet<RefreshToken> RefreshToken { get; set; } = default;
-        public HashSet<AccessToken> AccessToken { get; set; } = default;
-        public HashSet<Role> Roles { get; set; } = default;
-        public TOTP TOTP { get; set; } = default;
+        public HashSet<RefreshToken> RefreshToken { get; set; } = new HashSet<RefreshToken>();
+        public HashSet<AccessToken> AccessToken { get; set; } = new HashSet<AccessToken>();
+        public HashSet<Role> Roles { get; set; } = new HashSet<Role>();
+        public TOTP? TOTP { get; set; } = default;
 
         public User()
         {
