@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net9.0</TargetFramework>
         <Authors>Marius Göcke</Authors>
         <Version>0.12.119</Version>
         <AssemblyVersion>0.12.119</AssemblyVersion>
