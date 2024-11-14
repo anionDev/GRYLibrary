@@ -51,5 +51,10 @@
         /// Test that only generates build-artifacts.
         /// </summary>
         GenerationTest = 9,
+
+        /// <summary>
+        /// Smoke testing refers to various classes of tests of systems, usually intended to determine whether they are ready for more robust testing.
+        /// </summary>
+        SmokeTest = 10,
     }
 }
