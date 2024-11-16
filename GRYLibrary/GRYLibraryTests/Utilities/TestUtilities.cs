@@ -104,7 +104,7 @@ namespace GRYLibrary.Tests.Utilities
                 return "sleep";
             }
 
-            public string Handle(Windows operatingSystem)
+            public string Handle(GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems.Windows operatingSystem)
             {
                 return "timeout";
             }

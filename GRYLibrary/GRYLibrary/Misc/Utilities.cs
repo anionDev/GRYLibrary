@@ -86,7 +86,7 @@ namespace GRYLibrary.Core.Misc
                 }
             }
 
-            public bool Handle(Windows operatingSystem)
+            public bool Handle(GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems.Windows operatingSystem)
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
@@ -161,7 +161,7 @@ namespace GRYLibrary.Core.Misc
                 return this._Path.Replace(this.WindowsPathSeparatorChar, this.LinuxAndOSXPathSeparatorChar);
             }
 
-            public string Handle(Windows operatingSystem)
+            public string Handle(GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems.Windows operatingSystem)
             {
                 return this._Path.Replace(this.LinuxAndOSXPathSeparatorChar, this.WindowsPathSeparatorChar);
             }
@@ -922,7 +922,7 @@ namespace GRYLibrary.Core.Misc
                 throw new NotImplementedException();
             }
 
-            public (bool, string) Handle(Windows operatingSystem)
+            public (bool, string) Handle(GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems.Windows operatingSystem)
             {
                 string program = null;
                 string[] knownExtension = new string[] { ".exe", ".cmd", ".bat" };
@@ -1376,7 +1376,7 @@ namespace GRYLibrary.Core.Misc
                 return this._Path.StartsWith('/');
             }
 
-            public bool Handle(Windows operatingSystem)
+            public bool Handle(GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems.Windows operatingSystem)
             {
                 if (this._Path.StartsWith('/') || this._Path.StartsWith('\\'))
                 {
@@ -2788,7 +2788,7 @@ namespace GRYLibrary.Core.Misc
                 else
                 {
                     // adapt argument
-                    if (OperatingSystem.OperatingSystem.GetCurrentOperatingSystem() is Windows)
+                    if (OperatingSystem.OperatingSystem.GetCurrentOperatingSystem() is GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems.Windows)
                     {
                         argument = $"\"{program}\" {argument}";
                         program = SpecialFileInformation.GetDefaultProgramToOpenFile(Path.GetExtension(program));
@@ -3108,7 +3108,7 @@ namespace GRYLibrary.Core.Misc
                 throw new NotImplementedException();
             }
 
-            public void Handle(Windows operatingSystem)
+            public void Handle(GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems.Windows operatingSystem)
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
@@ -3131,7 +3131,7 @@ namespace GRYLibrary.Core.Misc
                 throw new NotSupportedException();
             }
 
-            public bool Handle(Windows operatingSystem)
+            public bool Handle(GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems.Windows operatingSystem)
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
