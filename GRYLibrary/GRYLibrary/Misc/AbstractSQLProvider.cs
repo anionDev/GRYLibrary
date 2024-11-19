@@ -6,10 +6,11 @@ namespace GRYLibrary.Core.Misc
     public class AbstractSQLProvider
     {
         private readonly string _SQLFilesNamespace;
-        protected AbstractSQLProvider(string sqlFilesNamespace) {
-            _SQLFilesNamespace=sqlFilesNamespace;
+        protected AbstractSQLProvider(string sqlFilesNamespace)
+        {
+            this._SQLFilesNamespace = sqlFilesNamespace;
         }
-        private IDictionary<string, string> _ScriptCache = new Dictionary<string, string>();
+        private readonly IDictionary<string, string> _ScriptCache = new Dictionary<string, string>();
 
         protected string LoadSQLScript(string sqlFileName)
         {
@@ -22,11 +23,9 @@ namespace GRYLibrary.Core.Misc
 
         private void LoadScriptToCache(string sqlFileName)
         {
-            using (Stream stream = this.GetType().Assembly.GetManifestResourceStream($"{_SQLFilesNamespace}.{sqlFileName}.sql"))
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                this._ScriptCache[sqlFileName] = reader.ReadToEnd();
-            }
+            using Stream stream = this.GetType().Assembly.GetManifestResourceStream($"{this._SQLFilesNamespace}.{sqlFileName}.sql");
+            using StreamReader reader = new StreamReader(stream);
+            this._ScriptCache[sqlFileName] = reader.ReadToEnd();
         }
     }
 }
