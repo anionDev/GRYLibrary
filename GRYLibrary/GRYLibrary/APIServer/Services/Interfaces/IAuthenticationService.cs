@@ -35,6 +35,9 @@ namespace GRYLibrary.Core.APIServer.Services.Interfaces
         public ISet<string> GetRolesOfUser(string userId);
         #endregion
         void Logout(string accessToken);
+        /// <remarks>
+        /// Logs the user everywhere out.
+        /// </remarks>
         void Logout(ClaimsPrincipal user);
         void LogoutEverywhere(string userId);
         public User GetUserByName(string name);

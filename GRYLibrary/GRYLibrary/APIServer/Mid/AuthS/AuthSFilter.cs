@@ -6,12 +6,12 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GRYLibrary.Core.APIServer.Mid.M01APIK
+namespace GRYLibrary.Core.APIServer.Mid.AuthS
 {
-    public class APIKeyValidatorFilter : IOperationFilter
+    public class AuthSFilter : IOperationFilter
     {
-        public const string HeaderName = "X-Authorization";
-        public static (bool provided, string apiKey) TryGetAPIKey(HttpContext context)
+        public const string HeaderName = "X-AccessToken";
+        public static (bool provided, string apiKey) TryGetAcessToken(HttpContext context)
         {
             bool apiKeyIsGiven = context.Request.Headers.TryGetValue(HeaderName, out StringValues values);
             if (apiKeyIsGiven)
@@ -31,12 +31,12 @@ namespace GRYLibrary.Core.APIServer.Mid.M01APIK
             {
                 operation.Parameters = new List<OpenApiParameter>();
             }
-            if (context.MethodInfo.GetCustomAttributes(typeof(AuthorizeAttribute), false).Length != 0)
+            if (context.MethodInfo.GetCustomAttributes(typeof(AuthenticateAttribute), false).Length != 0)
             {
                 operation.Parameters.Add(new OpenApiParameter()
                 {
                     Name = HeaderName,
-                    Description = "API-Key",
+                    Description = "Access Token",
                     In = ParameterLocation.Header,
                     Schema = new OpenApiSchema() { Type = "String" },
                     Required = true,

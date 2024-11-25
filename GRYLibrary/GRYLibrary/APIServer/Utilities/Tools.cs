@@ -24,6 +24,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GRYLibrary.Core.APIServer.Verbs;
 using GRYLibrary.Core.Exceptions;
+using GRYLibrary.Core.APIServer.CommonDBTypes;
 
 namespace GRYLibrary.Core.APIServer.Utilities
 {
@@ -129,7 +130,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
             }, timeout);
         }
 
-        public static bool TryGetAuthentication(ICredentialsProvider credentialsProvider, IAuthenticationService authenticationService, HttpContext context, out ClaimsPrincipal principal)
+        public static bool TryGetAuthentication(ICredentialsProvider credentialsProvider, IAuthenticationService authenticationService, HttpContext context, out ClaimsPrincipal principal, out string accessToken)
         {
             principal = default;
             try
@@ -137,14 +138,17 @@ namespace GRYLibrary.Core.APIServer.Utilities
                 if (credentialsProvider.ContainsCredentials(context))
                 {
                     string secret = credentialsProvider.ExtractSecret(context);
-                    string accessToken = secret;
+                     accessToken = secret;
                     if (!string.IsNullOrEmpty(accessToken))
                     {
                         bool accessTokenIsValid = authenticationService.AccessTokenIsValid(accessToken);
                         if (accessTokenIsValid)
                         {
-                            string username = authenticationService.GetUserName(accessToken);
-                            principal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim> { new Claim(ClaimTypes.Name, username) }, "Basic"));
+                            CommonDBTypes.User user = authenticationService.GetUserByAccessToken(accessToken);
+                            principal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim> {
+                                new Claim(ClaimTypes.Name, user.Name),
+                                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                            }, "Basic"));
                             return true;
                         }
                     }
@@ -154,6 +158,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
             {
                 GUtilities.NoOperation();
             }
+            accessToken = null;
             return false;
         }
         private readonly static IList<HashAlgorithm> _HashAlgorithms = new List<HashAlgorithm>() { new SHA256(), new SHA256PureCSharp() };
@@ -278,6 +283,11 @@ namespace GRYLibrary.Core.APIServer.Utilities
                 throw new InternalAlgorithmException($"Undknown healthstatus: {(int)result.result}");
             }
             return Task.FromResult(healthCheckResult);
+        }
+        public static User GetUser(ClaimsPrincipal principal,IAuthenticationService authenticationService)
+        {
+            User result = authenticationService.GetUser(principal.Claims.Where(claim => claim.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").First().Value);
+            return result;
         }
     }
 }

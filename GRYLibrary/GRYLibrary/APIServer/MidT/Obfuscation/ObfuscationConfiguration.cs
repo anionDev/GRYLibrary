@@ -6,7 +6,7 @@ namespace GRYLibrary.Core.APIServer.MidT.Obfuscation
     public class ObfuscationConfiguration : IObfuscationConfiguration
     {
         public bool Enabled { get; set; } = true;
-        public ISet<FilterDescriptor> GetFilter()
+        public virtual ISet<FilterDescriptor> GetFilter()
         {
             return new HashSet<FilterDescriptor>();
         }

@@ -1,15 +1,37 @@
-﻿using GRYLibrary.Core.Exceptions;
+﻿using GRYLibrary.Core.APIServer.MidT.Auth;
+using GRYLibrary.Core.APIServer.Utilities;
+using GRYLibrary.Core.Exceptions;
 using Microsoft.AspNetCore.Http;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.APIServer.MidT.Aut
 {
     public abstract class AuthorizationMiddleware : AbstractMiddleware
     {
-        protected AuthorizationMiddleware(RequestDelegate next) : base(next)
+#pragma warning disable IDE0052 // Remove unread private members
+        private readonly IAuthorizationConfiguration _AuthorizationConfiguration;
+#pragma warning restore IDE0052 // Remove unread private members
+        protected AuthorizationMiddleware(RequestDelegate next, IAuthorizationConfiguration authorizationConfiguration) : base(next)
         {
+            this._AuthorizationConfiguration = authorizationConfiguration;
         }
-        public abstract bool AuthorizationIsRequired(HttpContext context);
+        public bool AuthorizationIsRequired(HttpContext context)
+        {
+            if (!(bool)context.Items[AuthenticationMiddleware.IsAuthenticatedInformationName])
+            {
+                return false;
+            }
+            if (this.TryGetAuthorizeAttribute(context, out AuthorizeAttribute authorizeAttribute))
+            {
+                bool result = authorizeAttribute.Groups.Any();
+                return result;
+            }
+            else
+            {
+                return false;
+            }
+        }
         protected abstract bool IsAuthorized(HttpContext context);
         public override Task Invoke(HttpContext context)
         {

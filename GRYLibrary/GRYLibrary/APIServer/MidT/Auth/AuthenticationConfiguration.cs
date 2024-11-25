@@ -8,7 +8,7 @@ namespace GRYLibrary.Core.APIServer.MidT.Auth
         public bool Enabled { get; set; } = true;
         public ISet<string> RoutesWhereUnauthenticatedAccessIsAllowed { get; set; } = new HashSet<string>();
 
-        public ISet<FilterDescriptor> GetFilter()
+        public virtual ISet<FilterDescriptor> GetFilter()
         {
             return new HashSet<FilterDescriptor>();
         }

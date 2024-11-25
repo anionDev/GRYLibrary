@@ -13,15 +13,15 @@ namespace GRYLibrary.Core.APIServer.Mid.AuthS
     {
         private readonly ICredentialsProvider _CredentialsProvider;
         private readonly IAuthenticationService _AuthenticationService;
-        public AuthSMiddleware(RequestDelegate next, ICredentialsProvider credentialsProvider, IAuthenticationService authenticationService, IAuthenticationConfiguration authenticationConfiguration) : base(next, authenticationConfiguration)
+        public AuthSMiddleware(RequestDelegate next, ICredentialsProvider credentialsProvider, IAuthenticationService authenticationService, IAuthSConfiguration authenticationConfiguration) : base(next, authenticationConfiguration)
         {
             this._CredentialsProvider = credentialsProvider;
             this._AuthenticationService = authenticationService;
         }
 
-        public override bool TryGetAuthentication(HttpContext context, out ClaimsPrincipal principal)
+        public override bool TryGetAuthentication(HttpContext context, out ClaimsPrincipal principal, out string accessToken)
         {
-            return Tools.TryGetAuthentication(this._CredentialsProvider, this._AuthenticationService, context, out principal);
+            return Tools.TryGetAuthentication(this._CredentialsProvider, this._AuthenticationService, context, out principal, out accessToken);
         }
     }
 }

@@ -75,7 +75,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             }
             else
             {
-                throw new BadRequestException(StatusCodes.Status400BadRequest, "Accesstoken not found");
+                throw new BadRequestException(StatusCodes.Status400BadRequest, "Accesstoken not found.");
             }
         }
         public virtual void LogoutEverywhere(string userId)

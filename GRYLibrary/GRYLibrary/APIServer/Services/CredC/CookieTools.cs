@@ -6,8 +6,6 @@ namespace GRYLibrary.Core.APIServer.Services.CredC
     public static class CookieTools
     {
         public static string CookieName { get; set; } = "X-Authorization";
-        //TODO move CookieName to configuration
-        //TODO remove "X-"-prefix from CookieName
         public static (string key, string value, CookieOptions options) GetAccessTokenCookie(string username, string accessToken, DateTime expires)
         {
             return GetCookieWithSpecificExpiredDate(username, expires, accessToken);
