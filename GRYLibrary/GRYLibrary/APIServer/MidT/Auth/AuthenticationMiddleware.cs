@@ -64,8 +64,11 @@ namespace GRYLibrary.Core.APIServer.MidT.Auth
                 result = false;
             }
             context.Items[IsAuthenticatedInformationName] = result;
-            context.Items[CurrentlyUsedAccessTokenInformationName] = accessToken;
-            context.Items[UserIdInformationName] = principal.Claims.Where(claim=>claim.Type== "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").First().Value;
+            if (result)
+            {
+                context.Items[CurrentlyUsedAccessTokenInformationName] = accessToken;
+                context.Items[UserIdInformationName] = principal.Claims.Where(claim => claim.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").First().Value;
+            }
             return result;
         }
     }
