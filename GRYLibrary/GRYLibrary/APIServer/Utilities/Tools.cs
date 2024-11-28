@@ -151,7 +151,19 @@ namespace GRYLibrary.Core.APIServer.Utilities
                             }, "Basic"));
                             return true;
                         }
+                        else
+                        {
+
+                        }
                     }
+                    else
+                    {
+
+                    }
+                }
+                else
+                {
+
                 }
             }
             catch

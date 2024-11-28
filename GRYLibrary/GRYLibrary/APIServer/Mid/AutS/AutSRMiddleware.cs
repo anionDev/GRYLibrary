@@ -18,7 +18,7 @@ namespace GRYLibrary.Core.APIServer.Mid.AutS
         private readonly IRoleBasedAuthorizationService _AuthorizationService;
         private readonly IAuthenticationService _AuthenticationService;
         private readonly ICredentialsProvider _CredentialsProvider;
-        public AutSRMiddleware(RequestDelegate next, IRoleBasedAuthorizationService authorizationService, IAuthenticationService authenticationService, ICredentialsProvider credentialsProvider, IAuthorizationConfiguration authorizationConfiguration) : base(next, authorizationConfiguration)
+        public AutSRMiddleware(RequestDelegate next, IRoleBasedAuthorizationService authorizationService, IAuthenticationService authenticationService, ICredentialsProvider credentialsProvider, IAutSRConfiguration authorizationConfiguration) : base(next, authorizationConfiguration)
         {
             this._AuthorizationService = authorizationService;
             this._AuthenticationService = authenticationService;

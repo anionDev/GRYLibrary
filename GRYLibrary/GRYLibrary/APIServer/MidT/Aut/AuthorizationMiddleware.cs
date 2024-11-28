@@ -1,5 +1,4 @@
-﻿using GRYLibrary.Core.APIServer.MidT.Auth;
-using GRYLibrary.Core.APIServer.Utilities;
+﻿using GRYLibrary.Core.APIServer.Utilities;
 using GRYLibrary.Core.Exceptions;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
@@ -18,10 +17,6 @@ namespace GRYLibrary.Core.APIServer.MidT.Aut
         }
         public bool AuthorizationIsRequired(HttpContext context)
         {
-            if (!(bool)context.Items[AuthenticationMiddleware.IsAuthenticatedInformationName])
-            {
-                return false;
-            }
             if (this.TryGetAuthorizeAttribute(context, out AuthorizeAttribute authorizeAttribute))
             {
                 bool result = authorizeAttribute.Groups.Any();
