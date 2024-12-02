@@ -2,6 +2,5 @@
 {
     public interface ICookieServiceConfiguration
     {
-        public string CookieName { get; set; }
     }
 }

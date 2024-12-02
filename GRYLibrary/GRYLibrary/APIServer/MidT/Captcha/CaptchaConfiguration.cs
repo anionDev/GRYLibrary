@@ -7,7 +7,7 @@ namespace GRYLibrary.Core.APIServer.MidT.Captcha
     {
         public bool Enabled { get; set; } = true;
 
-        public ISet<FilterDescriptor> GetFilter()
+        public virtual ISet<FilterDescriptor> GetFilter()
         {
             return new HashSet<FilterDescriptor>();
         }

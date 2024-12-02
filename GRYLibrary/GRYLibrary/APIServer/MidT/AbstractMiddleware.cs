@@ -37,7 +37,7 @@ namespace GRYLibrary.Core.APIServer.MidT
             return this.TryGetAttributeFromContext(context, out authorizedAttribute);
         }
 
-        public bool TryGetAactionAttribute(HttpContext context, out ActionAttribute actionAttribute)
+        public bool TryGetActionAttribute(HttpContext context, out ActionAttribute actionAttribute)
         {
             return this.TryGetAttributeFromContext(context, out actionAttribute);
         }

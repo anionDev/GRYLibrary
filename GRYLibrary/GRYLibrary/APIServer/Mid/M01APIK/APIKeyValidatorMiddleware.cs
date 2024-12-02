@@ -9,14 +9,9 @@ namespace GRYLibrary.Core.APIServer.Mid.M01APIK
     public abstract class APIKeyValidatorMiddleware : AuthorizationMiddleware
     {
         protected readonly IAPIKeyValidatorConfiguration _APIKeyValidatorSettings;
-        public APIKeyValidatorMiddleware(RequestDelegate next, IAPIKeyValidatorConfiguration apiKeyValidatorSettings) : base(next)
+        public APIKeyValidatorMiddleware(RequestDelegate next, IAPIKeyValidatorConfiguration apiKeyValidatorSettings) : base(next, apiKeyValidatorSettings)
         {
             this._APIKeyValidatorSettings = apiKeyValidatorSettings;
-        }
-
-        public override bool AuthorizationIsRequired(HttpContext context)
-        {
-            return false;//API-keys only check for authorization, not for authentication.
         }
 
         public virtual (bool provided, string apiKey) TryGetAPIKey(HttpContext context)

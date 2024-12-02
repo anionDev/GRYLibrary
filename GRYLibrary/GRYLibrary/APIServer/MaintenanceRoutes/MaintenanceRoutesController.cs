@@ -87,7 +87,7 @@ namespace GRYLibrary.Core.APIServer.MaintenanceRoutes
             Prometheus.Metrics.DefaultRegistry.CollectAndExportAsTextAsync(ms);
             ms.Position = 0;
             using StreamReader sr = new StreamReader(ms);
-            var allmetrics = sr.ReadToEndAsync().WaitAndGetResult();
+            string allmetrics = sr.ReadToEndAsync().WaitAndGetResult();
             return this.Ok(allmetrics);
         }
     }

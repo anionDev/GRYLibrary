@@ -23,7 +23,7 @@ namespace GRYLibrary.Core.APIServer.Services.CredC
 
         public virtual bool TryGetCookieValue(HttpContext context, out string cookie)
         {
-            return context.Request.Cookies.TryGetValue(this.CookieServiceConfiguration.CookieName, out cookie);
+            return context.Request.Cookies.TryGetValue(CookieTools.CookieName, out cookie);
         }
 
         public (string key, string value, CookieOptions options) CreateCookie(string username, string value, DateTime expiredMoment)

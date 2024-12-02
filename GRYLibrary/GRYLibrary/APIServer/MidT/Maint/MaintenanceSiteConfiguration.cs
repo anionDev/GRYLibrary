@@ -8,7 +8,7 @@ namespace GRYLibrary.Core.APIServer.MidT.Maint
         public bool Enabled { get; set; } = true;
         public bool MaintenanceModeEnabled { get; set; }
 
-        public ISet<FilterDescriptor> GetFilter()
+        public virtual ISet<FilterDescriptor> GetFilter()
         {
             return new HashSet<FilterDescriptor>();
         }
