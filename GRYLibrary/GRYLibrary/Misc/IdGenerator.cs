@@ -12,15 +12,18 @@ namespace GRYLibrary.Core.Misc
     {
         public T GenerateNewId();
         public ISet<T> GeneratedIds();
+        void Reset();
     }
     public class IdGenerator<T> : IIdGenerator<T>
     {
         private readonly ISet<T> _GeneratedIds = new HashSet<T>();
         private readonly Func<T, T> _GenerateNewId;
         T LastId = default;
-        public IdGenerator(Func<T, T> generateNewId)
+        private readonly Func<T> _reset;
+        public IdGenerator(Func<T, T> generateNewId, Func<T> reset)
         {
             this._GenerateNewId = generateNewId;
+            _reset = reset;
         }
         public T GenerateNewId()
         {
@@ -31,6 +34,11 @@ namespace GRYLibrary.Core.Misc
         {
             return new HashSet<T>(this._GeneratedIds);
         }
+
+        public void Reset()
+        {
+            this.LastId = _reset();
+        }
     }
     public static class IdGenerator
     {
@@ -39,15 +47,15 @@ namespace GRYLibrary.Core.Misc
         /// </summary>
         public static IdGenerator<int> GetDefaultIntIdGenerator()
         {
-            return new IdGenerator<int>((int lastGeneratedId) => lastGeneratedId + 1);
+            return new IdGenerator<int>((int lastGeneratedId) => lastGeneratedId + 1, () => 0);
         }
 
         /// <summary>
         /// Represents an id-generator which generates increasing ids beginning with 0.
         /// </summary>
-        public static IdGenerator<long> GetDefaultLongIdGenerator()
+        public static IdGenerator<ulong> GetDefaultLongIdGenerator()
         {
-            return new IdGenerator<long>((long lastGeneratedId) => lastGeneratedId + 1);
+            return new IdGenerator<ulong>((ulong lastGeneratedId) => lastGeneratedId + 1, () => 0);
         }
 
         /// <summary>
@@ -55,7 +63,7 @@ namespace GRYLibrary.Core.Misc
         /// </summary>
         public static IdGenerator<BigInteger> GetDefaultBigIntegerIdGenerator()
         {
-            return new IdGenerator<BigInteger>((BigInteger lastGeneratedId) => lastGeneratedId + 1);
+            return new IdGenerator<BigInteger>((BigInteger lastGeneratedId) => lastGeneratedId + 1, () => 0);
         }
 
         /// <summary>
@@ -63,7 +71,7 @@ namespace GRYLibrary.Core.Misc
         /// </summary>
         public static IdGenerator<Guid> GetDefaultGuidIdGenerator()
         {
-            return new IdGenerator<Guid>((Guid lastGeneratedId) => Guid.NewGuid());
+            return new IdGenerator<Guid>((Guid lastGeneratedId) => Guid.NewGuid(), Guid.NewGuid);
         }
     }
 }
