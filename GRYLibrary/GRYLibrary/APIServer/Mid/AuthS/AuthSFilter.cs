@@ -38,7 +38,7 @@ namespace GRYLibrary.Core.APIServer.Mid.AuthS
                     Name = HeaderName,
                     Description = "Access Token",
                     In = ParameterLocation.Header,
-                    Schema = new OpenApiSchema() { Type = "String" },
+                    Schema = new OpenApiSchema() { Type = "string" },
                     Required = true,
                     //Example = new OpenApiString("some example")
                 });
