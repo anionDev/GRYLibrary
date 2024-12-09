@@ -99,35 +99,58 @@ namespace GRYLibrary.Core.APIServer.Utilities
             return consoleApp.Main(commandlineArguments);
         }
 
-        public static void ConnectToDatabase(Action connectAction, IGeneralLogger logger, string adaptedConnectionString)
+        public static void ConnectToDatabaseWrapper(Action connectAction, IGeneralLogger logger, string adaptedConnectionString)
         {
-            ConnectToDatabase(connectAction, logger, adaptedConnectionString, TimeSpan.FromMinutes(2));
+            bool connected = Tools.ConnectToDatabase(connectAction, GeneralLogger.NoLog(), adaptedConnectionString, out string? notConnectionReason);
+            GUtilities.AssertCondition(connected, "Could not connect to database." + (notConnectionReason == null ? string.Empty : " "+notConnectionReason));
+        }
+        public static bool ConnectToDatabase(Action connectAction, IGeneralLogger logger, string adaptedConnectionString, out string? notConnectionReason)
+        {
+            return ConnectToDatabase(connectAction, logger, adaptedConnectionString, TimeSpan.FromMinutes(2), out notConnectionReason);
         }
 
-        public static void ConnectToDatabase(Action connectAction, IGeneralLogger logger, string adaptedConnectionString, TimeSpan timeout)
+        public static bool ConnectToDatabase(Action connectAction, IGeneralLogger logger, string adaptedConnectionString, TimeSpan timeout, out string? notConnectionReason)
         {
-            GUtilities.RunWithTimeout(() =>
+            bool connected = false;
+            notConnectionReason = null;
+            string? notConnectionReasonInner = null;
+            if (GUtilities.RunWithTimeout(() =>
+             {
+                 while (!connected)
+                 {
+                     try
+                     {
+                         logger.Log($"Try to connect to database using connection-string \"{adaptedConnectionString}\".", LogLevel.Debug);
+                         connectAction();
+                         logger.Log($"Connected successfully.", LogLevel.Information);
+                         connected = true;
+                     }
+                     catch (AbortException abortException)
+                     {
+                         notConnectionReasonInner = abortException.ToString();
+                         return;
+                     }
+                     catch (Exception exception)
+                     {
+                         logger.LogException(exception, "Could not connect to database.", LogLevel.Warning);
+                     }
+                     finally
+                     {
+                         Thread.Sleep(TimeSpan.FromSeconds(2));
+                     }
+                 }
+             }, timeout))
             {
-                bool connected = false;
-                while (!connected)
+                string? existingMessage = notConnectionReasonInner;
+                notConnectionReasonInner = "Could not connect to database inside of required timespan.";
+                if (existingMessage != null)
                 {
-                    try
-                    {
-                        logger.Log($"Try to connect to database using connection-string \"{adaptedConnectionString}\".", LogLevel.Debug);
-                        connectAction();
-                        logger.Log($"Connected successfully.", LogLevel.Information);
-                        connected = true;
-                    }
-                    catch (Exception exception)
-                    {
-                        logger.LogException(exception, "Could not connect to database.", LogLevel.Warning);
-                    }
-                    finally
-                    {
-                        Thread.Sleep(TimeSpan.FromSeconds(2));
-                    }
+                    notConnectionReasonInner = $"{notConnectionReasonInner} (Reason: '{existingMessage}')";
                 }
-            }, timeout);
+
+            }
+            notConnectionReason = notConnectionReasonInner;
+            return connected;
         }
 
         public static bool TryGetAuthentication(ICredentialsProvider credentialsProvider, IAuthenticationService authenticationService, HttpContext context, out ClaimsPrincipal principal, out string accessToken)
@@ -138,7 +161,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
                 if (credentialsProvider.ContainsCredentials(context))
                 {
                     string secret = credentialsProvider.ExtractSecret(context);
-                     accessToken = secret;
+                    accessToken = secret;
                     if (!string.IsNullOrEmpty(accessToken))
                     {
                         bool accessTokenIsValid = authenticationService.AccessTokenIsValid(accessToken);
@@ -296,7 +319,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
             }
             return Task.FromResult(healthCheckResult);
         }
-        public static User GetUser(ClaimsPrincipal principal,IAuthenticationService authenticationService)
+        public static User GetUser(ClaimsPrincipal principal, IAuthenticationService authenticationService)
         {
             User result = authenticationService.GetUser(principal.Claims.Where(claim => claim.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").First().Value);
             return result;

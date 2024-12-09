@@ -8,8 +8,22 @@ namespace GRYLibrary.Core.Exceptions
         {
         }
 
-        public InternalAlgorithmException(string errorId, string message = null) : base(CalculateMessage(errorId, message))
+        public InternalAlgorithmException(string errorId) : base(CalculateMessage(errorId))
         {
+        }
+
+        public InternalAlgorithmException(string errorId, string message ) : base(CalculateMessage(errorId, message))
+        {
+        }
+
+        private static string CalculateMessage(string message)
+        {
+            string result = $"Internal alrogithm error.";
+            if (message != null)
+            {
+                result = $"{result}; Message: {message}";
+            }
+            return result;
         }
 
         private static string CalculateMessage(string errorId, string message)

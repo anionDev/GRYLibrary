@@ -1,4 +1,5 @@
-﻿using GRYLibrary.Core.ExecutePrograms;
+﻿using GRYLibrary.Core.Exceptions;
+using GRYLibrary.Core.ExecutePrograms;
 using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using MySqlConnector;
 using System;
@@ -21,17 +22,20 @@ namespace GRYLibrary.Core.APIServer.Utilities
             this._TestDatabaseFolder = testDatabaseFolder;
             this._DockerComposeArgumentPrefix = $"compose --project-name {dockerProjectName}";
             this.ConnectionString = connectionString;
-            ExternalProgramExecutor externalProgramExecutor;
-            using (externalProgramExecutor = new ExternalProgramExecutor("docker", $"{this._DockerComposeArgumentPrefix} up --force-recreate --detach", this._TestDatabaseFolder))
+            using ExternalProgramExecutor externalProgramExecutor = new ExternalProgramExecutor("docker", $"{this._DockerComposeArgumentPrefix} up --force-recreate --detach", this._TestDatabaseFolder);
             {
                 externalProgramExecutor.Run();
             }
-            Tools.ConnectToDatabase(() =>
-            {
-                this.MySqlConnection = new MySqlConnection(this.ConnectionString);
-                this.MySqlConnection.Open();
-                this.IsConnected = true;
-            }, GeneralLogger.NoLog(), GUtilities.AdaptMariaDBSQLConnectionString(this.ConnectionString, true));
+            Tools.ConnectToDatabaseWrapper(() =>
+              {
+                  if (!externalProgramExecutor.IsRunning && externalProgramExecutor.ExitCode!=0)
+                  {
+                      throw new AbortException(new InternalAlgorithmException($"docker exited with exitcode {externalProgramExecutor.ExitCode}; StdOut: {Environment.NewLine + string.Join(Environment.NewLine, externalProgramExecutor.AllStdOutLines)}; StdErrt: {Environment.NewLine + string.Join(Environment.NewLine, externalProgramExecutor.AllStdErrLines)};"));
+                  }
+                  this.MySqlConnection = new MySqlConnection(this.ConnectionString);
+                  this.MySqlConnection.Open();
+                  this.IsConnected = true;
+              }, GeneralLogger.NoLog(), GUtilities.AdaptMariaDBSQLConnectionString(this.ConnectionString, true));
         }
 
         protected virtual void Dispose(bool disposing)
