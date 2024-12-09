@@ -12,6 +12,7 @@ namespace GRYLibrary.Tests.Testcases
         [TestMethod]
         public void FileCacheTestGet()
         {
+            GRYLibrary.Core.Misc.Utilities.DarkModeEnabled = false;
             // arrange
             using TempFile tempFile = new TempFile();
             File.WriteAllLines(tempFile.Path, new string[] { "k1;v1", "k2;v2" });
