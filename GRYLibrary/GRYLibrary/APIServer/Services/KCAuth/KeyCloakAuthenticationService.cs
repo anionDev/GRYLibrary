@@ -10,8 +10,8 @@ using GUtilities = GRYLibrary.Core.Misc.Utilities;
 namespace GRYLibrary.Core.APIServer.Services.KCAuth
 {
     public class KeyCloakAuthenticationService : IKeyCloakAuthenticationService
-    {
-        private readonly IKeyCloakService _KeyCloakService;
+        {
+            private readonly IKeyCloakService _KeyCloakService;
         private readonly IHTTPCredentialsProvider _HTTPCredentialsProvider;
         public KeyCloakAuthenticationService(IKeyCloakService keyCloakService, IHTTPCredentialsProvider httpCredentialsProvider)
         {
@@ -155,6 +155,48 @@ namespace GRYLibrary.Core.APIServer.Services.KCAuth
         }
 
         public ISet<Role> GetRoles(ClaimsPrincipal user)
+        {
+            throw new System.NotImplementedException();
+        }
+    }
+    public class KeyCloakAuthenticationService<UserType> : KeyCloakAuthenticationService, IAuthenticationService<UserType>
+     where UserType : User
+    {
+        public KeyCloakAuthenticationService(IKeyCloakService keyCloakService, IHTTPCredentialsProvider httpCredentialsProvider) : base(keyCloakService, httpCredentialsProvider)
+        {
+        }
+
+        public void AddUserTyped(UserType user)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public ISet<UserType> GetAllUserTyped()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public UserType GetUserById(string userId)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public UserType GetUserByNameTyped(string name)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public UserType GetUserTyped(string userId)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void UpdateUser(UserType user)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool UserWithNameExists(string username)
         {
             throw new System.NotImplementedException();
         }

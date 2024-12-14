@@ -10,10 +10,11 @@ using GRYLibrary.Core.APIServer.CommonAuthenticationTypes;
 using Microsoft.AspNetCore.Http;
 using GRYLibrary.Core.APIServer.Utilities;
 using System.Security.Claims;
+using GRYLibrary.Core.Misc;
 
 namespace GRYLibrary.Core.APIServer.Services.KC
 {
-    public abstract class KeyCloakService : ExternalService, IKeyCloakService
+    public class KeyCloakService : ExternalService, IKeyCloakService
     {
         public IKeyCloakServiceSettings Settings { get; }
         public KeycloakClient KeycloakClient { get; private set; }
@@ -25,7 +26,7 @@ namespace GRYLibrary.Core.APIServer.Services.KC
 
         private void Initialize()
         {
-            this.KeycloakClient = new KeycloakClient(this.Settings.URL, this.Settings.AdminClientUsername, this.Settings.AdminClientPassword/*TODO use clientSecret instead*/);
+            this.KeycloakClient = new KeycloakClient(this.Settings.URL, this.Settings.ClientUsername, this.Settings.ClientPassword/*TODO use clientSecret instead if required*/);
             this.TryConnect(out Exception _);
         }
 
@@ -37,39 +38,39 @@ namespace GRYLibrary.Core.APIServer.Services.KC
         public virtual bool AccessTokenIsValid(string username, string accessToken)
         {
             return this.EnsureServiceIsConnected<bool>(() =>
-                                                                                                                                                                                    {
-                                                                                                                                                                                        throw new NotImplementedException();
-                                                                                                                                                                                    });
+{
+    throw new NotImplementedException();
+});
         }
 
         public virtual void Register(string username, string emailAddress, string password)
         {
             this.EnsureServiceIsConnected(() =>
-                                                                                                                                                                                                    {
-                                                                                                                                                                                                        KeycloakClient service = this.GetKeycloakClient();
-                                                                                                                                                                                                        KeycloakUser user = new KeycloakUser
-                                                                                                                                                                                                        {
-                                                                                                                                                                                                            Id = Guid.NewGuid().ToString(),
-                                                                                                                                                                                                            UserName = username
-                                                                                                                                                                                                        };
-                                                                                                                                                                                                        user.FirstName = string.Empty;
-                                                                                                                                                                                                        user.LastName = username;
-                                                                                                                                                                                                        user.Groups = new List<string>();
-                                                                                                                                                                                                        user.ClientRoles = new Dictionary<string, object>();
-                                                                                                                                                                                                        user.Credentials = new List<Credentials>() { };
-                                                                                                                                                                                                        user.Email = emailAddress;
-                                                                                                                                                                                                        user.Enabled = true;
-                                                                                                                                                                                                        Task<string> task = service.CreateAndRetrieveUserIdAsync(this.Settings.Realm, user);
-                                                                                                                                                                                                        task.Wait();
-                                                                                                                                                                                                    });
+            {
+                KeycloakClient service = this.GetKeycloakClient();
+                KeycloakUser user = new KeycloakUser
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    UserName = username
+                };
+                user.FirstName = string.Empty;
+                user.LastName = username;
+                user.Groups = new List<string>();
+                user.ClientRoles = new Dictionary<string, object>();
+                user.Credentials = new List<Credentials>() { };
+                user.Email = emailAddress;
+                user.Enabled = true;
+                Task<string?> task = service.CreateAndRetrieveUserIdAsync(this.Settings.Realm, user);
+                task.Wait();
+            });
         }
 
         public AccessToken Login(string username, string password)
         {
             return this.EnsureServiceIsConnected<AccessToken>(() =>
-                                                                                                                                                  {
-                                                                                                                                                      throw new NotImplementedException();
-                                                                                                                                                  });
+            {
+                throw new NotImplementedException();
+            });
         }
 
         public void Logout(string name)
@@ -113,6 +114,22 @@ namespace GRYLibrary.Core.APIServer.Services.KC
         }
 
         public bool TryGetAuthentication(HttpContext context, out ClaimsPrincipal principal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool IsAvailable()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool TryConnectImplementation(out Exception exception)
+        {
+            //(just a test) bool result = KeycloakClient.CreateUserAsync("master", new KeycloakUser() { UserName = "test" }).WaitAndGetResult();
+            throw new NotImplementedException();
+        }
+
+        public override void DisconnectImplementation()
         {
             throw new NotImplementedException();
         }
