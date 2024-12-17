@@ -15,7 +15,7 @@
         <RepositoryUrl>https://github.com/anionDev/GRYLibrary.git</RepositoryUrl>
         <RootNamespace>GRYLibrary.Tests</RootNamespace>
         <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
-        <Nullable>disable</Nullable>
+        <Nullable>enable</Nullable>
         <Configurations>Development;QualityCheck;Productive</Configurations>
         <IsTestProject>true</IsTestProject>
         <LangVersion>11.0</LangVersion>
@@ -29,7 +29,7 @@
         <SignAssembly>True</SignAssembly>
         <AssemblyOriginatorKeyFile>..\..\Other\Resources\PublicKeys\StronglyNamedKey\GRYLibraryPublicKey.snk</AssemblyOriginatorKeyFile>
         <DelaySign>True</DelaySign>
-        <NoWarn>1701;1702;CA1822;CS1591;CS1573;IDE0045;IDE0046;IDE0054;IDE0058;IDE0074;IDE0090;CS8002;CA1859</NoWarn>
+        <NoWarn>1701;1702;CA1822;CS1591;CS1573;IDE0045;IDE0046;IDE0054;IDE0058;IDE0074;IDE0090;CS8002;CA1859;CA1861</NoWarn>
         <WarningsAsErrors>NU1605</WarningsAsErrors>
         <ErrorLog>..\Other\Resources\CodeAnalysisResult\GRYLibraryTests.sarif</ErrorLog>
         <OutputType>Library</OutputType>
@@ -70,8 +70,8 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="3.6.3" />
-    <PackageReference Include="MSTest.TestFramework" Version="3.6.3" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.6.4" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.6.4" />
     <PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
