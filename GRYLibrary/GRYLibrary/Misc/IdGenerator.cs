@@ -23,7 +23,7 @@ namespace GRYLibrary.Core.Misc
         public IdGenerator(Func<T, T> generateNewId, Func<T> reset)
         {
             this._GenerateNewId = generateNewId;
-            _reset = reset;
+            this._reset = reset;
         }
         public T GenerateNewId()
         {
@@ -37,7 +37,7 @@ namespace GRYLibrary.Core.Misc
 
         public void Reset()
         {
-            this.LastId = _reset();
+            this.LastId = this._reset();
         }
     }
     public static class IdGenerator

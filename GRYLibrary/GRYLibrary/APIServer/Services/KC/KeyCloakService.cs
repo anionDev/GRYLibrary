@@ -10,7 +10,6 @@ using GRYLibrary.Core.APIServer.CommonAuthenticationTypes;
 using Microsoft.AspNetCore.Http;
 using GRYLibrary.Core.APIServer.Utilities;
 using System.Security.Claims;
-using GRYLibrary.Core.Misc;
 
 namespace GRYLibrary.Core.APIServer.Services.KC
 {
