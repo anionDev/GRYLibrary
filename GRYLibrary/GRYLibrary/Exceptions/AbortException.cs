@@ -20,11 +20,11 @@ namespace GRYLibrary.Core.Exceptions
         public override string ToString()
         {
             string result = $"Aborted";
-            if (Message != null)
+            if (this.Message != null)
             {
-                result = $"{result} ({Message})";
+                result = $"{result} ({this.Message})";
             }
-            result = $"{result} ({InnerException.ToString()})";
+            result = $"{result} ({this.InnerException.ToString()})";
             return result;
         }
     }

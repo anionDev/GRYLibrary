@@ -3387,6 +3387,7 @@ namespace GRYLibrary.Core.Misc
             htmlDoc.LoadHtml(@value);
             return !htmlDoc.ParseErrors.Any();
         }
+
         public static bool RunningInContainer
         {
             get

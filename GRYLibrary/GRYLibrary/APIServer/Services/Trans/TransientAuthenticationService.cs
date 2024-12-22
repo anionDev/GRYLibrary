@@ -37,10 +37,8 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             return result;
         }
 
-
         public virtual AccessToken Login(string userName, string password)
         {
-
             if (!this._TransientAuthenticationServicePersistence.UserWithNameExists(userName))
             {
                 return this.ThrowInvalidCredentialsException();

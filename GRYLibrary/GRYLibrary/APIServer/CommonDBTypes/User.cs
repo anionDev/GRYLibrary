@@ -55,12 +55,12 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
             }
             return result;
         }
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return this.Equals(obj as User);
         }
 
-        public virtual bool Equals(User other)
+        public virtual bool Equals(User? other)
         {
             return other is not null &&
                    this.Id == other.Id &&
@@ -80,7 +80,7 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
             return hash.ToHashCode();
         }
 
-        public override string? ToString()
+        public override string ToString()
         {
             return $"User \"{this.Name}\" (Id: {this.Id})";
         }
