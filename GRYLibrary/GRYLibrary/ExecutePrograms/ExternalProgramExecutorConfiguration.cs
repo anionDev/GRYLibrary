@@ -1,4 +1,5 @@
 ﻿using GRYLibrary.Core.ExecutePrograms.WaitingStates;
+using System.Text;
 
 namespace GRYLibrary.Core.ExecutePrograms
 {
@@ -29,6 +30,7 @@ namespace GRYLibrary.Core.ExecutePrograms
         public string Password { get; set; } = null;
         public bool UpdateConsoleTitle { get; set; } = false;
         public bool DelegateToEpew { get; set; } = false;
+        public bool RedirectStandardInput { get; set; } = false;
         /// <remarks>
         /// If this property is set to false, then <see cref="ExternalProgramExecutor.AllStdOutLines"/> will remain empty and <see cref="ExternalProgramExecutor.LogObject"/> will not have any entry.
         /// </remarks>
@@ -37,5 +39,6 @@ namespace GRYLibrary.Core.ExecutePrograms
         /// If this property is set to false, then <see cref="ExternalProgramExecutor.AllStdErrLines"/> will remain empty and <see cref="ExternalProgramExecutor.LogObject"/> will not have any entry.
         /// </remarks>
         public bool RedirectStandardError { get; set; } = true;
+        public Encoding EncodingOfStandardInputAndStandardOutput { get; set; } = new UTF8Encoding(false);
     }
 }

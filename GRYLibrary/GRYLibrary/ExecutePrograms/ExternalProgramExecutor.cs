@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -291,8 +292,12 @@ namespace GRYLibrary.Core.ExecutePrograms
                     ErrorDialog = false,
                     Arguments = this.Configuration.Argument,
                     WorkingDirectory = this.Configuration.WorkingDirectory,
+                    RedirectStandardInput = this.Configuration.RedirectStandardInput,
+                    StandardInputEncoding = this.Configuration.RedirectStandardInput ? this.Configuration.EncodingOfStandardInputAndStandardOutput : default,
                     RedirectStandardOutput = this.Configuration.RedirectStandardOutput,
+                    StandardOutputEncoding = this.Configuration.RedirectStandardOutput ? this.Configuration.EncodingOfStandardInputAndStandardOutput : default,
                     RedirectStandardError = this.Configuration.RedirectStandardError,
+                    StandardErrorEncoding = this.Configuration.RedirectStandardError ? this.Configuration.EncodingOfStandardInputAndStandardOutput : default,
                     CreateNoWindow = !this.Configuration.CreateWindow,
                 };
 
