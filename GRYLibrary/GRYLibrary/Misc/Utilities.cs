@@ -86,7 +86,7 @@ namespace GRYLibrary.Core.Misc
                 }
             }
 
-            public bool Handle(GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems.Windows operatingSystem)
+            public bool Handle(Windows operatingSystem)
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
@@ -161,7 +161,7 @@ namespace GRYLibrary.Core.Misc
                 return this._Path.Replace(this.WindowsPathSeparatorChar, this.LinuxAndOSXPathSeparatorChar);
             }
 
-            public string Handle(GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems.Windows operatingSystem)
+            public string Handle(Windows operatingSystem)
             {
                 return this._Path.Replace(this.LinuxAndOSXPathSeparatorChar, this.WindowsPathSeparatorChar);
             }
@@ -922,7 +922,7 @@ namespace GRYLibrary.Core.Misc
                 throw new NotImplementedException();
             }
 
-            public (bool, string) Handle(GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems.Windows operatingSystem)
+            public (bool, string) Handle(Windows operatingSystem)
             {
                 string program = null;
                 string[] knownExtension = new string[] { ".exe", ".cmd", ".bat" };
@@ -1376,7 +1376,7 @@ namespace GRYLibrary.Core.Misc
                 return this._Path.StartsWith('/');
             }
 
-            public bool Handle(GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems.Windows operatingSystem)
+            public bool Handle(Windows operatingSystem)
             {
                 if (this._Path.StartsWith('/') || this._Path.StartsWith('\\'))
                 {
@@ -2330,44 +2330,44 @@ namespace GRYLibrary.Core.Misc
         public static Func<ModelBindingContext, Task> GenericModelBinder(Func<string, object> parser, string targetTypeName, bool allowDefault)
         {
             return (ModelBindingContext bindingContext) =>
-                                                                                                                                                                                                                                                                                                            {
-                                                                                                                                                                                                                                                                                                                //see https://learn.microsoft.com/de-de/aspnet/core/mvc/advanced/custom-model-binding?view=aspnetcore-7.0
-                                                                                                                                                                                                                                                                                                                ArgumentNullException.ThrowIfNull(bindingContext);
-                                                                                                                                                                                                                                                                                                                string modelName = bindingContext.ModelName;
-                                                                                                                                                                                                                                                                                                                ValueProviderResult values = bindingContext.ValueProvider.GetValue("moment");
-                                                                                                                                                                                                                                                                                                                ValueProviderResult values2 = bindingContext.ValueProvider.GetValue("{moment}");
-                                                                                                                                                                                                                                                                                                                ValueProviderResult valueProviderResult = bindingContext.ValueProvider.GetValue(modelName);
-                                                                                                                                                                                                                                                                                                                if (valueProviderResult == ValueProviderResult.None)
-                                                                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                                                                    return Task.CompletedTask;
-                                                                                                                                                                                                                                                                                                                }
-                                                                                                                                                                                                                                                                                                                bindingContext.ModelState.SetModelValue(modelName, valueProviderResult);
-                                                                                                                                                                                                                                                                                                                string value = valueProviderResult.FirstValue;
-                                                                                                                                                                                                                                                                                                                if (string.IsNullOrEmpty(value))
-                                                                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                                                                    if (allowDefault)
-                                                                                                                                                                                                                                                                                                                    {
-                                                                                                                                                                                                                                                                                                                        bindingContext.Result = default;
-                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                    else
-                                                                                                                                                                                                                                                                                                                    {
-                                                                                                                                                                                                                                                                                                                        bindingContext.ModelState.TryAddModelError(modelName, $"No value given to parse to {targetTypeName}.");
-                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                }
-                                                                                                                                                                                                                                                                                                                else
-                                                                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                                                                    try
-                                                                                                                                                                                                                                                                                                                    {
-                                                                                                                                                                                                                                                                                                                        object model = parser(value);
-                                                                                                                                                                                                                                                                                                                        bindingContext.Result = ModelBindingResult.Success(model);
-                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                    catch
-                                                                                                                                                                                                                                                                                                                    {
-                                                                                                                                                                                                                                                                                                                        bindingContext.ModelState.TryAddModelError(modelName, $"\"{value}\" can not be parsed to {targetTypeName}.");
-                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                }
-                                                                                                                                                                                                                                                                                                                return Task.CompletedTask;
-                                                                                                                                                                                                                                                                                                            };
+            {
+                //see https://learn.microsoft.com/de-de/aspnet/core/mvc/advanced/custom-model-binding?view=aspnetcore-7.0
+                ArgumentNullException.ThrowIfNull(bindingContext);
+                string modelName = bindingContext.ModelName;
+                ValueProviderResult values = bindingContext.ValueProvider.GetValue("moment");
+                ValueProviderResult values2 = bindingContext.ValueProvider.GetValue("{moment}");
+                ValueProviderResult valueProviderResult = bindingContext.ValueProvider.GetValue(modelName);
+                if (valueProviderResult == ValueProviderResult.None)
+                {
+                    return Task.CompletedTask;
+                }
+                bindingContext.ModelState.SetModelValue(modelName, valueProviderResult);
+                string value = valueProviderResult.FirstValue;
+                if (string.IsNullOrEmpty(value))
+                {
+                    if (allowDefault)
+                    {
+                        bindingContext.Result = default;
+                    }
+                    else
+                    {
+                        bindingContext.ModelState.TryAddModelError(modelName, $"No value given to parse to {targetTypeName}.");
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        object model = parser(value);
+                        bindingContext.Result = ModelBindingResult.Success(model);
+                    }
+                    catch
+                    {
+                        bindingContext.ModelState.TryAddModelError(modelName, $"\"{value}\" can not be parsed to {targetTypeName}.");
+                    }
+                }
+                return Task.CompletedTask;
+            };
         }
 
         public static T[] PadLeft<T>(T[] array, int length)
@@ -2802,7 +2802,7 @@ namespace GRYLibrary.Core.Misc
                 else
                 {
                     // adapt argument
-                    if (OperatingSystem.OperatingSystem.GetCurrentOperatingSystem() is GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems.Windows)
+                    if (OperatingSystem.OperatingSystem.GetCurrentOperatingSystem() is Windows)
                     {
                         argument = $"\"{program}\" {argument}";
                         program = SpecialFileInformation.GetDefaultProgramToOpenFile(Path.GetExtension(program));
@@ -3122,7 +3122,7 @@ namespace GRYLibrary.Core.Misc
                 throw new NotImplementedException();
             }
 
-            public void Handle(GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems.Windows operatingSystem)
+            public void Handle(Windows operatingSystem)
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
@@ -3145,7 +3145,7 @@ namespace GRYLibrary.Core.Misc
                 throw new NotSupportedException();
             }
 
-            public bool Handle(GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems.Windows operatingSystem)
+            public bool Handle(Windows operatingSystem)
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
@@ -3364,6 +3364,7 @@ namespace GRYLibrary.Core.Misc
         {
             return choices[_Random.Next(choices.Count())];
         }
+
         public static string HTMLUnescape(string @value)
         {
             string result = WebUtility.HtmlEncode(@value);

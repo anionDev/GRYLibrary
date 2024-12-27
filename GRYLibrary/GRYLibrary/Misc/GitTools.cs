@@ -147,17 +147,17 @@ namespace GRYLibrary.Core.Misc
         public static IEnumerable<Tuple<string/*remote-name*/, string/*branch-name*/>> GetAllGitRemoteBranches(string repository)
         {
             return ExecuteGitCommand(repository, "branch -r", true).StdOutLines.Where(line => !string.IsNullOrWhiteSpace(line)).Select(line =>
-                                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                                    if (line.Contains('/'))
-                                                                                                                                                                                                                                                                                    {
-                                                                                                                                                                                                                                                                                        string[] splitted = line.Split(_Separators, 2);
-                                                                                                                                                                                                                                                                                        return new Tuple<string, string>(splitted[0].Trim(), splitted[1].Trim());
-                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                    else
-                                                                                                                                                                                                                                                                                    {
-                                                                                                                                                                                                                                                                                        throw new Exception($"'{repository}> git branch -r' contained the unexpected output-line '{line}'.");
-                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                });
+            {
+                if (line.Contains('/'))
+                {
+                    string[] splitted = line.Split(_Separators, 2);
+                    return new Tuple<string, string>(splitted[0].Trim(), splitted[1].Trim());
+                }
+                else
+                {
+                    throw new Exception($"'{repository}> git branch -r' contained the unexpected output-line '{line}'.");
+                }
+            });
         }
 
         /// <returns>Returns the names of the remotes of the given <paramref name="repositoryFolder"/>.</returns>

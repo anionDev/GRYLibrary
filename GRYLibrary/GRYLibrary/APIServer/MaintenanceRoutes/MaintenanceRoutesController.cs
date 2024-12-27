@@ -62,18 +62,18 @@ namespace GRYLibrary.Core.APIServer.MaintenanceRoutes
             return this.Json(output);
         }
 
+        /// <returns>
+        /// Returns a JSON with a "status"-property.
+        /// Status-meaning:
+        /// 0 = Unhealthy
+        /// 1 = Degraded
+        /// 2 = Healthy
+        /// </returns>
+        /// <example>
+        /// {"data":{},"description":"Service is healthy.","exception":null,"status":2}
+        ///  </example>
         [HttpGet]
         [Route(nameof(HealthCheck))]
-        ///<returns>
-        ///Returns a JSON with a "status"-property.
-        ///Status-meaning:
-        ///0 = Unhealthy
-        ///1 = Degraded
-        ///2 = Healthy
-        ///</returns>
-        ///<example>
-        ///{"data":{},"description":"Service is healthy.","exception":null,"status":2}
-        /// </example>
         public virtual IActionResult HealthCheck()
         {
             return this.Ok(this._HealthCheck.CheckHealthAsync(new HealthCheckContext()).WaitAndGetResult());

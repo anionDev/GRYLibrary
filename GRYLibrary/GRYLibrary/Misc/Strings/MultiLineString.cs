@@ -58,6 +58,7 @@ namespace GRYLibrary.Core.Misc.Strings
         {
             return From(value, true);
         }
+
         public static MultiLineString From(string value, bool replaceCRAutomatically)
         {
             return new MultiLineString() { _ReplaceCRAutomatically = replaceCRAutomatically, Value = value, };
@@ -76,7 +77,7 @@ namespace GRYLibrary.Core.Misc.Strings
 
         public string ToHTMLString()
         {
-            return Utilities.HTMLUnescape(this._Value);
+            return GUtilities.HTMLUnescape(this._Value);
         }
 
         public static bool operator ==(MultiLineString left, MultiLineString right)

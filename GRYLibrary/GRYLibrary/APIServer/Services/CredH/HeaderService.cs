@@ -24,7 +24,7 @@ namespace GRYLibrary.Core.APIServer.Services.CredH
 
         public virtual bool TryGetHeaderValue(HttpContext context, out string header)
         {
-            bool result = context.Request.Headers.TryGetValue(HeaderTools.HeaderName, out Microsoft.Extensions.Primitives.StringValues headerAsStrings);
+            bool result = context.Request.Headers.TryGetValue(HeaderTools.HeaderName, out StringValues headerAsStrings);
             header = headerAsStrings!;
             return result && headerAsStrings != default(StringValues);
         }
