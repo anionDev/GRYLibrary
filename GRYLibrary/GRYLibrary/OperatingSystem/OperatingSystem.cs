@@ -28,13 +28,13 @@ namespace GRYLibrary.Core.OperatingSystem
     public interface IOperatingSystemVisitor
     {
         void Handle(OSX operatingSystem);
-        void Handle(GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems.Windows operatingSystem);
+        void Handle(Windows operatingSystem);
         void Handle(Linux operatingSystem);
     }
     public interface IOperatingSystemVisitor<T>
     {
         T Handle(OSX operatingSystem);
-        T Handle(GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems.Windows operatingSystem);
+        T Handle(Windows operatingSystem);
         T Handle(Linux operatingSystem);
     }
 }

@@ -50,7 +50,7 @@ namespace GRYLibrary.Core.Misc
                 return true;
             }
 
-            public bool Handle(GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems.Windows operatingSystem)
+            public bool Handle(Windows operatingSystem)
             {
                 string fileToLower = this._File.ToLower();
                 return fileToLower.EndsWith(".exe")

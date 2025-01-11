@@ -2,14 +2,14 @@
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <Authors>Marius Göcke</Authors>
-        <Version>0.12.128</Version>
-        <AssemblyVersion>0.12.128</AssemblyVersion>
-        <FileVersion>0.12.128</FileVersion>
+        <Version>0.12.129</Version>
+        <AssemblyVersion>0.12.129</AssemblyVersion>
+        <FileVersion>0.12.129</FileVersion>
         <SelfContained>false</SelfContained>
         <IsPackable>false</IsPackable>
         <PreserveCompilationContext>false</PreserveCompilationContext>
         <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
-        <Copyright>Copyright © 2024 Marius Göcke</Copyright>
+        <Copyright>Copyright © 2025 Marius Göcke</Copyright>
         <Description>GRYLibraryTests is the test-project for GRYLibrary.</Description>
         <PackageProjectUrl>https://github.com/anionDev/GRYLibrary</PackageProjectUrl>
         <RepositoryUrl>https://github.com/anionDev/GRYLibrary.git</RepositoryUrl>
@@ -57,15 +57,15 @@
     </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\GRYLibrary\GRYLibrary.csproj" />
-    <PackageReference Include="coverlet.collector" Version="6.0.2">
+    <PackageReference Include="coverlet.collector" Version="6.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="coverlet.msbuild" Version="6.0.2">
+    <PackageReference Include="coverlet.msbuild" Version="6.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.71" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.72" />
     <PackageReference Include="Microsoft.CodeCoverage" Version="17.12.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />

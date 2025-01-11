@@ -37,39 +37,39 @@ namespace GRYLibrary.Core.APIServer.Services.KC
         public virtual bool AccessTokenIsValid(string username, string accessToken)
         {
             return this.EnsureServiceIsConnected<bool>(() =>
-{
-    throw new NotImplementedException();
-});
+                                                                                    {
+                                                                                        throw new NotImplementedException();
+                                                                                    });
         }
 
         public virtual void Register(string username, string emailAddress, string password)
         {
             this.EnsureServiceIsConnected(() =>
-            {
-                KeycloakClient service = this.GetKeycloakClient();
-                KeycloakUser user = new KeycloakUser
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    UserName = username
-                };
-                user.FirstName = string.Empty;
-                user.LastName = username;
-                user.Groups = new List<string>();
-                user.ClientRoles = new Dictionary<string, object>();
-                user.Credentials = new List<Credentials>() { };
-                user.Email = emailAddress;
-                user.Enabled = true;
-                Task<string?> task = service.CreateAndRetrieveUserIdAsync(this.Settings.Realm, user);
-                task.Wait();
-            });
+                                                                                                        {
+                                                                                                            KeycloakClient service = this.GetKeycloakClient();
+                                                                                                            KeycloakUser user = new KeycloakUser
+                                                                                                            {
+                                                                                                                Id = Guid.NewGuid().ToString(),
+                                                                                                                UserName = username
+                                                                                                            };
+                                                                                                            user.FirstName = string.Empty;
+                                                                                                            user.LastName = username;
+                                                                                                            user.Groups = new List<string>();
+                                                                                                            user.ClientRoles = new Dictionary<string, object>();
+                                                                                                            user.Credentials = new List<Credentials>() { };
+                                                                                                            user.Email = emailAddress;
+                                                                                                            user.Enabled = true;
+                                                                                                            Task<string?> task = service.CreateAndRetrieveUserIdAsync(this.Settings.Realm, user);
+                                                                                                            task.Wait();
+                                                                                                        });
         }
 
         public AccessToken Login(string username, string password)
         {
             return this.EnsureServiceIsConnected<AccessToken>(() =>
-            {
-                throw new NotImplementedException();
-            });
+                                                                               {
+                                                                                   throw new NotImplementedException();
+                                                                               });
         }
 
         public void Logout(string name)

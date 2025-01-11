@@ -61,6 +61,7 @@ namespace GRYLibrary.Core.APIServer
             return (CommandlineParameterType commandlineParameter, GRYConsoleApplicationInitialInformation gryConsoleApplicationInitialInformation) =>
             {
                 APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> apiServerConfiguration = new APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>();
+                apiServerConfiguration.CommandlineParameter = commandlineParameter;
                 init(apiServerConfiguration);
                 return APIMain(commandlineParameter, gryConsoleApplicationInitialInformation, apiServerConfiguration);
             };

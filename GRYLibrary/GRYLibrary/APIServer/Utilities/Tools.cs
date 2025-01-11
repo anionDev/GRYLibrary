@@ -85,6 +85,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
         {
             return context.Request.Path.ToString().StartsWith($"{ServerConfiguration.APIRoutePrefix}/{ServerConfiguration.ResourcesSubPath}/{ServerConfiguration.APISpecificationDocumentName}/");
         }
+
         public static bool IsMaintenanceRequest(HttpContext context)
         {
             return context.Request.Path.ToString().StartsWith($"{ServerConfiguration.APIRoutePrefix}/Other/Maintenance/");
@@ -167,7 +168,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
                         bool accessTokenIsValid = authenticationService.AccessTokenIsValid(accessToken);
                         if (accessTokenIsValid)
                         {
-                            CommonDBTypes.User user = authenticationService.GetUserByAccessToken(accessToken);
+                            User user = authenticationService.GetUserByAccessToken(accessToken);
                             principal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim> {
                                 new Claim(ClaimTypes.Name, user.Name),
                                 new Claim(ClaimTypes.NameIdentifier, user.Id),

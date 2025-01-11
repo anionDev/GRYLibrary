@@ -77,10 +77,12 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
         {
             return base.GetHashCode();
         }
+
         public void EnableColors()
         {
             this._UseColors = true;
         }
+
         public void DisableColors()
         {
             this._UseColors = false;

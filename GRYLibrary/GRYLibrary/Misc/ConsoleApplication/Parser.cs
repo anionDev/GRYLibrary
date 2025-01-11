@@ -33,19 +33,19 @@ namespace GRYLibrary.Core.Misc.ConsoleApplication
         protected Func<IEnumerable<Error>, int> Error(string argumentsAsString)
         {
             return errors =>
-                                                                                                {
-                                                                                                    int amountOfErrors = errors.Count();
-                                                                                                    this._Logger.Log($"Argument '{argumentsAsString}' could not be parsed successfully.", LogLevel.Error);
-                                                                                                    if (0 < amountOfErrors)
-                                                                                                    {
-                                                                                                        this._Logger.Log($"The following error{(amountOfErrors == 1 ? string.Empty : "s")} occurred:", LogLevel.Error);
-                                                                                                        foreach (Error error in errors)
-                                                                                                        {
-                                                                                                            this._Logger.Log($"{error.Tag}: {this._SentenceBuilder.FormatError(error)}", LogLevel.Error);
-                                                                                                        }
-                                                                                                    }
-                                                                                                    return 1;
-                                                                                                };
+            {
+                int amountOfErrors = errors.Count();
+                this._Logger.Log($"Argument '{argumentsAsString}' could not be parsed successfully.", LogLevel.Error);
+                if (0 < amountOfErrors)
+                {
+                    this._Logger.Log($"The following error{(amountOfErrors == 1 ? string.Empty : "s")} occurred:", LogLevel.Error);
+                    foreach (Error error in errors)
+                    {
+                        this._Logger.Log($"{error.Tag}: {this._SentenceBuilder.FormatError(error)}", LogLevel.Error);
+                    }
+                }
+                return 1;
+            };
         }
 
         protected int ShowInformation(Info options)
