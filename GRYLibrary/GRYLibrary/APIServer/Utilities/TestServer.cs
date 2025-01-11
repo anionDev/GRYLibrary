@@ -32,6 +32,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
                 },
                 EnableRaisingEvents = true
             };
+            //TODO terminate existing container if available and if desired
             this._Process = process;
             process.Start();
             GUtilities.WaitUntilPortIsAvailable("127.0.0.1", HTTP.DefaultPort, timoutOfProcessStartUntilServiceIsAvailable);
