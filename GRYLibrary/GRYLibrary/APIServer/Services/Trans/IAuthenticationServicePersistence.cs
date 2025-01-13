@@ -1,4 +1,5 @@
-﻿using GRYLibrary.Core.APIServer.CommonDBTypes;
+﻿using GRYLibrary.Core.APIServer.CommonAuthenticationTypes;
+using GRYLibrary.Core.APIServer.CommonDBTypes;
 using System.Collections.Generic;
 
 namespace GRYLibrary.Core.APIServer.Services.Trans
@@ -25,5 +26,8 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         public bool UserHasRole(string userId, string roleId);
         public UserType GetUserByAccessToken(string accessToken);
         public void UpdateUser(UserType user);
+        public AccessToken GetAccessToken(string accessToken);
+        public void AddAccessToken(string userId, AccessToken newAccessToken);
+        public void RemoveAccessToken(string accessToken);
     }
 }

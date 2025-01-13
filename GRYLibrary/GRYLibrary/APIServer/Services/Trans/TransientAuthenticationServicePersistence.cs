@@ -1,4 +1,5 @@
-﻿using GRYLibrary.Core.APIServer.CommonDBTypes;
+﻿using GRYLibrary.Core.APIServer.CommonAuthenticationTypes;
+using GRYLibrary.Core.APIServer.CommonDBTypes;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
 using GRYLibrary.Core.Exceptions;
 using System.Collections.Generic;
@@ -11,11 +12,13 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
     {
         private IDictionary<string/*roleId*/, Role> _Roles;
         private IDictionary<string/*userId*/, UserType> _Users;
+        private IDictionary<string/*userId*/, ISet<AccessToken>> _AccessTokens;
         private ITimeService _TimeService;
         public TransientAuthenticationServicePersistence(ITimeService timeService)
         {
             this._Roles = new Dictionary<string, Role>();
             this._Users = new Dictionary<string, UserType>();
+            this._AccessTokens = new Dictionary<string, ISet<AccessToken>>();
             this._TimeService = timeService;
         }
 
@@ -156,6 +159,35 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         public void UpdateUser(UserType user)
         {
             this._Users[user.Id] = user;
+        }
+
+        public AccessToken GetAccessToken(string accessToken)
+        {
+            foreach (var kvp in _AccessTokens)
+            {
+                foreach (var token in kvp.Value)
+                {
+                    if (token.Value == accessToken)
+                    {
+                        return token;
+                    }
+                }
+            }
+            throw new KeyNotFoundException($"AccessToken '{accessToken}' is unknown.");
+        }
+
+        public void AddAccessToken(string userId, AccessToken newAccessToken)
+        {
+            if (!_AccessTokens.ContainsKey(userId))
+            {
+                _AccessTokens[userId] = new HashSet<AccessToken>();
+            }
+            _AccessTokens[userId].Add(newAccessToken);
+        }
+
+        public void RemoveAccessToken(string accessToken)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
