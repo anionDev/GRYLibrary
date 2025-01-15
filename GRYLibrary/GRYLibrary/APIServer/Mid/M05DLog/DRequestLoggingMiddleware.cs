@@ -57,6 +57,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
                 isAuthenticated = false;
             }
             ClaimsPrincipal principal = isAuthenticated && context.User != null && context.User.Identity.IsAuthenticated ? context.User : null;
+            //TODO add option to add this log-entry to a database
             this.LogHTTPRequest(request, false, duration, principal, new HashSet<GRYLogTarget> { new Logging.GRYLogger.ConcreteLogTargets.Console() });
             this.LogHTTPRequest(request, this.ShouldLogEntireRequestContentInLogFile(request), duration, principal, new HashSet<GRYLogTarget> { new Logging.GRYLogger.ConcreteLogTargets.LogFile() });
         }
