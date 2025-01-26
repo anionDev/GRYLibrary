@@ -195,9 +195,9 @@ namespace GRYLibrary.Core.APIServer
                 ApplicationName = this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName,
                 EnvironmentName = this._Configuration.InitializationInformation.ApplicationConstants.Environment.GetType().Name
             });
-            IMvcBuilder mvcBuilder = builder.Services
-                .AddControllers()//TODO add handling for /robots.txt
-                .ConfigureApplicationPartManager(manager =>
+            var services = builder.Services;
+            IMvcBuilder mvcBuilder = services.AddControllers();//TODO add handling for /robots.txt
+            mvcBuilder= mvcBuilder.ConfigureApplicationPartManager(manager =>
                 {
                     manager.FeatureProviders.Clear();
                     manager.FeatureProviders.Add(new CustomControllerFeatureProvider<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>(this._Configuration, logger));
