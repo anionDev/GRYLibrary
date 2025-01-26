@@ -1,7 +1,11 @@
-﻿namespace GRYLibrary.Core.APIServer.Services.Init
+﻿using GRYLibrary.Core.APIServer.Settings;
+using GRYLibrary.Core.Misc.ConsoleApplication;
+
+namespace GRYLibrary.Core.APIServer.Services.Init
 {
-    public interface IInitializationService
+    public interface IInitializationService<CommandlineParameter>
+        where CommandlineParameter: ICommandlineParameter
     {
-        public void Initialize();
+        public void Initialize(CommandlineParameter commandlineParameter);
     }
 }

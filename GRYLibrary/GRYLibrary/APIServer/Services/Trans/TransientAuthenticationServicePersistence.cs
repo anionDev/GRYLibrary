@@ -10,10 +10,10 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
     public class TransientAuthenticationServicePersistence<UserType> : ITransientAuthenticationServicePersistence<UserType>
         where UserType : User
     {
-        private IDictionary<string/*roleId*/, Role> _Roles;
-        private IDictionary<string/*userId*/, UserType> _Users;
-        private IDictionary<string/*userId*/, ISet<AccessToken>> _AccessTokens;
-        private ITimeService _TimeService;
+        private readonly IDictionary<string/*roleId*/, Role> _Roles;
+        private readonly IDictionary<string/*userId*/, UserType> _Users;
+        private readonly IDictionary<string/*userId*/, ISet<AccessToken>> _AccessTokens;
+        private readonly ITimeService _TimeService;
         public TransientAuthenticationServicePersistence(ITimeService timeService)
         {
             this._Roles = new Dictionary<string, Role>();
@@ -24,7 +24,11 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public void SetAllUsers(ISet<UserType> users)
         {
-            this._Users = users.ToDictionary(kvp => kvp.Id);
+            _Users.Clear();
+            foreach (var user in users)
+            {
+            _Users.Add(user.Id, user);
+            }
         }
 
         public ISet<Role> GetAllRoles()
@@ -34,7 +38,11 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public void SetAllRoles(ISet<Role> roles)
         {
-            this._Roles = roles.ToDictionary(kvp => kvp.Id);
+            _Roles.Clear();
+            foreach (var role in roles)
+            {
+                _Roles.Add(role.Id, role);
+            }
         }
 
         public IDictionary<string, UserType> GetAllUsers()
@@ -42,9 +50,9 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             return this._Users.ToDictionary();
         }
 
-        public bool AccessTokenExists(string accessToken, out UserType user)
+        public bool AccessTokenExists(string accessToken, out UserType? user)
         {
-            UserType result = this.GetAllUsers().Values.Where(u => u.AccessToken.Where(at => at.Value == accessToken).Any()).FirstOrDefault();
+            UserType? result = this.GetAllUsers().Values.Where(u => u.AccessToken.Where(at => at.Value == accessToken).Any()).FirstOrDefault();
             if (result == default)
             {
                 user = null;
@@ -178,16 +186,23 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public void AddAccessToken(string userId, AccessToken newAccessToken)
         {
-            if (!_AccessTokens.ContainsKey(userId))
+            if (!_AccessTokens.TryGetValue(userId, out ISet<AccessToken>? value))
             {
-                _AccessTokens[userId] = new HashSet<AccessToken>();
+                value = new HashSet<AccessToken>();
+                _AccessTokens[userId] = value;
             }
-            _AccessTokens[userId].Add(newAccessToken);
+
+            value.Add(newAccessToken);
         }
 
         public void RemoveAccessToken(string accessToken)
         {
             throw new System.NotImplementedException();
+        }
+
+        public ISet<AccessToken> GetAllAccessTokenOfUser(string userId)
+        {
+            return _AccessTokens[userId].ToHashSet();
         }
     }
 }
