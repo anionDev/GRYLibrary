@@ -12,6 +12,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         public IDisposable UseSubNamespace(string loggerName);
 
         public void Log(string message, string messagId = null);
+        public void Log(GRYLogTarget logTarget ,string message, LogLevel logLevel);
         public void Log(string message, Exception exception, string messageId = null);
         public void Log(string message, LogLevel logLevel, Exception exception, string messageId);
         public void Log(string message, LogLevel logLevel, string messageId = null);
