@@ -208,7 +208,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
                 try
                 {
                     this.Configuration.LogTargets.ForEach(logtarget => logtarget.Enabled = logtarget.GetType().Equals(enabledLogTarget.GetType()));
-                    Log(message, logLevel);
+                    this.Log(message, logLevel);
                 }
                 finally
                 {
@@ -218,13 +218,24 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         }
         public void Log(LogItem logitem)
         {
-            if (this.Configuration.WriteLogEntriesAsynchronous)
+            lock (_LockObject)
             {
-                new Task(() => this.LogImplementation(logitem)).Start();
+                if (this.Configuration.WriteLogEntriesAsynchronous)
+                {
+                    new Task(() => this.LogImplementation(logitem)).Start();
+                }
+                else
+                {
+                    this.LogImplementation(logitem);
+                }
             }
-            else
+        }
+
+        public void LogProgramOutput(string message, string[] stdOutLines, string[] stdErrLines, LogLevel logevel)
+        {
+            lock (_LockObject)
             {
-                this.LogImplementation(logitem);
+                this.Log($"{message}; StdOut: {Environment.NewLine}{string.Join(Environment.NewLine, stdOutLines)}; StdErr: {Environment.NewLine}{string.Join(Environment.NewLine, stdErrLines)}", logevel);
             }
         }
         private void LogImplementation(LogItem logItem)

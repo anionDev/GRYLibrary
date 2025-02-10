@@ -24,10 +24,10 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public void SetAllUsers(ISet<UserType> users)
         {
-            _Users.Clear();
+            this._Users.Clear();
             foreach (var user in users)
             {
-            _Users.Add(user.Id, user);
+                this._Users.Add(user.Id, user);
             }
         }
 
@@ -38,10 +38,10 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public void SetAllRoles(ISet<Role> roles)
         {
-            _Roles.Clear();
+            this._Roles.Clear();
             foreach (var role in roles)
             {
-                _Roles.Add(role.Id, role);
+                this._Roles.Add(role.Id, role);
             }
         }
 
@@ -171,7 +171,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public AccessToken GetAccessToken(string accessToken)
         {
-            foreach (var kvp in _AccessTokens)
+            foreach (var kvp in this._AccessTokens)
             {
                 foreach (var token in kvp.Value)
                 {
@@ -186,10 +186,10 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public void AddAccessToken(string userId, AccessToken newAccessToken)
         {
-            if (!_AccessTokens.TryGetValue(userId, out ISet<AccessToken>? value))
+            if (!this._AccessTokens.TryGetValue(userId, out ISet<AccessToken>? value))
             {
                 value = new HashSet<AccessToken>();
-                _AccessTokens[userId] = value;
+                this._AccessTokens[userId] = value;
             }
 
             value.Add(newAccessToken);
@@ -202,7 +202,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public ISet<AccessToken> GetAllAccessTokenOfUser(string userId)
         {
-            return _AccessTokens[userId].ToHashSet();
+            return this._AccessTokens[userId].ToHashSet();
         }
     }
 }

@@ -9,6 +9,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         public GRYLogConfiguration Configuration { get; set; }
         public string BasePath { get; set; }
         public void Log(LogItem logitem);
+        public void LogProgramOutput(string message, string[] stdOutLines,string[] stdErrLines,LogLevel logevel);
         public IDisposable UseSubNamespace(string loggerName);
 
         public void Log(string message, string messagId = null);

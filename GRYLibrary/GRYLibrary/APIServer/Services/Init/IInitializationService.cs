@@ -1,5 +1,4 @@
-﻿using GRYLibrary.Core.APIServer.Settings;
-using GRYLibrary.Core.Misc.ConsoleApplication;
+﻿using GRYLibrary.Core.Misc.ConsoleApplication;
 
 namespace GRYLibrary.Core.APIServer.Services.Init
 {

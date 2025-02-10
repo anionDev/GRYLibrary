@@ -1,7 +1,6 @@
 ﻿using GRYLibrary.Core.APIServer.Services.Database;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
 using GRYLibrary.Core.APIServer.Services.Trans;
-using GRYLibrary.Core.APIServer.Services.TS;
 using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using System;
 using System.Collections.Generic;
@@ -127,10 +126,10 @@ namespace GRYLibrary.Core.Misc.Migration
         /// <remarks>
         /// This function is supposed to be a utilitiy for an integration-test.
         /// </remarks>
-        public static void DoAllMigrations(DbConnection dbConnection, IDatabaseManager databaseManager)
+        public static void DoAllMigrations(DbConnection dbConnection, IDatabaseManager databaseManager,ITimeService timeService)
         {
             IList<MigrationInstance> migrations = databaseManager.GetAllMigrations();
-            GRYMigrator migrator = new GRYMigrator(GeneralLogger.CreateUsingConsole(), new TimeService(), dbConnection, migrations, databaseManager.GetGenericDatabaseInteractor());
+            GRYMigrator migrator = new GRYMigrator(GeneralLogger.CreateUsingConsole(), timeService, dbConnection, migrations, databaseManager.GetGenericDatabaseInteractor());
             migrator.InitializeDatabaseAndMigrateIfRequired();
             GUtilities.AssertCondition(databaseManager.GetGenericDatabaseInteractor().GetAllTableNames(dbConnection).Any());
         }
