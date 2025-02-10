@@ -63,7 +63,7 @@
         <PackageReference Include="ExtendedXmlSerializer" Version="3.8.0" />
         <PackageReference Include="HtmlAgilityPack" Version="1.11.72" />
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
-        <PackageReference Include="Keycloak.Net.Core" Version="1.0.32" />
+        <PackageReference Include="Keycloak.Net.Core" Version="1.0.33" />
         <PackageReference Include="Microsoft.AspNetCore.HttpOverrides" Version="2.3.0" />
         <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.1" />
