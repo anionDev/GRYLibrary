@@ -7,5 +7,7 @@ namespace GRYLibrary.Core.APIServer.Services.Interfaces
     {
         public DateTime GetCurrentTime();
         public GRYDateTime GetCurrentTimeAsGRYDateTime();
+        public DateTime GetCurrentTimeInUTC();
+        public GRYDateTime GetCurrentTimeInUTCAsGRYDateTime();
     }
 }

@@ -43,6 +43,7 @@ using System.Data;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System.Net;
 using HtmlAgilityPack;
+using GRYLibrary.Core.APIServer.Services.Interfaces;
 
 namespace GRYLibrary.Core.Misc
 {
@@ -1887,10 +1888,7 @@ namespace GRYLibrary.Core.Misc
                 }
                 catch (Exception exception)
                 {
-                    if (errorHandler != null)
-                    {
-                        errorHandler(exception);
-                    }
+                    errorHandler?.Invoke(exception);
                 }
             });
             workerThread.Start();
@@ -2377,27 +2375,27 @@ namespace GRYLibrary.Core.Misc
 
         public static T[] PadLeft<T>(T[] array, T fillItem, int length)
         {
-            return PadHelper(array, length, fillItem, true);
+            return PadHelper(array, length, fillItem, true)!;
         }
 
-        public static T[] PadRight<T>(T[] array, int length)
+        public static T?[] PadRight<T>(T[] array, int length)
         {
             return PadRight(array, default, length);
         }
 
-        public static T[] PadRight<T>(T[] array, T fillItem, int length)
+        public static T?[] PadRight<T>(T[] array, T? fillItem, int length)
         {
             return PadHelper(array, length, fillItem, false);
         }
 
-        private static T[] PadHelper<T>(T[] array, int length, T fillItem, bool PadLeft)
+        private static T?[] PadHelper<T>(T[] array, int length, T? fillItem, bool PadLeft)
         {
             T[] result = array;
             while (array.Length <= length)
             {
                 if (PadLeft)
                 {
-                    Concat(new T[] { fillItem }, result);
+                    Concat(new T[] {object.Equals( default(T), fillItem!) ? default(T):fillItem }, result);
                 }
                 else
                 {
@@ -3389,12 +3387,39 @@ namespace GRYLibrary.Core.Misc
             return !htmlDoc.ParseErrors.Any();
         }
 
+        internal static void IgnoreExceptions(Action action)
+        {
+            try
+            {
+                action();
+            }
+            catch
+            {
+                NoOperation();
+            }
+        }
+
         public static bool RunningInContainer
         {
             get
             {
                 return Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
             }
+        }
+        public static string GetRandomHexCharacter(int digits, IRandomnessProvider random)
+        {
+            byte[] buffer = new byte[digits / 2];
+            random.NextBytes(buffer);
+            string result = String.Concat(buffer.Select(x => x.ToString("X2")).ToArray());
+            if (digits % 2 == 0)
+                return result;
+            return result + random.Next(16).ToString("X");
+        }
+        public static string GetRandomAlphaHexCharacter(IRandomnessProvider random)
+        {
+            var number = random.Next(7);
+            var result = (10 + number).ToString("X1");
+            return result;
         }
     }
 }

@@ -200,15 +200,42 @@ namespace GRYLibrary.Core.Logging.GRYLogger
             this.Log(new LogItem(getMessage, logLevel, messageId));
         }
 
+        public void Log(GRYLogTarget enabledLogTarget, string message, LogLevel logLevel)
+        {
+            lock (_LockObject)
+            {
+                Dictionary<string, bool> logTargetsEnabled = this.Configuration.LogTargets.Select(logtarget => (logtarget.GetType().FullName, logtarget.Enabled)).ToDictionary();
+                try
+                {
+                    this.Configuration.LogTargets.ForEach(logtarget => logtarget.Enabled = logtarget.GetType().Equals(enabledLogTarget.GetType()));
+                    this.Log(message, logLevel);
+                }
+                finally
+                {
+                    this.Configuration.LogTargets.ForEach(logtarget => logtarget.Enabled = logTargetsEnabled[logtarget.GetType().FullName]);
+                }
+            }
+        }
         public void Log(LogItem logitem)
         {
-            if (this.Configuration.WriteLogEntriesAsynchronous)
+            lock (_LockObject)
             {
-                new Task(() => this.LogImplementation(logitem)).Start();
+                if (this.Configuration.WriteLogEntriesAsynchronous)
+                {
+                    new Task(() => this.LogImplementation(logitem)).Start();
+                }
+                else
+                {
+                    this.LogImplementation(logitem);
+                }
             }
-            else
+        }
+
+        public void LogProgramOutput(string message, string[] stdOutLines, string[] stdErrLines, LogLevel logevel)
+        {
+            lock (_LockObject)
             {
-                this.LogImplementation(logitem);
+                this.Log($"{message}; StdOut: {Environment.NewLine}{string.Join(Environment.NewLine, stdOutLines)}; StdErr: {Environment.NewLine}{string.Join(Environment.NewLine, stdErrLines)}", logevel);
             }
         }
         private void LogImplementation(LogItem logItem)

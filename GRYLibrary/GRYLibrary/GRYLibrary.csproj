@@ -2,9 +2,9 @@
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <Authors>Marius Göcke</Authors>
-        <Version>0.12.133</Version>
-        <AssemblyVersion>0.12.133</AssemblyVersion>
-        <FileVersion>0.12.133</FileVersion>
+        <Version>0.12.134</Version>
+        <AssemblyVersion>0.12.134</AssemblyVersion>
+        <FileVersion>0.12.134</FileVersion>
         <SelfContained>false</SelfContained>
         <IsPackable>false</IsPackable>
         <PreserveCompilationContext>false</PreserveCompilationContext>
@@ -29,7 +29,7 @@
         <SignAssembly>True</SignAssembly>
         <AssemblyOriginatorKeyFile>..\..\Other\Resources\PublicKeys\StronglyNamedKey\GRYLibraryPublicKey.snk</AssemblyOriginatorKeyFile>
         <DelaySign>True</DelaySign>
-        <NoWarn>1701;1702;CA1822;CS1591;CS1573;IDE0045;IDE0046;IDE0054;IDE0058;IDE0074;IDE0090;ASP0014;SYSLIB10;IDE0017;CS8002;CA1859</NoWarn>
+        <NoWarn>1701;1702;CA1822;CS1591;CS1573;IDE0045;IDE0046;IDE0054;IDE0058;IDE0074;IDE0090;ASP0014;SYSLIB10;IDE0017;CS8002;CA1859;IDE0034</NoWarn>
         <WarningsAsErrors>NU1605</WarningsAsErrors>
         <ErrorLog>..\Other\Resources\CodeAnalysisResult\GRYLibrary.sarif</ErrorLog>
         <OutputType>Library</OutputType>
@@ -63,7 +63,7 @@
         <PackageReference Include="ExtendedXmlSerializer" Version="3.8.0" />
         <PackageReference Include="HtmlAgilityPack" Version="1.11.72" />
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
-        <PackageReference Include="Keycloak.Net.Core" Version="1.0.32" />
+        <PackageReference Include="Keycloak.Net.Core" Version="1.0.33" />
         <PackageReference Include="Microsoft.AspNetCore.HttpOverrides" Version="2.3.0" />
         <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.1" />

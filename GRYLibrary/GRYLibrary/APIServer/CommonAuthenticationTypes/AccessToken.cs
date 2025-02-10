@@ -12,7 +12,7 @@ namespace GRYLibrary.Core.APIServer.CommonAuthenticationTypes
         public DateTime ExpiredMoment { get; set; }
         public bool IsValid(ITimeService timeService)
         {
-            return timeService.GetCurrentTime().ToUniversalTime() < ExpiredMoment.ToUniversalTime();
+            return timeService.GetCurrentTime().ToUniversalTime() < this.ExpiredMoment.ToUniversalTime();
         }
     }
 }

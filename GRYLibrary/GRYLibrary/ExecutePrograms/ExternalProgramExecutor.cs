@@ -37,7 +37,7 @@ namespace GRYLibrary.Core.ExecutePrograms
         }
         public ExternalProgramExecutorConfiguration Configuration { get; }
         public ExecutionState CurrentExecutionState { get; private set; } = ExecutionState.NotStarted;
-        public GRYLog LogObject { get; set; }
+        public IGRYLog LogObject { get; set; }
         internal string CMD { get; private set; }
         public delegate void ExecutionFinishedHandler(ExternalProgramExecutor sender, int exitCode);
         public event ExecutionFinishedHandler ExecutionFinishedEvent;
@@ -271,13 +271,12 @@ namespace GRYLibrary.Core.ExecutePrograms
             }
         }
 
-        private Process _Process;
+        public Process _Process= new Process();
         private IDisposable _SubNamespace;
         private Task StartProgram()
         {
             this._SubNamespace = this.LogObject.UseSubNamespace(this.Configuration.LogNamespace);
-            this._Process = new Process();
-            Stopwatch stopWatch = new();
+           Stopwatch stopWatch = new();
             try
             {
                 this.ProcessWasAbortedDueToTimeout = false;
@@ -425,8 +424,8 @@ namespace GRYLibrary.Core.ExecutePrograms
         }
         public void Dispose()
         {
-            this._SubNamespace?.Dispose();
-            this._Process?.Dispose();
+            Utilities.IgnoreExceptions(() => this._SubNamespace?.Dispose());
+            Utilities.IgnoreExceptions(() => this._Process?.Dispose());
         }
 
         private void WaitForProcessEnd(Process process, Stopwatch stopwatch)
