@@ -13,6 +13,7 @@ namespace GRYLibrary.Core.Misc
         public T GenerateNewId();
         public ISet<T> GeneratedIds();
         void Reset();
+        void Reset(T lastValue);
     }
     public class IdGenerator<T> : IIdGenerator<T>
     {
@@ -38,6 +39,11 @@ namespace GRYLibrary.Core.Misc
         public void Reset()
         {
             this.LastId = this._reset();
+        }
+
+        public void Reset(T lastValue)
+        {
+            this.LastId = lastValue;
         }
     }
     public static class IdGenerator
