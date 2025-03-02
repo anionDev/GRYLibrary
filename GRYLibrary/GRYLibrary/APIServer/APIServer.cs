@@ -197,7 +197,7 @@ namespace GRYLibrary.Core.APIServer
             });
             var services = builder.Services;
             IMvcBuilder mvcBuilder = services.AddControllers();//TODO add handling for /robots.txt
-            mvcBuilder= mvcBuilder.ConfigureApplicationPartManager(manager =>
+            mvcBuilder = mvcBuilder.ConfigureApplicationPartManager(manager =>
                 {
                     manager.FeatureProviders.Clear();
                     manager.FeatureProviders.Add(new CustomControllerFeatureProvider<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>(this._Configuration, logger));
@@ -329,6 +329,10 @@ namespace GRYLibrary.Core.APIServer
             builder.Services.AddLogging(c => c.ClearProviders());
 
             WebApplication app = builder.Build();
+            if (this._Configuration.InitializationInformation.ApplicationConstants.UseWebSockets)
+            {
+            app.UseWebSockets();
+            }
             app.UseRouting();
 
             #region Add middlewares

@@ -15,6 +15,7 @@ namespace GRYLibrary.Core.APIServer.Settings
     public interface IApplicationConstants
     {
         public string ApplicationName { get; set; }
+        public bool UseWebSockets { get; set; } 
         public string ApplicationDescription { get; set; }
         public IList<Regulation> Regulations { get; set; }
         public Version3 ApplicationVersion { get; set; }
@@ -71,6 +72,7 @@ namespace GRYLibrary.Core.APIServer.Settings
             this.DataFolder = AbstractFilePath.FromString("./Data");
             this.ConfigurationFile = AbstractFilePath.FromString("./Configuration.xml");
             this.LogFolder = AbstractFilePath.FromString("./Logs");
+            this.UseWebSockets = false;
         }
         private string _BaseFolder;
         public string ApplicationName { get; set; }
@@ -127,6 +129,7 @@ namespace GRYLibrary.Core.APIServer.Settings
         public IList<Type> CustomMiddlewares1 { get; set; } = new List<Type>();
         public IList<Type> CustomMiddlewares2 { get; set; } = new List<Type>();
         public ISet<Type> KnownTypes { get; set; } = new HashSet<Type>();
+        public bool UseWebSockets { get ; set ; }
 
         public void Initialize(string baseFolder)
         {
