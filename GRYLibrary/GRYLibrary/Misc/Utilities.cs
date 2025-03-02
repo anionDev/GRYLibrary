@@ -50,6 +50,8 @@ namespace GRYLibrary.Core.Misc
     public static partial class Utilities
     {
         #region Constants
+        public const string Line = "--------";
+        public const string LongLine= Line+ Line;
         public const string EmptyString = "";
         public const string SpecialCharacterTestString = "<SpecialCharacterTest>äöüßÄÖÜÆÑçéý<span>should be visible</span> &← /\\*#^°'`´\" ?|§@$€%-_²⁶₇¬∀∈∑∜∫∰≈≪ﬁ.Доброе утро صبح به خیر शुभ प्रभात 좋은 아침 സുപ്രഭാതം おはようございます ហ្គុនមូហ្កិន</SpecialCharacterTest>";
 
