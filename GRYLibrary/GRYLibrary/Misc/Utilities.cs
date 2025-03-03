@@ -50,6 +50,8 @@ namespace GRYLibrary.Core.Misc
     public static partial class Utilities
     {
         #region Constants
+        public const string Line = "--------";
+        public const string LongLine= Line+ Line;
         public const string EmptyString = "";
         public const string SpecialCharacterTestString = "<SpecialCharacterTest>äöüßÄÖÜÆÑçéý<span>should be visible</span> &← /\\*#^°'`´\" ?|§@$€%-_²⁶₇¬∀∈∑∜∫∰≈≪ﬁ.Доброе утро صبح به خیر शुभ प्रभात 좋은 아침 സുപ്രഭാതം おはようございます ហ្គុនមូហ្កិន</SpecialCharacterTest>";
 
@@ -2395,7 +2397,7 @@ namespace GRYLibrary.Core.Misc
             {
                 if (PadLeft)
                 {
-                    Concat(new T[] {object.Equals( default(T), fillItem!) ? default(T):fillItem }, result);
+                    Concat(new T[] { Equals( default(T), fillItem!) ? default(T):fillItem }, result);
                 }
                 else
                 {
@@ -3417,8 +3419,8 @@ namespace GRYLibrary.Core.Misc
         }
         public static string GetRandomAlphaHexCharacter(IRandomnessProvider random)
         {
-            var number = random.Next(7);
-            var result = (10 + number).ToString("X1");
+            int number = random.Next(7);
+            string result = (10 + number).ToString("X1");
             return result;
         }
     }

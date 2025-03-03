@@ -39,27 +39,34 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
 
         protected override void Log(HttpContext context, byte[] requestBodyBytes, byte[] responseBodyBytes)
         {
-            DateTime moment = GUtilities.GetNow();
-            (string info, string content, byte[] plainContent) requestBody = BytesToString(requestBodyBytes, this._Encoding);
-            (string info, string content, byte[] plainContent) responseBody = BytesToString(responseBodyBytes, this._Encoding);
-            string requestRoute = context.Request.Path;
-            ushort responseHTTPStatusCode = (ushort)context.Response.StatusCode;
-            IPAddress? clientIP = (IPAddress?)context.Items["ClientIPAddress"];
-            Request request = new Request(moment, clientIP, context.Request.Method, requestRoute, context.Request.Query, context.Request.Headers, requestBody, null/*TODO*/, responseHTTPStatusCode, context.Response.Headers, responseBody);
-            TimeSpan? duration = context.Items.ContainsKey("Duration") ? (TimeSpan)context.Items["Duration"] : default;
-            bool isAuthenticated;
-            if (context.Items.ContainsKey(AuthenticationMiddleware.IsAuthenticatedInformationName))
+            try
             {
-                isAuthenticated = (bool)context.Items[AuthenticationMiddleware.IsAuthenticatedInformationName];
+                DateTime moment = GUtilities.GetNow();
+                (string info, string content, byte[] plainContent) requestBody = BytesToString(requestBodyBytes, this._Encoding);
+                (string info, string content, byte[] plainContent) responseBody = BytesToString(responseBodyBytes, this._Encoding);
+                string requestRoute = context.Request.Path;
+                ushort responseHTTPStatusCode = (ushort)context.Response.StatusCode;
+                IPAddress? clientIP = (IPAddress?)context.Items["ClientIPAddress"];
+                Request request = new Request(moment, clientIP, context.Request.Method, requestRoute, context.Request.Query, context.Request.Headers, requestBody, null/*TODO*/, responseHTTPStatusCode, context.Response.Headers, responseBody);
+                TimeSpan? duration = context.Items.ContainsKey("Duration") ? (TimeSpan)context.Items["Duration"] : default;
+                bool isAuthenticated;
+                if (context.Items.ContainsKey(AuthenticationMiddleware.IsAuthenticatedInformationName))
+                {
+                    isAuthenticated = (bool)context.Items[AuthenticationMiddleware.IsAuthenticatedInformationName];
+                }
+                else
+                {
+                    isAuthenticated = false;
+                }
+                ClaimsPrincipal principal = isAuthenticated && context.User != null && context.User.Identity.IsAuthenticated ? context.User : null;
+                //TODO add option to add this log-entry to a database
+                this.LogHTTPRequest(request, false, duration, principal, new HashSet<GRYLogTarget> { new Logging.GRYLogger.ConcreteLogTargets.Console() });
+                this.LogHTTPRequest(request, this.ShouldLogEntireRequestContentInLogFile(request), duration, principal, new HashSet<GRYLogTarget> { new Logging.GRYLogger.ConcreteLogTargets.LogFile() });
             }
-            else
+            catch
             {
-                isAuthenticated = false;
+                throw;
             }
-            ClaimsPrincipal principal = isAuthenticated && context.User != null && context.User.Identity.IsAuthenticated ? context.User : null;
-            //TODO add option to add this log-entry to a database
-            this.LogHTTPRequest(request, false, duration, principal, new HashSet<GRYLogTarget> { new Logging.GRYLogger.ConcreteLogTargets.Console() });
-            this.LogHTTPRequest(request, this.ShouldLogEntireRequestContentInLogFile(request), duration, principal, new HashSet<GRYLogTarget> { new Logging.GRYLogger.ConcreteLogTargets.LogFile() });
         }
 
         public static (string info, string content, byte[] plainContent) BytesToString(byte[] content, Encoding encoding)

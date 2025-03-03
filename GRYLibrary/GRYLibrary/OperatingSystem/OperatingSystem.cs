@@ -12,7 +12,7 @@ namespace GRYLibrary.Core.OperatingSystem
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                return GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems.Windows.Instance;
+                return Windows.Instance;
             }
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {

@@ -102,7 +102,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
 
         public static void ConnectToDatabaseWrapper(Action connectAction, IGeneralLogger logger, string adaptedConnectionString)
         {
-            bool connected = Tools.ConnectToDatabase(connectAction, GeneralLogger.NoLog(), adaptedConnectionString, out string? notConnectionReason);
+            bool connected = ConnectToDatabase(connectAction, GeneralLogger.NoLog(), adaptedConnectionString, out string? notConnectionReason);
             GUtilities.AssertCondition(connected, "Could not connect to database." + (notConnectionReason == null ? string.Empty : " "+notConnectionReason));
         }
         public static bool ConnectToDatabase(Action connectAction, IGeneralLogger logger, string adaptedConnectionString, out string? notConnectionReason)

@@ -4,6 +4,7 @@ using GUtilies = GRYLibrary.Core.Misc.Utilities;
 using System.Diagnostics;
 using GRYLibrary.Core.Logging.GRYLogger;
 using System.Collections.Generic;
+using GRYLibrary.Core.Misc;
 
 namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
 {
@@ -56,9 +57,36 @@ namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
                 }
             }
         }
-        public static void LogLoopExecution<T>(this IGeneralLogger logger, IEnumerable<T> items, Action<T> action)
+        public static void LogLoopExecution<T>(this IGeneralLogger logger, string title, IEnumerable<T> items, bool continueOnError, Func<T, string> getName, LogLevel loglevelForOverhead, Action<T> action)
         {
-            throw new NotImplementedException();
+            logger.Log(GUtilies.LongLine, loglevelForOverhead);
+            logger.Log($"Run '{title}' for {items.Count()} items.", loglevelForOverhead);
+
+            logger.Log(GUtilies.Line, loglevelForOverhead);
+            foreach (T? item in items)
+            {
+                string name = getName(item);
+                logger.Log($"Start action for item '{name}'.", loglevelForOverhead);
+                try
+                {
+                    action(item);
+                }
+                catch (Exception exception)
+                {
+                    logger.LogException(exception, $"Error occurred while doing action for item '{name}'.");
+                    if (!continueOnError)
+                    {
+                        throw;
+                    }
+                }
+                finally
+                {
+                    logger.Log($"Finished action for item '{name}'.", loglevelForOverhead);
+                }
+                logger.Log(GUtilies.Line, loglevelForOverhead);
+            }
+            logger.Log($"Finished '{title}'.", loglevelForOverhead);
+            logger.Log(GUtilies.LongLine, loglevelForOverhead);
         }
 
         public static void LogException(this IGeneralLogger logger, Exception exception, string message)

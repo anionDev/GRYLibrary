@@ -97,7 +97,7 @@ namespace GRYLibrary.Core.Misc.Strings
 
         public static MultiLineString FromHTML(string @value)
         {
-            return MultiLineString.From(WebUtility.HtmlDecode(@value));
+            return From(WebUtility.HtmlDecode(@value));
         }
     }
 }
