@@ -195,7 +195,7 @@ namespace GRYLibrary.Core.APIServer
                 ApplicationName = this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName,
                 EnvironmentName = this._Configuration.InitializationInformation.ApplicationConstants.Environment.GetType().Name
             });
-            var services = builder.Services;
+            IServiceCollection services = builder.Services;
             IMvcBuilder mvcBuilder = services.AddControllers();//TODO add handling for /robots.txt
             mvcBuilder= mvcBuilder.ConfigureApplicationPartManager(manager =>
                 {

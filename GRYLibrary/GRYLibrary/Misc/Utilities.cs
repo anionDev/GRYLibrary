@@ -2397,7 +2397,7 @@ namespace GRYLibrary.Core.Misc
             {
                 if (PadLeft)
                 {
-                    Concat(new T[] {object.Equals( default(T), fillItem!) ? default(T):fillItem }, result);
+                    Concat(new T[] { Equals( default(T), fillItem!) ? default(T):fillItem }, result);
                 }
                 else
                 {
@@ -3419,8 +3419,8 @@ namespace GRYLibrary.Core.Misc
         }
         public static string GetRandomAlphaHexCharacter(IRandomnessProvider random)
         {
-            var number = random.Next(7);
-            var result = (10 + number).ToString("X1");
+            int number = random.Next(7);
+            string result = (10 + number).ToString("X1");
             return result;
         }
     }

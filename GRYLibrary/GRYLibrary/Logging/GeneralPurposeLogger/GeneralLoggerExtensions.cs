@@ -63,7 +63,7 @@ namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
             logger.Log($"Run '{title}' for {items.Count()} items.", loglevelForOverhead);
 
             logger.Log(GUtilies.Line, loglevelForOverhead);
-            foreach (var item in items)
+            foreach (T? item in items)
             {
                 string name = getName(item);
                 logger.Log($"Start action for item '{name}'.", loglevelForOverhead);

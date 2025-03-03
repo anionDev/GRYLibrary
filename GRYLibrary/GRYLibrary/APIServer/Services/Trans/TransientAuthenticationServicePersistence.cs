@@ -25,7 +25,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         public void SetAllUsers(ISet<UserType> users)
         {
             this._Users.Clear();
-            foreach (var user in users)
+            foreach (UserType user in users)
             {
                 this._Users.Add(user.Id, user);
             }
@@ -39,7 +39,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         public void SetAllRoles(ISet<Role> roles)
         {
             this._Roles.Clear();
-            foreach (var role in roles)
+            foreach (Role role in roles)
             {
                 this._Roles.Add(role.Id, role);
             }
@@ -171,9 +171,9 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public AccessToken GetAccessToken(string accessToken)
         {
-            foreach (var kvp in this._AccessTokens)
+            foreach (KeyValuePair<string, ISet<AccessToken>> kvp in this._AccessTokens)
             {
-                foreach (var token in kvp.Value)
+                foreach (AccessToken token in kvp.Value)
                 {
                     if (token.Value == accessToken)
                     {

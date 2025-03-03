@@ -6,7 +6,7 @@ namespace GRYLibrary.Core.APIServer.Services.Init
     {
         public void Initialize(ICommandlineParameter commandlineParameter)
         {
-            GRYLibrary.Core.Misc.Utilities.NoOperation();
+            Misc.Utilities.NoOperation();
         }
     }
 }
