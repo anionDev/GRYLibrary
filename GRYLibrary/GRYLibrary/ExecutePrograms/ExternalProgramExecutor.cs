@@ -271,12 +271,12 @@ namespace GRYLibrary.Core.ExecutePrograms
             }
         }
 
-        public Process _Process= new Process();
+        public Process _Process = new Process();
         private IDisposable _SubNamespace;
         private Task StartProgram()
         {
             this._SubNamespace = this.LogObject.UseSubNamespace(this.Configuration.LogNamespace);
-           Stopwatch stopWatch = new();
+            Stopwatch stopWatch = new();
             try
             {
                 this.ProcessWasAbortedDueToTimeout = false;
