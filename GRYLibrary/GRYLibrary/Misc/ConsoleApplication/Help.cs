@@ -1,5 +1,6 @@
 ﻿using CommandLine;
 using GRYLibrary.Core.Logging.GeneralPurposeLogger;
+using System.Linq;
 
 namespace GRYLibrary.Core.Misc.ConsoleApplication
 {
@@ -10,16 +11,28 @@ namespace GRYLibrary.Core.Misc.ConsoleApplication
         public override int Run(GRYConsoleApplicationInitialInformation applicationInitialInformation)
         {
             this.ParserBase._Logger.Log($"{applicationInitialInformation.ProgramName} v{applicationInitialInformation.ProgramVersion}", Microsoft.Extensions.Logging.LogLevel.Information);
+
             if (applicationInitialInformation.ProgramDescription is not null)
             {
                 this.ParserBase._Logger.Log(string.Empty, Microsoft.Extensions.Logging.LogLevel.Information);
                 this.ParserBase._Logger.Log(applicationInitialInformation.ProgramDescription, Microsoft.Extensions.Logging.LogLevel.Information);
             }
+
             this.ParserBase._Logger.Log(string.Empty, Microsoft.Extensions.Logging.LogLevel.Information);
             this.ParserBase._Logger.Log("Available commands:", Microsoft.Extensions.Logging.LogLevel.Information);
             foreach (System.Type type in this.ParserBase.GetVerbs())
             {
-                this.ParserBase._Logger.Log($"  - {type.Name.ToString().ToLower()}", Microsoft.Extensions.Logging.LogLevel.Information);
+                VerbAttribute verb = (VerbAttribute)type.GetCustomAttributes(typeof(VerbAttribute), true).First();
+                this.ParserBase._Logger.Log($"  - {verb.Name.ToLower()}", Microsoft.Extensions.Logging.LogLevel.Information);
+            }
+
+            if (applicationInitialInformation.AdditionalHelpText is not null)
+            {
+                this.ParserBase._Logger.Log(string.Empty, Microsoft.Extensions.Logging.LogLevel.Information);
+                foreach (string line in applicationInitialInformation.AdditionalHelpText.Split("\n"))
+                {
+                    this.ParserBase._Logger.Log(line, Microsoft.Extensions.Logging.LogLevel.Information);
+                }
             }
 
             return 0;
