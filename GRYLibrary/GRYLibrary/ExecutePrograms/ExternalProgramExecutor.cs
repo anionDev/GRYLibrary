@@ -645,11 +645,26 @@ namespace GRYLibrary.Core.ExecutePrograms
         {
             while (this.IsRunning || !this._NotLoggedOutputLines.IsEmpty)
             {
-                Thread.Sleep(100);
                 if (this._NotLoggedOutputLines.TryDequeue(out (LogLevel, string) logItem))
                 {
-                    this.LogObject.Log(logItem.Item2, logItem.Item1);
+                    string message = logItem.Item2;
+                    LogLevel logLevel = logItem.Item1;
+                    if (this.Configuration.AdaptLogLevelDependentPrefix)
+                    {
+                        if (message.StartsWith("Warning: "))
+                        {
+                            logLevel = LogLevel.Warning;
+                            message = message["Warning: ".Length..];
+                        }
+                        else if (message.StartsWith("Debug: "))
+                        {
+                            logLevel = LogLevel.Debug;
+                            message = message["Debug: ".Length..];
+                        }
+                    }
+                    this.LogObject.Log(message, logLevel);
                 }
+                Thread.Sleep(10);
             }
         }
     }
