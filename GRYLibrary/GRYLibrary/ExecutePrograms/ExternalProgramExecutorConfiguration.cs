@@ -30,6 +30,7 @@ namespace GRYLibrary.Core.ExecutePrograms
         public string Password { get; set; } = null;
         public bool UpdateConsoleTitle { get; set; } = false;
         public bool DelegateToEpew { get; set; } = false;
+        public bool AdaptLogLevelDependentPrefix { get; set; } = true;
         public bool RedirectStandardInput { get; set; } = false;
         /// <remarks>
         /// If this property is set to false, then <see cref="ExternalProgramExecutor.AllStdOutLines"/> will remain empty and <see cref="ExternalProgramExecutor.LogObject"/> will not have any entry.

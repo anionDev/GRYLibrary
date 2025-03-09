@@ -25,7 +25,7 @@ namespace GRYLibrary.Core.Misc.ConsoleApplication
         private readonly SentenceBuilder _SentenceBuilder;
         private readonly GRYConsoleApplicationInitialInformation _GRYConsoleApplicationInitialInformation;
         private readonly bool _ResetConsoleToDefaultvalues;
-        public GRYConsoleApplication(ParserBase mains, string programName, string programVersion, string programDescription, bool programCanRunWithoutArguments, ExecutionMode executionMode, GRYEnvironment environment, bool resetConsoleToDefaultvalues)
+        public GRYConsoleApplication(ParserBase mains, string programName, string programVersion, string programDescription, bool programCanRunWithoutArguments, ExecutionMode executionMode, GRYEnvironment environment, bool resetConsoleToDefaultvalues, string? additionalHelpText)
         {
             this._Mains = mains;
             this._ProgramName = programName;
@@ -33,10 +33,11 @@ namespace GRYLibrary.Core.Misc.ConsoleApplication
             this._ProgramDescription = programDescription;
             this._ProgramCanRunWithoutArguments = programCanRunWithoutArguments;
             this._Log = GRYLog.Create();
+            this._Log.Configuration.PrintEmptyLines=true;
             this._SentenceBuilder = SentenceBuilder.Create();
             this._ExecutionMode = executionMode;
             this._ResetConsoleToDefaultvalues = resetConsoleToDefaultvalues;
-            this._GRYConsoleApplicationInitialInformation = new GRYConsoleApplicationInitialInformation(this._ProgramName, this._ProgramVersion, this._ProgramDescription, this._ExecutionMode, environment);
+            this._GRYConsoleApplicationInitialInformation = new GRYConsoleApplicationInitialInformation(this._ProgramName, this._ProgramVersion, this._ProgramDescription, this._ExecutionMode, environment, additionalHelpText);
         }
 
         public int Main(string[] arguments)
@@ -84,8 +85,8 @@ namespace GRYLibrary.Core.Misc.ConsoleApplication
                     {
                         string programNameLower = this._ProgramName.ToLower();
                         this._Log.Log($"{this._ProgramName} v{this._ProgramVersion}");
-                        this._Log.Log($"Run '{programNameLower} {nameof(Help).ToLower()}' to get help about the usage.");
-                        this._Log.Log($"Run '{programNameLower} {nameof(Info).ToLower()}' to get information about the program.");
+                        this._Log.Log($"Run '{programNameLower} help' to get help about the usage.");
+                        this._Log.Log($"Run '{programNameLower} info' to get information about the program.");
                         result = 0;
                     }
                     else
