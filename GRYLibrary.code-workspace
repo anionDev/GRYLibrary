@@ -3,10 +3,6 @@
 		{
 			"path": ".",
 			"name": "Entire repository"
-		},
-		{
-			"path": "./GRYLibrary",
-			"name": "GRYLibrary"
 		}
 	],
 	"tasks": {
@@ -38,6 +34,7 @@
 		]
 	},
 	"settings": {
+		"terminal.integrated.cwd": "${workspaceFolder}",
 		"window.title": "${dirty} ${rootName}",
 		"spellright.documentTypes": [
 			"markdown",
