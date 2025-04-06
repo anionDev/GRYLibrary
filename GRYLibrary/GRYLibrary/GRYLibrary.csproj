@@ -2,9 +2,9 @@
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <Authors>Marius Göcke</Authors>
-        <Version>0.12.143</Version>
-        <AssemblyVersion>0.12.143</AssemblyVersion>
-        <FileVersion>0.12.143</FileVersion>
+        <Version>0.12.144</Version>
+        <AssemblyVersion>0.12.144</AssemblyVersion>
+        <FileVersion>0.12.144</FileVersion>
         <SelfContained>false</SelfContained>
         <IsPackable>false</IsPackable>
         <PreserveCompilationContext>false</PreserveCompilationContext>
@@ -60,7 +60,7 @@
     <ItemGroup>
         <PackageReference Include="CommandLineParser" Version="2.9.1" />
         <PackageReference Include="DNTCaptcha.Core" Version="5.3.0" />
-        <PackageReference Include="ExtendedXmlSerializer" Version="3.8.0" />
+        <PackageReference Include="ExtendedXmlSerializer" Version="3.9.4" />
         <PackageReference Include="HtmlAgilityPack" Version="1.12.0" />
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
         <PackageReference Include="Keycloak.Net.Core" Version="1.0.33" />
@@ -77,11 +77,11 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.3" />
         <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.3" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.3" />
-        <PackageReference Include="NJsonSchema" Version="11.1.0" />
-        <PackageReference Include="NSwag.AspNetCore" Version="14.2.0" />
+        <PackageReference Include="NJsonSchema" Version="11.2.0" />
+        <PackageReference Include="NSwag.AspNetCore" Version="14.3.0" />
         <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
         <PackageReference Include="System.Reactive" Version="6.0.1" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="8.0.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.0" />
         <PackageReference Include="System.Text.Encodings.Web" Version="9.0.3" />
         <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
         <PackageReference Include="TagLibSharp" Version="2.3.0" />
