@@ -12,5 +12,6 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
         public uint MaximalLengthofRequestBodies { get; set; }
         public uint MaximalLengthofResponseBodies { get; set; }
         public ISet<string> NotLoggedRoutes { get; set; }
+        public ISet<string> LoggedHTTPRequeustHeader { get; set; }
     }
 }
