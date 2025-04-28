@@ -14,6 +14,7 @@ using System.Text.RegularExpressions;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
 using GRYLibrary.Core.APIServer.MidT.Auth;
 using System.Security.Claims;
+using System.Linq;
 
 namespace GRYLibrary.Core.APIServer.Mid.M05DLog
 {
@@ -60,13 +61,35 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
                 }
                 ClaimsPrincipal principal = isAuthenticated && context.User != null && context.User.Identity.IsAuthenticated ? context.User : null;
                 //TODO add option to add this log-entry to a database
-                this.LogHTTPRequest(request, false, duration, principal, new HashSet<GRYLogTarget> { new Logging.GRYLogger.ConcreteLogTargets.Console() });
-                this.LogHTTPRequest(request, this.ShouldLogEntireRequestContentInLogFile(request), duration, principal, new HashSet<GRYLogTarget> { new Logging.GRYLogger.ConcreteLogTargets.LogFile() });
+                IDictionary<string, IList<string?>> header = this.GetHeader(context.Request);
+                this.LogHTTPRequest(request, false, duration, principal, new HashSet<GRYLogTarget> { new Logging.GRYLogger.ConcreteLogTargets.Console() }, header);
+                this.LogHTTPRequest(request, this.ShouldLogEntireRequestContentInLogFile(request), duration, principal, new HashSet<GRYLogTarget> { new Logging.GRYLogger.ConcreteLogTargets.LogFile() }, header);
             }
             catch
             {
                 throw;
             }
+        }
+
+        private IDictionary<string, IList<string?>> GetHeader(HttpRequest request)
+        {
+            Dictionary<string, IList<string?>> result = new Dictionary<string, IList<string?>>();
+            foreach (string headerToLog in _RequestLoggingSettings.LoggedHTTPRequeustHeader)
+            {
+                if (!result.TryGetValue(headerToLog, out IList<string?>? value))
+                {
+                    value = new List<string?>();
+                    result.Add(headerToLog, value);
+                }
+                if (request.Headers.TryGetValue(headerToLog, out Microsoft.Extensions.Primitives.StringValues values))
+                {
+                    foreach (var item in values)
+                    {
+                        value.Add(item);
+                    }
+                }
+            }
+            return result;
         }
 
         public static (string info, string content, byte[] plainContent) BytesToString(byte[] content, Encoding encoding)
@@ -85,7 +108,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
             }
         }
 
-        private void LogHTTPRequest(Request request, bool logFullRequest, TimeSpan? duration, ClaimsPrincipal user, ISet<GRYLogTarget> logTargets)
+        private void LogHTTPRequest(Request request, bool logFullRequest, TimeSpan? duration, ClaimsPrincipal user, ISet<GRYLogTarget> logTargets, IDictionary<string, IList<string?>> header)
         {
             try
             {
@@ -95,7 +118,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
                     string formatted;
                     if (logFullRequest)
                     {
-                        formatted = this.FormatLogEntryFull(request, duration, user, this._RequestLoggingSettings.MaximalLengthofRequestBodies, this._RequestLoggingSettings.MaximalLengthofResponseBodies);
+                        formatted = this.FormatLogEntryFull(request, duration, user, this._RequestLoggingSettings.MaximalLengthofRequestBodies, this._RequestLoggingSettings.MaximalLengthofResponseBodies, header);
                     }
                     else
                     {
@@ -147,7 +170,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
             return false;
         }
 
-        public virtual string FormatLogEntryFull(Request request, TimeSpan? duration, ClaimsPrincipal user, uint maximalLengthofRequestBodies, uint maximalLengthofResponseBodies)
+        public virtual string FormatLogEntryFull(Request request, TimeSpan? duration, ClaimsPrincipal user, uint maximalLengthofRequestBodies, uint maximalLengthofResponseBodies, IDictionary<string, IList<string?>> header)
         {
             string clientIPAsString = this.FormatIPAddress(request.ClientIPAddress);
             string result = $"Request received:{Environment.NewLine}"
@@ -155,8 +178,17 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
                         + $"  Client-ip: {clientIPAsString}{Environment.NewLine}"
                         + $"  Request-details:{Environment.NewLine}"
                         + $"    Method: {request.Method}{Environment.NewLine}"
-                        + $"    Route: {request.Route}{request.GetFormattedQuery()}{Environment.NewLine}"
-                        + $"    Body: {this.FormatBody(request.RequestBody, maximalLengthofRequestBodies)}{Environment.NewLine}"
+                        + $"    Route: {request.Route}{request.GetFormattedQuery()}{Environment.NewLine}";
+            if (0 < header.Count)
+            {
+                result = result + $"  Header:{Environment.NewLine}";
+                foreach (var kvp in header)
+                {
+                    string value = "{" + string.Join(", ", kvp.Value.Select(item => "\"" + item + "\"")) + "}";
+                    result = result + $"    - {kvp.Key}: {value}{Environment.NewLine}";
+                }
+            }
+            result = result + $"    Body: {this.FormatBody(request.RequestBody, maximalLengthofRequestBodies)}{Environment.NewLine}"
                         + $"  Response-details:{Environment.NewLine}"
                         + $"    Statuscode: {request.ResponseStatusCode}{Environment.NewLine}"
                         + $"    Body: {this.FormatBody(request.ResponseBody, maximalLengthofResponseBodies)}{Environment.NewLine}";
