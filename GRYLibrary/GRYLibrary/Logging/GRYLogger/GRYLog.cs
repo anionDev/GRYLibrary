@@ -192,12 +192,18 @@ namespace GRYLibrary.Core.Logging.GRYLogger
 
         public void Log(Func<string> getMessage, LogLevel logLevel, Exception exception, string messageId = null)
         {
-            this.Log(new LogItem(getMessage(), logLevel, exception, messageId));
+            this.Log(new LogItem(getMessage(), logLevel, exception, messageId)
+            {
+                LogTargets = this.Configuration.LogTargets.ToHashSet(),
+            });
         }
 
         public void Log(Func<string> getMessage, LogLevel logLevel, string messageId = null)
         {
-            this.Log(new LogItem(getMessage, logLevel, messageId));
+            this.Log(new LogItem(getMessage, logLevel, messageId)
+            {
+                LogTargets = this.Configuration.LogTargets.ToHashSet(),
+            });
         }
 
         public void Log(GRYLogTarget enabledLogTarget, string message, LogLevel logLevel)
@@ -235,19 +241,25 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         {
             lock (_LockObject)
             {
-                this.Log($"{message}; StdOut: {Environment.NewLine}{string.Join(Environment.NewLine, stdOutLines)}; StdErr: {Environment.NewLine}{string.Join(Environment.NewLine, stdErrLines)}", logevel);
+                this.Log(FormatProgramOutput(message, stdOutLines, stdErrLines), logevel);
             }
         }
+
+        public static string FormatProgramOutput(string message, string[] stdOutLines, string[] stdErrLines)
+        {
+            return $"{message}; StdOut: {Environment.NewLine}{string.Join(Environment.NewLine, stdOutLines)}; StdErr: {Environment.NewLine}{string.Join(Environment.NewLine, stdErrLines)}";
+        }
+
         private void LogImplementation(LogItem logItem)
         {
             try
             {
-                if (LogLevel.None == logItem.LogLevel)
-                {
-                    return;
-                }
                 lock (_LockObject)
                 {
+                    if (LogLevel.None == logItem.LogLevel)
+                    {
+                        return;
+                    }
                     if (!this._Initialized)
                     {
                         return;
