@@ -118,7 +118,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
                     string formatted;
                     if (logFullRequest)
                     {
-                        formatted = this.FormatLogEntryFull(request, duration, user, this._RequestLoggingSettings.MaximalLengthofRequestBodies, this._RequestLoggingSettings.MaximalLengthofResponseBodies, header);
+                        formatted = this.FormatLogEntryFull(request, duration, user, this._RequestLoggingSettings.MaximalLengthofRequestBodies, this._RequestLoggingSettings.MaximalLengthOfResponseBodies, header);
                     }
                     else
                     {
