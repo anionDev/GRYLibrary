@@ -242,15 +242,18 @@ namespace GRYLibrary.Core.ExecutePrograms
 
         private void LogStart()
         {
-            if (string.IsNullOrWhiteSpace(this.Configuration.Title))
+            if (this.Configuration.Verbosity != Verbosity.Quiet)
             {
-                this.LogObject.Log($"Start executing program", LogLevel.Debug);
+                if (string.IsNullOrWhiteSpace(this.Configuration.Title))
+                {
+                    this.LogObject.Log($"Start executing program", LogLevel.Debug);
+                }
+                else
+                {
+                    this.LogObject.Log($"Start executing '{this.Configuration.Title}'", LogLevel.Debug);
+                }
+                this.LogObject.Log($"Program which will be executed: {this.CMD}", LogLevel.Debug);
             }
-            else
-            {
-                this.LogObject.Log($"Start executing '{this.Configuration.Title}'", LogLevel.Debug);
-            }
-            this.LogObject.Log($"Program which will be executed: {this.CMD}", LogLevel.Debug);
         }
         private void LogImmediatelyAfterStart(int processId)
         {
@@ -360,7 +363,7 @@ namespace GRYLibrary.Core.ExecutePrograms
             }
             catch (Exception exception)
             {
-                this.Dispose();
+                this.DisposeProcess();
                 Exception processStartException = new ProcessStartException($"Exception occurred while start execution '{this.Configuration.Title}'", exception);
                 this.LogException(processStartException);
                 throw processStartException;
@@ -414,15 +417,18 @@ namespace GRYLibrary.Core.ExecutePrograms
                 }
                 catch (Exception exception)
                 {
-                    this._ExternalProgramExecutor.LogObject.Log("Error while finishing program-execution", exception);
+                    if (this._ExternalProgramExecutor.Configuration.Verbosity != Verbosity.Quiet)
+                    {
+                        this._ExternalProgramExecutor.LogObject.Log("Error while finishing program-execution", exception);
+                    }
                 }
                 finally
                 {
-                    this._ExternalProgramExecutor.Dispose();
+                    this._ExternalProgramExecutor.DisposeProcess();
                 }
             }
         }
-        public void Dispose()
+        public void DisposeProcess()
         {
             Utilities.IgnoreExceptions(() => this._SubNamespace?.Dispose());
             Utilities.IgnoreExceptions(() => this._Process?.Dispose());
@@ -437,7 +443,10 @@ namespace GRYLibrary.Core.ExecutePrograms
                     process.Kill();
                     process.WaitForExit();
                     stopwatch.Stop();
-                    this.LogObject.Log($"Execution was aborted due to a timeout. (The timeout was set to {Utilities.DurationToUserFriendlyString(TimeSpan.FromMilliseconds(this.Configuration.TimeoutInMilliseconds.Value))}).", LogLevel.Debug);
+                    if (this.Configuration.Verbosity != Verbosity.Quiet)
+                    {
+                        this.LogObject.Log($"Execution was aborted due to a timeout. (The timeout was set to {Utilities.DurationToUserFriendlyString(TimeSpan.FromMilliseconds(this.Configuration.TimeoutInMilliseconds.Value))}).", LogLevel.Debug);
+                    }
                     this.ProcessWasAbortedDueToTimeout = true;
                 }
             }
@@ -483,8 +492,11 @@ namespace GRYLibrary.Core.ExecutePrograms
             this.Configuration.Program = temp.Item1;
             this.Configuration.Argument = temp.Item2;
             this.Configuration.WorkingDirectory = temp.Item3;
-            this.LogObject.Log($"Program to execute with full path: {this.Configuration.Program}", LogLevel.Debug);
-            this.LogObject.Log($"Program will be executed " + this.Configuration.WaitingState.Accept(GetWaitingStateLabelVisitor.GetWaitingStateLabelVisitorInstance), LogLevel.Debug);
+            if (this.Configuration.Verbosity != Verbosity.Quiet)
+            {
+                this.LogObject.Log($"Program to execute with full path: {this.Configuration.Program}", LogLevel.Debug);
+                this.LogObject.Log($"Program will be executed " + this.Configuration.WaitingState.Accept(GetWaitingStateLabelVisitor.GetWaitingStateLabelVisitorInstance), LogLevel.Debug);
+            }
             if (string.IsNullOrWhiteSpace(this.Configuration.WorkingDirectory))
             {
                 this.Configuration.WorkingDirectory = Directory.GetCurrentDirectory();
@@ -597,8 +609,9 @@ namespace GRYLibrary.Core.ExecutePrograms
 
         private void EnqueueInformation(string rawLine)
         {
-            if (this.NormalizeLine(rawLine, out string line))
+            if (this.NormalizeLine(rawLine, out string? line))
             {
+                line = Utilities.GetValue(line);
                 this._AllStdOutLines.Add(line);
                 if (this.Configuration.Verbosity is Verbosity.Full or Verbosity.Verbose)
                 {
@@ -609,8 +622,9 @@ namespace GRYLibrary.Core.ExecutePrograms
 
         private void EnqueueError(string rawLine)
         {
-            if (this.NormalizeLine(rawLine, out string line))
+            if (this.NormalizeLine(rawLine, out string? line))
             {
+                line = Utilities.GetValue(line);
                 this._AllStdErrLines.Add(line);
                 if (this.Configuration.Verbosity is Verbosity.Full or Verbosity.Verbose)
                 {
@@ -619,7 +633,7 @@ namespace GRYLibrary.Core.ExecutePrograms
             }
         }
 
-        private bool NormalizeLine(string line, out string data)
+        private bool NormalizeLine(string line, out string? data)
         {
             if (line == null)
             {
@@ -641,6 +655,7 @@ namespace GRYLibrary.Core.ExecutePrograms
                 }
             }
         }
+
         private void LogOutputImplementation()
         {
             while (this.IsRunning || !this._NotLoggedOutputLines.IsEmpty)
@@ -666,6 +681,11 @@ namespace GRYLibrary.Core.ExecutePrograms
                 }
                 Thread.Sleep(10);
             }
+        }
+
+        public void Dispose()
+        {
+            Misc.Utilities.NoOperation();
         }
     }
     /// <summary>

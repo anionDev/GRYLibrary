@@ -74,7 +74,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
         private IDictionary<string, IList<string?>> GetHeader(HttpRequest request)
         {
             Dictionary<string, IList<string?>> result = new Dictionary<string, IList<string?>>();
-            foreach (string headerToLog in _RequestLoggingSettings.LoggedHTTPRequeustHeader)
+            foreach (string headerToLog in this._RequestLoggingSettings.LoggedHTTPRequeustHeader)
             {
                 if (!result.TryGetValue(headerToLog, out IList<string?>? value))
                 {
@@ -83,7 +83,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
                 }
                 if (request.Headers.TryGetValue(headerToLog, out Microsoft.Extensions.Primitives.StringValues values))
                 {
-                    foreach (var item in values)
+                    foreach (string? item in values)
                     {
                         value.Add(item);
                     }
@@ -118,7 +118,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
                     string formatted;
                     if (logFullRequest)
                     {
-                        formatted = this.FormatLogEntryFull(request, duration, user, this._RequestLoggingSettings.MaximalLengthofRequestBodies, this._RequestLoggingSettings.MaximalLengthofResponseBodies, header);
+                        formatted = this.FormatLogEntryFull(request, duration, user, this._RequestLoggingSettings.MaximalLengthofRequestBodies, this._RequestLoggingSettings.MaximalLengthOfResponseBodies, header);
                     }
                     else
                     {
@@ -182,7 +182,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
             if (0 < header.Count)
             {
                 result = result + $"  Header:{Environment.NewLine}";
-                foreach (var kvp in header)
+                foreach (KeyValuePair<string, IList<string?>> kvp in header)
                 {
                     string value = "{" + string.Join(", ", kvp.Value.Select(item => "\"" + item + "\"")) + "}";
                     result = result + $"    - {kvp.Key}: {value}{Environment.NewLine}";

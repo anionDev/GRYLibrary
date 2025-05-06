@@ -1,4 +1,5 @@
 ﻿using GRYLibrary.Core.APIServer.Settings.Configuration;
+using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using GRYLibrary.Core.Misc.FilePath;
 
 namespace GRYLibrary.Core.APIServer.Settings
@@ -17,5 +18,6 @@ namespace GRYLibrary.Core.APIServer.Settings
         /// </summary>
         public PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> InitialApplicationConfiguration { get; set; }
         public AbstractFilePath BasicInformationFile { get; internal set; }
+        public IGeneralLogger InitialLogger { get; set; }
     }
 }

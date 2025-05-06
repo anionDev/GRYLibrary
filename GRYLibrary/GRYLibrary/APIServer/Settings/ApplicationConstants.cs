@@ -26,6 +26,7 @@ namespace GRYLibrary.Core.APIServer.Settings
         public AbstractFilePath CertificateFolder { get; set; }
         public AbstractFilePath ConfigurationFile { get; set; }
         public AbstractFilePath LogFolder { get; set; }
+        public bool AdminHasToEnterInformationAfterInitialConfigurationFileGeneration { get; set; }
         public bool ThrowErrorIfConfigurationDoesNotExistInProduction { get; set; }
         public string GetDataFolder();
         public string GetConfigurationFolder();
@@ -74,6 +75,8 @@ namespace GRYLibrary.Core.APIServer.Settings
             this.LogFolder = AbstractFilePath.FromString("./Logs");
             this.UseWebSockets = false;
         }
+        public bool AdminHasToEnterInformationAfterInitialConfigurationFileGeneration { get; set; } = false;
+        public bool ThrowErrorIfConfigurationDoesNotExistInProduction { get; set; } = false;
         private string _BaseFolder;
         public string ApplicationName { get; set; }
         public string ApplicationDescription { get; set; }
@@ -87,7 +90,6 @@ namespace GRYLibrary.Core.APIServer.Settings
         public AbstractFilePath CertificateFolder { get; set; }
         public AbstractFilePath ConfigurationFile { get; set; }
         public AbstractFilePath LogFolder { get; set; }
-        public bool ThrowErrorIfConfigurationDoesNotExistInProduction { get; set; } = false;
         public string GetDataFolder()
         {
             return this.DataFolder.GetPath(this._BaseFolder);

@@ -204,5 +204,10 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         {
             return this._AccessTokens[userId].ToHashSet();
         }
+
+        public Role GetRoleByName(string roleName)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
