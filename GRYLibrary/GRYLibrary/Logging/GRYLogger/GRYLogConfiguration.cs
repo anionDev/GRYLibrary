@@ -30,6 +30,9 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         public bool ConvertTimeForLogEntriesToUTCFormat { get; set; }
         public bool LogEveryLineOfLogEntryInNewLine { get; set; }
         public bool StoreProcessedLogItemsInternally { get; set; }
+
+        public LoggedMessageTypeConfiguration GetLoggedMessageTypesConfigurationByLogLevel(LogLevel logLevel);
+        public void SetEnabledOfAllLogTargets(bool writeOutputToConsole);
     }
     /// <inheritdoc cref="IGRYLogConfiguration"/>
     public sealed class GRYLogConfiguration : IGRYLogConfiguration

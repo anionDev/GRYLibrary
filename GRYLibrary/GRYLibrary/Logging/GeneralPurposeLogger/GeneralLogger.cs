@@ -13,12 +13,12 @@ namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
             return new GeneralLogger() { AddLogEntry = (logItem) => { } };
         }
 
-        public static IGRYLog CreateUsingGRYLog(GRYLogConfiguration configuration)
+        public static IGRYLog CreateUsingGRYLog(IGRYLogConfiguration configuration)
         {
             return CreateUsingGRYLog(configuration, Directory.GetCurrentDirectory());
         }
 
-        public static IGRYLog CreateUsingGRYLog(GRYLogConfiguration configuration, string basePath = null)
+        public static IGRYLog CreateUsingGRYLog(IGRYLogConfiguration configuration, string basePath = null)
         {
             GRYLog logObject = GRYLog.Create(configuration);
             logObject.BasePath = basePath;

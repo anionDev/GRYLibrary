@@ -14,7 +14,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
 {
     public sealed class GRYLog : IGRYLog
     {
-        public GRYLogConfiguration Configuration { get; set; }
+        public IGRYLogConfiguration Configuration { get; set; }
         /// <summary>
         /// Represents the basepath for the possibly relative path when accessing <see cref="LogFile.File"/>.
         /// </summary>
@@ -45,7 +45,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         private GRYLog() : this(new GRYLogConfiguration())
         {
         }
-        private GRYLog(GRYLogConfiguration configuration)
+        private GRYLog(IGRYLogConfiguration configuration)
         {
             lock (_LockObject)
             {
@@ -65,7 +65,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
             return Create(GRYLogConfiguration.GetCommonConfiguration(logFile, false));
         }
 
-        public static GRYLog Create(GRYLogConfiguration configuration)
+        public static GRYLog Create(IGRYLogConfiguration configuration)
         {
             return new GRYLog(configuration);
         }

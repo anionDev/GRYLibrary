@@ -1856,7 +1856,7 @@ namespace GRYLibrary.Core.Misc
             if (value.StartsWith('"') && value.EndsWith('"'))
             {
                 value = value[1..];
-                value = value.Remove(value.Length - 1);
+                value = value[..^1];
                 value = value.Replace("\"\"", "\"");
                 value = value.Trim();
             }
@@ -3185,7 +3185,7 @@ namespace GRYLibrary.Core.Misc
                 {
                     IConfigurationRoot configurationRoot = new ConfigurationBuilder().AddJsonFile(configurationFile).Build();
                     return configurationRoot.GetRequiredSection(typeof(T).Name).Get<T>();
-                },out fileWasCreatedNew);
+                }, out fileWasCreatedNew);
         }
 #pragma warning disable IDE0060 //not used parameter "knownTypes"
         public static T CreateOrLoadXMLConfigurationFile<T, TBase>(string configurationFile, T initialValue, ISet<Type> knownTypes, out bool fileWasCreatedNew) where T : TBase, new()
@@ -3248,7 +3248,7 @@ namespace GRYLibrary.Core.Misc
             {
                 while (result.EndsWith('0'))
                 {
-                    result = result.Remove(result.Length - 1);
+                    result = result[..^1];
                 }
                 if (result.EndsWith('.'))
                 {
@@ -3427,9 +3427,18 @@ namespace GRYLibrary.Core.Misc
         }
         public static T GetValue<T>(T? value)
         {
+            return GetValue(value, null);
+        }
+        public static T GetValue<T>(T? value, string? information)
+        {
             if (value == null)
             {
-                throw new NullReferenceException("Variable does not have a value.");
+                string message = "Variable does not have a value.";
+                if (!string.IsNullOrWhiteSpace(information))
+                {
+                    message += $" {information}";
+                }
+                throw new NullReferenceException(message);
             }
             else
             {

@@ -111,7 +111,7 @@ namespace GRYLibrary.Core.APIServer
         }
         private static string GetDefaultBaseFolder<AppConstantsType>(IApplicationConstants<AppConstantsType> applicationConstants)
         {
-            string programFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string programFolder = Core.Misc.Utilities.GetValue(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
             return applicationConstants.ExecutionMode.Accept(new GetBaseFolder(applicationConstants.Environment, programFolder, applicationConstants.ExecutionMode));
         }
 

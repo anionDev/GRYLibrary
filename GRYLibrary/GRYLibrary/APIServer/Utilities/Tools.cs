@@ -140,6 +140,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
                  {
                      try
                      {
+                         Thread.Sleep(TimeSpan.FromSeconds(0.5));
                          logger.Log($"Try to connect to database using connection-string \"{adaptedConnectionString}\".", LogLevel.Debug);
                          connectAction();
                          logger.Log($"Connected successfully to database.", LogLevel.Information);
@@ -150,9 +151,9 @@ namespace GRYLibrary.Core.APIServer.Utilities
                          notConnectionReasonInner = abortException.ToString();
                          return;
                      }
-                     finally
+                     catch
                      {
-                         Thread.Sleep(TimeSpan.FromSeconds(2));
+                         GUtilities.NoOperation();//catch and do nothing so that it will tried again next.
                      }
                  }
              }, timeout))

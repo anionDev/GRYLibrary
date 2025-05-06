@@ -7,10 +7,10 @@ namespace GRYLibrary.Core.APIServer.Utilities
 
     public class GetLoggerVisitor : IExecutionModeVisitor<IGRYLog>
     {
-        private readonly GRYLogConfiguration _LogConfiguration;
+        private readonly IGRYLogConfiguration _LogConfiguration;
         private readonly string _BaseFolder;
         private readonly string _LoggerName;
-        public GetLoggerVisitor(GRYLogConfiguration logConfiguration, string baseFolder, string loggerName)
+        public GetLoggerVisitor(IGRYLogConfiguration logConfiguration, string baseFolder, string loggerName)
         {
             this._LogConfiguration = logConfiguration;
             this._BaseFolder = baseFolder;

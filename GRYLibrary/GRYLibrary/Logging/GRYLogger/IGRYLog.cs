@@ -6,7 +6,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
 {
     public interface IGRYLog : IDisposable, ILogger, IGeneralLogger
     {
-        public GRYLogConfiguration Configuration { get; set; }
+        public IGRYLogConfiguration Configuration { get; set; }
         public string BasePath { get; set; }
         public void Log(LogItem logitem);
         public void LogProgramOutput(string message, string[] stdOutLines,string[] stdErrLines,LogLevel logevel);
