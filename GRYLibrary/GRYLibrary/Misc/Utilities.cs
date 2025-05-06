@@ -3172,7 +3172,7 @@ namespace GRYLibrary.Core.Misc
             return new NullReferenceException($"Parameter {parameterName} is null");
         }
 
-        public static T CreateOrLoadJSONConfigurationFile<T, TBase>(string configurationFile, T initialValue) where T : TBase, new()
+        public static T CreateOrLoadJSONConfigurationFile<T, TBase>(string configurationFile, T initialValue, out bool fileWasCreatedNew) where T : TBase, new()
         {
             return CreateOrLoadConfigurationFile<T, TBase>(configurationFile, initialValue,
                 (configurationFile, initialValue) =>
@@ -3185,10 +3185,10 @@ namespace GRYLibrary.Core.Misc
                 {
                     IConfigurationRoot configurationRoot = new ConfigurationBuilder().AddJsonFile(configurationFile).Build();
                     return configurationRoot.GetRequiredSection(typeof(T).Name).Get<T>();
-                });
+                },out fileWasCreatedNew);
         }
 #pragma warning disable IDE0060 //not used parameter "knownTypes"
-        public static T CreateOrLoadXMLConfigurationFile<T, TBase>(string configurationFile, T initialValue, ISet<Type> knownTypes) where T : TBase, new()
+        public static T CreateOrLoadXMLConfigurationFile<T, TBase>(string configurationFile, T initialValue, ISet<Type> knownTypes, out bool fileWasCreatedNew) where T : TBase, new()
 #pragma warning restore IDE0060 
         {
             //TODO use knownTypes
@@ -3205,17 +3205,18 @@ namespace GRYLibrary.Core.Misc
                     simpleObjectPersistence.File = configurationFile;
                     simpleObjectPersistence.LoadObjectFromFile();
                     return simpleObjectPersistence.Object;
-                });
+                }, out fileWasCreatedNew);
         }
         /// <summary>
         /// This function loads a configuration from disk if possible and if not then the initial configuration will be saved to disk and returned.
         /// </summary>
-        public static T CreateOrLoadConfigurationFile<T, TBase>(string configurationFile, T initialValue, Action<string, T> createInitialFile, Func<string, T> loadExistingFile) where T : TBase, new()
+        public static T CreateOrLoadConfigurationFile<T, TBase>(string configurationFile, T initialValue, Action<string, T> createInitialFile, Func<string, T> loadExistingFile, out bool fileWasCreatedNew) where T : TBase, new()
         {
             T configuration;
             if (File.Exists(configurationFile))
             {
                 configuration = loadExistingFile(configurationFile);
+                fileWasCreatedNew = false;
             }
             else
             {
@@ -3223,6 +3224,7 @@ namespace GRYLibrary.Core.Misc
                 EnsureDirectoryExists(Path.GetDirectoryName(configurationFile));
                 configuration = initialValue;
                 createInitialFile(configurationFile, initialValue);
+                fileWasCreatedNew = true;
             }
             return configuration;
         }

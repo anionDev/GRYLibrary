@@ -102,7 +102,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
 
         public static void ConnectToDatabaseWrapper(Action connectAction, IGeneralLogger logger, string adaptedConnectionString)
         {
-            bool connected = ConnectToDatabase(connectAction, GeneralLogger.NoLog(), adaptedConnectionString, out string? notConnectionReason);
+            bool connected = ConnectToDatabase(connectAction, logger, adaptedConnectionString, out string? notConnectionReason);
             GUtilities.AssertCondition(connected, "Could not connect to database." + (notConnectionReason == null ? string.Empty : " "+notConnectionReason));
         }
         public static bool ConnectToDatabase(Action connectAction, IGeneralLogger logger, string adaptedConnectionString, out string? notConnectionReason)
@@ -115,6 +115,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
             bool connected = false;
             notConnectionReason = null;
             string? notConnectionReasonInner = null;
+            //TODO add also a reconnect-mechanism
             if (GUtilities.RunWithTimeout(() =>
              {
                  while (!connected)
@@ -123,17 +124,13 @@ namespace GRYLibrary.Core.APIServer.Utilities
                      {
                          logger.Log($"Try to connect to database using connection-string \"{adaptedConnectionString}\".", LogLevel.Debug);
                          connectAction();
-                         logger.Log($"Connected successfully.", LogLevel.Information);
+                         logger.Log($"Connected successfully to database.", LogLevel.Information);
                          connected = true;
                      }
                      catch (AbortException abortException)
                      {
                          notConnectionReasonInner = abortException.ToString();
                          return;
-                     }
-                     catch (Exception exception)
-                     {
-                         logger.LogException(exception, "Could not connect to database.", LogLevel.Warning);
                      }
                      finally
                      {

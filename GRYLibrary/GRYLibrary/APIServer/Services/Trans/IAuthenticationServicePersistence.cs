@@ -30,5 +30,6 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         public void AddAccessToken(string userId, AccessToken newAccessToken);
         public void RemoveAccessToken(string accessToken);
         public ISet<AccessToken> GetAllAccessTokenOfUser(string userId);
+        public Role GetRoleByName(string roleName);
     }
 }

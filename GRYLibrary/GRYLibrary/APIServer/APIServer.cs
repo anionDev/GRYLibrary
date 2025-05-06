@@ -38,6 +38,7 @@ using GRYLibrary.Core.Logging.GRYLogger;
 using GRYLibrary.Core.APIServer.MidT.Aut;
 using GRYLibrary.Core.APIServer.Mid.General;
 using GRYLibrary.Core.APIServer.MidT.Maint;
+using GRYLibrary.Core.Exceptions;
 
 namespace GRYLibrary.Core.APIServer
 {
@@ -60,10 +61,17 @@ namespace GRYLibrary.Core.APIServer
         {
             return (CommandlineParameterType commandlineParameter, GRYConsoleApplicationInitialInformation gryConsoleApplicationInitialInformation) =>
             {
-                APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> apiServerConfiguration = new APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>();
-                apiServerConfiguration.CommandlineParameter = commandlineParameter;
-                init(apiServerConfiguration);
-                return APIMain(commandlineParameter, gryConsoleApplicationInitialInformation, apiServerConfiguration);
+                try
+                {
+                    APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> apiServerConfiguration = new APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>();
+                    apiServerConfiguration.CommandlineParameter = commandlineParameter;
+                    init(apiServerConfiguration);
+                    return APIMain(commandlineParameter, gryConsoleApplicationInitialInformation, apiServerConfiguration);
+                }
+                catch
+                {
+                    throw;
+                }
             };
         }
 
@@ -75,18 +83,22 @@ namespace GRYLibrary.Core.APIServer
                 CommandlineParameter = commandlineParameter,
                 ApplicationConstants = new ApplicationConstants<ApplicationSpecificConstants>(gryConsoleApplicationInitialInformation.ProgramName, gryConsoleApplicationInitialInformation.ProgramDescription, Version3.Parse(gryConsoleApplicationInitialInformation.ProgramVersion), gryConsoleApplicationInitialInformation.ExecutionMode, gryConsoleApplicationInitialInformation.Environment, new ApplicationSpecificConstants())
             };
+            apiServerConfiguration.InitializationInformation.InitialLogger = GeneralLogger.CreateUsingConsole();
             apiServerConfiguration.InitializationInformation.BaseFolder = GetDefaultBaseFolder(apiServerConfiguration.InitializationInformation.ApplicationConstants);
             apiServerConfiguration.InitializationInformation.ApplicationConstants.Initialize(apiServerConfiguration.InitializationInformation.BaseFolder);
             apiServerConfiguration.InitializationInformation.ApplicationConstants.KnownTypes.Add(typeof(PersistedApplicationSpecificConfiguration));
             apiServerConfiguration.InitializationInformation.InitialApplicationConfiguration = PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>.Create(new PersistedApplicationSpecificConfiguration(), gryConsoleApplicationInitialInformation.Environment);
             apiServerConfiguration.InitializationInformation.BasicInformationFile = AbstractFilePath.FromString("./BasicApplicationInformation.xml");
-
             apiServerConfiguration.SetInitialzationInformationAction(apiServerConfiguration.InitializationInformation);
             #endregion
 
             #region Load configuration
-            IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedAPIServerConfiguration = LoadConfiguration(apiServerConfiguration.InitializationInformation.ApplicationConstants.KnownTypes, apiServerConfiguration.InitializationInformation.ApplicationConstants.Environment, apiServerConfiguration.InitializationInformation.ApplicationConstants.ExecutionMode, apiServerConfiguration.InitializationInformation.ApplicationConstants.GetConfigurationFile(), apiServerConfiguration.InitializationInformation.ApplicationConstants.ThrowErrorIfConfigurationDoesNotExistInProduction, apiServerConfiguration.InitializationInformation.InitialApplicationConfiguration);
+            IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedAPIServerConfiguration = LoadConfiguration(apiServerConfiguration.InitializationInformation.ApplicationConstants.KnownTypes, apiServerConfiguration.InitializationInformation.ApplicationConstants.Environment, apiServerConfiguration.InitializationInformation.ApplicationConstants.ExecutionMode, apiServerConfiguration.InitializationInformation.ApplicationConstants.GetConfigurationFile(), apiServerConfiguration.InitializationInformation.ApplicationConstants.ThrowErrorIfConfigurationDoesNotExistInProduction, apiServerConfiguration.InitializationInformation.InitialApplicationConfiguration, out bool fileWasCreatedNew);
             GUtilities.AssertCondition(persistedAPIServerConfiguration != null, "Could not load persisted API-server configuration.");
+            if (fileWasCreatedNew && apiServerConfiguration.InitializationInformation.ApplicationConstants.AdminHasToEnterInformationAfterInitialConfigurationFileGeneration)
+            {
+                throw new InitializationException($"Configuration-file was created. You have to edit certain values there.");
+            }
             #endregion
 
             #region Run APIServer
@@ -107,7 +119,7 @@ namespace GRYLibrary.Core.APIServer
 
         private static IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> LoadConfiguration<PersistedAppSpecificConfiguration>(
             ISet<Type> knownTypes, GRYEnvironment evironment, ExecutionMode executionMode, string configurationFile, bool throwErrorIfConfigurationDoesNotExistInProduction,
-            PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> initialConfiguration)
+            PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> initialConfiguration, out bool fileWasCreatedNew)
                 where PersistedAppSpecificConfiguration : new()
         {
             if (throwErrorIfConfigurationDoesNotExistInProduction && evironment is Productive && !File.Exists(configurationFile))
@@ -116,7 +128,9 @@ namespace GRYLibrary.Core.APIServer
             }
             else
             {
-                IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> result = executionMode.Accept(new GetPersistedAPIServerConfigurationVisitor<PersistedAppSpecificConfiguration>(configurationFile, initialConfiguration, knownTypes));
+                GetPersistedAPIServerConfigurationVisitor<PersistedAppSpecificConfiguration> visitor = new GetPersistedAPIServerConfigurationVisitor<PersistedAppSpecificConfiguration>(configurationFile, initialConfiguration, knownTypes);
+                IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> result = executionMode.Accept(visitor);
+                fileWasCreatedNew = visitor.FileWasCreatedNew;
                 return result;
             }
         }
@@ -125,6 +139,7 @@ namespace GRYLibrary.Core.APIServer
         {
             private readonly MetaConfigurationSettings<PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration>, IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration>> _MetaConfiguration;
             private readonly ISet<Type> _KnownTypes;
+            public bool FileWasCreatedNew { get; private set; }
 
             public GetPersistedAPIServerConfigurationVisitor(string file, PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> initialValue, ISet<Type> knownTypes)
             {
@@ -155,7 +170,9 @@ namespace GRYLibrary.Core.APIServer
             private IPersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> UsePersistedConfiguration()
             {
                 //TODO add option to define config-file-migrations here
-                return MetaConfigurationManager.GetConfiguration(this._MetaConfiguration, this._KnownTypes);
+                PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> result = MetaConfigurationManager.GetConfiguration(this._MetaConfiguration, this._KnownTypes, out bool fileWasCreatedNew);
+                this.FileWasCreatedNew = fileWasCreatedNew;
+                return result;
             }
         }
         #endregion
@@ -331,7 +348,7 @@ namespace GRYLibrary.Core.APIServer
             WebApplication app = builder.Build();
             if (this._Configuration.InitializationInformation.ApplicationConstants.UseWebSockets)
             {
-            app.UseWebSockets();
+                app.UseWebSockets();
             }
             app.UseRouting();
 

@@ -492,7 +492,7 @@ namespace GRYLibrary.Core.ExecutePrograms
             this.Configuration.Program = temp.Item1;
             this.Configuration.Argument = temp.Item2;
             this.Configuration.WorkingDirectory = temp.Item3;
-            if (Configuration.Verbosity != Verbosity.Quiet)
+            if (this.Configuration.Verbosity != Verbosity.Quiet)
             {
                 this.LogObject.Log($"Program to execute with full path: {this.Configuration.Program}", LogLevel.Debug);
                 this.LogObject.Log($"Program will be executed " + this.Configuration.WaitingState.Accept(GetWaitingStateLabelVisitor.GetWaitingStateLabelVisitorInstance), LogLevel.Debug);

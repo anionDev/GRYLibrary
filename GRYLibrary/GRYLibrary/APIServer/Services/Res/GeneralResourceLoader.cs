@@ -11,14 +11,14 @@ namespace GRYLibrary.Core.APIServer.Services.Res
         private readonly Assembly _Assembly;
         public GeneralResourceLoader(string baseNamespace, Assembly assembly)
         {
-            _BaseNamespace = baseNamespace;
-            _Assembly = assembly;
+            this._BaseNamespace = baseNamespace;
+            this._Assembly = assembly;
         }
         public byte[] GetResource(string resourceName)
         {
-            if (!_Cache.TryGetValue(resourceName, out byte[]? value))
+            if (!this._Cache.TryGetValue(resourceName, out byte[]? value))
             {
-                using Stream? resFilestream = _Assembly.GetManifestResourceStream(_BaseNamespace + "." + resourceName);
+                using Stream? resFilestream = this._Assembly.GetManifestResourceStream(this._BaseNamespace + "." + resourceName);
                 if (resFilestream == null)
                 {
                     throw new KeyNotFoundException($"No resource available with name \"{resourceName}\".");
@@ -28,7 +28,7 @@ namespace GRYLibrary.Core.APIServer.Services.Res
                     byte[] content = new byte[resFilestream.Length];
                     resFilestream.Read(content, 0, content.Length);
                     value = content;
-                    _Cache[resourceName] = value;
+                    this._Cache[resourceName] = value;
                 }
             }
             return value;

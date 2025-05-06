@@ -38,11 +38,13 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
             T user = resultObject;
             user.Id = Guid.NewGuid().ToString();
             user.Name = username;
+            user.EMailAddress = null;
             user.PasswordHash = passwordHash;
             user.RegistrationMoment = timeService.GetCurrentTime();
             user.RefreshToken = new HashSet<RefreshToken>();
             user.AccessToken = new HashSet<AccessToken>();
             user.Roles = new HashSet<Role>();
+            user.TOTP = new GRYLibrary.Core.APIServer.MFA.TOTP() { IsActicated = false, SecretKey = Guid.NewGuid().ToString("N") };
             return user;
         }
         public ISet<Role> GetAllRoles()

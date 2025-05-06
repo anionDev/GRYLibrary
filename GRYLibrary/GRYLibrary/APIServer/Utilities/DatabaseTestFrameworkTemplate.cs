@@ -22,7 +22,8 @@ namespace GRYLibrary.Core.APIServer.Utilities
             this._TestDatabaseFolder = testDatabaseFolder;
             this._DockerComposeArgumentPrefix = $"compose --project-name {dockerProjectName}";
             this.ConnectionString = connectionString;
-            using ExternalProgramExecutor externalProgramExecutor = new ExternalProgramExecutor("docker", $"{this._DockerComposeArgumentPrefix} up --force-recreate --detach", this._TestDatabaseFolder);
+            string argument = $"{this._DockerComposeArgumentPrefix} up --force-recreate --detach";
+            using ExternalProgramExecutor externalProgramExecutor = new ExternalProgramExecutor("docker", argument, this._TestDatabaseFolder);
             {
                 externalProgramExecutor.Run();
             }
