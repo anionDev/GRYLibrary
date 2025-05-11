@@ -41,7 +41,9 @@ namespace GRYLibrary.Core.APIServer.MidT.Auth
         public abstract bool TryGetAuthentication(HttpContext context, out ClaimsPrincipal principal, out string accessToken);
         public override Task Invoke(HttpContext context)
         {
-            if (this.AuthenticationIsRequired(context) && !this.IsAuthenticatedInternal(context))
+            bool authenticationIsRequired = this.AuthenticationIsRequired(context);
+            bool isAuthenticatedInternal = this.IsAuthenticatedInternal(context);
+            if (authenticationIsRequired & !isAuthenticatedInternal)
             {
                 throw new BadRequestException(StatusCodes.Status401Unauthorized);
             }
