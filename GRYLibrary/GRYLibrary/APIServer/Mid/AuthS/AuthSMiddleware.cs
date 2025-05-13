@@ -21,7 +21,8 @@ namespace GRYLibrary.Core.APIServer.Mid.AuthS
 
         public override bool TryGetAuthentication(HttpContext context, out ClaimsPrincipal principal, out string accessToken)
         {
-            return Tools.TryGetAuthentication(this._CredentialsProvider, this._AuthenticationService, context, out principal, out accessToken);
+            bool result = Tools.TryGetAuthentication(this._CredentialsProvider, this._AuthenticationService, context, out principal, out accessToken);
+            return result;
         }
     }
 }
