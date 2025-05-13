@@ -8,7 +8,7 @@ namespace GRYLibrary.Core.APIServer.Services.Res
     {
         private readonly IDictionary<string, byte[]> _Cache = new Dictionary<string, byte[]>();
         private readonly string _BaseNamespace;
-        private readonly Assembly _Assembly;
+        protected readonly Assembly _Assembly;
         public GeneralResourceLoader(string baseNamespace, Assembly assembly)
         {
             this._BaseNamespace = baseNamespace;

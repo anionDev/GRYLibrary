@@ -62,8 +62,11 @@ namespace GRYLibrary.Core.Misc.Migration
                 {
                     this._Logger.Log($"Run Migration {migration.MigrationName}.", Microsoft.Extensions.Logging.LogLevel.Information);
                     DateTime now = this._TimeService.GetCurrentTime();
-                    string sql = "SET autocommit=0;" + Environment.NewLine + migration.MigrationContent + Environment.NewLine + $"insert into {MigrationTableName}(MigrationName, ExecutionTimestamp) values ('{migration.MigrationName}', '{now:yyyy-MM-dd HH:mm:ss}')";
-                    Exception exception = null;
+                    string sql = @$"SET autocommit=0;
+{migration.MigrationContent}
+insert into {MigrationTableName}(MigrationName, ExecutionTimestamp) values ('{migration.MigrationName}', '{now:yyyy-MM-dd HH:mm:ss}')
+";
+                    Exception? exception = null;
                     using (DbCommand sqlCommand = this._DatabaseInteractor.CreateCommand(sql, this._Connection))
                     {
                         using DbTransaction transaction = this._Connection.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
@@ -92,8 +95,8 @@ namespace GRYLibrary.Core.Misc.Migration
         public static IList<MigrationInstance> LoadMigrationsFromResources(Assembly assembly, string migrationsResourceNamePrefix)
         {
             IList<MigrationInstance> migrationInstances = new List<MigrationInstance>();
-            uint i = 0;
             List<string> resources = assembly.GetManifestResourceNames().Order().ToList();
+            uint i = 0;
             foreach (string resourceName in resources)
             {
                 if (resourceName.StartsWith(migrationsResourceNamePrefix))
