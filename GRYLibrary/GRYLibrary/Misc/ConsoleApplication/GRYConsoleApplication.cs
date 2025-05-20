@@ -24,8 +24,7 @@ namespace GRYLibrary.Core.Misc.ConsoleApplication
         private readonly ExecutionMode _ExecutionMode;
         private readonly SentenceBuilder _SentenceBuilder;
         private readonly GRYConsoleApplicationInitialInformation _GRYConsoleApplicationInitialInformation;
-        private readonly bool _ResetConsoleToDefaultvalues;
-        public GRYConsoleApplication(ParserBase mains, string programName, string programVersion, string programDescription, bool programCanRunWithoutArguments, ExecutionMode executionMode, GRYEnvironment environment, bool resetConsoleToDefaultvalues, string? additionalHelpText)
+        public GRYConsoleApplication(ParserBase mains, string programName, string programVersion, string programDescription, bool programCanRunWithoutArguments, ExecutionMode executionMode, GRYEnvironment environment, string? additionalHelpText)
         {
             this._Mains = mains;
             this._ProgramName = programName;
@@ -36,7 +35,6 @@ namespace GRYLibrary.Core.Misc.ConsoleApplication
             this._Log.Configuration.PrintEmptyLines=true;
             this._SentenceBuilder = SentenceBuilder.Create();
             this._ExecutionMode = executionMode;
-            this._ResetConsoleToDefaultvalues = resetConsoleToDefaultvalues;
             this._GRYConsoleApplicationInitialInformation = new GRYConsoleApplicationInitialInformation(this._ProgramName, this._ProgramVersion, this._ProgramDescription, this._ExecutionMode, environment, additionalHelpText);
         }
 
@@ -45,26 +43,6 @@ namespace GRYLibrary.Core.Misc.ConsoleApplication
             int result = 1;
             try
             {
-                try
-                {
-                    if (this._ResetConsoleToDefaultvalues)
-                    {
-                        if (GUtilities.DarkModeEnabled)
-                        {
-                            Console.BackgroundColor = ConsoleColor.Black;
-                            Console.ForegroundColor = ConsoleColor.White;
-                        }
-                        else
-                        {
-                            Console.BackgroundColor = ConsoleColor.White;
-                            Console.ForegroundColor = ConsoleColor.Black;
-                        }
-                    }
-                }
-                catch
-                {
-                    GUtilities.NoOperation();
-                }
                 string title = $"{this._ProgramName} (v{this._ProgramVersion})";
                 Console.Title = title;
                 if (arguments == null)
