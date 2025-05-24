@@ -676,6 +676,11 @@ namespace GRYLibrary.Core.ExecutePrograms
                             logLevel = LogLevel.Debug;
                             message = message["Debug: ".Length..];
                         }
+                        else if (message.StartsWith("Diagnostic: "))
+                        {
+                            logLevel = LogLevel.Trace;
+                            message = message["Diagnostic: ".Length..];
+                        }
                     }
                     this.LogObject.Log(message, logLevel);
                 }
