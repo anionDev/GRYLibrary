@@ -327,8 +327,8 @@ namespace GRYLibrary.Core.ExecutePrograms
                     StartInfo.FileName = "epew";
                 }
                 this._Process.StartInfo = StartInfo;
-                this._Process.OutputDataReceived += (object sender, DataReceivedEventArgs dataReceivedEventArgs) => this.EnqueueInformation(dataReceivedEventArgs.Data);
-                this._Process.ErrorDataReceived += (object sender, DataReceivedEventArgs dataReceivedEventArgs) =>
+                this._Process.OutputDataReceived += (sender, dataReceivedEventArgs) => this.EnqueueInformation(dataReceivedEventArgs.Data);
+                this._Process.ErrorDataReceived += (sender, dataReceivedEventArgs) =>
                 {
                     if (this.Configuration.PrintErrorsAsInformation)
                     {
@@ -691,6 +691,11 @@ namespace GRYLibrary.Core.ExecutePrograms
         public void Dispose()
         {
             Misc.Utilities.NoOperation();
+        }
+
+        public void Terminate()
+        {
+            this._Process.Close();
         }
     }
     /// <summary>

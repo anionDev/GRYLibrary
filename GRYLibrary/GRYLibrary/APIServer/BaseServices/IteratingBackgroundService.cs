@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System;
 using GRYLibrary.Core.Logging.GRYLogger;
+using Microsoft.Extensions.Logging;
 
 namespace GRYLibrary.Core.APIServer.BaseServices
 {
@@ -28,20 +29,20 @@ namespace GRYLibrary.Core.APIServer.BaseServices
                 this.Running = true;
                 if (this.ShouldBeExecuted())
                 {
-                    this._Logger.Log($"Background-service {this.GetType().Name} will be started.", Microsoft.Extensions.Logging.LogLevel.Debug);
+                    this._Logger.Log($"Background-service {this.GetType().Name} will be started.", LogLevel.Information);
                     Task.Run(() =>
                     {
                         while (this.Enabled)
                         {
                             Thread.Sleep(50);
                             Thread.Sleep(this.AdditionalDelay);
-                            this._Logger.Log($"Execute {this.GetType().Name}", Microsoft.Extensions.Logging.LogLevel.Debug, false, false, true, false, false, this.Run);
+                            this._Logger.Log($"Execute {this.GetType().Name}", LogLevel.Debug, false, false, true, false, false, this.Run);
                         }
                     });
                 }
                 else
                 {
-                    this._Logger.Log($"Background-service {this.GetType().Name} will not be started.", Microsoft.Extensions.Logging.LogLevel.Debug);
+                    this._Logger.Log($"Background-service {this.GetType().Name} will not be started.", LogLevel.Information);
                 }
             }
         }
@@ -49,11 +50,11 @@ namespace GRYLibrary.Core.APIServer.BaseServices
         {
             if (this.Running)
             {
-                this._Logger.Log($"Background-service {this.GetType().Name} will be stopped.", Microsoft.Extensions.Logging.LogLevel.Debug);
+                this._Logger.Log($"Background-service {this.GetType().Name} will be stopped.", LogLevel.Information);
                 this.Enabled = false;
                 await GUtilities.WaitUntilConditionIsTrueAsync(() => !this.Running);
                 this.Dispose();
-                this._Logger.Log($"Background-service {this.GetType().Name} stopped.", Microsoft.Extensions.Logging.LogLevel.Debug);
+                this._Logger.Log($"Background-service {this.GetType().Name} is now stopped.", LogLevel.Information);
             }
         }
         public bool ShouldBeExecuted()
