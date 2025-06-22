@@ -234,15 +234,28 @@ namespace GRYLibrary.Core.Misc
         }
 
         /// <returns>
-        /// Returns true if and only if <paramref name="folder"/> is the toplevel of a git-repository.
+        /// Returns true if and only if <paramref name="folder"/> is the toplevel-folder of a git-repository.
         /// </returns>
         public static bool IsGitRepository(string folder)
         {
-            string combinedPath = Path.Combine(folder, ".git");
-            return Directory.Exists(combinedPath) || File.Exists(combinedPath);
+            string gitPrefix = ".git";
+            string combinedPath = Path.Combine(folder, gitPrefix);
+            if (Directory.Exists(combinedPath))
+            {
+                return true;//usual repository
+            }
+            if (File.Exists(combinedPath))
+            {
+                return true;//usual repository where the .git-folder somewhere else (often used for example in submodules)
+            }
+            if (folder.EndsWith(gitPrefix))
+            {
+                return true;//convention for a repository-folder-name of a bare is met.
+            }
+            return false;
         }
         /// <returns>
-        /// Returns true if and only if <paramref name="folder"/> or a parent-folder of <paramref name="folder"/> is a toplevel of a git-repository.
+        /// Returns true if and only if <paramref name="folder"/> or a parent-folder of <paramref name="folder"/> is a toplevel-folder of a git-repository.
         /// </returns>
         public static bool IsInGitRepository(string folder)
         {
