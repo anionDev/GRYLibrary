@@ -35,7 +35,10 @@ namespace GRYLibrary.Core.ExecutePrograms
         {
             this.Configuration = configuration;
         }
-        public ExternalProgramExecutorConfiguration Configuration { get; }
+        public ExternalProgramExecutorConfiguration Configuration { 
+            get; 
+            private set;
+        }
         public ExecutionState CurrentExecutionState { get; private set; } = ExecutionState.NotStarted;
         public IGRYLog LogObject { get; set; }
         internal string CMD { get; private set; }
@@ -327,8 +330,11 @@ namespace GRYLibrary.Core.ExecutePrograms
                     StartInfo.FileName = "epew";
                 }
                 this._Process.StartInfo = StartInfo;
-                this._Process.OutputDataReceived += (object sender, DataReceivedEventArgs dataReceivedEventArgs) => this.EnqueueInformation(dataReceivedEventArgs.Data);
-                this._Process.ErrorDataReceived += (object sender, DataReceivedEventArgs dataReceivedEventArgs) =>
+                this._Process.OutputDataReceived += (sender, dataReceivedEventArgs) =>
+                {
+                    this.EnqueueInformation(dataReceivedEventArgs.Data);
+                };
+                this._Process.ErrorDataReceived += (sender, dataReceivedEventArgs) =>
                 {
                     if (this.Configuration.PrintErrorsAsInformation)
                     {
@@ -342,11 +348,8 @@ namespace GRYLibrary.Core.ExecutePrograms
                 SupervisedThread readLogItemsThread;
                 stopWatch.Start();
                 this._Process.Start();
-                this.ProcessId = this._Process.Id;
-                this._Running = true;
-                this.LogImmediatelyAfterStart(this._ProcessId);
-                if (this.Configuration.WaitingState is RunSynchronously)
-                {
+                //if (this.Configuration.WaitingState is RunSynchronously)
+                //{
                     if (this.Configuration.RedirectStandardOutput)
                     {
                         this._Process.BeginOutputReadLine();
@@ -358,8 +361,12 @@ namespace GRYLibrary.Core.ExecutePrograms
                     readLogItemsThread = SupervisedThread.Create(this.LogOutputImplementation);
                     readLogItemsThread.Name = $"Logger-Thread for '{this.Configuration.Title}' ({nameof(ExternalProgramExecutor)}({this.Configuration.Title}))";
                     readLogItemsThread.LogOverhead = false;
+                    
                     readLogItemsThread.Start();
-                }
+                //}
+                this.ProcessId = this._Process.Id;
+                this._Running = true;
+                this.LogImmediatelyAfterStart(this._ProcessId);
             }
             catch (Exception exception)
             {
@@ -691,6 +698,11 @@ namespace GRYLibrary.Core.ExecutePrograms
         public void Dispose()
         {
             Misc.Utilities.NoOperation();
+        }
+
+        public void Terminate()
+        {
+            this._Process.Close();
         }
     }
     /// <summary>
