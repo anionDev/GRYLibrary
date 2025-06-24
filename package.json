@@ -1,0 +1,7 @@
+{
+  "name": "GRYLibrary",
+  "scripts": {
+    "prepare": "husky"
+  },
+  "version": "0.12.149"
+}
