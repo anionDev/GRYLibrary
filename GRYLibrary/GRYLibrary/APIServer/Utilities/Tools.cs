@@ -125,7 +125,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
         }
         public static bool ConnectToDatabase(Action connectAction, IGeneralLogger logger, string adaptedConnectionString, out string? notConnectionReason)
         {
-            return ConnectToDatabase(connectAction, logger, adaptedConnectionString, TimeSpan.FromMinutes(2), out notConnectionReason);
+            return ConnectToDatabase(connectAction, logger, adaptedConnectionString, TimeSpan.FromMinutes(1), out notConnectionReason);
         }
 
         public static bool ConnectToDatabase(Action connectAction, IGeneralLogger logger, string adaptedConnectionString, TimeSpan timeout, out string? notConnectionReason)
@@ -138,6 +138,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
              {
                  while (!connected)
                  {
+                     Exception? lastException = null;
                      try
                      {
                          Thread.Sleep(TimeSpan.FromSeconds(0.5));
@@ -148,12 +149,19 @@ namespace GRYLibrary.Core.APIServer.Utilities
                      }
                      catch (AbortException abortException)
                      {
-                         notConnectionReasonInner = abortException.ToString();
+                         string message = "Error while connecting to database due to timeout.";
+                         if (lastException != null)
+                         {
+                             var lastExceptionMessage = GUtilities.GetExceptionMessage(lastException, "Error while connecting to database.", true);
+                             message = $"{message} Last catched exception on connection-try: {lastExceptionMessage}";
+                         }
+                         notConnectionReasonInner = GUtilities.GetExceptionMessage(abortException, message, true);
                          return;
                      }
-                     catch
+                     catch (Exception exception)
                      {
-                         GUtilities.NoOperation();//catch and do nothing so that it will tried again next.
+                         lastException = exception;
+                         //catch and do nothing more so that it will tried again next.
                      }
                  }
              }, timeout))
@@ -164,7 +172,6 @@ namespace GRYLibrary.Core.APIServer.Utilities
                 {
                     notConnectionReasonInner = $"{notConnectionReasonInner} (Reason: '{existingMessage}')";
                 }
-
             }
             notConnectionReason = notConnectionReasonInner;
             return connected;

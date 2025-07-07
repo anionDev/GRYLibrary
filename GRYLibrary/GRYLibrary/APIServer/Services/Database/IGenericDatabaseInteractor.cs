@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Common;
 
 namespace GRYLibrary.Core.APIServer.Services.Database
@@ -7,5 +8,9 @@ namespace GRYLibrary.Core.APIServer.Services.Database
     {
         public DbCommand CreateCommand(string sql, DbConnection connection);
         public IList<string> GetAllTableNames(DbConnection connection);
+        public string AdaptConnectionString(string connectionString);
+        public string CreateSQLStatementForCreatingMigrationMaintenanceTableIfNotExist(string tableName);
+        public string GetSQLStatementForSelectMigrationMaintenanceTableContent(string migrationTableName);
+        public string GetSQLStatementForRunningMigration(string migrationContent, string migrationTableName, string migrationName, DateTime now);
     }
 }

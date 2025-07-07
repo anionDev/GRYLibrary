@@ -55,8 +55,6 @@ namespace GRYLibrary.Core.Misc
         public const string EmptyString = "";
         public const string SpecialCharacterTestString = "<SpecialCharacterTest>äöüßÄÖÜÆÑçéý html-test:<span>span-tags with angle brackets should be visible</span> &← /\\*#^°'`´\" ?|§@$€%-_²⁶₇¬∀∈∑∜∫∰≈≪ﬁ.Доброе утро صبح به خیر शुभ प्रभात 좋은 아침 സുപ്രഭാതം おはようございます ហ្គុនមូហ្កិន</SpecialCharacterTest>";
 
-        [GeneratedRegex(@"(PWD|Pwd)=([^;]+)(;|$)")]
-        private static partial Regex MariaDBPasswordHideRegex();
         [GeneratedRegex(@"^[0-9a-f]+$")]
         private static partial Regex OneOrMoreHexSigns();
         #endregion
@@ -1861,16 +1859,6 @@ namespace GRYLibrary.Core.Misc
                 value = value.Trim();
             }
             return value;
-        }
-
-        public static string AdaptMariaDBSQLConnectionString(string connectionString, bool hidePassword)
-        {
-            if (hidePassword)
-            {
-                string replaceString = "********";
-                connectionString = MariaDBPasswordHideRegex().Replace(connectionString, match => $"{match.Groups[1]}={replaceString}{match.Groups[3]}");
-            }
-            return connectionString;
         }
 
         /// <summary>

@@ -36,7 +36,7 @@ namespace GRYLibrary.Core.Misc.Migration
         /// </remarks>
         public void InitializeDatabaseAndMigrateIfRequired()
         {
-            using (DbCommand cmd = this._DatabaseInteractor.CreateCommand($"create table if not exists {MigrationTableName}(MigrationName varchar(255), ExecutionTimestamp datetime);", this._Connection))
+            using (DbCommand cmd = this._DatabaseInteractor.CreateCommand(_DatabaseInteractor.CreateSQLStatementForCreatingMigrationMaintenanceTableIfNotExist(MigrationTableName), this._Connection))
             {
                 cmd.ExecuteNonQuery();
             }
@@ -62,10 +62,7 @@ namespace GRYLibrary.Core.Misc.Migration
                 {
                     this._Logger.Log($"Run Migration {migration.MigrationName}.", Microsoft.Extensions.Logging.LogLevel.Information);
                     DateTime now = this._TimeService.GetCurrentTime();
-                    string sql = @$"SET autocommit=0;
-{migration.MigrationContent}
-insert into {MigrationTableName}(MigrationName, ExecutionTimestamp) values ('{migration.MigrationName}', '{now:yyyy-MM-dd HH:mm:ss}')
-";
+                    string sql = _DatabaseInteractor.GetSQLStatementForRunningMigration(migration.MigrationContent, MigrationTableName, migration.MigrationName,now);
                     Exception? exception = null;
                     using (DbCommand sqlCommand = this._DatabaseInteractor.CreateCommand(sql, this._Connection))
                     {
@@ -116,7 +113,7 @@ insert into {MigrationTableName}(MigrationName, ExecutionTimestamp) values ('{mi
         public IList<MigrationExecutionInformation> GetExecutedMigrations()
         {
             IList<MigrationExecutionInformation> result = new List<MigrationExecutionInformation>();
-            using (DbCommand cmd = this._DatabaseInteractor.CreateCommand($"select MigrationName, ExecutionTimestamp from {MigrationTableName};", this._Connection))
+            using (DbCommand cmd = this._DatabaseInteractor.CreateCommand(_DatabaseInteractor.GetSQLStatementForSelectMigrationMaintenanceTableContent(MigrationTableName), this._Connection))
             {
                 using DbDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
