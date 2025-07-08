@@ -1,14 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using GRYLibrary.Core.APIServer.Services.Database.SupportedDatabases;
 using MySqlConnector;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Text.RegularExpressions;
 
-namespace GRYLibrary.Core.APIServer.Services.Database
+namespace GRYLibrary.Core.APIServer.Services.Database.DatabaseInterator
 {
     public class MariaDBDatabaseInteractor : IGenericDatabaseInteractor
     {
+        public IDatabase ToSupportedDatabase()
+        {
+            return new MariaDB();
+        }
         private static readonly Regex PasswordHideRegex = new Regex("(PWD|Pwd)=([^;]+)(;|$)");
         public string AdaptConnectionString(string connectionString)
         {
