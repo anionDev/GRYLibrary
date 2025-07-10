@@ -16,6 +16,6 @@ namespace GRYLibrary.Core.APIServer.Settings.Regulations.GDPR
             this.ServiceIsSubjectOfGDPR = serviceIsSubjectOfGDPR;
         }
         //TODO provide controller
-        
+
     }
 }
