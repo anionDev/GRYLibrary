@@ -9,6 +9,9 @@ namespace GRYLibrary.Core.APIServer.Services.OtherServices
     public class RandomnessProvider : IRandomnessProvider
     {
         private readonly Random _Random;
+        public RandomnessProvider() : this(new Random(42))
+        {
+        }
         public RandomnessProvider(Random random)
         {
             this._Random = random;
