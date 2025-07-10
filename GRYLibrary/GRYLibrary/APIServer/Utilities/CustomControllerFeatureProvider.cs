@@ -69,7 +69,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
                 {
                     if (regulation is GDPRegulation gdpregulation)
                     {
-                        bool result= gdpregulation.ServiceProcessesPersonalData && gdpregulation.ServiceIsSubjectOfGDPR;
+                        bool result = gdpregulation.ServiceProcessesPersonalData && gdpregulation.ServiceIsSubjectOfGDPR;
                         if (result)
                         {
                             //TODO check if IGDPRService is injectable

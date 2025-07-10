@@ -1,11 +1,8 @@
 ﻿using GRYLibrary.Core.APIServer.Services.Database.SupportedDatabases;
-using Microsoft.AspNetCore.Components.Web;
 using Npgsql;
 using System;
-using System.Collections.Generic;
 using System.Data.Common;
 using System.Text.RegularExpressions;
-using TagLib.Id3v2;
 
 namespace GRYLibrary.Core.APIServer.Services.Database.DatabaseInterator
 {
@@ -15,37 +12,15 @@ namespace GRYLibrary.Core.APIServer.Services.Database.DatabaseInterator
         {
             return new PostgreSQL();
         }
+#pragma warning disable SYSLIB1045 // Convert to 'GeneratedRegexAttribute'.
         private static readonly Regex PasswordHideRegex = new Regex("(PWD|Pwd)=([^;]+)(;|$)");
+#pragma warning restore SYSLIB1045 // Convert to 'GeneratedRegexAttribute'.
         public DbCommand CreateCommand(string sql, DbConnection connection)
         {
+            GRYLibrary.Core.Misc.Utilities.AssertCondition(connection.State == System.Data.ConnectionState.Open, $"Connection of {connection.GetType().Name} is not open.");
             return new NpgsqlCommand(sql, (NpgsqlConnection)connection);
         }
 
-        public IList<string> GetAllTableNames(DbConnection connection)
-        {
-            try
-            {
-
-                IList<string> result = new List<string>();
-                using (DbCommand cmd = this.CreateCommand(@"SELECT tablename
-FROM pg_catalog.pg_tables
-WHERE schemaname NOT IN ('pg_catalog', 'information_schema');", connection))
-                {
-                    using (DbDataReader reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            result.Add(reader.GetString(0));
-                        }
-                    }
-                }
-                return result;
-            }
-            catch
-            {
-                throw;
-            }
-        }
         public string AdaptConnectionString(string connectionString)
         {
             string replaceString = "********";
@@ -72,6 +47,13 @@ WHERE schemaname NOT IN ('pg_catalog', 'information_schema');", connection))
 {migrationContent}
 insert into {migrationTableName}(MigrationName, ExecutionTimestamp) values ('{migrationName}', '{now:yyyy-MM-dd HH:mm:ss}')
 ";
+        }
+
+        public string CreateSQLStatementForGetAllTableNames()
+        {
+            return @"SELECT tablename
+FROM pg_catalog.pg_tables
+WHERE schemaname NOT IN ('pg_catalog', 'information_schema');";
         }
     }
 }

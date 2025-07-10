@@ -152,7 +152,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
                          string message = "Error while connecting to database due to timeout.";
                          if (lastException != null)
                          {
-                             var lastExceptionMessage = GUtilities.GetExceptionMessage(lastException, "Error while connecting to database.", true);
+                             string lastExceptionMessage = GUtilities.GetExceptionMessage(lastException, "Error while connecting to database.", true);
                              message = $"{message} Last catched exception on connection-try: {lastExceptionMessage}";
                          }
                          notConnectionReasonInner = GUtilities.GetExceptionMessage(abortException, message, true);

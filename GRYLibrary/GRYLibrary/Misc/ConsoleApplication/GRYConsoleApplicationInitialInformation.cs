@@ -12,7 +12,7 @@ namespace GRYLibrary.Core.Misc.ConsoleApplication
         public ExecutionMode ExecutionMode { get; private set; }
         public GRYEnvironment Environment { get; private set; }
 
-        public GRYConsoleApplicationInitialInformation(string programName, string programVersion, string programDescription, ExecutionMode executionMode, GRYEnvironment environment,string? additionalHelpText)
+        public GRYConsoleApplicationInitialInformation(string programName, string programVersion, string programDescription, ExecutionMode executionMode, GRYEnvironment environment, string? additionalHelpText)
         {
             this.ProgramName = programName;
             this.ProgramVersion = programVersion;

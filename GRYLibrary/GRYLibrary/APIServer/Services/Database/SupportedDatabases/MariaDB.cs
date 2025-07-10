@@ -11,7 +11,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database.SupportedDatabases
 
         public T Accept<T>(ISupportedDatabaseVisitor<T> visitor)
         {
-           return visitor.Handle(this);
+            return visitor.Handle(this);
         }
 
         public IGenericDatabaseInteractor ToDatabaseInteractor()

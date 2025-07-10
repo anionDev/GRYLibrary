@@ -2,7 +2,7 @@
 
 namespace GRYLibrary.Core.APIServer.Mid.AutS
 {
-    public interface IAutSRConfiguration:IAuthorizationConfiguration
+    public interface IAutSRConfiguration : IAuthorizationConfiguration
     {
     }
 }

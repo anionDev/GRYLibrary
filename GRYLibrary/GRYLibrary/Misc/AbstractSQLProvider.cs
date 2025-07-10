@@ -19,7 +19,7 @@ namespace GRYLibrary.Core.Misc
 
         protected string LoadSQLScript(string sqlFileName)
         {
-            _Log.Log($"Load SQL-script \"{sqlFileName}\"", LogLevel.Trace);
+            this._Log.Log($"Load SQL-script \"{sqlFileName}\"", LogLevel.Trace);
             if (!this._ScriptCache.ContainsKey(sqlFileName))
             {
                 this.LoadScriptToCache(sqlFileName);

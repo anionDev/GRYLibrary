@@ -2,7 +2,7 @@
 
 namespace GRYLibrary.Core.APIServer.Services.Database.SupportedDatabases
 {
-    public class PostgreSQL: IDatabase
+    public class PostgreSQL : IDatabase
     {
         public void Accept(ISupportedDatabaseVisitor visitor)
         {

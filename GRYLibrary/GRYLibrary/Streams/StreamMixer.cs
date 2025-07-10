@@ -12,14 +12,16 @@ namespace GRYLibrary.Core.Streams
             if (this._Connections.Add(connection))
             {
                 connection.Start();
-            };
+            }
+            ;
         }
         public void RemovePipe(StreamPipe connection)
         {
             if (this._Connections.Remove(connection))
             {
                 connection.Stop();
-            };
+            }
+            ;
         }
         public IImmutableSet<StreamPipe> GetConnections()
         {

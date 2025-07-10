@@ -1,7 +1,6 @@
 ﻿using GRYLibrary.Core.APIServer.Services.Database.SupportedDatabases;
 using MySqlConnector;
 using System;
-using System.Collections.Generic;
 using System.Data.Common;
 using System.Text.RegularExpressions;
 
@@ -13,7 +12,9 @@ namespace GRYLibrary.Core.APIServer.Services.Database.DatabaseInterator
         {
             return new MariaDB();
         }
+#pragma warning disable SYSLIB1045 // Convert to 'GeneratedRegexAttribute'.
         private static readonly Regex PasswordHideRegex = new Regex("(PWD|Pwd)=([^;]+)(;|$)");
+#pragma warning restore SYSLIB1045 // Convert to 'GeneratedRegexAttribute'.
         public string AdaptConnectionString(string connectionString)
         {
             string replaceString = "********";
@@ -23,26 +24,13 @@ namespace GRYLibrary.Core.APIServer.Services.Database.DatabaseInterator
 
         public DbCommand CreateCommand(string sql, DbConnection connection)
         {
+            GRYLibrary.Core.Misc.Utilities.AssertCondition(connection.State == System.Data.ConnectionState.Open, $"Connection of {connection.GetType().Name} is not open.");
             return new MySqlCommand(sql, (MySqlConnection)connection);
         }
 
         public string CreateSQLStatementForCreatingMigrationMaintenanceTableIfNotExist(string migrationTableName)
         {
             return @$"create table if not exists {migrationTableName}(MigrationName varchar(255), ExecutionTimestamp datetime);";
-        }
-
-        public IList<string> GetAllTableNames(DbConnection connection)
-        {
-            IList<string> result = new List<string>();
-            using (DbCommand cmd = this.CreateCommand($"show tables;", connection))
-            {
-                using DbDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    result.Add(reader.GetString(0));
-                }
-            }
-            return result;
         }
 
         public string GetSQLStatementForRunningMigration(string migrationContent, string migrationTableName, string migrationName, DateTime now)
@@ -56,6 +44,11 @@ insert into {migrationTableName}(MigrationName, ExecutionTimestamp) values ('{mi
         public string GetSQLStatementForSelectMigrationMaintenanceTableContent(string migrationTableName)
         {
             return $"select MigrationName, ExecutionTimestamp from {migrationTableName};";
+        }
+
+        public string CreateSQLStatementForGetAllTableNames()
+        {
+            return $"show tables;";
         }
     }
 }

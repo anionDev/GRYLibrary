@@ -10,8 +10,8 @@ using GUtilities = GRYLibrary.Core.Misc.Utilities;
 namespace GRYLibrary.Core.APIServer.Services.KCAuth
 {
     public class KeyCloakAuthenticationService : IKeyCloakAuthenticationService
-        {
-            private readonly IKeyCloakService _KeyCloakService;
+    {
+        private readonly IKeyCloakService _KeyCloakService;
         private readonly IHTTPCredentialsProvider _HTTPCredentialsProvider;
         public KeyCloakAuthenticationService(IKeyCloakService keyCloakService, IHTTPCredentialsProvider httpCredentialsProvider)
         {
