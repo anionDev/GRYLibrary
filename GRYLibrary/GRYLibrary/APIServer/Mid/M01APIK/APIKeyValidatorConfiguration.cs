@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace GRYLibrary.Core.APIServer.Mid.M01APIK
 {
-    public abstract class APIKeyValidatorConfiguration : AuthorizationConfiguration,IAPIKeyValidatorConfiguration
+    public abstract class APIKeyValidatorConfiguration : AuthorizationConfiguration, IAPIKeyValidatorConfiguration
     {
         public override ISet<FilterDescriptor> GetFilter()
         {

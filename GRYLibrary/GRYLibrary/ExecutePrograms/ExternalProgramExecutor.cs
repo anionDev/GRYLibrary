@@ -35,8 +35,9 @@ namespace GRYLibrary.Core.ExecutePrograms
         {
             this.Configuration = configuration;
         }
-        public ExternalProgramExecutorConfiguration Configuration { 
-            get; 
+        public ExternalProgramExecutorConfiguration Configuration
+        {
+            get;
             private set;
         }
         public ExecutionState CurrentExecutionState { get; private set; } = ExecutionState.NotStarted;
@@ -350,19 +351,19 @@ namespace GRYLibrary.Core.ExecutePrograms
                 this._Process.Start();
                 //if (this.Configuration.WaitingState is RunSynchronously)
                 //{
-                    if (this.Configuration.RedirectStandardOutput)
-                    {
-                        this._Process.BeginOutputReadLine();
-                    }
-                    if (this.Configuration.RedirectStandardError)
-                    {
-                        this._Process.BeginErrorReadLine();
-                    }
-                    readLogItemsThread = SupervisedThread.Create(this.LogOutputImplementation);
-                    readLogItemsThread.Name = $"Logger-Thread for '{this.Configuration.Title}' ({nameof(ExternalProgramExecutor)}({this.Configuration.Title}))";
-                    readLogItemsThread.LogOverhead = false;
-                    
-                    readLogItemsThread.Start();
+                if (this.Configuration.RedirectStandardOutput)
+                {
+                    this._Process.BeginOutputReadLine();
+                }
+                if (this.Configuration.RedirectStandardError)
+                {
+                    this._Process.BeginErrorReadLine();
+                }
+                readLogItemsThread = SupervisedThread.Create(this.LogOutputImplementation);
+                readLogItemsThread.Name = $"Logger-Thread for '{this.Configuration.Title}' ({nameof(ExternalProgramExecutor)}({this.Configuration.Title}))";
+                readLogItemsThread.LogOverhead = false;
+
+                readLogItemsThread.Start();
                 //}
                 this.ProcessId = this._Process.Id;
                 this._Running = true;

@@ -1,4 +1,4 @@
-﻿using GRYLibrary.Core.APIServer.Services.Database;
+﻿using GRYLibrary.Core.APIServer.Services.Database.DatabaseInterator;
 using GRYLibrary.Core.Misc.Migration;
 using System.Collections.Generic;
 

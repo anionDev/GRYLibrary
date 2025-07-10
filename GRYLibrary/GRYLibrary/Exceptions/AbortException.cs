@@ -24,7 +24,7 @@ namespace GRYLibrary.Core.Exceptions
             {
                 result = $"{result} ({this.Message})";
             }
-            result = $"{result} ({this.InnerException.ToString()})";
+            result = $"{result} ({this.InnerException})";
             return result;
         }
     }

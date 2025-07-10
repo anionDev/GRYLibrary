@@ -6,7 +6,7 @@ namespace GRYLibrary.Core.Misc.MetaConfiguration
 {
     public class MetaConfigurationManager
     {
-        public static T GetConfiguration<T, TBase>(MetaConfigurationSettings<T, TBase> configuration, ISet<Type> knownTypes,out bool fileWasCreatedNew) where T : TBase, new()
+        public static T GetConfiguration<T, TBase>(MetaConfigurationSettings<T, TBase> configuration, ISet<Type> knownTypes, out bool fileWasCreatedNew) where T : TBase, new()
         {
             //TODO run migration from MetaConfigurationSettings here if required
             HandleConfigurationVisitor<T, TBase> visitor = new HandleConfigurationVisitor<T, TBase>(configuration, knownTypes);
@@ -19,7 +19,7 @@ namespace GRYLibrary.Core.Misc.MetaConfiguration
         {
             private readonly MetaConfigurationSettings<T, TBase> _Configuration;
             private readonly ISet<Type> _KnownTypes;
-            public bool FileWasCreatedNew { get; private set; } 
+            public bool FileWasCreatedNew { get; private set; }
             public HandleConfigurationVisitor(MetaConfigurationSettings<T, TBase> configuration, ISet<Type> knownTypes)
             {
                 this._Configuration = configuration;
@@ -28,7 +28,7 @@ namespace GRYLibrary.Core.Misc.MetaConfiguration
 
             public T Handle(XML xML)
             {
-                T? result = Utilities.CreateOrLoadXMLConfigurationFile<T, TBase>(this._Configuration.File, this._Configuration.InitialValue, this._KnownTypes,out bool fileWasCreatedNew);
+                T? result = Utilities.CreateOrLoadXMLConfigurationFile<T, TBase>(this._Configuration.File, this._Configuration.InitialValue, this._KnownTypes, out bool fileWasCreatedNew);
                 this.FileWasCreatedNew = fileWasCreatedNew;
                 return result;
             }

@@ -13,8 +13,9 @@ namespace GRYLibrary.Core.ExecutePrograms
         /// <remarks>
         /// Default-value: <see cref="Verbosity.Quiet"/>
         /// </remarks>
-        public Verbosity Verbosity {
-            get; 
+        public Verbosity Verbosity
+        {
+            get;
             set;
         } = Verbosity.Quiet;
         public bool PrintErrorsAsInformation { get; set; } = false;
@@ -38,14 +39,16 @@ namespace GRYLibrary.Core.ExecutePrograms
         /// <remarks>
         /// If this property is set to false, then <see cref="ExternalProgramExecutor.AllStdOutLines"/> will remain empty and <see cref="ExternalProgramExecutor.LogObject"/> will not have any entry.
         /// </remarks>
-        public bool RedirectStandardOutput { 
+        public bool RedirectStandardOutput
+        {
             get;
             set;
         } = true;
         /// <remarks>
         /// If this property is set to false, then <see cref="ExternalProgramExecutor.AllStdErrLines"/> will remain empty and <see cref="ExternalProgramExecutor.LogObject"/> will not have any entry.
         /// </remarks>
-        public bool RedirectStandardError { 
+        public bool RedirectStandardError
+        {
             get;
             set;
         } = true;

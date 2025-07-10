@@ -4,6 +4,6 @@ namespace GRYLibrary.Core.APIServer.Services.Interfaces
 {
     public interface IAuditLog
     {
-        public IGRYLog AuditLogger { get;}
+        public IGRYLog AuditLogger { get; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using GRYLibrary.Core.APIServer.Services.Database;
+﻿using GRYLibrary.Core.APIServer.Services.Database.DatabaseInterator;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
 using GRYLibrary.Core.APIServer.Services.Trans;
 using GRYLibrary.Core.Logging.GeneralPurposeLogger;
@@ -36,7 +36,7 @@ namespace GRYLibrary.Core.Misc.Migration
         /// </remarks>
         public void InitializeDatabaseAndMigrateIfRequired()
         {
-            using (DbCommand cmd = this._DatabaseInteractor.CreateCommand($"create table if not exists {MigrationTableName}(MigrationName varchar(255), ExecutionTimestamp datetime);", this._Connection))
+            using (DbCommand cmd = this._DatabaseInteractor.CreateCommand(this._DatabaseInteractor.CreateSQLStatementForCreatingMigrationMaintenanceTableIfNotExist(MigrationTableName), this._Connection))
             {
                 cmd.ExecuteNonQuery();
             }
@@ -62,10 +62,7 @@ namespace GRYLibrary.Core.Misc.Migration
                 {
                     this._Logger.Log($"Run Migration {migration.MigrationName}.", Microsoft.Extensions.Logging.LogLevel.Information);
                     DateTime now = this._TimeService.GetCurrentTime();
-                    string sql = @$"SET autocommit=0;
-{migration.MigrationContent}
-insert into {MigrationTableName}(MigrationName, ExecutionTimestamp) values ('{migration.MigrationName}', '{now:yyyy-MM-dd HH:mm:ss}')
-";
+                    string sql = this._DatabaseInteractor.GetSQLStatementForRunningMigration(migration.MigrationContent, MigrationTableName, migration.MigrationName, now);
                     Exception? exception = null;
                     using (DbCommand sqlCommand = this._DatabaseInteractor.CreateCommand(sql, this._Connection))
                     {
@@ -116,7 +113,7 @@ insert into {MigrationTableName}(MigrationName, ExecutionTimestamp) values ('{mi
         public IList<MigrationExecutionInformation> GetExecutedMigrations()
         {
             IList<MigrationExecutionInformation> result = new List<MigrationExecutionInformation>();
-            using (DbCommand cmd = this._DatabaseInteractor.CreateCommand($"select MigrationName, ExecutionTimestamp from {MigrationTableName};", this._Connection))
+            using (DbCommand cmd = this._DatabaseInteractor.CreateCommand(this._DatabaseInteractor.GetSQLStatementForSelectMigrationMaintenanceTableContent(MigrationTableName), this._Connection))
             {
                 using DbDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -129,12 +126,25 @@ insert into {MigrationTableName}(MigrationName, ExecutionTimestamp) values ('{mi
         /// <remarks>
         /// This function is supposed to be a utilitiy for an integration-test.
         /// </remarks>
-        public static void DoAllMigrations(DbConnection dbConnection, IDatabaseManager databaseManager,ITimeService timeService)
+        public static void DoAllMigrations(DbConnection dbConnection, IDatabaseManager databaseManager, ITimeService timeService)
         {
             IList<MigrationInstance> migrations = databaseManager.GetAllMigrations();
             GRYMigrator migrator = new GRYMigrator(GeneralLogger.CreateUsingConsole(), timeService, dbConnection, migrations, databaseManager.GetGenericDatabaseInteractor());
             migrator.InitializeDatabaseAndMigrateIfRequired();
-            GUtilities.AssertCondition(databaseManager.GetGenericDatabaseInteractor().GetAllTableNames(dbConnection).Any());
+            GUtilities.AssertCondition(GetAllTableNames(dbConnection, databaseManager).Any());
+        }
+        public static IList<string> GetAllTableNames(DbConnection connection, IDatabaseManager databaseManager)
+        {
+            IList<string> result = new List<string>();
+            using (DbCommand cmd = databaseManager.GetGenericDatabaseInteractor().CreateCommand(databaseManager.GetGenericDatabaseInteractor().CreateSQLStatementForGetAllTableNames(), connection))
+            {
+                using DbDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    result.Add(reader.GetString(0));
+                }
+            }
+            return result;
         }
     }
 }

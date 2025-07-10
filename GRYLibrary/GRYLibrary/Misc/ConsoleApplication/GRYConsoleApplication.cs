@@ -32,7 +32,7 @@ namespace GRYLibrary.Core.Misc.ConsoleApplication
             this._ProgramDescription = programDescription;
             this._ProgramCanRunWithoutArguments = programCanRunWithoutArguments;
             this._Log = GRYLog.Create();
-            this._Log.Configuration.PrintEmptyLines=true;
+            this._Log.Configuration.PrintEmptyLines = true;
             this._SentenceBuilder = SentenceBuilder.Create();
             this._ExecutionMode = executionMode;
             this._GRYConsoleApplicationInitialInformation = new GRYConsoleApplicationInitialInformation(this._ProgramName, this._ProgramVersion, this._ProgramDescription, this._ExecutionMode, environment, additionalHelpText);
