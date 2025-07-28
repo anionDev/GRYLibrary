@@ -1736,6 +1736,10 @@ namespace GRYLibrary.Core.Misc
                 throw new AssertionException("Assertion failed. Condition is false." + (string.IsNullOrWhiteSpace(messageForFailedAssertion) ? string.Empty : " " + messageForFailedAssertion));
             }
         }
+        public static void AssertNotNull(object variable, string variableName, bool @break = false)
+        {
+            AssertCondition(variable!=null, $"Variable '{variableName}' is null.", @break);
+        }
         public static void FormatCSVFile(string file, string separator = ";", bool firstLineContainsHeadlines = false)
         {
             FormatCSVFile(file, new UTF8Encoding(false), separator, firstLineContainsHeadlines);
