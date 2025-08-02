@@ -11,7 +11,7 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
     public class User : IEquatable<User>
     {
         public string Id { get; set; }
-        public string Name { get; set; } 
+        public string Name { get; set; }
         public string? PasswordHash { get; set; } = default;
         public string? EMailAddress { get; set; } = default;
         public bool UserIsActivated { get; set; } = true;

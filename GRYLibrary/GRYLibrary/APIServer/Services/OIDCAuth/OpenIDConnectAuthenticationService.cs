@@ -16,7 +16,6 @@ namespace GRYLibrary.Core.APIServer.Services.OpenIDConnectAuth
         private readonly IHTTPCredentialsProvider _HTTPCredentialsProvider;
         public OpenIDConnectAuthenticationService(IOpenIDConnectService keyCloakService, IHTTPCredentialsProvider httpCredentialsProvider)
         {
-            this._KeyCloakService = keyCloakService;
             this._HTTPCredentialsProvider = httpCredentialsProvider;
         }
 
