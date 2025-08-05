@@ -158,6 +158,11 @@ namespace GRYLibrary.Core.APIServer.Services.KCAuth
         {
             throw new System.NotImplementedException();
         }
+
+        public string GetBaseRoleOfAllUser()
+        {
+            throw new System.NotImplementedException();
+        }
     }
     public class KeyCloakAuthenticationService<UserType> : KeyCloakAuthenticationService, IAuthenticationService<UserType>
      where UserType : User

@@ -268,5 +268,10 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         {
             this._TransientAuthenticationServicePersistence.UpdateUser(user);
         }
+
+        public string GetBaseRoleOfAllUser()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
