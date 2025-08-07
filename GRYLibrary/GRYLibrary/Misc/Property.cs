@@ -27,7 +27,7 @@ namespace GRYLibrary.Core.Misc
         [DataMember]
         private T _Value;
         [DataMember]
-        private readonly Stack<KeyValuePair<DateTime, T>> _History;
+        private readonly Stack<KeyValuePair<DateTimeOffset, T>> _History;
         [DataMember]
         public bool LockEnabled = false;
         [DataMember]
@@ -39,7 +39,7 @@ namespace GRYLibrary.Core.Misc
         /// <summary>
         /// The history contains all T-objects which where set as value for <see cref="Property{T}.Value"/> with the <see cref="DateTime"/> when they were set.
         /// </summary>
-        public Stack<KeyValuePair<DateTime, T>> History => new Stack<KeyValuePair<DateTime, T>>(new Stack<KeyValuePair<DateTime, T>>(this._History));
+        public Stack<KeyValuePair<DateTimeOffset, T>> History => new Stack<KeyValuePair<DateTimeOffset, T>>(new Stack<KeyValuePair<DateTimeOffset, T>>(this._History));
         public void UnsetValue()
         {
             this.Unset = true;
@@ -80,7 +80,7 @@ namespace GRYLibrary.Core.Misc
             }
         }
 
-        public DateTime LastWriteTime { get; private set; }
+        public DateTimeOffset LastWriteTime { get; private set; }
 
         private T GetValue()
         {
@@ -104,11 +104,11 @@ namespace GRYLibrary.Core.Misc
             T newValue = value;
             this.Unset = false;
             this._Value = newValue;
-            DateTime changeDate = GUtilities.GetNow();
+            DateTimeOffset changeDate = GUtilities.GetNow();
             this.LastWriteTime = changeDate;
             if (this.AddValuesToHistory)
             {
-                this._History.Push(new KeyValuePair<DateTime, T>(changeDate, this._Value));
+                this._History.Push(new KeyValuePair<DateTimeOffset, T>(changeDate, this._Value));
             }
             Argument<Property<T>, PropertyChangedEvengArgument<T>> argument = new(this, new PropertyChangedEvengArgument<T>(oldValue, newValue, changeDate));
             try
@@ -125,7 +125,7 @@ namespace GRYLibrary.Core.Misc
 
         public Property(T initialValue, string propertyName, bool addValuesToHistory = false)
         {
-            this._History = new Stack<KeyValuePair<DateTime, T>>();
+            this._History = new Stack<KeyValuePair<DateTimeOffset, T>>();
             this._InitialValue = initialValue;
             this.PropertyName = propertyName;
             this.ResetToInitialValue();
@@ -156,12 +156,12 @@ namespace GRYLibrary.Core.Misc
             return this.Value.Equals(@object);
         }
 
-        public T GetValueByTimestamp(DateTime dateTime)
+        public T GetValueByTimestamp(DateTimeOffset dateTime)
         {
-            Stack<KeyValuePair<DateTime, T>> history = this.History;
+            Stack<KeyValuePair<DateTimeOffset, T>> history = this.History;
             while (history.Count > 0)
             {
-                KeyValuePair<DateTime, T> current = history.Pop();
+                KeyValuePair<DateTimeOffset, T> current = history.Pop();
                 if (current.Key < dateTime)
                 {
                     return current.Value;
@@ -172,7 +172,7 @@ namespace GRYLibrary.Core.Misc
     }
     public class PropertyChangedEvengArgument<T>
     {
-        internal PropertyChangedEvengArgument(T oldValue, T newValue, DateTime changeMoment)
+        internal PropertyChangedEvengArgument(T oldValue, T newValue, DateTimeOffset changeMoment)
         {
             this.OldValue = oldValue;
             this.NewValue = newValue;
@@ -180,6 +180,6 @@ namespace GRYLibrary.Core.Misc
         }
         public T OldValue { get; }
         public T NewValue { get; }
-        public DateTime ChangeMoment { get; }
+        public DateTimeOffset ChangeMoment { get; }
     }
 }

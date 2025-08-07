@@ -26,7 +26,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
 
         public LogLevel LogLevel { get; internal set; }
         public Exception Exception { get; }
-        public DateTime MomentOfLogEntry { get; } = GUtilities.GetNow();
+        public DateTimeOffset MomentOfLogEntry { get; } = GUtilities.GetNow();
         public ISet<GRYLogTarget> LogTargets { get; set; } = GRYLogTarget.GetAll();
         public string MessageId { get; }
         public string PlainMessage
@@ -76,29 +76,29 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         public LogItem(Func<string> getMessageFunction, LogLevel logLevel, Exception exception, string messageId) : this(getMessageFunction, GUtilities.GetNow(), logLevel, exception, messageId)
         {
         }
-        public LogItem(string message, DateTime dateTime, string messageId = null) : this(() => message, dateTime, messageId)
+        public LogItem(string message, DateTimeOffset dateTime, string messageId = null) : this(() => message, dateTime, messageId)
         {
         }
-        public LogItem(string message, DateTime dateTime, LogLevel logLevel) : this(() => message, dateTime, logLevel, null)
+        public LogItem(string message, DateTimeOffset dateTime, LogLevel logLevel) : this(() => message, dateTime, logLevel, null)
         {
         }
-        public LogItem(string message, DateTime dateTime, Exception exception, string messageId = null) : this(() => message, dateTime, LogLevel.Error, exception, messageId)
+        public LogItem(string message, DateTimeOffset dateTime, Exception exception, string messageId = null) : this(() => message, dateTime, LogLevel.Error, exception, messageId)
         {
         }
-        public LogItem(string message, DateTime dateTime, LogLevel logLevel, Exception exception, string messageId = null) : this(() => message, dateTime, logLevel, exception, messageId)
+        public LogItem(string message, DateTimeOffset dateTime, LogLevel logLevel, Exception exception, string messageId = null) : this(() => message, dateTime, logLevel, exception, messageId)
         {
         }
-        public LogItem(Func<string> getMessageFunction, DateTime dateTime, string messageId = null) : this(getMessageFunction, dateTime, LogLevel.Information, messageId)
+        public LogItem(Func<string> getMessageFunction, DateTimeOffset dateTime, string messageId = null) : this(getMessageFunction, dateTime, LogLevel.Information, messageId)
         {
         }
-        public LogItem(Func<string> getMessageFunction, DateTime dateTime, LogLevel logLevel, string messageId = null) : this(getMessageFunction, dateTime, logLevel, null, messageId)
+        public LogItem(Func<string> getMessageFunction, DateTimeOffset dateTime, LogLevel logLevel, string messageId = null) : this(getMessageFunction, dateTime, logLevel, null, messageId)
         {
         }
 
-        public LogItem(Func<string> getMessageFunction, DateTime dateTime, Exception exception, string messageId = null) : this(getMessageFunction, dateTime, LogLevel.Error, exception, messageId)
+        public LogItem(Func<string> getMessageFunction, DateTimeOffset dateTime, Exception exception, string messageId = null) : this(getMessageFunction, dateTime, LogLevel.Error, exception, messageId)
         {
         }
-        public LogItem(Func<string> getMessageFunction, DateTime dateTime, LogLevel logLevel, Exception exception, string messageId) : this()
+        public LogItem(Func<string> getMessageFunction, DateTimeOffset dateTime, LogLevel logLevel, Exception exception, string messageId) : this()
         {
             this._GetMessageFunction = getMessageFunction;
             this._MessageLoaded = false;
@@ -132,7 +132,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
             return this.LogLevel is LogLevel.Critical or LogLevel.Error;
         }
 
-        private readonly void FormatMessage(IGRYLogConfiguration configuration, string message, DateTime momentOfLogEntry, LogLevel loglevel, GRYLogLogFormat format, out string formattedMessage, out int colorBegin, out int colorEnd, out ConsoleColor consoleColor, string messageIdValue)
+        private readonly void FormatMessage(IGRYLogConfiguration configuration, string message, DateTimeOffset momentOfLogEntry, LogLevel loglevel, GRYLogLogFormat format, out string formattedMessage, out int colorBegin, out int colorEnd, out ConsoleColor consoleColor, string messageIdValue)
         {
             consoleColor = configuration.GetLoggedMessageTypesConfigurationByLogLevel(loglevel).ConsoleColor;
             if (!string.IsNullOrEmpty(configuration.Name))

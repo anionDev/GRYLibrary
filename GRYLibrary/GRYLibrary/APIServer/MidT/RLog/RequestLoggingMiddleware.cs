@@ -21,9 +21,9 @@ namespace GRYLibrary.Core.APIServer.MidT.RLog
         {
             try
             {
-                DateTime begin = this._TimeService.GetCurrentTime();
+                DateTimeOffset begin = this._TimeService.GetCurrentLocalTime();
                 (byte[] requestBodyBytes, byte[] responseBodyBytes) = Tools.ExecuteNextMiddlewareAndGetRequestAndResponseBody(context, this._Next);
-                DateTime end = this._TimeService.GetCurrentTime();
+                DateTimeOffset end = this._TimeService.GetCurrentLocalTime();
                 TimeSpan duration = end - begin;
                 context.Items["Duration"] = duration;
                 //TODO provide resposne-status-code and duration also as metrics.

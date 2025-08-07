@@ -14,7 +14,7 @@ namespace GRYLibrary.Core.Misc
     {
         private readonly Property<T> _Property;
         private readonly Func<Tuple<bool/*calculateValueWasSuccessful*/, T/*value*/>> _SetValueFunction;
-        public DateTime LastUpdate()
+        public DateTimeOffset LastUpdate()
         {
             return this._Property.LastWriteTime;
         }

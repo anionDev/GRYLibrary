@@ -33,11 +33,12 @@ namespace GRYLibrary.Core.APIServer.Services.Database.DatabaseInterator
             return @$"create table if not exists {migrationTableName}(MigrationName varchar(255), ExecutionTimestamp datetime);";
         }
 
-        public string GetSQLStatementForRunningMigration(string migrationContent, string migrationTableName, string migrationName, DateTime now)
+        public string GetSQLStatementForRunningMigration(string migrationContent, string migrationTableName, string migrationName, DateTimeOffset now)
         {
+            var noUtc = now.ToUniversalTime();
             return @$"SET autocommit=0;
 {migrationContent}
-insert into {migrationTableName}(MigrationName, ExecutionTimestamp) values ('{migrationName}', '{now:yyyy-MM-dd HH:mm:ss}')
+insert into {migrationTableName}(MigrationName, ExecutionTimestamp) values ('{migrationName}', '{noUtc:yyyy-MM-dd HH:mm:ss}')
 ";
         }
 

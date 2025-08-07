@@ -7,7 +7,7 @@ namespace GRYLibrary.Core.Misc.Captcha
     public class CaptchaManager : ICaptchaManager
     {
         private readonly ConcurrentDictionary<string, CaptchaInstance> _Captchas = new ConcurrentDictionary<string, CaptchaInstance>();
-        private readonly ConcurrentDictionary<string, DateTime> _AccessKeys = new ConcurrentDictionary<string, DateTime>();
+        private readonly ConcurrentDictionary<string, DateTimeOffset> _AccessKeys = new ConcurrentDictionary<string, DateTimeOffset>();
 
         public CaptchaManager()
         {
@@ -25,7 +25,7 @@ namespace GRYLibrary.Core.Misc.Captcha
                 throw new NotImplementedException();
             }
         }
-        internal static DateTime GetCurrentTime()
+        internal static DateTimeOffset GetCurrentTime()
         {
             return GUtilities.GetNow();
         }
@@ -36,7 +36,7 @@ namespace GRYLibrary.Core.Misc.Captcha
             {
                 if (captcha.ExpectedUserInput == userInput)
                 {
-                    DateTime now = GetCurrentTime();
+                    DateTimeOffset now = GetCurrentTime();
                     if (now < captcha.ValidUntil)
                     {
                         failMessage = null;
@@ -79,9 +79,9 @@ namespace GRYLibrary.Core.Misc.Captcha
             {
                 if (this._AccessKeys.ContainsKey(accessToken))
                 {
-                    if (this._AccessKeys.TryGetValue(accessToken, out DateTime validUntil))
+                    if (this._AccessKeys.TryGetValue(accessToken, out DateTimeOffset validUntil))
                     {
-                        DateTime now = GetCurrentTime();
+                        DateTimeOffset now = GetCurrentTime();
                         if (now < validUntil)
                         {
                             return true;

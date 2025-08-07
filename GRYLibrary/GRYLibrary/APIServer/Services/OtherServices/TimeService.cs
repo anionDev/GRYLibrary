@@ -7,19 +7,19 @@ namespace GRYLibrary.Core.APIServer.Services.OtherServices
 {
     public class TimeService : ITimeService
     {
-        public DateTime GetCurrentTime()
+        public DateTimeOffset GetCurrentLocalTime()
         {
-            return GUtilities.GetNow();
+            return DateTimeOffset.Now;
         }
 
-        public GRYDateTime GetCurrentTimeAsGRYDateTime()
+        public GRYDateTime GetCurrentLocalTimeAsGRYDateTime()
         {
-            return GRYDateTime.FromDateTime(this.GetCurrentTime());
+            return GRYDateTime.FromDateTime(this.GetCurrentLocalTime());
         }
 
-        public DateTime GetCurrentTimeInUTC()
+        public DateTimeOffset GetCurrentTimeInUTC()
         {
-            return DateTime.UtcNow;
+            return DateTimeOffset.UtcNow;
         }
 
         public GRYDateTime GetCurrentTimeInUTCAsGRYDateTime()

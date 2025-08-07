@@ -30,7 +30,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
             {
                 return default(T);
             }
-            return ConvertValue<T>(reader.GetDateTime(parameterIndex));
+            return ConvertValue<T>(reader.GetValue(parameterIndex));
         }
 
         public static T? ConvertValue<T>(object value)

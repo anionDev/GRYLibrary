@@ -9,10 +9,10 @@ namespace GRYLibrary.Core.APIServer.CommonAuthenticationTypes
     {
         public string OwnerUserId { get; set; }
         public string Value { get; set; }
-        public DateTime ExpiredMoment { get; set; }
+        public DateTimeOffset ExpiredMoment { get; set; }
         public bool IsValid(ITimeService timeService)
         {
-            return timeService.GetCurrentTime().ToUniversalTime() < this.ExpiredMoment.ToUniversalTime();
+            return timeService.GetCurrentLocalTime().ToUniversalTime() < this.ExpiredMoment.ToUniversalTime();
         }
     }
 }

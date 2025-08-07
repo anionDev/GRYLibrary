@@ -12,6 +12,6 @@ namespace GRYLibrary.Core.APIServer.Services.Database.DatabaseInterator
         public string CreateSQLStatementForGetAllTableNames();
         public string CreateSQLStatementForCreatingMigrationMaintenanceTableIfNotExist(string tableName);
         public string GetSQLStatementForSelectMigrationMaintenanceTableContent(string migrationTableName);
-        public string GetSQLStatementForRunningMigration(string migrationContent, string migrationTableName, string migrationName, DateTime now);
+        public string GetSQLStatementForRunningMigration(string migrationContent, string migrationTableName, string migrationName, DateTimeOffset now);
     }
 }

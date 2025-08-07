@@ -12,8 +12,8 @@ namespace GRYLibrary.Core.Misc.Captcha
         public string Id { get; set; }
         public string ExpectedUserInput { get; set; }
         public byte[] PictureContent { get; set; }
-        public DateTime ValidUntil { get; set; }
-        public DateTime AccessTokenValidUntil { get; set; }
+        public DateTimeOffset ValidUntil { get; set; }
+        public DateTimeOffset AccessTokenValidUntil { get; set; }
         public CaptchaInstance(CaptchaGenerationSettings settings)
         {
             this.Id = Guid.NewGuid().ToString();

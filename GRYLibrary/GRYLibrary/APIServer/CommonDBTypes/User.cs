@@ -16,7 +16,7 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
         public string? EMailAddress { get; set; } = default;
         public bool UserIsActivated { get; set; } = true;
         public bool UserIsLocked { get; set; } = false;
-        public DateTime RegistrationMoment { get; set; } = default;
+        public DateTimeOffset RegistrationMoment { get; set; } = default;
         public HashSet<RefreshToken> RefreshToken { get; set; } = new HashSet<RefreshToken>();
         public HashSet<AccessToken> AccessToken { get; set; } = new HashSet<AccessToken>();
         public HashSet<Role> Roles { get; set; } = new HashSet<Role>();
@@ -40,7 +40,7 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
             user.Name = username;
             user.EMailAddress = null;
             user.PasswordHash = passwordHash;
-            user.RegistrationMoment = timeService.GetCurrentTime();
+            user.RegistrationMoment = timeService.GetCurrentLocalTime();
             user.RefreshToken = new HashSet<RefreshToken>();
             user.AccessToken = new HashSet<AccessToken>();
             user.Roles = new HashSet<Role>();

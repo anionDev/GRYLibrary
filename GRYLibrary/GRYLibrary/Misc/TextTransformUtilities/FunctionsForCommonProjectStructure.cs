@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GRYLibrary.Core.ExecutePrograms;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,13 @@ namespace GRYLibrary.Core.Misc.TextTransformUtilities
 {
     public static class FunctionsForCommonProjectStructure
     {
+        public static string RunProgramAndGetOutput(string repositoryFolder, string codeUnitName, string program, string workingDirectoryRelative, string arguments)
+        {
+            var entireWorkingDirectory = Path.Combine(repositoryFolder, codeUnitName, workingDirectoryRelative);
+            var e = new ExternalProgramExecutor(program, arguments, entireWorkingDirectory);
+            e.Run();
+            return string.Join(Environment.NewLine, e.AllStdOutLines);
+        }
         public static string GenerateConstants(string repositoryFolder, string codeUnitName, bool addDebugInformation)
         {
             string constantsFolder = Path.Combine(repositoryFolder, codeUnitName, "Other", "Resources", "Constants");

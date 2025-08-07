@@ -55,7 +55,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             }
             AccessToken newAccessToken = new AccessToken();
             newAccessToken.Value = Guid.NewGuid().ToString();
-            newAccessToken.ExpiredMoment = this._TimeService.GetCurrentTime().AddDays(1);//TODO make this configurable
+            newAccessToken.ExpiredMoment = this._TimeService.GetCurrentLocalTime().AddDays(1);//TODO make this configurable
             this._TransientAuthenticationServicePersistence.AddAccessToken(user.Id, newAccessToken);
             user.AccessToken.Add(newAccessToken);
             return newAccessToken;
@@ -95,7 +95,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             if (this._TransientAuthenticationServicePersistence.AccessTokenExists(accessToken, out UserType user))
             {
                 AccessToken at = user.AccessToken.Where(at => at.Value == accessToken).First();
-                return this._TimeService.GetCurrentTime() < at.ExpiredMoment;
+                return this._TimeService.GetCurrentTimeInUTC() < at.ExpiredMoment;
             }
             else
             {

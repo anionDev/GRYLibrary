@@ -31,7 +31,7 @@ namespace GRYLibrary.Tests.Testcases
                 //expected
             }
             Assert.AreEqual(object2, property.Value);
-            System.Collections.Generic.Stack<System.Collections.Generic.KeyValuePair<DateTime, object>> currentHistoy = property.History;
+            System.Collections.Generic.Stack<System.Collections.Generic.KeyValuePair<DateTimeOffset, object>> currentHistoy = property.History;
             Assert.AreEqual(2, currentHistoy.Count);
             Assert.AreEqual(object2, currentHistoy.Pop().Value);
             Assert.AreEqual(object1, currentHistoy.Pop().Value);

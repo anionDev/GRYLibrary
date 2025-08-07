@@ -232,6 +232,11 @@ namespace GRYLibrary.Core.APIServer.Services.OpenIDConnect
         {
             throw new NotImplementedException();
         }
+
+        public string GetBaseRoleOfAllUser()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 

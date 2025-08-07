@@ -5,9 +5,9 @@ namespace GRYLibrary.Core.APIServer.Services.Interfaces
 {
     public interface ITimeService
     {
-        public DateTime GetCurrentTime();
-        public GRYDateTime GetCurrentTimeAsGRYDateTime();
-        public DateTime GetCurrentTimeInUTC();
+        public DateTimeOffset GetCurrentLocalTime();
+        public GRYDateTime GetCurrentLocalTimeAsGRYDateTime();
+        public DateTimeOffset GetCurrentTimeInUTC();
         public GRYDateTime GetCurrentTimeInUTCAsGRYDateTime();
     }
 }

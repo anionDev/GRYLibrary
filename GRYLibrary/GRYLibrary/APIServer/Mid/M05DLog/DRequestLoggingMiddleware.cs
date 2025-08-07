@@ -42,7 +42,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
         {
             try
             {
-                DateTime moment = GUtilities.GetNow();
+                DateTimeOffset moment = GUtilities.GetNow();
                 (string info, string content, byte[] plainContent) requestBody = BytesToString(requestBodyBytes, this._Encoding);
                 (string info, string content, byte[] plainContent) responseBody = BytesToString(responseBodyBytes, this._Encoding);
                 string requestRoute = context.Request.Path;
@@ -282,7 +282,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
             }
         }
 
-        public virtual string FormatTimestamp(DateTime timestamp)
+        public virtual string FormatTimestamp(DateTimeOffset timestamp)
         {
             return GUtilities.FormatTimestamp(timestamp, this._RequestLoggingSettings.AddMillisecondsInLogTimestamps);
         }

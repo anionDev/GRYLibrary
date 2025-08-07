@@ -61,7 +61,7 @@ namespace GRYLibrary.Core.Misc.Migration
                 foreach (MigrationInstance migration in migrationsToRun)
                 {
                     this._Logger.Log($"Run Migration {migration.MigrationName}.", Microsoft.Extensions.Logging.LogLevel.Information);
-                    DateTime now = this._TimeService.GetCurrentTime();
+                    DateTimeOffset now = this._TimeService.GetCurrentLocalTime();
                     string sql = this._DatabaseInteractor.GetSQLStatementForRunningMigration(migration.MigrationContent, MigrationTableName, migration.MigrationName, now);
                     Exception? exception = null;
                     using (DbCommand sqlCommand = this._DatabaseInteractor.CreateCommand(sql, this._Connection))
