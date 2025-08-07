@@ -1,21 +1,21 @@
 ﻿using GRYLibrary.Core.APIServer.CommonAuthenticationTypes;
 using GRYLibrary.Core.APIServer.CommonDBTypes;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
-using GRYLibrary.Core.APIServer.Services.KC;
+using GRYLibrary.Core.APIServer.Services.OpenIDConnect;
 using GRYLibrary.Core.Crypto;
 using System.Collections.Generic;
 using System.Security.Claims;
 using GUtilities = GRYLibrary.Core.Misc.Utilities;
 
-namespace GRYLibrary.Core.APIServer.Services.KCAuth
+namespace GRYLibrary.Core.APIServer.Services.OpenIDConnectAuth
 {
-    public class KeyCloakAuthenticationService : IKeyCloakAuthenticationService
+    public class OpenIDConnectAuthenticationService : IOpenIDConnectAuthenticationService
     {
-        private readonly IKeyCloakService _KeyCloakService;
+        public bool Enabled { get; set; }
+        private readonly IOpenIDConnectService _KeyCloakService;
         private readonly IHTTPCredentialsProvider _HTTPCredentialsProvider;
-        public KeyCloakAuthenticationService(IKeyCloakService keyCloakService, IHTTPCredentialsProvider httpCredentialsProvider)
+        public OpenIDConnectAuthenticationService(IOpenIDConnectService keyCloakService, IHTTPCredentialsProvider httpCredentialsProvider)
         {
-            this._KeyCloakService = keyCloakService;
             this._HTTPCredentialsProvider = httpCredentialsProvider;
         }
 
@@ -158,11 +158,16 @@ namespace GRYLibrary.Core.APIServer.Services.KCAuth
         {
             throw new System.NotImplementedException();
         }
+
+        public string GetBaseRoleOfAllUser()
+        {
+            throw new System.NotImplementedException();
+        }
     }
-    public class KeyCloakAuthenticationService<UserType> : KeyCloakAuthenticationService, IAuthenticationService<UserType>
+    public class KeyCloakAuthenticationService<UserType> : OpenIDConnectAuthenticationService, IAuthenticationService<UserType>
      where UserType : User
     {
-        public KeyCloakAuthenticationService(IKeyCloakService keyCloakService, IHTTPCredentialsProvider httpCredentialsProvider) : base(keyCloakService, httpCredentialsProvider)
+        public KeyCloakAuthenticationService(IOpenIDConnectService keyCloakService, IHTTPCredentialsProvider httpCredentialsProvider) : base(keyCloakService, httpCredentialsProvider)
         {
         }
 

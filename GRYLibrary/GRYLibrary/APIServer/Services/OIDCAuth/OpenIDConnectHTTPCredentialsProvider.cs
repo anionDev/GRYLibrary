@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Http;
 using System;
 
-namespace GRYLibrary.Core.APIServer.Services.KCAuth
+namespace GRYLibrary.Core.APIServer.Services.OpenIDConnectAuth
 {
-    public class KeyCloakHTTPCredentialsProvider : IHTTPCredentialsProvider
+    public class OpenIDConnectHTTPCredentialsProvider : IHTTPCredentialsProvider
     {
         public bool ContainsCredentials(HttpContext context)
         {

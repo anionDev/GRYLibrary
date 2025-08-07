@@ -1,24 +1,33 @@
 ﻿using GRYLibrary.Core.AOA;
+using GRYLibrary.Core.APIServer.ExecutionModes;
+using GRYLibrary.Core.APIServer.Services.Interfaces;
 using GRYLibrary.Core.Exceptions;
 using GRYLibrary.Core.ExecutePrograms;
 using GRYLibrary.Core.ExecutePrograms.WaitingStates;
-using GRYLibrary.Core.APIServer.ExecutionModes;
+using GRYLibrary.Core.Logging.GRYLogger;
 using GRYLibrary.Core.OperatingSystem;
 using GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems;
 using GRYLibrary.Core.XMLSerializer;
+using HtmlAgilityPack;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Win32;
 using NJsonSchema.Validation;
+using Sprache;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.Diagnostics;
 using System.Dynamic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Numerics;
 using System.Reactive.Linq;
@@ -36,14 +45,6 @@ using System.Xml.Linq;
 using System.Xml.Schema;
 using System.Xml.Xsl;
 using static GRYLibrary.Core.Misc.TableGenerator;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using GRYLibrary.Core.Logging.GRYLogger;
-using System.Net.Http;
-using System.Data;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using System.Net;
-using HtmlAgilityPack;
-using GRYLibrary.Core.APIServer.Services.Interfaces;
 
 namespace GRYLibrary.Core.Misc
 {
@@ -705,7 +706,40 @@ namespace GRYLibrary.Core.Misc
 
         public const string FormatForDateTimesInFullFormatISO8601 = "yyyy-MM-ddTHH:mm:sszzz";
         public const string FormatForDateTimesInFullFormatSimple = "yyyy-MM-dd HH:mm:ss";
-        public static string FormatTimestamp(DateTime timestamp, bool addMillisecondsInLogTimestamps)
+        public static DateTimeOffset? ParseTimestampNullable(string? timestamp, bool addMillisecondsInLogTimestamps)
+        {
+            if (timestamp == null)
+            {
+                return null;
+            }
+            else
+            {
+                return ParseTimestamp(timestamp, addMillisecondsInLogTimestamps);
+            }
+        }
+        public static string? FormatTimestampNullable(DateTimeOffset? timestamp, bool addMillisecondsInLogTimestamps)
+        {
+            if (timestamp == null)
+            {
+                return null;
+            }
+            else
+            {
+                return FormatTimestamp(timestamp.Value, addMillisecondsInLogTimestamps);
+            }
+        }
+        public static DateTimeOffset ParseTimestamp(string timestamp, bool addMillisecondsInLogTimestamps)
+        {
+            if (addMillisecondsInLogTimestamps)
+            {
+                return DateTimeOffset.Parse(timestamp);//2023-05-01T11:44:53.4931284+02:00
+            }
+            else
+            {
+                return DateTimeOffset.Parse(timestamp);//2023-05-01T11:44:53+02:00
+            }
+        }
+        public static string FormatTimestamp(DateTimeOffset timestamp, bool addMillisecondsInLogTimestamps)
         {
             if (addMillisecondsInLogTimestamps)
             {
@@ -717,9 +751,10 @@ namespace GRYLibrary.Core.Misc
             }
         }
 
-        public static string DateTimeToISO8601String(DateTime dateTime, bool addMilliseconds = true)
+        public static string DateTimeToISO8601String(DateTimeOffset dateTime, bool addMilliseconds = true)
         {
             string format;
+            //TODO considertimezone
             if (addMilliseconds)
             {
                 format = "yyyy-MM-dd'T'HH:mm:ss,fff";
@@ -1010,7 +1045,7 @@ namespace GRYLibrary.Core.Misc
         /// This function preserves the directory-structure of <paramref name="sourceFolder"/>.
         /// This function ignores empty directories in <paramref name="sourceFolder"/>.
         /// </remarks>
-        public static void MoveContentOfFoldersAcrossVolumes(string sourceFolder, string targetFolder, Func<string, bool> fileSelectorPredicate, Action<Exception> errorHandler, bool deleteAlreadyExistingFilesWithoutCopy = false)
+        public static void MoveContentOfFoldersAcrossVolumes(string sourceFolder, string targetFolder, Func<string, bool> fileSelectorPredicate, Action<Exception>? errorHandler, bool deleteAlreadyExistingFilesWithoutCopy = false)
         {
             void fileAction(string sourceFile, object @object)
             {
@@ -1039,7 +1074,10 @@ namespace GRYLibrary.Core.Misc
                 }
                 catch (Exception exception)
                 {
-                    errorHandler(exception);
+                    if (errorHandler != null)
+                    {
+                        errorHandler(exception);
+                    }
                 }
             }
             ForEachFileAndDirectoryTransitively(sourceFolder, (directory, obj) => { /*TODO ensure directory exists in target-folder*/}, fileAction, false, null, null);
@@ -1053,7 +1091,7 @@ namespace GRYLibrary.Core.Misc
             }
         }
 
-        public static void ForEachFileAndDirectoryTransitively(string directory, Action<string, object> directoryAction, Action<string, object> fileAction, bool ignoreErrors = false, object argumentForFileAction = null, object argumentForDirectoryAction = null)
+        public static void ForEachFileAndDirectoryTransitively(string directory, Action<string, object>? directoryAction, Action<string, object>? fileAction, bool ignoreErrors = false, object? argumentForFileAction = null, object? argumentForDirectoryAction = null)
         {
             foreach (string file in Directory.GetFiles(directory))
             {
@@ -1735,6 +1773,10 @@ namespace GRYLibrary.Core.Misc
                 }
                 throw new AssertionException("Assertion failed. Condition is false." + (string.IsNullOrWhiteSpace(messageForFailedAssertion) ? string.Empty : " " + messageForFailedAssertion));
             }
+        }
+        public static void AssertNotNull(object variable, string variableName, bool @break = false)
+        {
+            AssertCondition(variable != null, $"Variable '{variableName}' is null.", @break);
         }
         public static void FormatCSVFile(string file, string separator = ";", bool firstLineContainsHeadlines = false)
         {
@@ -2563,6 +2605,7 @@ namespace GRYLibrary.Core.Misc
                 return @object.ToString();
             }
         }
+
         #region Nullsafe-equals-helper
         public static bool NullSafeEquals(this object @this, object obj)
         {
@@ -2653,37 +2696,38 @@ namespace GRYLibrary.Core.Misc
             }
         }
         #endregion
-        public static DateTime GetTimeFromInternetUtC()
+
+        public static DateTimeOffset GetTimeFromInternetUtC()
         {
             return GetTimeFromInternet(TimeZoneInfo.Utc);
         }
 
-        public static DateTime GetTimeFromInternetCurrentTimeZone()
+        public static DateTimeOffset GetTimeFromInternetCurrentTimeZone()
         {
             return GetTimeFromInternet(TimeZoneInfo.Local);
         }
 
-        public static DateTime GetTimeFromInternet(TimeZoneInfo timezone)
+        public static DateTimeOffset GetTimeFromInternet(TimeZoneInfo timezone)
         {
             return GetTimeFromInternet(timezone, "yy-MM-dd HH:mm:ss", "time.nist.gov", 13, 7, 17);
         }
 
-        public static DateTime GetTimeFromInternet(TimeZoneInfo timezone, string format, string domain, int port, int begin, int length)
+        public static DateTimeOffset GetTimeFromInternet(TimeZoneInfo timezone, string format, string domain, int port, int begin, int length)
         {
             using TcpClient tcpClient = new TcpClient(domain, port);
             using StreamReader streamReader = new(tcpClient.GetStream());
-            DateTime originalDateTime = DateTime.ParseExact(streamReader.ReadToEnd().Substring(begin, length), format, CultureInfo.InvariantCulture, DateTimeStyles.None);
+            DateTimeOffset originalDateTime = DateTime.ParseExact(streamReader.ReadToEnd().Substring(begin, length), format, CultureInfo.InvariantCulture, DateTimeStyles.None);
             return TimeZoneInfo.ConvertTime(originalDateTime, timezone);
         }
         /// <returns>
         /// If Development-configuration: This function returns <see cref="DateTime.Now"/> using the timezone of the current machine.
         /// Any else configuration: This function returns <see cref="DateTime.UtcNow"/> which is more appropriate for productive usage.
         /// </returns>
-        public static DateTime GetNow() =>
+        public static DateTimeOffset GetNow() =>
 #if Development
-            DateTime.Now;
+            DateTimeOffset.Now;
 #else
-            DateTime.UtcNow;
+            DateTimeOffset.UtcNow;
 #endif
 
         public static string DateTimeToString(DateTime value)
