@@ -14,6 +14,7 @@ namespace GRYLibrary.Core.APIServer.Settings
     /// </summary>
     public interface IApplicationConstants
     {
+        public string BaseFolder { get; }
         public string ApplicationName { get; set; }
         public bool UseWebSockets { get; set; }
         public string ApplicationDescription { get; set; }
@@ -77,7 +78,7 @@ namespace GRYLibrary.Core.APIServer.Settings
         }
         public bool AdminHasToEnterInformationAfterInitialConfigurationFileGeneration { get; set; } = false;
         public bool ThrowErrorIfConfigurationDoesNotExistInProduction { get; set; } = false;
-        private string _BaseFolder;
+        public string BaseFolder { get; private set; }
         public string ApplicationName { get; set; }
         public string ApplicationDescription { get; set; }
         public IList<Regulation> Regulations { get; set; } = new List<Regulation>();
@@ -92,12 +93,12 @@ namespace GRYLibrary.Core.APIServer.Settings
         public AbstractFilePath LogFolder { get; set; }
         public string GetDataFolder()
         {
-            return this.DataFolder.GetPath(this._BaseFolder);
+            return this.DataFolder.GetPath(this.BaseFolder);
         }
 
         public string GetConfigurationFolder()
         {
-            return this.ConfigurationFolder.GetPath(this._BaseFolder);
+            return this.ConfigurationFolder.GetPath(this.BaseFolder);
         }
 
         public string GetCertificateFolder()
@@ -112,7 +113,7 @@ namespace GRYLibrary.Core.APIServer.Settings
 
         public string GetLogFolder()
         {
-            return this.LogFolder.GetPath(this._BaseFolder);
+            return this.LogFolder.GetPath(this.BaseFolder);
         }
 
         public CommonRoutesHostInformation CommonRoutesHostInformation { get; set; } = new HostCommonRoutes();
@@ -135,7 +136,7 @@ namespace GRYLibrary.Core.APIServer.Settings
 
         public void Initialize(string baseFolder)
         {
-            this._BaseFolder = baseFolder;
+            this.BaseFolder = baseFolder;
         }
     }
 }

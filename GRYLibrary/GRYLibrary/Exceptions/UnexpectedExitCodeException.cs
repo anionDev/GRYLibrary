@@ -6,6 +6,9 @@ namespace GRYLibrary.Core.Exceptions
     public class UnexpectedExitCodeException : Exception
     {
         public ExternalProgramExecutor ExecutedProgram { get; }
+        public UnexpectedExitCodeException(string message) : base(message)
+        {
+        }
         public UnexpectedExitCodeException(ExternalProgramExecutor externalProgramExecutor) : base(GetMessage(externalProgramExecutor))
         {
             this.ExecutedProgram = externalProgramExecutor;

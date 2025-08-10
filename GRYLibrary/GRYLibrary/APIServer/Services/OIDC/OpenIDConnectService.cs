@@ -63,7 +63,7 @@ namespace GRYLibrary.Core.APIServer.Services.OpenIDConnect
                 string authority = "https://identitymanagement.example.de/realms/dein-realm";
                 string clientId = "my-client";
 
-                var user = ValidateJwtToken(token, authority, clientId);
+                ClaimsPrincipal? user = this.ValidateJwtToken(token, authority, clientId);
 
                 if (user != null)
                 {
@@ -81,9 +81,9 @@ namespace GRYLibrary.Core.APIServer.Services.OpenIDConnect
         }
         private ClaimsPrincipal? ValidateJwtToken(string token, string authority, string audience)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
 
-            var validationParameters = new TokenValidationParameters
+            TokenValidationParameters validationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
                 ValidateAudience = true,
@@ -95,15 +95,15 @@ namespace GRYLibrary.Core.APIServer.Services.OpenIDConnect
 
                 IssuerSigningKeyResolver = (token, securityToken, kid, validationParameters) =>
                 {
-                    var client = new HttpClient();
-                    var jwks = client.GetFromJsonAsync<JsonWebKeySet>($"{authority}/.well-known/openid-configuration/jwks").Result;
+                    HttpClient client = new HttpClient();
+                    JsonWebKeySet? jwks = client.GetFromJsonAsync<JsonWebKeySet>($"{authority}/.well-known/openid-configuration/jwks").Result;
                     return jwks.Keys;
                 }
             };
 
             try
             {
-                var principal = tokenHandler.ValidateToken(token, validationParameters, out var validatedToken);
+                ClaimsPrincipal principal = tokenHandler.ValidateToken(token, validationParameters, out SecurityToken? validatedToken);
                 return principal;
             }
             catch (SecurityTokenException)

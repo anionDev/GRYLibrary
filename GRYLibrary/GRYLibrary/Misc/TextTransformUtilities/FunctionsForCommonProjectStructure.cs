@@ -1,6 +1,7 @@
-﻿using GRYLibrary.Core.ExecutePrograms;
+﻿using GRYLibrary.Core.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,10 +12,32 @@ namespace GRYLibrary.Core.Misc.TextTransformUtilities
     {
         public static string RunProgramAndGetOutput(string repositoryFolder, string codeUnitName, string program, string workingDirectoryRelative, string arguments)
         {
-            var entireWorkingDirectory = Path.Combine(repositoryFolder, codeUnitName, workingDirectoryRelative);
-            var e = new ExternalProgramExecutor(program, arguments, entireWorkingDirectory);
-            e.Run();
-            return string.Join(Environment.NewLine, e.AllStdOutLines);
+            string entireWorkingDirectory = Path.Combine(repositoryFolder, codeUnitName, workingDirectoryRelative);
+            ProcessStartInfo psi = new ProcessStartInfo
+            {
+                FileName = program,
+                Arguments = arguments,
+                WorkingDirectory = entireWorkingDirectory,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using Process process = new Process { StartInfo = psi };
+            process.Start();
+            string stdout = process.StandardOutput.ReadToEnd();
+            string stderr = process.StandardError.ReadToEnd();
+            process.WaitForExit();
+            int exitCode = process.ExitCode;
+            if (exitCode == 0)
+            {
+                return stdout;
+            }
+            else
+            {
+                throw new UnexpectedExitCodeException($"Running \"{entireWorkingDirectory}>{program} {arguments}\" had exitcode {exitCode}. StdOut: \"{stdout}\"; StdErr: \"{stderr}\"");
+            }
         }
         public static string GenerateConstants(string repositoryFolder, string codeUnitName, bool addDebugInformation)
         {

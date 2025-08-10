@@ -207,7 +207,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public Role GetRoleByName(string roleName)
         {
-            return _Roles.Values.Where(role => role.Name == roleName).First();
+            return this._Roles.Values.Where(role => role.Name == roleName).First();
         }
     }
 }

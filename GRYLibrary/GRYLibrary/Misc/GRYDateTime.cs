@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Globalization;
 
 namespace GRYLibrary.Core.Misc
@@ -63,7 +62,7 @@ namespace GRYLibrary.Core.Misc
 
         public static GRYDateTime FromDateTime(DateTimeOffset value)
         {
-            var utcValue = value.ToUniversalTime();
+            DateTimeOffset utcValue = value.ToUniversalTime();
             return new GRYDateTime((uint)utcValue.Year, (uint)utcValue.Month, (uint)utcValue.Day, (uint)utcValue.Hour, (uint)utcValue.Minute, (uint)utcValue.Second);
         }
 
