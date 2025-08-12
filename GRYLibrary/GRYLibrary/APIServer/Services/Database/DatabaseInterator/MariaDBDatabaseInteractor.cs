@@ -35,7 +35,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database.DatabaseInterator
 
         public string GetSQLStatementForRunningMigration(string migrationContent, string migrationTableName, string migrationName, DateTimeOffset now)
         {
-            var noUtc = now.ToUniversalTime();
+            DateTimeOffset noUtc = now.ToUniversalTime();
             return @$"SET autocommit=0;
 {migrationContent}
 insert into {migrationTableName}(MigrationName, ExecutionTimestamp) values ('{migrationName}', '{noUtc:yyyy-MM-dd HH:mm:ss}')
