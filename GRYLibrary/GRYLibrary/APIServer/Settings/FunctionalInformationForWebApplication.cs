@@ -25,7 +25,11 @@ namespace GRYLibrary.Core.APIServer.Settings
         public IServiceCollection ServiceCollection { get; internal set; }
         public IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> PersistedAPIServerConfiguration { get; internal set; }
         public WebApplication WebApplication { get; internal set; }
+        public bool RunAsync { get; set; } = false;
         public Action PreRun { get; set; } = () => { };
+        /// <remarks>
+        /// This will can not be executed if RunAsync is true because the run-method immediately returns a return-code and with this the execution-overhead will be finished..
+        /// </remarks>
         public Action PostRun { get; set; } = () => { };
     }
 }

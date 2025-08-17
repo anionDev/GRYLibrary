@@ -1,44 +1,48 @@
 ﻿using GRYLibrary.Core.APIServer.CommonRoutes;
 using GRYLibrary.Core.APIServer.ConcreteEnvironments;
+using GRYLibrary.Core.APIServer.ExecutionModes;
+using GRYLibrary.Core.APIServer.ExecutionModes.Visitors;
+using GRYLibrary.Core.APIServer.Formatter;
+using GRYLibrary.Core.APIServer.Mid.General;
 using GRYLibrary.Core.APIServer.MidT;
+using GRYLibrary.Core.APIServer.MidT.Aut;
 using GRYLibrary.Core.APIServer.MidT.Auth;
 using GRYLibrary.Core.APIServer.MidT.Blacklist;
 using GRYLibrary.Core.APIServer.MidT.Captcha;
+using GRYLibrary.Core.APIServer.MidT.Counter;
 using GRYLibrary.Core.APIServer.MidT.DDOS;
 using GRYLibrary.Core.APIServer.MidT.Exception;
+using GRYLibrary.Core.APIServer.MidT.Maint;
 using GRYLibrary.Core.APIServer.MidT.Obfuscation;
-using GRYLibrary.Core.APIServer.MidT.Counter;
+using GRYLibrary.Core.APIServer.MidT.RLog;
 using GRYLibrary.Core.APIServer.MidT.WAF;
-using GRYLibrary.Core.APIServer.ExecutionModes;
 using GRYLibrary.Core.APIServer.Settings;
 using GRYLibrary.Core.APIServer.Settings.Configuration;
+using GRYLibrary.Core.APIServer.Utilities;
+using GRYLibrary.Core.Exceptions;
+using GRYLibrary.Core.Logging.GeneralPurposeLogger;
+using GRYLibrary.Core.Logging.GRYLogger;
 using GRYLibrary.Core.Misc;
+using GRYLibrary.Core.Misc.ConsoleApplication;
 using GRYLibrary.Core.Misc.FilePath;
+using GRYLibrary.Core.Misc.MetaConfiguration;
+using GRYLibrary.Core.Misc.MetaConfiguration.ConfigurationFormats;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using GRYLibrary.Core.Misc.ConsoleApplication;
-using GRYLibrary.Core.APIServer.ExecutionModes.Visitors;
-using System.Reflection;
-using GRYLibrary.Core.Misc.MetaConfiguration.ConfigurationFormats;
-using GRYLibrary.Core.Misc.MetaConfiguration;
+using System.Threading.Tasks;
 using GUtilities = GRYLibrary.Core.Misc.Utilities;
-using GRYLibrary.Core.APIServer.Utilities;
-using GRYLibrary.Core.Logging.GeneralPurposeLogger;
-using GRYLibrary.Core.APIServer.MidT.RLog;
-using GRYLibrary.Core.Logging.GRYLogger;
-using GRYLibrary.Core.APIServer.MidT.Aut;
-using GRYLibrary.Core.APIServer.Mid.General;
-using GRYLibrary.Core.APIServer.MidT.Maint;
-using GRYLibrary.Core.Exceptions;
 
 namespace GRYLibrary.Core.APIServer
 {
@@ -189,9 +193,21 @@ namespace GRYLibrary.Core.APIServer
                 logger.Log($"Executionmode: {this._Configuration.InitializationInformation.ApplicationConstants.ExecutionMode}", LogLevel.Debug);
                 this.EnsureCertificateIsAvailableIfRequired(persistedAPIServerConfiguration);
                 WebApplication webApplication = this.CreateWebApplication(config, logger, persistedAPIServerConfiguration);
-                this._Configuration.FunctionalInformationForWebApplication.PreRun();
-                webApplication.Run();
-                this._Configuration.FunctionalInformationForWebApplication.PostRun();
+                Action runAction = () =>
+                {
+                    this._Configuration.FunctionalInformationForWebApplication.PreRun();
+                    webApplication.Run();
+                    this._Configuration.FunctionalInformationForWebApplication.PostRun();
+                };
+                if (this._Configuration.FunctionalInformationForWebApplication.RunAsync)
+                {
+                    Task t = new Task(runAction);
+                    t.Start();
+                }
+                else
+                {
+                    runAction();
+                }
                 return 0;
             }
             catch (Exception exception)
@@ -213,7 +229,11 @@ namespace GRYLibrary.Core.APIServer
                 EnvironmentName = this._Configuration.InitializationInformation.ApplicationConstants.Environment.GetType().Name
             });
             IServiceCollection services = builder.Services;
-            IMvcBuilder mvcBuilder = services.AddControllers();//TODO add handling for /robots.txt
+            IMvcBuilder mvcBuilder = services.AddControllers(mvcOptions =>
+            {
+                mvcOptions.InputFormatters.Add(new ByteArrayInputFormatter());
+                mvcOptions.UseGeneralRoutePrefix(ServerConfiguration.APIRoutePrefix);
+            });//TODO add handling for /robots.txt
             mvcBuilder = mvcBuilder.ConfigureApplicationPartManager(manager =>
                 {
                     manager.FeatureProviders.Clear();
@@ -280,7 +300,7 @@ namespace GRYLibrary.Core.APIServer
             {
                 kestrelOptions.AllowSynchronousIO = true;
                 kestrelOptions.AddServerHeader = false;
-                kestrelOptions.ListenAnyIP(persistedApplicationSpecificConfiguration.ServerConfiguration.Protocol.Port, listenOptions =>
+                Action<ListenOptions> lOptions = listenOptions =>
                 {
                     if (persistedApplicationSpecificConfiguration.ServerConfiguration.Protocol is HTTPS https)
                     {
@@ -299,10 +319,17 @@ namespace GRYLibrary.Core.APIServer
                             logger.Log($"The used certificate has the DNS-name '{dnsName}' which differs from the domain '{persistedApplicationSpecificConfiguration.ServerConfiguration.Domain}' which is set in the configuration.", LogLevel.Warning);
                         }
                     }
-                });
+                };
+                if (apiServerConfiguration.InitializationInformation.ApplicationConstants.ListenOnEveryIP)
+                {
+                    kestrelOptions.ListenAnyIP(persistedApplicationSpecificConfiguration.ServerConfiguration.Protocol.Port, lOptions);
+                }
+                else
+                {
+                    kestrelOptions.ListenLocalhost(persistedApplicationSpecificConfiguration.ServerConfiguration.Protocol.Port, lOptions);
+                }
             });
             string appVersionString = $"v{this._Configuration.InitializationInformation.ApplicationConstants.ApplicationVersion}";
-            builder.Services.AddControllers(mvcOptions => mvcOptions.UseGeneralRoutePrefix(ServerConfiguration.APIRoutePrefix));
 
             bool hostAPIDocumentation = HostAPIDocumentation(this._Configuration.InitializationInformation.ApplicationConstants.Environment, persistedApplicationSpecificConfiguration.ServerConfiguration.HostAPISpecificationForInNonDevelopmentEnvironment, this._Configuration.InitializationInformation.ApplicationConstants.ExecutionMode);
             string apiUITitle = $"{this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName} v{this._Configuration.InitializationInformation.ApplicationConstants.ApplicationVersion} API documentation";
