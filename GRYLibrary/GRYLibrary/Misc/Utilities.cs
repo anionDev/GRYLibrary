@@ -706,6 +706,7 @@ namespace GRYLibrary.Core.Misc
 
         public const string FormatForDateTimesInFullFormatISO8601 = "yyyy-MM-ddTHH:mm:sszzz";
         public const string FormatForDateTimesInFullFormatSimple = "yyyy-MM-dd HH:mm:ss";
+        public const string FormatForDateTimesInFullFormatWithTimeZone = "yyyy-MM-dd HH:mm:ss zzz";
         public static DateTimeOffset? ParseTimestampNullable(string? timestamp, bool addMillisecondsInLogTimestamps)
         {
             if (timestamp == null)
@@ -751,23 +752,36 @@ namespace GRYLibrary.Core.Misc
             }
         }
 
-        public static string DateTimeToISO8601String(DateTimeOffset dateTime, bool addMilliseconds = true)
+        public static string DateTimeToISO8601String(DateTimeOffset dateTimeOffset, bool addMilliseconds = true,bool addTimeZone=true)
         {
             string format;
-            //TODO considertimezone
-            if (addMilliseconds)
+            if (addTimeZone)
             {
-                format = "yyyy-MM-dd'T'HH:mm:ss,fff";
+                if (addMilliseconds)
+                {
+                    format = "yyyy-MM-dd'T'HH:mm:ss,fff zzz";
+                }
+                else
+                {
+                    format = "yyyy-MM-dd'T'HH:mm:ss zzz";
+                }
             }
             else
             {
-                format = "yyyy-MM-dd'T'HH:mm:ss";
+                if (addMilliseconds)
+                {
+                    format = "yyyy-MM-dd'T'HH:mm:ss,fff";
+                }
+                else
+                {
+                    format = "yyyy-MM-dd'T'HH:mm:ss";
+                }
             }
-            return dateTime.ToString(format, CultureInfo.InvariantCulture);
+            return dateTimeOffset.ToString(format, CultureInfo.InvariantCulture);
         }
-        public static string DateTimeToUserFriendlyString(DateTime dateTime)
+        public static string DateTimeToUserFriendlyString(DateTimeOffset dateTimeOffset)
         {
-            return DateTimeToISO8601String(dateTime, false);
+            return DateTimeToISO8601String(dateTimeOffset, false);
         }
 
         public static string DateTimeToUserFriendlyString(GRYDateTime dateTime)
@@ -775,7 +789,7 @@ namespace GRYLibrary.Core.Misc
             return DateTimeToISO8601String(dateTime.ToDateTime(), false);
         }
 
-        public static string DateTimeForFilename(DateTime dateTime)
+        public static string DateTimeForFilename(DateTimeOffset dateTime)
         {
             return dateTime.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture);
         }
@@ -1074,10 +1088,7 @@ namespace GRYLibrary.Core.Misc
                 }
                 catch (Exception exception)
                 {
-                    if (errorHandler != null)
-                    {
-                        errorHandler(exception);
-                    }
+                    errorHandler?.Invoke(exception);
                 }
             }
             ForEachFileAndDirectoryTransitively(sourceFolder, (directory, obj) => { /*TODO ensure directory exists in target-folder*/}, fileAction, false, null, null);
@@ -1907,7 +1918,8 @@ namespace GRYLibrary.Core.Misc
         /// Executes <paramref name="action"/>. When <paramref name="action"/> longer takes than <paramref name="timeout"/> then <paramref name="action"/> will be aborted.
         /// </summary>
         /// <returns>
-        /// Returns true if and only if the action was terminated in the given timespan so that the action was not aborted.
+        /// Returns true if and only if the action was terminated in the given timespan.
+        /// So this function returns true if and only if the action was not completed within the given <paramref name="errorHandler"/>.
         /// </returns>
 
         public static bool RunWithTimeout(this Action action, TimeSpan timeout, Action<Exception>? errorHandler = default)

@@ -691,8 +691,8 @@ namespace GRYLibrary.Tests.Testcases
         public void DateAndTimeToStringTest()
         {
             Assert.AreEqual("2022-02-27_15-05-00", GUtilities.DateTimeForFilename(new DateTime(2022, 02, 27, 15, 05, 00)));
-            Assert.AreEqual("2022-02-27T15:05:00,120", GUtilities.DateTimeToISO8601String(new DateTime(2022, 02, 27, 15, 05, 00, 120)));
-            Assert.AreEqual("2022-02-27T15:05:00", GUtilities.DateTimeToUserFriendlyString(new DateTime(2022, 02, 27, 15, 05, 00)));
+            Assert.AreEqual("2022-02-27T15:05:00,120 +03:00", GUtilities.DateTimeToISO8601String(new DateTimeOffset(2022, 02, 27, 15, 05, 00, 120,TimeSpan.FromHours(3))));
+            Assert.AreEqual("2022-02-27T15:05:00 +03:00", GUtilities.DateTimeToUserFriendlyString(new DateTimeOffset(2022, 02, 27, 15, 05, 00, TimeSpan.FromHours(3))));
             Assert.AreEqual("2022-02-27", GUtilities.DateToUserFriendlyString(new DateOnly(2022, 02, 27)));
             Assert.AreEqual("15:05:00", GUtilities.TimeToUserFriendlyString(new TimeOnly(15, 05, 00)));
         }

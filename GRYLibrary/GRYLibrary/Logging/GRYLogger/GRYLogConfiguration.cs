@@ -70,7 +70,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
             this.PrintEmptyLines = false;
             this.PrintErrorsAsInformation = false;
             this.Name = string.Empty;
-            this.DateFormat = Misc.Utilities.FormatForDateTimesInFullFormatSimple;
+            this.DateFormat = Misc.Utilities.FormatForDateTimesInFullFormatWithTimeZone;
             this.LoggedMessageTypesConfiguration = new List<SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>>
             {
                 new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Trace, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Trace), ConsoleColor = ConsoleColor.Gray }),
