@@ -1918,7 +1918,8 @@ namespace GRYLibrary.Core.Misc
         /// Executes <paramref name="action"/>. When <paramref name="action"/> longer takes than <paramref name="timeout"/> then <paramref name="action"/> will be aborted.
         /// </summary>
         /// <returns>
-        /// Returns true if and only if the action was terminated in the given timespan so that the action was not aborted.
+        /// Returns true if and only if the action was terminated in the given timespan.
+        /// So this function returns true if and only if the action was not completed within the given <paramref name="errorHandler"/>.
         /// </returns>
 
         public static bool RunWithTimeout(this Action action, TimeSpan timeout, Action<Exception>? errorHandler = default)
