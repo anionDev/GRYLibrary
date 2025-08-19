@@ -25,10 +25,12 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         private readonly ITimeService _TimeService;
         private readonly ITransientAuthenticationServicePersistence<UserType> _TransientAuthenticationServicePersistence;
-        public TransientAuthenticationService(ITimeService timeService, ITransientAuthenticationServicePersistence<UserType> transientAuthenticationServicePersistence)
+        private readonly IAuthenticationServiceSettings _AuthenticationServiceSettings;
+        public TransientAuthenticationService(ITimeService timeService, ITransientAuthenticationServicePersistence<UserType> transientAuthenticationServicePersistence, IAuthenticationServiceSettings authenticationServiceSettings)
         {
             this._TimeService = timeService;
             this._TransientAuthenticationServicePersistence = transientAuthenticationServicePersistence;
+            this._AuthenticationServiceSettings = authenticationServiceSettings;
         }
 
         public virtual string Hash(string password)
@@ -271,7 +273,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public string GetBaseRoleOfAllUser()
         {
-            throw new NotImplementedException();
+            return _AuthenticationServiceSettings.BaseRoleOfAllUser;
         }
     }
 }

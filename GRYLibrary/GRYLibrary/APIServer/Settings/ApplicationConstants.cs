@@ -54,6 +54,7 @@ namespace GRYLibrary.Core.APIServer.Settings
         public IList<Type> CustomMiddlewares1 { get; set; }
         public IList<Type> CustomMiddlewares2 { get; set; }
         public ISet<Type> KnownTypes { get; set; }
+        public bool ListenOnEveryIP { get; set; }
     }
     public interface IApplicationConstants<AppSpecificConstants> : IApplicationConstants
     {
@@ -75,6 +76,7 @@ namespace GRYLibrary.Core.APIServer.Settings
             this.ConfigurationFile = AbstractFilePath.FromString("./Configuration.xml");
             this.LogFolder = AbstractFilePath.FromString("./Logs");
             this.UseWebSockets = false;
+            this.ListenOnEveryIP = true;
         }
         public bool AdminHasToEnterInformationAfterInitialConfigurationFileGeneration { get; set; } = false;
         public bool ThrowErrorIfConfigurationDoesNotExistInProduction { get; set; } = false;
@@ -133,6 +135,7 @@ namespace GRYLibrary.Core.APIServer.Settings
         public IList<Type> CustomMiddlewares2 { get; set; } = new List<Type>();
         public ISet<Type> KnownTypes { get; set; } = new HashSet<Type>();
         public bool UseWebSockets { get; set; }
+        public bool ListenOnEveryIP { get; set; }
 
         public void Initialize(string baseFolder)
         {
