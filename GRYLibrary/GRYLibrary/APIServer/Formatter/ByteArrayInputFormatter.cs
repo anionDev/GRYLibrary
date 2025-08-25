@@ -12,7 +12,7 @@ namespace GRYLibrary.Core.APIServer.Formatter
     {
         public ByteArrayInputFormatter()
         {
-            SupportedMediaTypes.Add(Microsoft.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/octet-stream"));
+            this.SupportedMediaTypes.Add(Microsoft.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/octet-stream"));
         }
 
         protected override bool CanReadType(Type type)
