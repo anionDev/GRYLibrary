@@ -1,31 +1,33 @@
-﻿using GRYLibrary.Core.APIServer.ConcreteEnvironments;
+﻿using GRYLibrary.Core.APIServer.CommonDBTypes;
+using GRYLibrary.Core.APIServer.ConcreteEnvironments;
 using GRYLibrary.Core.APIServer.ExecutionModes;
+using GRYLibrary.Core.APIServer.Services;
+using GRYLibrary.Core.APIServer.Services.Init;
+using GRYLibrary.Core.APIServer.Services.Interfaces;
 using GRYLibrary.Core.APIServer.Settings;
 using GRYLibrary.Core.APIServer.Settings.Configuration;
+using GRYLibrary.Core.APIServer.Utilities.InitializationStates;
+using GRYLibrary.Core.APIServer.Verbs;
+using GRYLibrary.Core.Crypto;
+using GRYLibrary.Core.Exceptions;
 using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using GRYLibrary.Core.Misc;
 using GRYLibrary.Core.Misc.ConsoleApplication;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
-using GUtilities = GRYLibrary.Core.Misc.Utilities;
 using System;
-using System.IO;
-using System.Threading;
-using System.Text;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Security.Claims;
-using GRYLibrary.Core.APIServer.Services.Interfaces;
-using GRYLibrary.Core.Crypto;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using GUtilities = GRYLibrary.Core.Misc.Utilities;
 using HashAlgorithm = GRYLibrary.Core.Crypto.HashAlgorithm;
 using SHA256 = GRYLibrary.Core.Crypto.SHA256;
-using GRYLibrary.Core.APIServer.Services;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using System.Linq;
-using System.Threading.Tasks;
-using GRYLibrary.Core.APIServer.Verbs;
-using GRYLibrary.Core.Exceptions;
-using GRYLibrary.Core.APIServer.CommonDBTypes;
-using System.Diagnostics;
 
 namespace GRYLibrary.Core.APIServer.Utilities
 {
@@ -272,13 +274,20 @@ namespace GRYLibrary.Core.APIServer.Utilities
             }
         }
 #pragma warning disable IDE0060 // Remove unused parameter
-        public static Task<HealthCheckResult> CheckHealthAsync(IGeneralLogger logger, Func<(HealthStatus, IEnumerable<string>)> check, HealthCheckContext context, CancellationToken cancellationToken)
+        public static Task<HealthCheckResult> CheckHealthAsync(IGeneralLogger logger, Func<(HealthStatus, IEnumerable<string>)> check, HealthCheckContext context, CancellationToken cancellationToken, IInitializationService? initializationService)
 #pragma warning restore IDE0060 // Remove unused parameter
         {
             (HealthStatus result, IEnumerable<string> messages) result;
             try
             {
-                result = check();
+                if (initializationService !=null && initializationService.GetInitializationState().Equals(new InitializationFailed()))
+                {
+                    result = (HealthStatus.Degraded,new List<string>() { "Initializing" });
+                }
+                else
+                {
+                    result = check();
+                }
             }
             catch (Exception exception)
             {

@@ -222,6 +222,9 @@ namespace GRYLibrary.Core.APIServer
             IGRYLog logger,
             IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedAPIServerConfiguration)
         {
+            try
+            {
+
             logger.Log($"BaseFolder: {apiServerConfiguration.InitializationInformation.BaseFolder}", LogLevel.Debug);
             WebApplicationBuilder builder = WebApplication.CreateBuilder(new WebApplicationOptions
             {
@@ -438,6 +441,11 @@ namespace GRYLibrary.Core.APIServer
                 logger.Log($"Maintenancemode is enabled.", LogLevel.Information);
             }
             return app;
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         private void AddDefinedMiddleware<SupportDefinedMiddlewareType>(
