@@ -14,6 +14,7 @@ namespace GRYLibrary.Core.APIServer.Services.Interfaces
         public void AddUser(User user);
         public AccessToken Login(string userName, string password);
         public bool AccessTokenIsValid(string accessToken);
+        public ClaimsPrincipal GetPrincipal(string accessToken);
         /// <remarks>
         /// This operation does not check if the <paramref name="accessToken"/> is valid.
         /// </remarks>

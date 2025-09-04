@@ -11,18 +11,9 @@ namespace GRYLibrary.Core.APIServer.Mid.AuthS
     /// </summary>
     public class AuthSMiddleware : AuthenticationMiddleware
     {
-        private readonly ICredentialsProvider _CredentialsProvider;
-        private readonly IAuthenticationService _AuthenticationService;
-        public AuthSMiddleware(RequestDelegate next, ICredentialsProvider credentialsProvider, IAuthenticationService authenticationService, IAuthSConfiguration authenticationConfiguration) : base(next, authenticationConfiguration)
+        public AuthSMiddleware(RequestDelegate next, ICredentialsProvider credentialsProvider, IAuthenticationService authenticationService, IAuthSConfiguration authenticationConfiguration) : base(next, authenticationConfiguration, authenticationService)
         {
-            this._CredentialsProvider = credentialsProvider;
-            this._AuthenticationService = authenticationService;
         }
 
-        public override bool TryGetAuthentication(HttpContext context, out ClaimsPrincipal principal, out string accessToken)
-        {
-            bool result = Tools.TryGetAuthentication(this._CredentialsProvider, this._AuthenticationService, context, out principal, out accessToken);
-            return result;
-        }
     }
 }

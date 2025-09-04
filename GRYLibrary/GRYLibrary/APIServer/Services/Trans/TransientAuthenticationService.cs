@@ -1,4 +1,5 @@
 ﻿using GRYLibrary.Core.APIServer.CommonDBTypes;
+using GRYLibrary.Core.APIServer.Services.Aut.Prov;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
 using GRYLibrary.Core.Crypto;
 using GRYLibrary.Core.Exceptions;
@@ -19,7 +20,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
     /// <remarks>
     /// Do not use this service in productive-mode because this service does not implement many features to increase security.
     /// </remarks>
-    public class TransientAuthenticationService<UserType> : IAuthenticationService<UserType>
+    public class TransientAuthenticationService<UserType> : IAuthenticationService
         where UserType : User
     {
 

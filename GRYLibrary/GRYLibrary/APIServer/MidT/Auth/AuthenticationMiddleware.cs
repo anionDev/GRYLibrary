@@ -1,6 +1,9 @@
-﻿using GRYLibrary.Core.APIServer.Utilities;
+﻿using GRYLibrary.Core.APIServer.Services.Aut.Prov;
+using GRYLibrary.Core.APIServer.Services.Interfaces;
+using GRYLibrary.Core.APIServer.Utilities;
 using GRYLibrary.Core.Exceptions;
 using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
@@ -14,10 +17,25 @@ namespace GRYLibrary.Core.APIServer.MidT.Auth
         public const string UserIdInformationName = "UserId";
         public const string CurrentlyUsedAccessTokenInformationName = "CurrentlyUsedAccessToken";
         private readonly IAuthenticationConfiguration _AuthenticationConfiguration;
-        protected AuthenticationMiddleware(RequestDelegate next, IAuthenticationConfiguration authenticationConfiguration) : base(next)
+        private readonly IDictionary<string, IAuthenticationProvider> _AuthenticationProvider;
+        private readonly IAuthenticationService _AuthenticationService;
+        protected AuthenticationMiddleware(RequestDelegate next, IAuthenticationConfiguration authenticationConfiguration, IAuthenticationService authenticationService) : base(next)
         {
             this._AuthenticationConfiguration = authenticationConfiguration;
+            this._AuthenticationProvider = this.GetAllAvailableAuthenticationProvider(authenticationConfiguration.AuthentificationMethods);
+            _AuthenticationConfiguration = authenticationConfiguration;
         }
+
+        private IDictionary<string, IAuthenticationProvider> GetAllAvailableAuthenticationProvider(IDictionary<string, IAuthenticationProviderConfiguration> externalAuthentificationMethods)
+        {
+            var result = new Dictionary<string, IAuthenticationProvider>();
+            foreach (var method in externalAuthentificationMethods)
+            {
+                result[method.Key] = method.Value.CreateProvider();
+            }
+            return result;
+        }
+
         public virtual bool AuthenticationIsRequired(HttpContext context)
         {
             foreach (string routesWhereUnauthenticatedAccessIsAllowed in this._AuthenticationConfiguration.RoutesWhereUnauthenticatedAccessIsAllowed)
@@ -38,7 +56,6 @@ namespace GRYLibrary.Core.APIServer.MidT.Auth
             return false;
         }
 
-        public abstract bool TryGetAuthentication(HttpContext context, out ClaimsPrincipal principal, out string accessToken);
         public override Task Invoke(HttpContext context)
         {
             bool authenticationIsRequired = this.AuthenticationIsRequired(context);
@@ -55,23 +72,30 @@ namespace GRYLibrary.Core.APIServer.MidT.Auth
 
         public virtual bool IsAuthenticatedInternal(HttpContext context)
         {
-            bool result;
-            if (this.TryGetAuthentication(context, out ClaimsPrincipal principal, out string accessToken))
+            bool result = false;
+
+            foreach (var authenticationProvider in this._AuthenticationProvider)
             {
-                context.User = principal;
-                result = true;
+                if (authenticationProvider.Value.IsApplicable(context))
+                {
+                    if (authenticationProvider.Value.TryGetAuthentication(context, out string accessToken))
+                    {
+                        if (_AuthenticationService.AccessTokenIsValid(accessToken))
+                        {
+                            context.User = _AuthenticationService.GetPrincipal(accessToken);
+                            result = true;
+                            context.Items[CurrentlyUsedAccessTokenInformationName] = accessToken;
+                            context.Items[UserIdInformationName] = context.User.Claims.Where(claim => claim.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").First().Value;
+                            context.Items[IsAuthenticatedInformationName] = true;
+                            return true;
+                        }
+                    }
+                }
             }
-            else
-            {
-                result = false;
-            }
-            context.Items[IsAuthenticatedInformationName] = result;
-            if (result)
-            {
-                context.Items[CurrentlyUsedAccessTokenInformationName] = accessToken;
-                context.Items[UserIdInformationName] = principal.Claims.Where(claim => claim.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").First().Value;
-            }
-            return result;
+            context.Items[IsAuthenticatedInformationName] = false;
+            return false;
+
         }
+
     }
 }

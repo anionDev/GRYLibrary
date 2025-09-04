@@ -1,18 +1,17 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using GRYLibrary.Core.APIServer.Utilities;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace GRYLibrary.Core.APIServer.Services.Aut.Prov.OpenId
+namespace GRYLibrary.Core.APIServer.Services.Aut.Prov.C
 {
-    public class OpenIdProvider : CredentialsProviderBase, IOpenIdProvider
+    public class CookieProvider : CredentialsProviderBase, ICookieProvider
     {
-        private readonly IOpenIdConfiguration _Configuration;
-        public OpenIdProvider(IOpenIdConfiguration configuration)
-        {
-            this._Configuration = configuration;
-        }
-
         public override bool ContainsCredentials(HttpContext context)
         {
             throw new NotImplementedException();

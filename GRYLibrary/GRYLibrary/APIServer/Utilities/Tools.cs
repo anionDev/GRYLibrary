@@ -179,27 +179,17 @@ namespace GRYLibrary.Core.APIServer.Utilities
             return connected;
         }
 
-        public static bool TryGetAuthentication(ICredentialsProvider credentialsProvider, IAuthenticationService authenticationService, HttpContext context, out ClaimsPrincipal principal, out string accessToken)
+        public static bool TryGetAuthentication(ICredentialsProvider credentialsProvider, HttpContext context, out string accessToken)
         {
-            principal = default;
             try
             {
                 if (credentialsProvider.ContainsCredentials(context))
                 {
                     string secret = credentialsProvider.ExtractSecret(context);
-                    accessToken = secret;
-                    if (!string.IsNullOrEmpty(accessToken))
+                    if (!string.IsNullOrEmpty(secret))
                     {
-                        bool accessTokenIsValid = authenticationService.AccessTokenIsValid(accessToken);
-                        if (accessTokenIsValid)
-                        {
-                            User user = authenticationService.GetUserByAccessToken(accessToken);
-                            principal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim> {
-                                new Claim(ClaimTypes.Name, user.Name),
-                                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                            }, "Basic"));
-                            return true;
-                        }
+                        accessToken = secret;
+                        return true;
                     }
                 }
             }
@@ -280,9 +270,9 @@ namespace GRYLibrary.Core.APIServer.Utilities
             (HealthStatus result, IEnumerable<string> messages) result;
             try
             {
-                if (initializationService !=null && initializationService.GetInitializationState().Equals(new InitializationFailed()))
+                if (initializationService != null && initializationService.GetInitializationState().Equals(new InitializationFailed()))
                 {
-                    result = (HealthStatus.Degraded,new List<string>() { "Initializing" });
+                    result = (HealthStatus.Degraded, new List<string>() { "Initializing" });
                 }
                 else
                 {
