@@ -1,6 +1,4 @@
 ﻿using GRYLibrary.Core.APIServer.Services.Database.DatabaseInterator;
-using GRYLibrary.Core.Misc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using MySqlConnector;
 using Npgsql;
 using System;
