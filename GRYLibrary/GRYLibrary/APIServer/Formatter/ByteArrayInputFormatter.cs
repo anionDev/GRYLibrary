@@ -19,7 +19,7 @@ namespace GRYLibrary.Core.APIServer.Formatter
 
         public override Task<InputFormatterResult> ReadRequestBodyAsync(InputFormatterContext context)
         {
-            var stream = new MemoryStream();
+            MemoryStream stream = new MemoryStream();
             context.HttpContext.Request.Body.CopyToAsync(stream).Wait();
             return InputFormatterResult.SuccessAsync(stream.ToArray());
         }
