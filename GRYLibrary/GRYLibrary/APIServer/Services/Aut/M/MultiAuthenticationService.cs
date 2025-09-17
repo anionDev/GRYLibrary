@@ -73,6 +73,11 @@ namespace GRYLibrary.Core.APIServer.Services.Aut.M
             throw new NotImplementedException();
         }
 
+        public ClaimsPrincipal GetPrincipal(string accessToken)
+        {
+            throw new NotImplementedException();
+        }
+
         public Role GetRoleByName(string roleName)
         {
             throw new NotImplementedException();
