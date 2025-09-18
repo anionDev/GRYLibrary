@@ -32,7 +32,9 @@ namespace GRYLibrary.Core.APIServer.Utilities
             this._TestDatabaseFolder = testDatabaseFolder;
             this._DockerComposeArgumentPrefix = $"compose --project-name {dockerProjectName}";
             string argument = $"{this._DockerComposeArgumentPrefix} up --force-recreate --detach";
-            GUtilities.EnsureDirectoryDoesNotExist(Path.Combine(this._TestDatabaseFolder, "Volumes"));
+            string volumesFolder = Path.Combine(this._TestDatabaseFolder, "Volumes");
+            GUtilities.EnsureDirectoryDoesNotExist(volumesFolder);
+            GUtilities.EnsureDirectoryExists(volumesFolder);
             using ExternalProgramExecutor externalProgramExecutor = new ExternalProgramExecutor("docker", argument, this._TestDatabaseFolder);
             {
                 externalProgramExecutor.Run();
