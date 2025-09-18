@@ -46,13 +46,18 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
             this._RequestLogger = this._AppConstants.ExecutionMode.Accept(new GetLoggerVisitor(this._RequestLoggingSettings.RequestsLogConfiguration, this._AppConstants.GetLogFolder(), "Requests"));
             var counterMetricConfig = new CounterConfiguration()
             {
-                LabelNames = new[] { "domain" }
+                LabelNames = new[] { "domain" },                
             };
             _RequestCounterSum = Metrics.CreateCounter("http_requests_sum", "Sum of all HTTP-requests", counterMetricConfig);
+            _RequestCounterSum.IncTo(0);
             _RequestCounter2xx = Metrics.CreateCounter("http_requests_2xx", "Sum of all HTTP-requests with 2xx-response-statuscode", counterMetricConfig);
+            _RequestCounter2xx.IncTo(0);
             _RequestCounter4xx = Metrics.CreateCounter("http_requests_4xx", "Sum of all HTTP-requests with 4xx-response-statuscode", counterMetricConfig);
+            _RequestCounter4xx.IncTo(0);
             _RequestCounter5xx = Metrics.CreateCounter("http_requests_5xx", "Sum of all HTTP-requests with 5xx-response-statuscode", counterMetricConfig);
+            _RequestCounter5xx.IncTo(0);
             _RequestCounterOther = Metrics.CreateCounter("http_requests_oher", "Sum of all HTTP-requests with other response-statuscode", counterMetricConfig);
+            _RequestCounterOther.IncTo(0);
         }
         /// <inheritdoc/>
 
@@ -78,11 +83,14 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
                     isAuthenticated = false;
                 }
                 ClaimsPrincipal principal = isAuthenticated && context.User != null && context.User.Identity.IsAuthenticated ? context.User : null;
-                //TODO add option to add this log-entry to a database
-                AddDataToMetrics(request);
-                IDictionary<string, IList<string?>> header = this.GetHeader(context.Request);
-                this.LogHTTPRequest(request, false, duration, principal, new HashSet<GRYLogTarget> { new Logging.GRYLogger.ConcreteLogTargets.Console() }, header);
-                this.LogHTTPRequest(request, this.ShouldLogEntireRequestContentInLogFile(request), duration, principal, new HashSet<GRYLogTarget> { new Logging.GRYLogger.ConcreteLogTargets.LogFile() }, header);
+                if (this.ShouldBeLogged(request))
+                {
+                    //TODO add option to add this log-entry to a database
+                    AddDataToMetrics(request);
+                    IDictionary<string, IList<string?>> header = this.GetHeader(context.Request);
+                    this.LogHTTPRequest(request, false, duration, principal, new HashSet<GRYLogTarget> { new Logging.GRYLogger.ConcreteLogTargets.Console() }, header);
+                    this.LogHTTPRequest(request, this.ShouldLogEntireRequestContentInLogFile(request), duration, principal, new HashSet<GRYLogTarget> { new Logging.GRYLogger.ConcreteLogTargets.LogFile() }, header);
+                }
             }
             catch
             {
@@ -157,24 +165,21 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
         {
             try
             {
-                if (this.ShouldBeLogged(request))
+                LogLevel logLevel = this.GetLogLevel(request);
+                string formatted;
+                if (logFullRequest)
                 {
-                    LogLevel logLevel = this.GetLogLevel(request);
-                    string formatted;
-                    if (logFullRequest)
-                    {
-                        formatted = this.FormatLogEntryFull(request, duration, user, this._RequestLoggingSettings.MaximalLengthofRequestBodies, this._RequestLoggingSettings.MaximalLengthOfResponseBodies, header);
-                    }
-                    else
-                    {
-                        formatted = this.FormatLogEntrySummary(request, duration, user);
-                    }
-                    LogItem logItem = new LogItem(formatted, logLevel)
-                    {
-                        LogTargets = logTargets
-                    };
-                    this._RequestLogger.AddLogEntry(logItem);
+                    formatted = this.FormatLogEntryFull(request, duration, user, this._RequestLoggingSettings.MaximalLengthofRequestBodies, this._RequestLoggingSettings.MaximalLengthOfResponseBodies, header);
                 }
+                else
+                {
+                    formatted = this.FormatLogEntrySummary(request, duration, user);
+                }
+                LogItem logItem = new LogItem(formatted, logLevel)
+                {
+                    LogTargets = logTargets
+                };
+                this._RequestLogger.AddLogEntry(logItem);
             }
             catch (Exception exception)
             {
@@ -268,10 +273,6 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
 
         public virtual bool ShouldBeLogged(Request request)
         {
-            if (request.ResponseStatusCode / 100 == 5)
-            {
-                return true;
-            }
             if (this.IsIgnored(request.Route))
             {
                 return false;
