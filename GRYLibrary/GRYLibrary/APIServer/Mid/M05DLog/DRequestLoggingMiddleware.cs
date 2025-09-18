@@ -44,7 +44,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
             this._Logger = logger;
             this._ServerConfiguration = serverConfiguration;
             this._RequestLogger = this._AppConstants.ExecutionMode.Accept(new GetLoggerVisitor(this._RequestLoggingSettings.RequestsLogConfiguration, this._AppConstants.GetLogFolder(), "Requests"));
-            var counterMetricConfig = new CounterConfiguration()
+            CounterConfiguration counterMetricConfig = new CounterConfiguration()
             {
                 LabelNames = new[] { "domain" },                
             };
