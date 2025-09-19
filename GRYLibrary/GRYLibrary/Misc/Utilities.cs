@@ -752,7 +752,7 @@ namespace GRYLibrary.Core.Misc
             }
         }
 
-        public static string DateTimeToISO8601String(DateTimeOffset dateTimeOffset, bool addMilliseconds = true,bool addTimeZone=true)
+        public static string DateTimeToISO8601String(DateTimeOffset dateTimeOffset, bool addMilliseconds = true, bool addTimeZone = true)
         {
             string format;
             if (addTimeZone)
@@ -3076,7 +3076,7 @@ namespace GRYLibrary.Core.Misc
 
         public static bool DarkModeEnabled
         {
-            get => OperatingSystem.OperatingSystem.GetCurrentOperatingSystem().Accept(_DarkModeEnabledVisitor);
+            get => OperatingSystem.OperatingSystem.GetCurrentOperatingSystem().Accept(new GetDarkModeEnabledVisitor());
             set => OperatingSystem.OperatingSystem.GetCurrentOperatingSystem().Accept(new SetDarkModeEnabledVisitor(value));
         }
         public static (IObservable<T>, Action) FuncToObservable<T>(Func<T> valueFunction, TimeSpan updateInterval)
@@ -3097,7 +3097,7 @@ namespace GRYLibrary.Core.Misc
                     }
                     catch
                     {
-                        NoOperation();
+                        throw;
                     }
                 }
                 subject.OnCompleted();
@@ -3150,7 +3150,6 @@ namespace GRYLibrary.Core.Misc
             }
             return Encoding.GetEncoding(encodingIdentifier);
         }
-        private static readonly IOperatingSystemVisitor<bool> _DarkModeEnabledVisitor = new GetDarkModeEnabledVisitor();
 
         private class SetDarkModeEnabledVisitor : IOperatingSystemVisitor
         {
@@ -3174,6 +3173,7 @@ namespace GRYLibrary.Core.Misc
 
                     key.SetValue("AppsUseLightTheme", this._Enabled ? 0 : 1);
                     key.SetValue("SystemUsesLightTheme", this._Enabled ? 0 : 1);
+                    bool actual = DarkModeEnabled;
                 }
             }
 
@@ -3196,11 +3196,13 @@ namespace GRYLibrary.Core.Misc
                     try
                     {
                         using RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize");
-                        return ((int)key.GetValue("AppsUseLightTheme")) == 0 && ((int)key.GetValue("SystemUsesLightTheme")) == 0;
+                        bool AppsUseDarkTheme = ((int)key.GetValue("AppsUseLightTheme")) == 0;
+                        bool SystemUsesDarkTheme = ((int)key.GetValue("SystemUsesLightTheme")) == 0;
+                        return AppsUseDarkTheme && SystemUsesDarkTheme;
                     }
                     catch
                     {
-                        NoOperation();
+                        throw;
                     }
                 }
                 return false;
