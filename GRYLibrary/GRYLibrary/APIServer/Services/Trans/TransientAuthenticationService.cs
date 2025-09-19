@@ -273,7 +273,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public string GetBaseRoleOfAllUser()
         {
-            return _AuthenticationServiceSettings.BaseRoleOfAllUser;
+            return this._AuthenticationServiceSettings.BaseRoleOfAllUser;
         }
     }
 }
