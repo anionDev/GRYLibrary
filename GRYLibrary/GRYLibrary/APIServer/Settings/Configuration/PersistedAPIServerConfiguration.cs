@@ -10,14 +10,14 @@ namespace GRYLibrary.Core.APIServer.Settings.Configuration
         where PersistedApplicationSpecificConfiguration : new()
     {
         public PersistedApplicationSpecificConfiguration ApplicationSpecificConfiguration { get; set; }
-        public ServerConfiguration ServerConfiguration { get; set; }
+        public IServerConfiguration ServerConfiguration { get; set; }
         public GRYLogConfiguration ApplicationLogConfiguration { get; set; }
     }
 
     public class PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> : IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>
         where PersistedApplicationSpecificConfiguration : new()
     {
-        public ServerConfiguration ServerConfiguration { get; set; }
+        public IServerConfiguration ServerConfiguration { get; set; }
         public GRYLogConfiguration ApplicationLogConfiguration { get; set; }
         public PersistedApplicationSpecificConfiguration ApplicationSpecificConfiguration { get; set; }
         public static PersistedAPIServerConfiguration<PersistedAppSpecificConfiguration> Create<PersistedAppSpecificConfiguration>(PersistedAppSpecificConfiguration persistedApplicationSpecificConfiguration, GRYEnvironment environment)

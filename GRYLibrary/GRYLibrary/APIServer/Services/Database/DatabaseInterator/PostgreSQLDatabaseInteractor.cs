@@ -30,15 +30,15 @@ namespace GRYLibrary.Core.APIServer.Services.Database.DatabaseInterator
 
         public string CreateSQLStatementForCreatingMigrationMaintenanceTableIfNotExist(string migrationTableName)
         {
-            return $@"CREATE TABLE IF NOT EXISTS {migrationTableName} (
-    MigrationName VARCHAR(255),
-    ExecutionTimestamp TIMESTAMP
-);";
+            return $@"CREATE TABLE IF NOT EXISTS ""{migrationTableName}"" (
+    ""MigrationName"" VARCHAR(255),
+    ""ExecutionTimestamp"" TIMESTAMP);
+";
         }
 
         public string GetSQLStatementForSelectMigrationMaintenanceTableContent(string migrationTableName)
         {
-            return $"select MigrationName, ExecutionTimestamp from {migrationTableName};";
+            return $@"select ""MigrationName"", ""ExecutionTimestamp"" from ""{migrationTableName}"";";
         }
 
         public string GetSQLStatementForRunningMigration(string migrationContent, string migrationTableName, string migrationName, DateTimeOffset now)
@@ -46,7 +46,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database.DatabaseInterator
             DateTimeOffset noUtc = now.ToUniversalTime();
             return @$"
 {migrationContent}
-insert into {migrationTableName}(MigrationName, ExecutionTimestamp) values ('{migrationName}', '{noUtc:yyyy-MM-dd HH:mm:ss}')
+insert into ""{migrationTableName}""(""MigrationName"", ""ExecutionTimestamp"") values ('{migrationName}', '{noUtc:yyyy-MM-dd HH:mm:ss}')
 ";
         }
 

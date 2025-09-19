@@ -2,9 +2,9 @@
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <Authors>Marius Göcke</Authors>
-        <Version>0.12.155</Version>
-        <AssemblyVersion>0.12.155</AssemblyVersion>
-        <FileVersion>0.12.155</FileVersion>
+        <Version>0.12.162</Version>
+        <AssemblyVersion>0.12.162</AssemblyVersion>
+        <FileVersion>0.12.162</FileVersion>
         <SelfContained>false</SelfContained>
         <IsPackable>false</IsPackable>
         <PreserveCompilationContext>false</PreserveCompilationContext>
@@ -29,7 +29,7 @@
         <SignAssembly>True</SignAssembly>
         <AssemblyOriginatorKeyFile>..\..\Other\Resources\PublicKeys\StronglyNamedKey\GRYLibraryPublicKey.snk</AssemblyOriginatorKeyFile>
         <DelaySign>True</DelaySign>
-        <NoWarn>1701;1702;CA1822;CS1591;CS1573;IDE0045;IDE0046;IDE0054;IDE0058;IDE0074;IDE0090;ASP0014;SYSLIB10;IDE0017;CS8002;CA1859;IDE0034;IDE0350</NoWarn>
+        <NoWarn>1701;1702;CA1822;CS1591;CS1573;IDE0045;IDE0046;IDE0054;IDE0058;IDE0074;IDE0090;ASP0014;SYSLIB10;IDE0017;CS8002;CA1859;IDE0034</NoWarn>
         <WarningsAsErrors>NU1605</WarningsAsErrors>
         <ErrorLog>..\Other\Resources\CodeAnalysisResult\GRYLibrary.sarif</ErrorLog>
         <OutputType>Library</OutputType>
@@ -59,33 +59,33 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="CommandLineParser" Version="2.9.1" />
-        <PackageReference Include="DNTCaptcha.Core" Version="5.3.0" />
+        <PackageReference Include="DNTCaptcha.Core" Version="5.3.1" />
         <PackageReference Include="ExtendedXmlSerializer" Version="3.9.6" />
-        <PackageReference Include="HtmlAgilityPack" Version="1.12.2" />
+        <PackageReference Include="HtmlAgilityPack" Version="1.12.3" />
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
-        <PackageReference Include="Keycloak.Net.Core" Version="1.0.34" />
+        <PackageReference Include="Keycloak.Net.Core" Version="1.0.35" />
         <PackageReference Include="Microsoft.AspNetCore.HttpOverrides" Version="2.3.5" />
         <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.8" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="9.0.8" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.8" />
-        <PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="9.0.8" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="9.0.9" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.9" />
+        <PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="9.0.9" />
         <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
         <PackageReference Include="Npgsql" Version="9.0.3" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
-        <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0-preview.2.efcore.9.0.0" />
+        <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
         <PackageReference Include="prometheus-net" Version="8.2.1" />
-        <PackageReference Include="System.Collections.Immutable" Version="9.0.8" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.8" />
-        <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.8" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.8" />
-        <PackageReference Include="NJsonSchema" Version="11.4.0" />
+        <PackageReference Include="System.Collections.Immutable" Version="9.0.9" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.9" />
+        <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.9" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.9" />
+        <PackageReference Include="NJsonSchema" Version="11.5.0" />
         <PackageReference Include="NSwag.AspNetCore" Version="14.5.0" />
         <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
-        <PackageReference Include="System.Reactive" Version="6.0.1" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.3" />
-        <PackageReference Include="System.Text.Encodings.Web" Version="9.0.8" />
+        <PackageReference Include="System.Reactive" Version="6.0.2" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.4" />
+        <PackageReference Include="System.Text.Encodings.Web" Version="9.0.9" />
         <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
         <PackageReference Include="TagLibSharp" Version="2.3.0" />
     </ItemGroup>

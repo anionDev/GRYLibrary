@@ -221,6 +221,9 @@ namespace GRYLibrary.Core.APIServer
             IGRYLog logger,
             IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedAPIServerConfiguration)
         {
+            try
+            {
+
             logger.Log($"BaseFolder: {apiServerConfiguration.InitializationInformation.BaseFolder}", LogLevel.Debug);
             WebApplicationBuilder builder = WebApplication.CreateBuilder(new WebApplicationOptions
             {
@@ -242,9 +245,10 @@ namespace GRYLibrary.Core.APIServer
             builder.Services.AddSingleton((serviceProvider) => apiServerConfiguration.InitializationInformation.CommandlineParameter);
             builder.Services.AddSingleton((serviceProvider) => logger);
             builder.Services.AddSingleton<IGeneralLogger>(sp => sp.GetRequiredService<IGRYLog>());
-            builder.Services.AddSingleton((serviceProvider) => persistedAPIServerConfiguration);
-            builder.Services.AddSingleton((serviceProvider) => this._Configuration.InitializationInformation.ApplicationConstants);
-            builder.Services.AddSingleton<IApplicationConstants>((serviceProvider) => this._Configuration.InitializationInformation.ApplicationConstants);
+                builder.Services.AddSingleton((serviceProvider) => persistedAPIServerConfiguration);
+                builder.Services.AddSingleton((serviceProvider) => persistedAPIServerConfiguration.ServerConfiguration);
+                builder.Services.AddSingleton((serviceProvider) => this._Configuration.InitializationInformation.ApplicationConstants);
+                builder.Services.AddSingleton<IApplicationConstants>((serviceProvider) => this._Configuration.InitializationInformation.ApplicationConstants);
 
             apiServerConfiguration.FunctionalInformation = new FunctionalInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>(
                 apiServerConfiguration.InitializationInformation,
@@ -437,6 +441,11 @@ namespace GRYLibrary.Core.APIServer
                 logger.Log($"Maintenancemode is enabled.", LogLevel.Information);
             }
             return app;
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         private void AddDefinedMiddleware<SupportDefinedMiddlewareType>(

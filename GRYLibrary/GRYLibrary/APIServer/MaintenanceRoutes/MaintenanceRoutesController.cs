@@ -24,7 +24,7 @@ namespace GRYLibrary.Core.APIServer.MaintenanceRoutes
         {
             this._Configuration = configuration;
             this._MaintenanceRoutesInformation = maintenanceRoutesInformation;
-            this._EndpointSources = endpointSources;
+           this._EndpointSources = endpointSources;
             this._HealthCheck = healthCheck;
         }
 
@@ -83,12 +83,20 @@ namespace GRYLibrary.Core.APIServer.MaintenanceRoutes
         [Route(nameof(Metrics))]
         public virtual IActionResult Metrics()
         {
+            try
+            {
+
             using MemoryStream ms = new MemoryStream();
             Prometheus.Metrics.DefaultRegistry.CollectAndExportAsTextAsync(ms);
             ms.Position = 0;
             using StreamReader sr = new StreamReader(ms);
             string allmetrics = sr.ReadToEndAsync().WaitAndGetResult();
             return this.Ok(allmetrics);
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }
