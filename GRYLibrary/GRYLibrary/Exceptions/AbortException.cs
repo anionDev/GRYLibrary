@@ -7,25 +7,11 @@ namespace GRYLibrary.Core.Exceptions
     /// </summary>
     public class AbortException : Exception
     {
-        public Exception InnerException { get; private set; }
-        public AbortException(Exception innerException) : base()
+        public AbortException(Exception innerException) : this(innerException, "Action was aborted.")
         {
-            this.InnerException = innerException;
         }
-        public AbortException(Exception innerException, string message) : base(message)
+        public AbortException(Exception innerException, string message) : base(message, innerException)
         {
-            this.InnerException = innerException;
-        }
-
-        public override string ToString()
-        {
-            string result = $"Aborted";
-            if (this.Message != null)
-            {
-                result = $"{result} ({this.Message})";
-            }
-            result = $"{result} ({this.InnerException})";
-            return result;
         }
     }
 }

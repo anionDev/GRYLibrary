@@ -429,6 +429,7 @@ namespace GRYLibrary.Core.ExecutePrograms
                     {
                         this._ExternalProgramExecutor.LogObject.Log("Error while finishing program-execution", exception);
                     }
+                    throw;
                 }
                 finally
                 {
