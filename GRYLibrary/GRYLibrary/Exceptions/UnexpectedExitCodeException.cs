@@ -16,7 +16,7 @@ namespace GRYLibrary.Core.Exceptions
 
         private static string GetMessage(ExternalProgramExecutor externalProgramExecutor)
         {
-            return $"'{externalProgramExecutor.Configuration.Title}' had exitcode {externalProgramExecutor.ExitCode}.{Environment.NewLine}{Environment.NewLine}{externalProgramExecutor.GetSummaryOfExecutedProgram()}";
+            return $"'{externalProgramExecutor.Configuration.Title}' had exitcode {externalProgramExecutor.ExitCode}.{Environment.NewLine}{Environment.NewLine}{externalProgramExecutor.GetSummaryOfExecutedProgram(true)}";
         }
     }
 }
