@@ -1,10 +1,14 @@
 ﻿using GRYLibrary.Core.APIServer.Services.Database;
 using GRYLibrary.Core.APIServer.Services.Database.DatabaseInterator;
+using GRYLibrary.Core.APIServer.Services.Trans;
 using GRYLibrary.Core.Exceptions;
 using GRYLibrary.Core.ExecutePrograms;
+using GRYLibrary.Core.ExecutePrograms.WaitingStates;
 using GRYLibrary.Core.Logging.GeneralPurposeLogger;
+using GRYLibrary.Core.Misc.Migration;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.IO;
 using System.Threading;
@@ -20,58 +24,93 @@ namespace GRYLibrary.Core.APIServer.Utilities
         private readonly string _DockerComposeArgumentPrefix;
         private bool _Disposed = false;
         private readonly string _TestDatabaseFolder;
-        private readonly IGenericDatabaseInteractor _GenericDatabaseInteractor;
+        private IGenericDatabaseInteractor _GenericDatabaseInteractor;
         public abstract string GetDatabaseName();
         public abstract DbConnection CreateConnection(string connectionString);
         public abstract void ConfigureDb<TDbContext>(Microsoft.EntityFrameworkCore.DbContextOptionsBuilder<TDbContext> optionsBuilder)
             where TDbContext : DbContext;
-
-        public DatabaseTestFrameworkTemplate(string dockerProjectName, string connectionString, string testDatabaseFolder)
+        private readonly string _TaskNameStart;
+        private readonly string _TaskNameStop;
+        public DatabaseTestFrameworkTemplate(string dockerProjectName, string connectionString, string testDatabaseFolder, string repositoryFolder, string taskNameStart, string taskNameStop, string resetDatabaseScript)
         {
+            _TaskNameStart = taskNameStart;
+            _TaskNameStop = taskNameStop;
             try
             {
                 this.IsConnected = false;
                 this._TestDatabaseFolder = testDatabaseFolder;
                 this._DockerComposeArgumentPrefix = $"compose --project-name {dockerProjectName}";
-                string argument = $"{this._DockerComposeArgumentPrefix} up --force-recreate --detach";
-                string volumesFolder = Path.Combine(this._TestDatabaseFolder, "Volumes");
-                GUtilities.EnsureDirectoryDoesNotExist(volumesFolder);
-                GUtilities.EnsureDirectoryExists(volumesFolder);
-                using ExternalProgramExecutor externalProgramExecutor = new ExternalProgramExecutor("docker", argument, this._TestDatabaseFolder);
+                string argument = _TaskNameStart;
+                string volumesFolder = Path.Combine(this._TestDatabaseFolder, "Volumes", "Data");
+                using ExternalProgramExecutor externalProgramExecutor = new ExternalProgramExecutor("task", argument, repositoryFolder);
                 {
+                    externalProgramExecutor.Configuration.WaitingState = new RunSynchronously();
                     externalProgramExecutor.Run();
-                    Thread.Sleep(TimeSpan.FromSeconds(3));//TODO replace this by wait until healthcheck says service is ready/healthy (with a timeout of 1 minute)
+                    Thread.Sleep(TimeSpan.FromSeconds(5));//TODO replace this by wait until healthcheck says service is ready/healthy (with a timeout of 1 minute)
                     GUtilities.AssertCondition(externalProgramExecutor.ExitCode == 0, $"Error while starting test-database using command \"{externalProgramExecutor.CMD}\" due to exitcode {externalProgramExecutor.ExitCode}. StdOut: {string.Join(Environment.NewLine, externalProgramExecutor.AllStdOutLines)}; StdErr: {string.Join(Environment.NewLine, externalProgramExecutor.AllStdErrLines)}");
                 }
-                this.ConnectionString = connectionString;
-                this.Connection = this.CreateConnection(this.ConnectionString);
-                this._GenericDatabaseInteractor = DBUtilities.GetDatabaseInteractor(this.Connection);
-                Tools.ConnectToDatabaseWrapper(() =>
-                  {
-                      if (!externalProgramExecutor.IsRunning && externalProgramExecutor.ExitCode != 0)
-                      {
-                          throw new AbortException(new InternalAlgorithmException($"docker exited with exitcode {externalProgramExecutor.ExitCode}; StdOut: {string.Join(Environment.NewLine, externalProgramExecutor.AllStdOutLines)}; StdErrt: {string.Join(Environment.NewLine, externalProgramExecutor.AllStdErrLines)};"));
-                      }
-                      this.Connection.Open();
-
-                      using (DbDataReader reader = this._GenericDatabaseInteractor.CreateCommand("select 1;", this.Connection).ExecuteReader())
-                      {
-                          GUtilities.AssertCondition(reader.HasRows, "Test-statement did not return any row. So database-connection is not ready.");
-                          while (reader.Read())
-                          {
-                              GUtilities.NoOperation(); // Just to ensure that we can read from the reader without any exceptions
-                          }
-                      }
-
-                      this.IsConnected = true;
-                  }, GeneralLogger.NoLog(), this._GenericDatabaseInteractor.AdaptConnectionString(this.Connection.ConnectionString));
+                Tools.ConnectToDatabaseWrapper(() => TryToConnect(externalProgramExecutor, resetDatabaseScript, connectionString), GeneralLogger.NoLog(), connectionString);//TODO adapt connectionstring
             }
             catch
             {
                 throw;
             }
         }
+        private void TryToConnect(ExternalProgramExecutor externalProgramExecutor, string resetDatabaseScript, string connectionString)
+        {
 
+            DbConnection connection = this.CreateConnection(connectionString);
+            connection.Open();
+            try
+            {
+
+                this._GenericDatabaseInteractor = DBUtilities.GetDatabaseInteractor(connection);
+                if (!externalProgramExecutor.IsRunning && externalProgramExecutor.ExitCode != 0)
+                {
+                    throw new AbortException(new InternalAlgorithmException($"docker exited with exitcode {externalProgramExecutor.ExitCode}; StdOut: {string.Join(Environment.NewLine, externalProgramExecutor.AllStdOutLines)}; StdErrt: {string.Join(Environment.NewLine, externalProgramExecutor.AllStdErrLines)};"));
+                }
+
+
+                using (DbDataReader reader = this._GenericDatabaseInteractor.CreateCommand("select 1;", connection).ExecuteReader())
+                {
+                    GUtilities.AssertCondition(reader.HasRows, "Test-statement did not return any row. So database-connection is not ready.");
+                    while (reader.Read())
+                    {
+                        GUtilities.NoOperation(); // Just to ensure that we can read from the reader without any exceptions
+                    }
+                }
+
+            }
+            catch
+            {
+                connection.Dispose();
+                throw;
+            }
+
+            this.IsConnected = true;
+            Connection = connection;
+
+                 List<string> tables = new List<string>();// List<string> tables = GRYMigrator.GetAllTableNames(Connection).ToList();
+                if (1 < tables.Count)
+                {
+                    using var tx = Connection.BeginTransaction();
+                    try
+                    {
+                        using var cmd = Connection.CreateCommand();
+                        cmd.Transaction = tx;
+                        cmd.CommandText = resetDatabaseScript;
+                        cmd.ExecuteNonQuery();
+                        tx.Commit();
+                    }
+                    catch
+                    {
+                        tx.Rollback();
+                      //  throw; //TODO this goes wrong if the database does not have tables yet. therefore this must be checked before and then this try-catch-block can be removed.
+           
+                    }
+                }
+
+        }
         protected virtual void Dispose(bool disposing)
         {
             if (!this._Disposed)
@@ -86,9 +125,9 @@ namespace GRYLibrary.Core.APIServer.Utilities
                         }
                         this.Connection.Dispose();
                     }
-                    using ExternalProgramExecutor externalProgramExecutor = new ExternalProgramExecutor("docker", $"{this._DockerComposeArgumentPrefix} down", this._TestDatabaseFolder);
+                    using ExternalProgramExecutor externalProgramExecutor = new ExternalProgramExecutor("task", _TaskNameStop, this._TestDatabaseFolder);
+                    externalProgramExecutor.Configuration.WaitingState = new RunSynchronously();
                     externalProgramExecutor.Run();
-                    Thread.Sleep(TimeSpan.FromSeconds(2));
                     GUtilities.AssertCondition(externalProgramExecutor.ExitCode == 0, $"Error while stopping test-database using command \"{externalProgramExecutor.CMD}\" due to exitcode {externalProgramExecutor.ExitCode}. StdOut: {string.Join(Environment.NewLine, externalProgramExecutor.AllStdOutLines)}; StdErr: {string.Join(Environment.NewLine, externalProgramExecutor.AllStdErrLines)}");
                 }
                 this._Disposed = true;
