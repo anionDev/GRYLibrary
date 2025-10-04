@@ -1,16 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.3.32922.545
+VisualStudioVersion = 17.14.36518.9
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GRYLibrary", "GRYLibrary\GRYLibrary.csproj", "{2376C925-4667-4565-85D6-ED64C2C3C78D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GRYLibrary", "GRYLibrary\GRYLibrary.csproj", "{A03AF70F-7225-9536-A9EC-78BF7D0D0372}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GRYLibraryTests", "GRYLibraryTests\GRYLibraryTests.csproj", "{46F9F1F0-E41B-4C0F-BFDE-74DFE31EEA21}"
-	ProjectSection(ProjectDependencies) = postProject
-		{2376C925-4667-4565-85D6-ED64C2C3C78D} = {2376C925-4667-4565-85D6-ED64C2C3C78D}
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projektmappenelemente", "Projektmappenelemente", "{E987CAB0-BF5F-4CE9-BDDF-2317FCC5763D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GRYLibraryTests", "GRYLibraryTests\GRYLibraryTests.csproj", "{D394A017-C166-A237-30B2-5B3DB60B1925}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,22 +14,23 @@ Global
 		QualityCheck|Any CPU = QualityCheck|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2376C925-4667-4565-85D6-ED64C2C3C78D}.Development|Any CPU.ActiveCfg = Development|Any CPU
-		{2376C925-4667-4565-85D6-ED64C2C3C78D}.Development|Any CPU.Build.0 = Development|Any CPU
-		{2376C925-4667-4565-85D6-ED64C2C3C78D}.Productive|Any CPU.ActiveCfg = Productive|Any CPU
-		{2376C925-4667-4565-85D6-ED64C2C3C78D}.Productive|Any CPU.Build.0 = Productive|Any CPU
-		{2376C925-4667-4565-85D6-ED64C2C3C78D}.QualityCheck|Any CPU.ActiveCfg = QualityCheck|Any CPU
-		{2376C925-4667-4565-85D6-ED64C2C3C78D}.QualityCheck|Any CPU.Build.0 = QualityCheck|Any CPU
-		{46F9F1F0-E41B-4C0F-BFDE-74DFE31EEA21}.Development|Any CPU.ActiveCfg = Development|Any CPU
-		{46F9F1F0-E41B-4C0F-BFDE-74DFE31EEA21}.Development|Any CPU.Build.0 = Development|Any CPU
-		{46F9F1F0-E41B-4C0F-BFDE-74DFE31EEA21}.Productive|Any CPU.ActiveCfg = Productive|Any CPU
-		{46F9F1F0-E41B-4C0F-BFDE-74DFE31EEA21}.QualityCheck|Any CPU.ActiveCfg = QualityCheck|Any CPU
-		{46F9F1F0-E41B-4C0F-BFDE-74DFE31EEA21}.QualityCheck|Any CPU.Build.0 = QualityCheck|Any CPU
+		{A03AF70F-7225-9536-A9EC-78BF7D0D0372}.Development|Any CPU.ActiveCfg = Development|Any CPU
+		{A03AF70F-7225-9536-A9EC-78BF7D0D0372}.Development|Any CPU.Build.0 = Development|Any CPU
+		{A03AF70F-7225-9536-A9EC-78BF7D0D0372}.Productive|Any CPU.ActiveCfg = Productive|Any CPU
+		{A03AF70F-7225-9536-A9EC-78BF7D0D0372}.Productive|Any CPU.Build.0 = Productive|Any CPU
+		{A03AF70F-7225-9536-A9EC-78BF7D0D0372}.QualityCheck|Any CPU.ActiveCfg = QualityCheck|Any CPU
+		{A03AF70F-7225-9536-A9EC-78BF7D0D0372}.QualityCheck|Any CPU.Build.0 = QualityCheck|Any CPU
+		{D394A017-C166-A237-30B2-5B3DB60B1925}.Development|Any CPU.ActiveCfg = Development|Any CPU
+		{D394A017-C166-A237-30B2-5B3DB60B1925}.Development|Any CPU.Build.0 = Development|Any CPU
+		{D394A017-C166-A237-30B2-5B3DB60B1925}.Productive|Any CPU.ActiveCfg = Productive|Any CPU
+		{D394A017-C166-A237-30B2-5B3DB60B1925}.Productive|Any CPU.Build.0 = Productive|Any CPU
+		{D394A017-C166-A237-30B2-5B3DB60B1925}.QualityCheck|Any CPU.ActiveCfg = QualityCheck|Any CPU
+		{D394A017-C166-A237-30B2-5B3DB60B1925}.QualityCheck|Any CPU.Build.0 = QualityCheck|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {1A8871B8-C049-4353-8665-CDAB522E30D8}
+		SolutionGuid = {DE4EF2EF-8D7C-4A3D-9CF5-7C753EE648DF}
 	EndGlobalSection
 EndGlobal

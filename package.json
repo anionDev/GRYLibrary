@@ -3,5 +3,5 @@
   "scripts": {
     "prepare": "husky"
   },
-  "version": "0.12.165"
+  "version": "0.12.166"
 }
