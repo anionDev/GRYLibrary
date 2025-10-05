@@ -131,7 +131,16 @@ namespace GRYLibrary.Core.APIServer.Utilities
         }
         public static bool ConnectToDatabase(Action connectAction, IGeneralLogger logger, string adaptedConnectionString, out string? notConnectionReason)
         {
-            return ConnectToDatabase(connectAction, logger, adaptedConnectionString, TimeSpan.FromMinutes(1), out notConnectionReason);
+            TimeSpan timeout;
+            if (Debugger.IsAttached)
+            {
+                timeout = TimeSpan.FromDays(7);
+            }
+            else
+            {
+                timeout = TimeSpan.FromMinutes(1);
+            }
+            return ConnectToDatabase(connectAction, logger, adaptedConnectionString, timeout, out notConnectionReason);
         }
 
         public static bool ConnectToDatabase(Action connectAction, IGeneralLogger logger, string adaptedConnectionString, TimeSpan timeout, out string? notConnectionReason)
@@ -284,9 +293,9 @@ namespace GRYLibrary.Core.APIServer.Utilities
             (HealthStatus result, IEnumerable<string> messages) result;
             try
             {
-                if (initializationService !=null && initializationService.GetInitializationState().Equals(new InitializationFailed()))
+                if (initializationService != null && initializationService.GetInitializationState().Equals(new InitializationFailed()))
                 {
-                    result = (HealthStatus.Degraded,new List<string>() { "Initializing" });
+                    result = (HealthStatus.Degraded, new List<string>() { "Initializing" });
                 }
                 else
                 {
