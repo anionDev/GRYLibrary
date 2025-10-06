@@ -1,4 +1,4 @@
-﻿using GRYLibrary.Core.APIServer.Services.Database.DatabaseInterator;
+﻿using GRYLibrary.Core.Logging.GRYLogger;
 using MySqlConnector;
 using Npgsql;
 using System;
@@ -6,21 +6,22 @@ using System.Data.Common;
 
 namespace GRYLibrary.Core.APIServer.Services.Database
 {
-    public class DBUtilities
+    public static class DBUtilities
     {
-        public static IGenericDatabaseInteractor GetDatabaseInteractor(DbConnection dbConnection)
+        public static GenericDatabaseInteractor ToGenericDatabaseInteractor(IDatabasePersistenceConfiguration databasePersistenceConfiguration,IGRYLog log)
         {
-            if (dbConnection is MySqlConnection)
+            switch (databasePersistenceConfiguration.DatabaseType)
             {
-                return new MariaDBDatabaseInteractor();
-            }
-            else if (dbConnection is NpgsqlConnection)
-            {
-                return new PostgreSQLDatabaseInteractor();
-            }
-            else
-            {
-                throw new NotSupportedException($"The database type {dbConnection.GetType().Name} is not supported yet.");
+                case "MariaDB":
+                    return new MariaDBDatabaseInteractor(databasePersistenceConfiguration, log);
+                case "PostgreSQL":
+                    return new PostgreSQLDatabaseInteractor(databasePersistenceConfiguration, log);
+                case "Oracle":
+                    return new OracleDatabaseInteractor(databasePersistenceConfiguration, log);
+                case "SQLServer":
+                    return new SQLServerDatabaseInteractor(databasePersistenceConfiguration, log);
+                default:
+                    throw new NotSupportedException($"Database type {databasePersistenceConfiguration.DatabaseType} is not supported.");
             }
         }
         public static T? GetNullableValue<T>(DbDataReader reader, int parameterIndex)
