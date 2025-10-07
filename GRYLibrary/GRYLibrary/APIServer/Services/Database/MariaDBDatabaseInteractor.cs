@@ -25,9 +25,9 @@ namespace GRYLibrary.Core.APIServer.Services.Database
 
         public override DbCommand CreateCommand(string sql)
         {
-            var connection = GetConnection();
+            DbConnection connection = this.GetConnection();
             Misc.Utilities.AssertCondition(connection.State == System.Data.ConnectionState.Open, $"Connection of {connection.GetType().Name} is not open.");
-            return new MySqlCommand(sql);
+            return new MySqlCommand(sql,(MySqlConnection) connection);
         }
 
         public override string CreateSQLStatementForCreatingMigrationMaintenanceTableIfNotExist(string migrationTableName)
@@ -62,11 +62,6 @@ insert into {migrationTableName}(MigrationName, ExecutionTimestamp) values ('{mi
         public override T Accept<T>(IGenericDatabaseInteractorVisitor<T> visitor)
         {
             return visitor.Handle(this);
-        }
-
-        public override void Dispose()
-        {
-            throw new NotImplementedException();
         }
 
         protected override DbConnection CreateNewConnectionObject(string connectionString)

@@ -100,10 +100,6 @@ namespace GRYLibrary.Core.APIServer.Utilities
             where GCodeUnitSpecificCommandlineParameter : class, IAPIServerCommandlineParameter, new()
         {
             int exitCode = 0;
-            if (Debugger.IsAttached)
-            {
-                GRYLibrary.Core.Misc.Utilities.AssertCondition(environmentTargetType is Development, $"A debugger is attached. Debugging is only suppoerted if {nameof(environmentTargetType)} is {nameof(Development)}.");
-            }
             Exception? exception = null;//for debugging-purposes
             try
             {

@@ -1,9 +1,6 @@
 ﻿using GRYLibrary.Core.Logging.GRYLogger;
-using GRYLibrary.Core.Misc.Migration;
-using MySqlConnector;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
 using System.Threading;
 using GUtilities = GRYLibrary.Core.Misc.Utilities;
@@ -16,15 +13,15 @@ namespace GRYLibrary.Core.APIServer.Services.Database
         private readonly ReaderWriterLockSlim _Lock = new();
         private DbConnection _Connection;
         private readonly Thread _ConnectionThread;
-
+        private bool _ThreadEnabled = true;//TODO make this variable threadsafe
         public IGRYLog Log { get; private set; }
-
         public GenericDatabaseInteractor(IDatabasePersistenceConfiguration configuration, IGRYLog log)
         {
-            _Configuration = configuration;
-            Log = log;
-            _ConnectionThread = new Thread(StartTryToConnectScheduler);
-            _ConnectionThread.Start();
+            this._Configuration = configuration;
+            this.Log = log;
+            this._ConnectionThread = new Thread(this.StartTryToConnectScheduler);
+            this._ConnectionThread.Start();
+
         }
 
         protected abstract DbConnection CreateNewConnectionObject(string connectionString);
@@ -36,85 +33,102 @@ namespace GRYLibrary.Core.APIServer.Services.Database
         public abstract string GetSQLStatementForRunningMigration(string migrationContent, string migrationTableName, string migrationName, DateTimeOffset now);
         public abstract void Accept(IGenericDatabaseInteractorVisitor visitor);
         public abstract T Accept<T>(IGenericDatabaseInteractorVisitor<T> visitor);
-        public abstract void Dispose();
+
         public abstract DbParameter GetParameter(string parameterName, object? value, Type type);
 
         public DbParameter GetParameter(string parameterName, object value)
         {
             GUtilities.AssertCondition(value != null, $"value for parameter {parameterName} is null, so a speicfic type for it must be set.");
-            return GetParameter(parameterName, value, value.GetType());
+            return this.GetParameter(parameterName, value, value.GetType());
         }
         private void StartTryToConnectScheduler()
         {
-            bool enabled = false;
-            while (enabled)
+            while (_ThreadEnabled)
             {
 
                 try
                 {
-                    _Lock.EnterUpgradeableReadLock();
+                    this._Lock.EnterUpgradeableReadLock();
                     try
                     {
-                        if (!IsAvailable())
+                        if (!this.IsAvailable())
                         {
-                            _Lock.EnterWriteLock();
+                            this._Lock.EnterWriteLock();
                             try
                             {
-                                _Connection?.Dispose();
-                                _Connection = CreateConnection();
-                                Thread.Sleep(TimeSpan.FromMinutes(1));//connected
+                                this._Connection?.Dispose();
+                                this._Connection = this.CreateConnection();
+                            }
+                            catch
+                            {
+                                throw;
                             }
                             finally
                             {
-                                _Lock.ExitWriteLock();
+                                this._Lock.ExitWriteLock();
                             }
                         }
                     }
                     finally
                     {
-                        _Lock.ExitUpgradeableReadLock();
+                        this._Lock.ExitUpgradeableReadLock();
                     }
+                    Thread.Sleep(TimeSpan.FromMinutes(1));//connected
                 }
                 catch
                 {
                     Thread.Sleep(TimeSpan.FromSeconds(2));//not connected
                 }
             }
+            this._Connection.Dispose();
         }
         private DbConnection CreateConnection()
         {
-            var conn = CreateNewConnectionObject(_Configuration.DatabaseConnectionString);
+            DbConnection conn = this.CreateNewConnectionObject(this._Configuration.DatabaseConnectionString);
             conn.Open();
             return conn;
         }
         private DbConnection GetConnectionInternal()
         {
-            _Lock.EnterReadLock();
+            this._Lock.EnterReadLock();
             try
             {
-                return _Connection!;
+                return this._Connection!;
             }
             finally
             {
-                _Lock.ExitReadLock();
+                this._Lock.ExitReadLock();
             }
         }
         public DbConnection GetConnection()
         {
-            GRYLibrary.Core.Misc.Utilities.AssertCondition(IsConnected());
-            return GetConnectionInternal();
+            GRYLibrary.Core.Misc.Utilities.AssertCondition(this.IsConnected(), "Not connected");
+            return this.GetConnectionInternal();
         }
 
         public bool IsConnected()
         {
-            return GetConnectionInternal().State == System.Data.ConnectionState.Open;
+            if (this.GetConnectionInternal() == null)
+            {
+                return false;
+            }
+            else
+            {
+                bool result = this.GetConnectionInternal().State == System.Data.ConnectionState.Open;
+                if (!result)
+                {
+                    int i = 3;
+                }
+                return result;
+            }
         }
 
         internal bool IsAvailable()
         {
+            bool result;
             try
             {
-                GUtilities.AssertCondition(IsConnected());
+                GUtilities.AssertCondition(this.IsConnected(), "Database is not connected");
                 using (DbDataReader reader = this.CreateCommand("select 1;").ExecuteReader())
                 {
                     GUtilities.AssertCondition(reader.HasRows, "Test-statement did not return any row. So database-connection is not ready.");
@@ -123,12 +137,13 @@ namespace GRYLibrary.Core.APIServer.Services.Database
                         GUtilities.NoOperation(); // Just to ensure that we can read from the reader without any exceptions
                     }
                 }
-                return true;
+                result = true;
             }
             catch
             {
-                return false;
+                result = false;
             }
+            return result;
         }
 
         public IEnumerable<string> GetAllTableNames()
@@ -148,6 +163,11 @@ namespace GRYLibrary.Core.APIServer.Services.Database
         bool IGenericDatabaseInteractor.IsAvailable()
         {
             return this.IsAvailable();
+        }
+
+        public void Dispose()
+        {
+            _ThreadEnabled = false;
         }
     }
 

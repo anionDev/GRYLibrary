@@ -1,5 +1,4 @@
 ﻿using GRYLibrary.Core.Logging.GRYLogger;
-using MySqlConnector;
 using Npgsql;
 using NpgsqlTypes;
 using System;
@@ -18,7 +17,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
 #pragma warning restore SYSLIB1045 // Convert to 'GeneratedRegexAttribute'.
         public override DbCommand CreateCommand(string sql)
         {
-            var connection = GetConnection();
+            DbConnection connection = this.GetConnection();
             Misc.Utilities.AssertCondition(connection.State == System.Data.ConnectionState.Open, $"Connection of {connection.GetType().Name} is not open.");
             return new NpgsqlCommand(sql, (NpgsqlConnection)connection);
         }
@@ -67,10 +66,6 @@ WHERE schemaname NOT IN ('pg_catalog', 'information_schema');";
         public override T Accept<T>(IGenericDatabaseInteractorVisitor<T> visitor)
         {
             return visitor.Handle(this);
-        }
-        public override void Dispose()
-        {
-            throw new NotImplementedException();
         }
         protected override DbConnection CreateNewConnectionObject(string connectionString)
         {

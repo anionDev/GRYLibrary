@@ -1,6 +1,4 @@
 ﻿using GRYLibrary.Core.Logging.GRYLogger;
-using MySqlConnector;
-using Npgsql;
 using System;
 using System.Data.Common;
 

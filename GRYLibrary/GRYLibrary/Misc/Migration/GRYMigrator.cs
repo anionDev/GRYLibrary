@@ -1,6 +1,5 @@
 ﻿using GRYLibrary.Core.APIServer.Services.Database;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
-using GRYLibrary.Core.APIServer.Services.Trans;
 using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using System;
 using System.Collections.Generic;
@@ -62,7 +61,7 @@ namespace GRYLibrary.Core.Misc.Migration
                     DateTimeOffset now = this._TimeService.GetCurrentLocalTime();
                     string sql = this._DatabaseInteractor.GetSQLStatementForRunningMigration(migration.MigrationContent, MigrationTableName, migration.MigrationName, now);
                     Exception? exception = null;
-                    var connection= this._DatabaseInteractor.GetConnection();
+                    DbConnection connection = this._DatabaseInteractor.GetConnection();
                     using (DbCommand sqlCommand = this._DatabaseInteractor.CreateCommand(sql))
                     {
                         using DbTransaction transaction = connection.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);

@@ -48,16 +48,16 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
             {
                 LabelNames = new[] { "domain" },                
             };
-            _RequestCounterSum = Metrics.CreateCounter("http_requests_sum", "Sum of all HTTP-requests", counterMetricConfig);
-            _RequestCounterSum.IncTo(0);
-            _RequestCounter2xx = Metrics.CreateCounter("http_requests_2xx", "Sum of all HTTP-requests with 2xx-response-statuscode", counterMetricConfig);
-            _RequestCounter2xx.IncTo(0);
-            _RequestCounter4xx = Metrics.CreateCounter("http_requests_4xx", "Sum of all HTTP-requests with 4xx-response-statuscode", counterMetricConfig);
-            _RequestCounter4xx.IncTo(0);
-            _RequestCounter5xx = Metrics.CreateCounter("http_requests_5xx", "Sum of all HTTP-requests with 5xx-response-statuscode", counterMetricConfig);
-            _RequestCounter5xx.IncTo(0);
-            _RequestCounterOther = Metrics.CreateCounter("http_requests_oher", "Sum of all HTTP-requests with other response-statuscode", counterMetricConfig);
-            _RequestCounterOther.IncTo(0);
+            this._RequestCounterSum = Metrics.CreateCounter("http_requests_sum", "Sum of all HTTP-requests", counterMetricConfig);
+            this._RequestCounterSum.IncTo(0);
+            this._RequestCounter2xx = Metrics.CreateCounter("http_requests_2xx", "Sum of all HTTP-requests with 2xx-response-statuscode", counterMetricConfig);
+            this._RequestCounter2xx.IncTo(0);
+            this._RequestCounter4xx = Metrics.CreateCounter("http_requests_4xx", "Sum of all HTTP-requests with 4xx-response-statuscode", counterMetricConfig);
+            this._RequestCounter4xx.IncTo(0);
+            this._RequestCounter5xx = Metrics.CreateCounter("http_requests_5xx", "Sum of all HTTP-requests with 5xx-response-statuscode", counterMetricConfig);
+            this._RequestCounter5xx.IncTo(0);
+            this._RequestCounterOther = Metrics.CreateCounter("http_requests_oher", "Sum of all HTTP-requests with other response-statuscode", counterMetricConfig);
+            this._RequestCounterOther.IncTo(0);
         }
         /// <inheritdoc/>
 
@@ -86,7 +86,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
                 if (this.ShouldBeLogged(request))
                 {
                     //TODO add option to add this log-entry to a database
-                    AddDataToMetrics(request);
+                    this.AddDataToMetrics(request);
                     IDictionary<string, IList<string?>> header = this.GetHeader(context.Request);
                     this.LogHTTPRequest(request, false, duration, principal, new HashSet<GRYLogTarget> { new Logging.GRYLogger.ConcreteLogTargets.Console() }, header);
                     this.LogHTTPRequest(request, this.ShouldLogEntireRequestContentInLogFile(request), duration, principal, new HashSet<GRYLogTarget> { new Logging.GRYLogger.ConcreteLogTargets.LogFile() }, header);
@@ -100,28 +100,28 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
 
         private void AddDataToMetrics(Request request)
         {
-            _RequestCounterSum.WithLabels(GetDomain()).Inc();
+            this._RequestCounterSum.WithLabels(this.GetDomain()).Inc();
             if (200 <= request.ResponseStatusCode && request.ResponseStatusCode < 300)
             {
-                _RequestCounter2xx.WithLabels(GetDomain()).Inc();
+                this._RequestCounter2xx.WithLabels(this.GetDomain()).Inc();
             }
             if (400 <= request.ResponseStatusCode && request.ResponseStatusCode < 500)
             {
-                _RequestCounter4xx.WithLabels(GetDomain()).Inc();
+                this._RequestCounter4xx.WithLabels(this.GetDomain()).Inc();
             }
             if (500 <= request.ResponseStatusCode && request.ResponseStatusCode < 600)
             {
-                _RequestCounter5xx.WithLabels(GetDomain()).Inc();
+                this._RequestCounter5xx.WithLabels(this.GetDomain()).Inc();
             }
             else
             {
-                _RequestCounterOther.WithLabels(GetDomain()).Inc();
+                this._RequestCounterOther.WithLabels(this.GetDomain()).Inc();
             }
         }
 
         private string GetDomain()
         {
-            return _ServerConfiguration.Domain;
+            return this._ServerConfiguration.Domain;
         }
 
         private IDictionary<string, IList<string?>> GetHeader(HttpRequest request)

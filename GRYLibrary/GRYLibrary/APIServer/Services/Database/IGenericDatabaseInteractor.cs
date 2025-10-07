@@ -1,11 +1,7 @@
 ﻿using GRYLibrary.Core.Logging.GRYLogger;
-using GRYLibrary.Core.Misc.Migration;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.APIServer.Services.Database
 {
@@ -13,7 +9,6 @@ namespace GRYLibrary.Core.APIServer.Services.Database
     {
         public IGRYLog Log { get; }
         public IEnumerable<string> GetAllTableNames();
-        public IList<MigrationInstance> GetAllMigrations();
         public DbCommand CreateCommand(string sql);
         public string EscapePasswordInConnectionString(string connectionString);
         public string CreateSQLStatementForGetAllTableNames();

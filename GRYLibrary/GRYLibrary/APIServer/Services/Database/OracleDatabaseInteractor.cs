@@ -1,10 +1,6 @@
 ﻿using GRYLibrary.Core.Logging.GRYLogger;
 using System;
-using System.Collections.Generic;
 using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.APIServer.Services.Database
 {
@@ -47,14 +43,10 @@ namespace GRYLibrary.Core.APIServer.Services.Database
         {
             return visitor.Handle(this);
         }
-        public override void Dispose()
-        {
-            throw new NotImplementedException();
-        }
 
         public override DbCommand CreateCommand(string sql)
         {
-            var connection = GetConnection();
+            DbConnection connection = this.GetConnection();
             throw new NotImplementedException();
         }
 
