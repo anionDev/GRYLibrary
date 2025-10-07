@@ -1,5 +1,7 @@
-﻿using GRYLibrary.Core.Logging.GRYLogger;
+﻿using GRYLibrary.Core.Exceptions;
+using GRYLibrary.Core.Logging.GRYLogger;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -9,22 +11,26 @@ namespace GRYLibrary.Core.Misc
     {
         private readonly string _SQLFilesNamespace;
         private bool _Verbose;
-        private IGRYLog _Log;
-        protected AbstractSQLProvider(string sqlFilesNamespace, IGRYLog log)
+        protected AbstractSQLProvider(string sqlFilesNamespace)
         {
             this._SQLFilesNamespace = sqlFilesNamespace;
-            this._Log = log;
         }
         private readonly IDictionary<string, string> _ScriptCache = new Dictionary<string, string>();
 
         protected string LoadSQLScript(string sqlFileName)
         {
-            this._Log.Log($"Load SQL-script \"{sqlFileName}\"", LogLevel.Trace);
-            if (!this._ScriptCache.ContainsKey(sqlFileName))
+            try
             {
-                this.LoadScriptToCache(sqlFileName);
+                if (!this._ScriptCache.ContainsKey(sqlFileName))
+                {
+                    this.LoadScriptToCache(sqlFileName);
+                }
+                return this._ScriptCache[sqlFileName];
             }
-            return this._ScriptCache[sqlFileName];
+            catch (Exception e)
+            {
+                throw new InternalAlgorithmException(e, $"Error while loading script {sqlFileName}.");
+            }
         }
 
         private void LoadScriptToCache(string sqlFileName)

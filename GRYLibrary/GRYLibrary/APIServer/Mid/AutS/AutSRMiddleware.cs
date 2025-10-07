@@ -39,7 +39,7 @@ namespace GRYLibrary.Core.APIServer.Mid.AutS
             }
             else
             {
-                throw new InternalAlgorithmException();
+                throw new InternalAlgorithmException("Error while loading authorization information.");
             }
         }
     }
