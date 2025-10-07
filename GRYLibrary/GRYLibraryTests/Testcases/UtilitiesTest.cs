@@ -350,8 +350,8 @@ namespace GRYLibrary.Tests.Testcases
         [TestMethod]
         public void ObjectToSettTest()
         {
-            Assert.ThrowsException<InvalidCastException>(() => EnumerableTools.ObjectToSet<object>(new object()));
-            Assert.ThrowsException<InvalidCastException>(() => EnumerableTools.ObjectToSet<object>(5));
+            Assert.Throws<InvalidCastException>(() => EnumerableTools.ObjectToSet<object>(new object()));
+            Assert.Throws<InvalidCastException>(() => EnumerableTools.ObjectToSet<object>(5));
 
             Assert.IsTrue(EnumerableTools.SetEquals(new HashSet<char> { 's', 'o', 'm', 'e', 't' }, EnumerableTools.ObjectToSet<char>(new HashSet<char> { 's', 'o', 'm', 'e', 't', 'e', 's', 't' })));
 
@@ -362,8 +362,8 @@ namespace GRYLibrary.Tests.Testcases
         [TestMethod]
         public void ObjectToListTest()
         {
-            Assert.ThrowsException<InvalidCastException>(() => EnumerableTools.ObjectToList<object>(new object()));
-            Assert.ThrowsException<InvalidCastException>(() => EnumerableTools.ObjectToList<object>("sometest"));
+            Assert.Throws<InvalidCastException>(() => EnumerableTools.ObjectToList<object>(new object()));
+            Assert.Throws<InvalidCastException>(() => EnumerableTools.ObjectToList<object>("sometest"));
 
             List<int> testList = new() { 3, 4, 5 };
             object testListAsObject = testList;
@@ -375,8 +375,8 @@ namespace GRYLibrary.Tests.Testcases
         [TestMethod]
         public void ObjectToDictionaryFailTest()
         {
-            Assert.ThrowsException<InvalidCastException>(() => EnumerableTools.ObjectToDictionary<object, object>(new object()));
-            Assert.ThrowsException<InvalidCastException>(() => EnumerableTools.ObjectToDictionary<object, object>("somestring"));
+            Assert.Throws<InvalidCastException>(() => EnumerableTools.ObjectToDictionary<object, object>(new object()));
+            Assert.Throws<InvalidCastException>(() => EnumerableTools.ObjectToDictionary<object, object>("somestring"));
         }
         [TestMethod]
         public void ObjectToDictionarySuccessTest()
