@@ -70,7 +70,7 @@ namespace GRYLibrary.Tests.Testcases.GraphTests
         }
         public void TestErrorsOfCycleConstructorsDueToEmptyEdgesList()
         {
-            Assert.ThrowsException<Exception>(() => new List<DirectedEdge>(Array.Empty<DirectedEdge>()));
+            Assert.Throws<Exception>(() => new List<DirectedEdge>(Array.Empty<DirectedEdge>()));
         }
         public void TestErrorsOfCycleConstructorsDueToUncyclicEdges()
         {
@@ -82,7 +82,7 @@ namespace GRYLibrary.Tests.Testcases.GraphTests
             DirectedEdge edge1 = new(v1, v2, "e1");
             DirectedEdge edge2 = new(v2, v3, "e2");
             DirectedEdge edge3 = new(v3, v1, "e3");
-            Assert.ThrowsException<Exception>(() => new List<DirectedEdge>(new DirectedEdge[] { edge1, edge2 }));
+            Assert.Throws<Exception>(() => new List<DirectedEdge>(new DirectedEdge[] { edge1, edge2 }));
         }
         public void TestErrorsOfCycleConstructorsDueToDuplicatedEdges()
         {
@@ -97,7 +97,7 @@ namespace GRYLibrary.Tests.Testcases.GraphTests
             DirectedEdge edge4 = new(v1, v4, "e1");
             DirectedEdge edge5 = new(v4, v5, "e2");
             DirectedEdge edge6 = new(v5, v1, "e3");
-            Assert.ThrowsException<Exception>(() => new List<DirectedEdge>(new DirectedEdge[] { edge1, edge2, edge3, edge4, edge5, edge6, }));
+            Assert.Throws<Exception>(() => new List<DirectedEdge>(new DirectedEdge[] { edge1, edge2, edge3, edge4, edge5, edge6, }));
         }
     }
 }
