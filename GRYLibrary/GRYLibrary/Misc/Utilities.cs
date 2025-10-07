@@ -1766,7 +1766,18 @@ namespace GRYLibrary.Core.Misc
         {
             return input.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).Select(line => line.Replace("\r", string.Empty).Replace("\n", string.Empty)).ToArray();
         }
-
+        public static void AssertCondition(bool condition, Func<string> messageForFailedAssertion, bool @break = false)
+        {
+            if (!condition)
+            {
+                if (@break && Debugger.IsAttached)
+                {
+                    Debugger.Break();
+                }
+                string message = messageForFailedAssertion();
+                throw new AssertionException("Assertion failed. Condition is false: " + (string.IsNullOrWhiteSpace(message) ? string.Empty : " " + message));
+            }
+        }
         /// <summary>
         /// Throws an exception if <paramref name="condition"/>==false.
         /// </summary>
@@ -1776,14 +1787,7 @@ namespace GRYLibrary.Core.Misc
         /// </remarks>
         public static void AssertCondition(bool condition, string messageForFailedAssertion = EmptyString, bool @break = false)
         {
-            if (!condition)
-            {
-                if (@break && Debugger.IsAttached)
-                {
-                    Debugger.Break();
-                }
-                throw new AssertionException("Assertion failed. Condition is false." + (string.IsNullOrWhiteSpace(messageForFailedAssertion) ? string.Empty : " " + messageForFailedAssertion));
-            }
+            AssertCondition(condition, () => messageForFailedAssertion, @break);
         }
         public static T AssertNotNull<T>(T? variable, string variableName, bool @break = false)
         {

@@ -27,6 +27,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         public event NewLogItemEventHandler NewLogItem;
         public delegate void NewLogItemEventHandler(LogItem logItem);
         public event ErrorOccurredEventHandler ErrorOccurred;
+        public FixedSizeQueue<LogItem> LastLogEntries { get; private set; } = new FixedSizeQueue<LogItem>(1000);
         public delegate void ErrorOccurredEventHandler(Exception exception, LogItem logItem);
         private bool AnyLogTargetEnabled
         {
@@ -300,6 +301,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
                     {
                         this._AmountOfWarnings += 1;
                     }
+                    LastLogEntries.Enqueue(logItem);
                     foreach (GRYLogTarget logTarget in this.Configuration.LogTargets)
                     {
                         if (logTarget.Enabled)

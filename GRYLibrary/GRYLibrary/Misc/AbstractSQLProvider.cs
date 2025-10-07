@@ -1,6 +1,4 @@
 ﻿using GRYLibrary.Core.Exceptions;
-using GRYLibrary.Core.Logging.GRYLogger;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
