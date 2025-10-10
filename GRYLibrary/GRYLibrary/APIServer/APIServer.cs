@@ -19,6 +19,7 @@ using GRYLibrary.Core.APIServer.MidT.WAF;
 using GRYLibrary.Core.APIServer.Settings;
 using GRYLibrary.Core.APIServer.Settings.Configuration;
 using GRYLibrary.Core.APIServer.Utilities;
+using GRYLibrary.Core.APIServer.Verbs;
 using GRYLibrary.Core.Exceptions;
 using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using GRYLibrary.Core.Logging.GRYLogger;
@@ -51,7 +52,7 @@ namespace GRYLibrary.Core.APIServer
     public class APIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
         where PersistedApplicationSpecificConfiguration : new()
         where ApplicationSpecificConstants : new()
-        where CommandlineParameterType : class, ICommandlineParameter
+        where CommandlineParameterType :  IAPIServerCommandlineParameter
     {
         private bool _MaintenanceModeEnabled = false;
         private APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> _Configuration;
@@ -80,6 +81,9 @@ namespace GRYLibrary.Core.APIServer
 
         public static int APIMain(CommandlineParameterType commandlineParameter, GRYConsoleApplicationInitialInformation gryConsoleApplicationInitialInformation, APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> apiServerConfiguration)
         {
+            try
+            {
+
             #region Initialize default configuration-values
             apiServerConfiguration.InitializationInformation = new InitializationInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
             {
@@ -87,7 +91,7 @@ namespace GRYLibrary.Core.APIServer
                 ApplicationConstants = new ApplicationConstants<ApplicationSpecificConstants>(gryConsoleApplicationInitialInformation.ProgramName, gryConsoleApplicationInitialInformation.ProgramDescription, Version3.Parse(gryConsoleApplicationInitialInformation.ProgramVersion), gryConsoleApplicationInitialInformation.ExecutionMode, gryConsoleApplicationInitialInformation.Environment, new ApplicationSpecificConstants())
             };
             apiServerConfiguration.InitializationInformation.InitialLogger = GeneralLogger.CreateUsingConsole();
-            apiServerConfiguration.InitializationInformation.BaseFolder = GetDefaultBaseFolder(apiServerConfiguration.InitializationInformation.ApplicationConstants);
+            apiServerConfiguration.InitializationInformation.BaseFolder = GetDefaultBaseFolder(apiServerConfiguration.InitializationInformation.ApplicationConstants,!apiServerConfiguration.CommandlineParameter.RealRun);
             apiServerConfiguration.InitializationInformation.ApplicationConstants.Initialize(apiServerConfiguration.InitializationInformation.BaseFolder);
             apiServerConfiguration.InitializationInformation.ApplicationConstants.KnownTypes.Add(typeof(PersistedApplicationSpecificConfiguration));
             apiServerConfiguration.InitializationInformation.InitialApplicationConfiguration = PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>.Create(new PersistedApplicationSpecificConfiguration(), gryConsoleApplicationInitialInformation.Environment);
@@ -110,12 +114,23 @@ namespace GRYLibrary.Core.APIServer
                 _Configuration = apiServerConfiguration
             };
             return server.Run(apiServerConfiguration, persistedAPIServerConfiguration);
-            #endregion
+                #endregion
+
+            }
+            catch
+            {
+                throw;
+            }
+        
         }
-        private static string GetDefaultBaseFolder<AppConstantsType>(IApplicationConstants<AppConstantsType> applicationConstants)
+        public static string GetDefaultBaseFolder<AppConstantsType>(IApplicationConstants<AppConstantsType> applicationConstants, bool isTestRun)
         {
-            string programFolder = Core.Misc.Utilities.GetValue(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-            return applicationConstants.ExecutionMode.Accept(new GetBaseFolder(applicationConstants.Environment, programFolder, applicationConstants.ExecutionMode));
+            return GetDefaultBaseFolder(Assembly.GetExecutingAssembly(), applicationConstants.ExecutionMode, applicationConstants.Environment,isTestRun);
+        }
+        public static string GetDefaultBaseFolder(Assembly executingAssembly,ExecutionMode executionMode,GRYEnvironment environment, bool isTestRun)
+        {
+            string programFolder = Core.Misc.Utilities.GetValue(Path.GetDirectoryName(executingAssembly.Location));
+            return executionMode.Accept(new GetBaseFolder(environment, programFolder,isTestRun));
         }
 
         #region Create or load config-file
@@ -242,8 +257,8 @@ namespace GRYLibrary.Core.APIServer
                     manager.FeatureProviders.Add(new CustomControllerFeatureProvider<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>(this._Configuration, logger));
                 });
             mvcBuilder.AddApplicationPart(this.GetType().Assembly);
-            builder.Services.AddSingleton((serviceProvider) => apiServerConfiguration.InitializationInformation.CommandlineParameter);
-            builder.Services.AddSingleton((serviceProvider) => logger);
+                builder.Services.AddSingleton<IAPIServerCommandlineParameter>((serviceProvider) => apiServerConfiguration.InitializationInformation.CommandlineParameter);
+                builder.Services.AddSingleton((serviceProvider) => logger);
             builder.Services.AddSingleton<IGeneralLogger>(sp => sp.GetRequiredService<IGRYLog>());
                 builder.Services.AddSingleton((serviceProvider) => persistedAPIServerConfiguration);
                 builder.Services.AddSingleton((serviceProvider) => persistedAPIServerConfiguration.ServerConfiguration);
