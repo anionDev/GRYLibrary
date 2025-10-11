@@ -29,7 +29,7 @@ namespace GRYLibrary.Tests.Testcases.GraphTests
             Assert.IsFalse(graph.IsConnected());
             graph.AddEdge(new UndirectedEdge(new Vertex[] { v1, v2 }, "e1"));
             Assert.IsTrue(graph.IsConnected());
-            Assert.ThrowsException<InvalidGraphStructureException>(() => graph.AddEdge(new UndirectedEdge(new Vertex[] { v2, v1 }, "e2")));
+            Assert.Throws<InvalidGraphStructureException>(() => graph.AddEdge(new UndirectedEdge(new Vertex[] { v2, v1 }, "e2")));
             Assert.IsTrue(graph.IsConnected());
         }
     }

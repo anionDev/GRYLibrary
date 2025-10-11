@@ -1,4 +1,5 @@
 ﻿using GRYLibrary.Core.Logging.GeneralPurposeLogger;
+using GRYLibrary.Core.Misc;
 using Microsoft.Extensions.Logging;
 using System;
 
@@ -11,7 +12,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         public void Log(LogItem logitem);
         public void LogProgramOutput(string message, string[] stdOutLines, string[] stdErrLines, LogLevel logevel);
         public IDisposable UseSubNamespace(string loggerName);
-
+        public FixedSizeQueue<LogItem> LastLogEntries { get; }
         public void Log(string message, string messagId = null);
         public void Log(GRYLogTarget logTarget, string message, LogLevel logLevel);
         public void Log(string message, Exception exception, string messageId = null);

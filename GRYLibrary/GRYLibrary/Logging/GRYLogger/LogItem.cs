@@ -111,7 +111,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
             this.Category = 1;
         }
         #endregion 
-        internal void Format(IGRYLogConfiguration configuration, out string formattedMessage, out int colorBegin, out int colorEnd, out ConsoleColor consoleColor, GRYLogLogFormat format, string messageIdValue)
+        public void Format(IGRYLogConfiguration configuration, out string formattedMessage, out int colorBegin, out int colorEnd, out ConsoleColor consoleColor, GRYLogLogFormat format, string messageIdValue)
         {
             if (!this._FormatingLoaded)
             {

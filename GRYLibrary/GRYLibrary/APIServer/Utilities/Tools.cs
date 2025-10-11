@@ -100,10 +100,6 @@ namespace GRYLibrary.Core.APIServer.Utilities
             where GCodeUnitSpecificCommandlineParameter : class, IAPIServerCommandlineParameter, new()
         {
             int exitCode = 0;
-            if (Debugger.IsAttached)
-            {
-                GRYLibrary.Core.Misc.Utilities.AssertCondition(environmentTargetType is Development, $"A debugger is attached. Debugging is only suppoerted if {nameof(environmentTargetType)} is {nameof(Development)}.");
-            }
             Exception? exception = null;//for debugging-purposes
             try
             {
@@ -131,7 +127,16 @@ namespace GRYLibrary.Core.APIServer.Utilities
         }
         public static bool ConnectToDatabase(Action connectAction, IGeneralLogger logger, string adaptedConnectionString, out string? notConnectionReason)
         {
-            return ConnectToDatabase(connectAction, logger, adaptedConnectionString, TimeSpan.FromMinutes(1), out notConnectionReason);
+            TimeSpan timeout;
+            if (Debugger.IsAttached)
+            {
+                timeout = TimeSpan.FromDays(7);
+            }
+            else
+            {
+                timeout = TimeSpan.FromMinutes(1);
+            }
+            return ConnectToDatabase(connectAction, logger, adaptedConnectionString, timeout, out notConnectionReason);
         }
 
         public static bool ConnectToDatabase(Action connectAction, IGeneralLogger logger, string adaptedConnectionString, TimeSpan timeout, out string? notConnectionReason)

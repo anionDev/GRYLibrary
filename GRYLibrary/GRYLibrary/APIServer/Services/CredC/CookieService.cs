@@ -26,7 +26,7 @@ namespace GRYLibrary.Core.APIServer.Services.CredC
             return context.Request.Cookies.TryGetValue(CookieTools.CookieName, out cookie);
         }
 
-        public (string key, string value, CookieOptions options) CreateCookie(string username, string value, DateTime expiredMoment)
+        public (string key, string value, CookieOptions options) CreateCookie(string username, string value, DateTimeOffset expiredMoment)
         {
             return CookieTools.GetAccessTokenCookie(username, value, expiredMoment);
         }

@@ -88,7 +88,7 @@ namespace GRYLibrary.Core.Misc
                 }
             }
 
-            public bool Handle(Windows operatingSystem)
+            public bool Handle(GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems.Windows operatingSystem)
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
@@ -163,7 +163,7 @@ namespace GRYLibrary.Core.Misc
                 return this._Path.Replace(this.WindowsPathSeparatorChar, this.LinuxAndOSXPathSeparatorChar);
             }
 
-            public string Handle(Windows operatingSystem)
+            public string Handle(GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems.Windows operatingSystem)
             {
                 return this._Path.Replace(this.LinuxAndOSXPathSeparatorChar, this.WindowsPathSeparatorChar);
             }
@@ -836,7 +836,7 @@ namespace GRYLibrary.Core.Misc
             }
             else
             {
-                throw new InternalAlgorithmException();
+                throw new InternalAlgorithmException($"Error while parsing date \"{input}\".");
             }
         }
 
@@ -972,7 +972,7 @@ namespace GRYLibrary.Core.Misc
                 throw new NotImplementedException();
             }
 
-            public (bool, string) Handle(Windows operatingSystem)
+            public (bool, string) Handle(GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems.Windows operatingSystem)
             {
                 string program = null;
                 string[] knownExtension = new string[] { ".exe", ".cmd", ".bat" };
@@ -1426,7 +1426,7 @@ namespace GRYLibrary.Core.Misc
                 return this._Path.StartsWith('/');
             }
 
-            public bool Handle(Windows operatingSystem)
+            public bool Handle(GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems.Windows operatingSystem)
             {
                 if (this._Path.StartsWith('/') || this._Path.StartsWith('\\'))
                 {
@@ -1766,7 +1766,18 @@ namespace GRYLibrary.Core.Misc
         {
             return input.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).Select(line => line.Replace("\r", string.Empty).Replace("\n", string.Empty)).ToArray();
         }
-
+        public static void AssertCondition(bool condition, Func<string> messageForFailedAssertion, bool @break = false)
+        {
+            if (!condition)
+            {
+                if (@break && Debugger.IsAttached)
+                {
+                    Debugger.Break();
+                }
+                string message = messageForFailedAssertion();
+                throw new AssertionException("Assertion failed. Condition is false: " + (string.IsNullOrWhiteSpace(message) ? string.Empty : " " + message));
+            }
+        }
         /// <summary>
         /// Throws an exception if <paramref name="condition"/>==false.
         /// </summary>
@@ -1776,18 +1787,12 @@ namespace GRYLibrary.Core.Misc
         /// </remarks>
         public static void AssertCondition(bool condition, string messageForFailedAssertion = EmptyString, bool @break = false)
         {
-            if (!condition)
-            {
-                if (@break && Debugger.IsAttached)
-                {
-                    Debugger.Break();
-                }
-                throw new AssertionException("Assertion failed. Condition is false." + (string.IsNullOrWhiteSpace(messageForFailedAssertion) ? string.Empty : " " + messageForFailedAssertion));
-            }
+            AssertCondition(condition, () => messageForFailedAssertion, @break);
         }
-        public static void AssertNotNull(object variable, string variableName, bool @break = false)
+        public static T AssertNotNull<T>(T? variable, string variableName, bool @break = false)
         {
             AssertCondition(variable != null, $"Variable '{variableName}' is null.", @break);
+            return variable!;
         }
         public static void FormatCSVFile(string file, string separator = ";", bool firstLineContainsHeadlines = false)
         {
@@ -2846,7 +2851,7 @@ namespace GRYLibrary.Core.Misc
                 else
                 {
                     // adapt argument
-                    if (OperatingSystem.OperatingSystem.GetCurrentOperatingSystem() is Windows)
+                    if (OperatingSystem.OperatingSystem.GetCurrentOperatingSystem() is GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems.Windows)
                     {
                         argument = $"\"{program}\" {argument}";
                         program = SpecialFileInformation.GetDefaultProgramToOpenFile(Path.GetExtension(program));
@@ -3165,7 +3170,7 @@ namespace GRYLibrary.Core.Misc
                 throw new NotImplementedException();
             }
 
-            public void Handle(Windows operatingSystem)
+            public void Handle(GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems.Windows operatingSystem)
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
@@ -3189,7 +3194,7 @@ namespace GRYLibrary.Core.Misc
                 throw new NotSupportedException();
             }
 
-            public bool Handle(Windows operatingSystem)
+            public bool Handle(GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems.Windows operatingSystem)
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {

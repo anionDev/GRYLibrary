@@ -1,6 +1,5 @@
-﻿using GRYLibrary.Core.APIServer.Services.Database.DatabaseInterator;
+﻿using GRYLibrary.Core.APIServer.Services.Database;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
-using GRYLibrary.Core.APIServer.Services.Trans;
 using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using System;
 using System.Collections.Generic;
@@ -19,24 +18,22 @@ namespace GRYLibrary.Core.Misc.Migration
     {
         private readonly IGeneralLogger _Logger;
         private readonly ITimeService _TimeService;
-        private readonly DbConnection _Connection;
         private readonly IList<MigrationInstance> _Migrations;
         public const string MigrationTableName = "GRYMigrationInformation";
         private readonly IGenericDatabaseInteractor _DatabaseInteractor;
-        public GRYMigrator(IGeneralLogger logger, ITimeService timeService, DbConnection connection, IList<MigrationInstance> migrations, IGenericDatabaseInteractor databaseInteractor)
+        public GRYMigrator( ITimeService timeService, IList<MigrationInstance> migrations, IGenericDatabaseInteractor databaseInteractor)
         {
-            this._Logger = logger;
+            this._Logger = databaseInteractor.Log;
             this._TimeService = timeService;
-            this._Connection = connection;
-            this._Migrations = migrations;
-            this._DatabaseInteractor = databaseInteractor;
+            this._Migrations = GUtilities.AssertNotNull(migrations, nameof(migrations), true);
+            this._DatabaseInteractor = GUtilities.AssertNotNull(databaseInteractor, nameof(databaseInteractor), true);
         }
         /// <remarks>
         /// If the migration fails it will be rolled back, but this rollback does not apply for DDL-operations (like create table for example) because transactional DDL operations are still an open issue in MariaDB. See https://jira.mariadb.org/browse/MDEV-4259 .
         /// </remarks>
         public void InitializeDatabaseAndMigrateIfRequired()
         {
-            using (DbCommand cmd = this._DatabaseInteractor.CreateCommand(this._DatabaseInteractor.CreateSQLStatementForCreatingMigrationMaintenanceTableIfNotExist(MigrationTableName), this._Connection))
+            using (DbCommand cmd = this._DatabaseInteractor.CreateCommand(this._DatabaseInteractor.CreateSQLStatementForCreatingMigrationMaintenanceTableIfNotExist(MigrationTableName)))
             {
                 cmd.ExecuteNonQuery();
             }
@@ -64,10 +61,11 @@ namespace GRYLibrary.Core.Misc.Migration
                     DateTimeOffset now = this._TimeService.GetCurrentLocalTime();
                     string sql = this._DatabaseInteractor.GetSQLStatementForRunningMigration(migration.MigrationContent, MigrationTableName, migration.MigrationName, now);
                     Exception? exception = null;
-                    using (DbCommand sqlCommand = this._DatabaseInteractor.CreateCommand(sql, this._Connection))
+                    DbConnection connection = this._DatabaseInteractor.GetConnection();
+                    using (DbCommand sqlCommand = this._DatabaseInteractor.CreateCommand(sql))
                     {
-                        using DbTransaction transaction = this._Connection.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
-                        sqlCommand.Connection = this._Connection;
+                        using DbTransaction transaction = connection.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
+                        sqlCommand.Connection = connection;
                         sqlCommand.Transaction = transaction;
                         try
                         {
@@ -113,7 +111,7 @@ namespace GRYLibrary.Core.Misc.Migration
         public IList<MigrationExecutionInformation> GetExecutedMigrations()
         {
             IList<MigrationExecutionInformation> result = new List<MigrationExecutionInformation>();
-            using (DbCommand cmd = this._DatabaseInteractor.CreateCommand(this._DatabaseInteractor.GetSQLStatementForSelectMigrationMaintenanceTableContent(MigrationTableName), this._Connection))
+            using (DbCommand cmd = this._DatabaseInteractor.CreateCommand(this._DatabaseInteractor.GetSQLStatementForSelectMigrationMaintenanceTableContent(MigrationTableName)))
             {
                 using DbDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -122,29 +120,6 @@ namespace GRYLibrary.Core.Misc.Migration
                 }
             }
             return result.OrderBy(o => o.ExecutionTimestamp).ToList();
-        }
-        /// <remarks>
-        /// This function is supposed to be a utilitiy for an integration-test.
-        /// </remarks>
-        public static void DoAllMigrations(DbConnection dbConnection, IDatabaseManager databaseManager, ITimeService timeService)
-        {
-            IList<MigrationInstance> migrations = databaseManager.GetAllMigrations();
-            GRYMigrator migrator = new GRYMigrator(GeneralLogger.CreateUsingConsole(), timeService, dbConnection, migrations, databaseManager.GetGenericDatabaseInteractor());
-            migrator.InitializeDatabaseAndMigrateIfRequired();
-            GUtilities.AssertCondition(GetAllTableNames(dbConnection, databaseManager).Any());
-        }
-        public static IList<string> GetAllTableNames(DbConnection connection, IDatabaseManager databaseManager)
-        {
-            IList<string> result = new List<string>();
-            using (DbCommand cmd = databaseManager.GetGenericDatabaseInteractor().CreateCommand(databaseManager.GetGenericDatabaseInteractor().CreateSQLStatementForGetAllTableNames(), connection))
-            {
-                using DbDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    result.Add(reader.GetString(0));
-                }
-            }
-            return result;
         }
     }
 }
