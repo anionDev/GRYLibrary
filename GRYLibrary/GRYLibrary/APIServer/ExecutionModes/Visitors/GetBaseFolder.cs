@@ -7,18 +7,18 @@ namespace GRYLibrary.Core.APIServer.ExecutionModes.Visitors
     public class GetBaseFolder : IExecutionModeVisitor<string>
     {
         private readonly GRYEnvironment _TargetEnvironmentType;
-        private readonly ExecutionMode _ExecutionMode;
         private readonly string _ProgramFolder;
-        public GetBaseFolder(GRYEnvironment targetEnvironmentType, string programFolder, ExecutionMode executionMode)
+        private bool _IsTestRun;
+        public GetBaseFolder(GRYEnvironment targetEnvironmentType, string programFolder, bool isTestRun)
         {
             this._TargetEnvironmentType = targetEnvironmentType;
-            this._ExecutionMode = executionMode;
             this._ProgramFolder = programFolder;
+            _IsTestRun = isTestRun;
         }
 
         public string Handle(RunProgram runProgram)
         {
-            return GetBaseFolderForProjectInCommonProjectStructure(this._TargetEnvironmentType, this._ProgramFolder, this._ExecutionMode);
+            return GetBaseFolderForProjectInCommonProjectStructure(this._TargetEnvironmentType, this._ProgramFolder, runProgram,_IsTestRun);
         }
 
         public string Handle(TestRun testRun)
@@ -38,11 +38,11 @@ namespace GRYLibrary.Core.APIServer.ExecutionModes.Visitors
             return result;
         }
 
-        public static string GetBaseFolderForProjectInCommonProjectStructure(GRYEnvironment environment, string programFolder, ExecutionMode executionMode)
+        public static string GetBaseFolderForProjectInCommonProjectStructure(GRYEnvironment environment, string programFolder, ExecutionMode executionMode, bool isTestRun)
         {
             string workspaceFolderName = "Workspace";
             string result;
-            if (environment is Development || executionMode is not RunProgram)
+            if (environment is Development || executionMode is not RunProgram|| isTestRun)
             {
                 result = Misc.Utilities.ResolveToFullPath($"../../{workspaceFolderName}", programFolder);//running locally
             }
