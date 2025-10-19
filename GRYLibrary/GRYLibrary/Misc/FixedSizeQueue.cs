@@ -7,7 +7,7 @@ namespace GRYLibrary.Core.Misc
         private readonly Queue<T> _Queue = new();
         private readonly int _MaxSize;
 
-        public int Count => _Queue.Count;
+        public int Count => this._Queue.Count;
 
 
         public FixedSizeQueue() : this(int.MaxValue)
@@ -16,21 +16,21 @@ namespace GRYLibrary.Core.Misc
         public FixedSizeQueue(int maxSize)
         {
             GRYLibrary.Core.Misc.Utilities.AssertCondition(0 < maxSize, $"{maxSize} must be grater than 0.");
-            _MaxSize = maxSize;
+            this._MaxSize = maxSize;
         }
-        public T[] GetEntries() => _Queue.ToArray();
+        public T[] GetEntries() => this._Queue.ToArray();
 
         public void Enqueue(T item)
         {
-            if (0<_Queue.Count && _Queue.Count + 1 < _MaxSize)
+            if (0< this._Queue.Count && this._Queue.Count + 1 < this._MaxSize)
             {
-                _Queue.Dequeue();
+                this._Queue.Dequeue();
             }
-            _Queue.Enqueue(item);
+            this._Queue.Enqueue(item);
         }
         public T Dequeue()
         {
-            return _Queue.Dequeue();
+            return this._Queue.Dequeue();
         }
     }
 }

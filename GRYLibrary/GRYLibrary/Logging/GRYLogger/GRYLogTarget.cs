@@ -64,6 +64,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
             }
             return result;
         }
+
         #endregion
     }
 }

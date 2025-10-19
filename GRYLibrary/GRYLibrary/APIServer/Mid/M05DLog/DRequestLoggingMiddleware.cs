@@ -46,7 +46,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
             this._RequestLogger = this._AppConstants.ExecutionMode.Accept(new GetLoggerVisitor(this._RequestLoggingSettings.RequestsLogConfiguration, this._AppConstants.GetLogFolder(), "Requests"));
             CounterConfiguration counterMetricConfig = new CounterConfiguration()
             {
-                LabelNames = new[] { "domain" },                
+                LabelNames = new[] { "domain" },
             };
             this._RequestCounterSum = Metrics.CreateCounter("http_requests_sum", "Sum of all HTTP-requests", counterMetricConfig);
             this._RequestCounterSum.IncTo(0);
@@ -175,7 +175,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
                 {
                     formatted = this.FormatLogEntrySummary(request, duration, user);
                 }
-                LogItem logItem = new LogItem(formatted, logLevel)
+                LogItem logItem = new LogItem(this._TimeService.GetCurrentTimeInUTCAsDateTimeOffset(), formatted, logLevel)
                 {
                     LogTargets = logTargets
                 };
@@ -183,7 +183,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
             }
             catch (Exception exception)
             {
-                this._Logger.LogException(exception, "Error while logging request.");
+                this._Logger.Log("Error while logging request.", exception);
             }
         }
 

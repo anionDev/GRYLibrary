@@ -43,7 +43,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
         }
         private void StartTryToConnectScheduler()
         {
-            while (_ThreadEnabled)
+            while (this._ThreadEnabled)
             {
 
                 try
@@ -167,7 +167,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
 
         public void Dispose()
         {
-            _ThreadEnabled = false;
+            this._ThreadEnabled = false;
         }
     }
 

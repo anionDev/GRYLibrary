@@ -1,5 +1,4 @@
 ﻿using CommandLine;
-using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using System.Linq;
 
 namespace GRYLibrary.Core.Misc.ConsoleApplication
