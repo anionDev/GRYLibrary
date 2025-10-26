@@ -13,12 +13,12 @@ namespace GRYLibrary.Core.APIServer.ExecutionModes.Visitors
         {
             this._TargetEnvironmentType = targetEnvironmentType;
             this._ProgramFolder = programFolder;
-            _IsTestRun = isTestRun;
+            this._IsTestRun = isTestRun;
         }
 
         public string Handle(RunProgram runProgram)
         {
-            return GetBaseFolderForProjectInCommonProjectStructure(this._TargetEnvironmentType, this._ProgramFolder, runProgram,_IsTestRun);
+            return GetBaseFolderForProjectInCommonProjectStructure(this._TargetEnvironmentType, this._ProgramFolder, runProgram, this._IsTestRun);
         }
 
         public string Handle(TestRun testRun)

@@ -16,6 +16,16 @@ namespace GRYLibrary.Core.APIServer.Services.OtherServices
             return GRYDateTime.FromDateTime(this.GetCurrentLocalTime());
         }
 
+        public DateTimeOffset GetCurrentTimeInTimezone(TimeZoneInfo timeZone)
+        {
+            return TimeZoneInfo.ConvertTime(this.GetCurrentTimeInUTC(), timeZone);
+        }
+
+        public GRYDateTime GetCurrentTimeInTimezoneAsGRYDateTime(TimeZoneInfo timeZone)
+        {
+            return GRYDateTime.FromDateTime(this.GetCurrentTimeInTimezone(timeZone));
+        }
+
         public DateTimeOffset GetCurrentTimeInUTC()
         {
             return DateTimeOffset.UtcNow;

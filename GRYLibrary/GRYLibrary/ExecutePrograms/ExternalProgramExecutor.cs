@@ -449,7 +449,7 @@ namespace GRYLibrary.Core.ExecutePrograms
             {
                 if (!process.WaitForExit(this.Configuration.TimeoutInMilliseconds.Value))
                 {
-                    process.Kill();
+                    process.Kill(true);
                     process.WaitForExit();
                     stopwatch.Stop();
                     if (this.Configuration.Verbosity != Verbosity.Quiet)

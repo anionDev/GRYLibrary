@@ -52,7 +52,7 @@ namespace GRYLibrary.Core.APIServer
     public class APIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
         where PersistedApplicationSpecificConfiguration : new()
         where ApplicationSpecificConstants : new()
-        where CommandlineParameterType :  IAPIServerCommandlineParameter
+        where CommandlineParameterType : class,IAPIServerCommandlineParameter
     {
         private bool _MaintenanceModeEnabled = false;
         private APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> _Configuration;
@@ -258,6 +258,7 @@ namespace GRYLibrary.Core.APIServer
                 });
             mvcBuilder.AddApplicationPart(this.GetType().Assembly);
                 builder.Services.AddSingleton<IAPIServerCommandlineParameter>((serviceProvider) => apiServerConfiguration.InitializationInformation.CommandlineParameter);
+                builder.Services.AddSingleton<CommandlineParameterType>((serviceProvider) => apiServerConfiguration.InitializationInformation.CommandlineParameter);
                 builder.Services.AddSingleton((serviceProvider) => logger);
             builder.Services.AddSingleton<IGeneralLogger>(sp => sp.GetRequiredService<IGRYLog>());
                 builder.Services.AddSingleton((serviceProvider) => persistedAPIServerConfiguration);

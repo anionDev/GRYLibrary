@@ -9,5 +9,7 @@ namespace GRYLibrary.Core.APIServer.Services.Interfaces
         public GRYDateTime GetCurrentLocalTimeAsGRYDateTime();
         public DateTimeOffset GetCurrentTimeInUTC();
         public GRYDateTime GetCurrentTimeInUTCAsGRYDateTime();
+        public DateTimeOffset GetCurrentTimeInTimezone(TimeZoneInfo timeZone);
+        public GRYDateTime GetCurrentTimeInTimezoneAsGRYDateTime(TimeZoneInfo timeZone);
     }
 }

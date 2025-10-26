@@ -301,7 +301,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
                     {
                         this._AmountOfWarnings += 1;
                     }
-                    LastLogEntries.Enqueue(logItem);
+                    this.LastLogEntries.Enqueue(logItem);
                     foreach (GRYLogTarget logTarget in this.Configuration.LogTargets)
                     {
                         if (logTarget.Enabled)
