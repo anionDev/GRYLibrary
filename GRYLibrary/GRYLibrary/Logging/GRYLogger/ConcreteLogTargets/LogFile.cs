@@ -17,7 +17,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
         protected override void ExecuteImplementation(LogItem logItem, GRYLog logObject)
         {
             this._BasePath = logObject.BasePath;
-            logItem.Format(logObject.Configuration, out string formattedMessage, out int _, out int _, out ConsoleColor _, this.Format, logItem.MessageId);
+            logItem.Format(logObject.Configuration, out string formattedMessage, out int _, out int _, out ConsoleColor _, this.Format);
             this._Pool.Add(formattedMessage);
             if (this.PreFlushPoolSize <= this._Pool.Count)
             {

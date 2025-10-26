@@ -1,4 +1,6 @@
-﻿using GRYLibrary.Core.Logging.GeneralPurposeLogger;
+﻿using GRYLibrary.Core.APIServer.Services.Interfaces;
+using GRYLibrary.Core.APIServer.Services.OtherServices;
+using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets;
 using GRYLibrary.Core.Misc;
 using Microsoft.Extensions.Logging;
@@ -23,6 +25,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         private readonly bool _Initialized = false;
         private int _AmountOfErrors = 0;
         private int _AmountOfWarnings = 0;
+        public ITimeService _TimeService = new TimeService();
         internal readonly ConsoleColor _ConsoleDefaultColor;
         public event NewLogItemEventHandler NewLogItem;
         public delegate void NewLogItemEventHandler(LogItem logItem);
@@ -151,77 +154,41 @@ namespace GRYLibrary.Core.Logging.GRYLogger
             }
         }
 
-        public void Log(string message, string messagId = null)
+
+        public void Log(Exception exception)
         {
-            this.Log(message, LogLevel.Information, messagId);
+            this.Log(new LogItem(this.GetTimeForLogItem(), () => "An error occurred.", exception, LogLevel.Information));
+        }
+        public void Log(string message)
+        {
+            this.Log(new LogItem(this.GetTimeForLogItem(), () => message, null, LogLevel.Information));
+        }
+        public void Log(string message, LogLevel logLevel)
+        {
+            this.Log(new LogItem(this.GetTimeForLogItem(), () => message, null, logLevel));
         }
 
-        public void Log(string message, Exception exception, string messageId = null)
+        public void Log(string message, Exception exception)
         {
-            this.Log(message, LogLevel.Error, exception, messageId);
+            this.Log(new LogItem(this.GetTimeForLogItem(), () => message, exception, LogLevel.Error));
+        }
+        public void Log(string message, Exception exception, LogLevel logLevel)
+        {
+            this.Log(new LogItem(this.GetTimeForLogItem(), () => message, exception, logLevel));
         }
 
-        public void Log(string message, LogLevel logLevel, Exception exception, string messageId)
+        public void Log(Func<string> message, LogLevel logLevel)
         {
-            this.Log(new LogItem(message, logLevel, exception, messageId));
+            this.Log(new LogItem(this.GetTimeForLogItem(), message, null, logLevel));
         }
 
-        public void Log(string message, LogLevel logLevel, string messageId = null)
+        public void Log(Func<string> message, Exception exception)
         {
-            this.Log(() => message, logLevel, messageId);
+            this.Log(new LogItem(this.GetTimeForLogItem(), message, exception, LogLevel.Error));
         }
-
-        public void Log(Func<string> getMessage, string messageId = null)
+        public void Log(Func<string> getMessageFunction, Exception? exception, LogLevel logLevel)
         {
-            this.Log(getMessage, LogLevel.Information, messageId);
-        }
-
-        public void Log(Func<string> getMessage, Exception exception, string messageId = null)
-        {
-            this.Log(getMessage, LogLevel.Error, exception, messageId);
-        }
-
-        public void Log(Exception exception, string messageId = null)
-        {
-            this.Log(LogLevel.Error, exception, messageId);
-        }
-
-        public void Log(LogLevel logLevel, Exception exception, string messageId = null)
-        {
-            this.Log(() => "An exception occurred", logLevel, exception, messageId);
-        }
-
-        public void Log(Func<string> getMessage, LogLevel logLevel, Exception exception, string messageId = null)
-        {
-            this.Log(new LogItem(getMessage(), logLevel, exception, messageId)
-            {
-                LogTargets = this.Configuration.LogTargets.ToHashSet(),
-            });
-        }
-
-        public void Log(Func<string> getMessage, LogLevel logLevel, string messageId = null)
-        {
-            this.Log(new LogItem(getMessage, logLevel, messageId)
-            {
-                LogTargets = this.Configuration.LogTargets.ToHashSet(),
-            });
-        }
-
-        public void Log(GRYLogTarget enabledLogTarget, string message, LogLevel logLevel)
-        {
-            lock (_LockObject)
-            {
-                Dictionary<string, bool> logTargetsEnabled = this.Configuration.LogTargets.Select(logtarget => (logtarget.GetType().FullName, logtarget.Enabled)).ToDictionary();
-                try
-                {
-                    this.Configuration.LogTargets.ForEach(logtarget => logtarget.Enabled = logtarget.GetType().Equals(enabledLogTarget.GetType()));
-                    this.Log(message, logLevel);
-                }
-                finally
-                {
-                    this.Configuration.LogTargets.ForEach(logtarget => logtarget.Enabled = logTargetsEnabled[logtarget.GetType().FullName]);
-                }
-            }
+            this.Log(new LogItem(this.GetTimeForLogItem(), getMessageFunction, exception, logLevel));
         }
         public void Log(LogItem logitem)
         {
@@ -238,6 +205,17 @@ namespace GRYLibrary.Core.Logging.GRYLogger
             }
         }
 
+        private DateTimeOffset GetTimeForLogItem()
+        {
+            if (this.Configuration.ConvertTimeForLogEntriesToUTCFormat)
+            {
+                return this._TimeService.GetCurrentTimeInUTCAsDateTimeOffset();
+            }
+            else
+            {
+                return this._TimeService.GetCurrentLocalTimeAsDateTimeOffset();
+            }
+        }
         public void LogProgramOutput(string message, string[] stdOutLines, string[] stdErrLines, LogLevel logevel)
         {
             lock (_LockObject)
@@ -250,6 +228,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         {
             return $"{message}; StdOut: {Environment.NewLine}{string.Join(Environment.NewLine, stdOutLines)}; StdErr: {Environment.NewLine}{string.Join(Environment.NewLine, stdErrLines)}";
         }
+
 
         private void LogImplementation(LogItem logItem)
         {
@@ -285,7 +264,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
                     {
                         foreach (string line in logItem.PlainMessage.Split(new string[] { Environment.NewLine }, StringSplitOptions.None))
                         {
-                            this.Log(new LogItem(line, logItem.LogLevel, logItem.Exception));
+                            this.Log(new LogItem(this.GetTimeForLogItem(), line, logItem.Exception, logItem.LogLevel));
                         }
                         return;
                     }
@@ -393,7 +372,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
             }
             catch (Exception exception)
             {
-                this.Log($"An exception occurred while executing action '{nameOfAction}'.", LogLevel.Error, exception, 0x78200003.ToString());
+                this.Log($"An exception occurred while executing action '{nameOfAction}'.", exception, LogLevel.Error);
                 if (preventThrowingExceptions)
                 {
                     return defaultValue;
@@ -449,7 +428,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
-            this.Log(() => $"{this.FormatEvent(eventId)} | {formatter(state, exception)}", logLevel, 0x78200004.ToString());
+            this.Log(() => $"{this.FormatEvent(eventId)} | {formatter(state, exception)}", logLevel);
         }
 
         #endregion

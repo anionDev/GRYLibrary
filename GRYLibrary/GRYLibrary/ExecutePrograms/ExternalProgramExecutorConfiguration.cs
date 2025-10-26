@@ -33,7 +33,6 @@ namespace GRYLibrary.Core.ExecutePrograms
         public string User { get; set; } = null;
         public string Password { get; set; } = null;
         public bool UpdateConsoleTitle { get; set; } = false;
-        public bool DelegateToEpew { get; set; } = false;
         public bool AdaptLogLevelDependentPrefix { get; set; } = true;
         public bool RedirectStandardInput { get; set; } = false;
         /// <remarks>

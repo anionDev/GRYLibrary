@@ -10,15 +10,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
 
         protected override void ExecuteImplementation(LogItem logItem, GRYLog logObject)
         {
-            string messageId;
-            if (string.IsNullOrWhiteSpace(logItem.MessageId))
-            {
-                messageId = string.Empty;
-            }
-            else
-            {
-                messageId = $"--rfc5424 --msgid {logItem.MessageId}";
-            }
+            string messageId = string.Empty;
 
             using ExternalProgramExecutor externalProgramExecutor = new("Logger", $"--tag {Utilities.GetNameOfCurrentExecutable()} {messageId} -- [{logItem.LogLevel}] [{logObject.Configuration.Name}] {logItem.PlainMessage}");
             externalProgramExecutor.Run();

@@ -40,7 +40,7 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
             user.Name = username;
             user.EMailAddress = null;
             user.PasswordHash = passwordHash;
-            user.RegistrationMoment = timeService.GetCurrentLocalTime();
+            user.RegistrationMoment = timeService.GetCurrentLocalTimeAsDateTimeOffset();
             user.RefreshToken = new HashSet<RefreshToken>();
             user.AccessToken = new HashSet<AccessToken>();
             user.Roles = new HashSet<Role>();

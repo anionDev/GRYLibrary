@@ -6,14 +6,14 @@ namespace GRYLibrary.Core.APIServer.Services.OtherServices
 {
     public class TimeService : ITimeService
     {
-        public DateTimeOffset GetCurrentLocalTime()
+        public DateTimeOffset GetCurrentLocalTimeAsDateTimeOffset()
         {
             return DateTimeOffset.Now;
         }
 
         public GRYDateTime GetCurrentLocalTimeAsGRYDateTime()
         {
-            return GRYDateTime.FromDateTime(this.GetCurrentLocalTime());
+            return GRYDateTime.FromDateTime(this.GetCurrentLocalTimeAsDateTimeOffset());
         }
 
         public DateTimeOffset GetCurrentTimeInTimezone(TimeZoneInfo timeZone)
@@ -33,7 +33,7 @@ namespace GRYLibrary.Core.APIServer.Services.OtherServices
 
         public GRYDateTime GetCurrentTimeInUTCAsGRYDateTime()
         {
-            return GRYDateTime.FromDateTime(this.GetCurrentTimeInUTC());
+            return GRYDateTime.FromDateTime(this.GetCurrentTimeInUTCAsDateTimeOffset());
         }
     }
 }

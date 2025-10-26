@@ -226,7 +226,7 @@ namespace GRYLibrary.Core.APIServer
             }
             catch (Exception exception)
             {
-                logger.LogException(exception, "Fatal error occurred.");
+                logger.Log( "Fatal error occurred.", exception);
                 return 1;
             }
         }
