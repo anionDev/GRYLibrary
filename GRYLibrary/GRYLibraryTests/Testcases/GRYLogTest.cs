@@ -27,38 +27,42 @@ namespace GRYLibrary.Tests.Testcases
         [TestMethod]
         public void TestLogTimezoneWithoutUTC()
         {
-            var stringWriter = new StringWriter();
+            StringWriter stringWriter = new StringWriter();
             System.Console.SetOut(stringWriter);
 
             GRYLog logObject = GRYLog.Create();
             logObject.Configuration.Initliaze();
-            var logTarget = new Console();
-            logTarget.Format = GRYLogLogFormat.GRYLogFormat;
+            Console logTarget = new Console
+            {
+                Format = GRYLogLogFormat.GRYLogFormat
+            };
             logObject.Configuration.LogTargets = new System.Collections.Generic.List<GRYLogTarget> { logTarget };
             logObject.Configuration.ConvertTimeForLogEntriesToUTCFormat = false;
-            var moment = new System.DateTimeOffset(2025, 10, 19, 00, 25, 04, TimeSpan.FromHours(2));
-            logObject.Log(new LogItem(nameof(TestLogTimezoneWithoutUTC), moment, Microsoft.Extensions.Logging.LogLevel.Information));
-            var logItem = logObject.LastLogEntries.Dequeue();
-            var content = stringWriter.ToString().Replace("\n", string.Empty).Replace("\r", string.Empty);
+            DateTimeOffset moment = new System.DateTimeOffset(2025, 10, 19, 00, 25, 04, TimeSpan.FromHours(2));
+            logObject.Log(new LogItem(moment, nameof(TestLogTimezoneWithoutUTC), Microsoft.Extensions.Logging.LogLevel.Information));
+            LogItem logItem = logObject.LastLogEntries.Dequeue();
+            string content = stringWriter.ToString().Replace("\n", string.Empty).Replace("\r", string.Empty);
             Assert.AreEqual($"[2025-10-19T00:25:04+02:00] [Information] {nameof(TestLogTimezoneWithoutUTC)}", content);
         }
 
         [TestMethod]
         public void TestLogTimezoneWithUTC()
         {
-            var stringWriter = new StringWriter();
+            StringWriter stringWriter = new StringWriter();
             System.Console.SetOut(stringWriter);
 
             GRYLog logObject = GRYLog.Create();
             logObject.Configuration.Initliaze();
-            var logTarget = new Console();
-            logTarget.Format = GRYLogLogFormat.GRYLogFormat;
+            Console logTarget = new Console
+            {
+                Format = GRYLogLogFormat.GRYLogFormat
+            };
             logObject.Configuration.LogTargets = new System.Collections.Generic.List<GRYLogTarget> { logTarget };
             logObject.Configuration.ConvertTimeForLogEntriesToUTCFormat = true;
-            var moment = new System.DateTimeOffset(2025, 10, 19, 00, 25, 05, TimeSpan.FromHours(2));
-            logObject.Log(new LogItem(nameof(TestLogTimezoneWithUTC), moment, Microsoft.Extensions.Logging.LogLevel.Information));
-            var logItem = logObject.LastLogEntries.Dequeue();
-            var content = stringWriter.ToString().Replace("\n", string.Empty).Replace("\r", string.Empty);
+            DateTimeOffset moment = new System.DateTimeOffset(2025, 10, 19, 00, 25, 05, TimeSpan.FromHours(2));
+            logObject.Log(new LogItem(moment, nameof(TestLogTimezoneWithUTC), Microsoft.Extensions.Logging.LogLevel.Information));
+            LogItem logItem = logObject.LastLogEntries.Dequeue();
+            string content = stringWriter.ToString().Replace("\n", string.Empty).Replace("\r", string.Empty);
             Assert.AreEqual($"[2025-10-18T22:25:05+00:00] [Information] {nameof(TestLogTimezoneWithUTC)}", content);
         }
     }

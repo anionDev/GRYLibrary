@@ -15,9 +15,9 @@ namespace GRYLibrary.Tests.Testcases.Playlists.ConcretePlaylistHandler
         {
             //arrange
             Encoding encoding = new UTF8Encoding();
-            var m3uHandler = new M3UHandler();
-            using var tempFolder = new TempFolder();
-            var m3uFile = Path.Combine(tempFolder.Path, "test.mp3");
+            M3UHandler m3uHandler = new M3UHandler();
+            using TempFolder tempFolder = new TempFolder();
+            string m3uFile = Path.Combine(tempFolder.Path, "test.mp3");
             GUtilities.EnsureFileExists(m3uFile);
             string content = "./testfile1.mp3";
             File.WriteAllText(m3uFile, content, encoding);
@@ -37,9 +37,9 @@ namespace GRYLibrary.Tests.Testcases.Playlists.ConcretePlaylistHandler
         {
             //arrange
             Encoding encoding = new UTF8Encoding();
-            var m3uHandler = new M3UHandler();
-            using var tempFolder = new TempFolder();
-            var m3uFile = Path.Combine(tempFolder.Path, "test.mp3");
+            M3UHandler m3uHandler = new M3UHandler();
+            using TempFolder tempFolder = new TempFolder();
+            string m3uFile = Path.Combine(tempFolder.Path, "test.mp3");
             GUtilities.EnsureFileExists(m3uFile);
             string content = "./testfile1.mp3\n";
             File.WriteAllText(m3uFile, content, encoding);

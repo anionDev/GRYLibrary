@@ -7,10 +7,7 @@ using GRYLibrary.Core.APIServer.Mid.General;
 using GRYLibrary.Core.APIServer.MidT;
 using GRYLibrary.Core.APIServer.MidT.Aut;
 using GRYLibrary.Core.APIServer.MidT.Auth;
-using GRYLibrary.Core.APIServer.MidT.Blacklist;
 using GRYLibrary.Core.APIServer.MidT.Captcha;
-using GRYLibrary.Core.APIServer.MidT.Counter;
-using GRYLibrary.Core.APIServer.MidT.DDOS;
 using GRYLibrary.Core.APIServer.MidT.Exception;
 using GRYLibrary.Core.APIServer.MidT.Maint;
 using GRYLibrary.Core.APIServer.MidT.Obfuscation;
@@ -52,7 +49,7 @@ namespace GRYLibrary.Core.APIServer
     public class APIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
         where PersistedApplicationSpecificConfiguration : new()
         where ApplicationSpecificConstants : new()
-        where CommandlineParameterType : class,IAPIServerCommandlineParameter
+        where CommandlineParameterType : class, IAPIServerCommandlineParameter
     {
         private bool _MaintenanceModeEnabled = false;
         private APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> _Configuration;
@@ -84,36 +81,40 @@ namespace GRYLibrary.Core.APIServer
             try
             {
 
-            #region Initialize default configuration-values
-            apiServerConfiguration.InitializationInformation = new InitializationInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
-            {
-                CommandlineParameter = commandlineParameter,
-                ApplicationConstants = new ApplicationConstants<ApplicationSpecificConstants>(gryConsoleApplicationInitialInformation.ProgramName, gryConsoleApplicationInitialInformation.ProgramDescription, Version3.Parse(gryConsoleApplicationInitialInformation.ProgramVersion), gryConsoleApplicationInitialInformation.ExecutionMode, gryConsoleApplicationInitialInformation.Environment, new ApplicationSpecificConstants())
-            };
-            apiServerConfiguration.InitializationInformation.InitialLogger = GeneralLogger.CreateUsingConsole();
-            apiServerConfiguration.InitializationInformation.BaseFolder = GetDefaultBaseFolder(apiServerConfiguration.InitializationInformation.ApplicationConstants,!apiServerConfiguration.CommandlineParameter.RealRun);
-            apiServerConfiguration.InitializationInformation.ApplicationConstants.Initialize(apiServerConfiguration.InitializationInformation.BaseFolder);
-            apiServerConfiguration.InitializationInformation.ApplicationConstants.KnownTypes.Add(typeof(PersistedApplicationSpecificConfiguration));
-            apiServerConfiguration.InitializationInformation.InitialApplicationConfiguration = PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>.Create(new PersistedApplicationSpecificConfiguration(), gryConsoleApplicationInitialInformation.Environment);
-            apiServerConfiguration.InitializationInformation.BasicInformationFile = AbstractFilePath.FromString("./BasicApplicationInformation.xml");
-            apiServerConfiguration.SetInitialzationInformationAction(apiServerConfiguration.InitializationInformation);
-            #endregion
+                #region Initialize default configuration-values
+                apiServerConfiguration.InitializationInformation = new InitializationInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
+                {
+                    CommandlineParameter = commandlineParameter,
+                    ApplicationConstants = new ApplicationConstants<ApplicationSpecificConstants>(gryConsoleApplicationInitialInformation.ProgramName, gryConsoleApplicationInitialInformation.ProgramDescription, Version3.Parse(gryConsoleApplicationInitialInformation.ProgramVersion), gryConsoleApplicationInitialInformation.ExecutionMode, gryConsoleApplicationInitialInformation.Environment, new ApplicationSpecificConstants())
+                };
+                apiServerConfiguration.InitializationInformation.InitialLogger = GeneralLogger.CreateUsingConsole();
+                apiServerConfiguration.InitializationInformation.BaseFolder = GetDefaultBaseFolder(apiServerConfiguration.InitializationInformation.ApplicationConstants, !apiServerConfiguration.CommandlineParameter.RealRun);
+                apiServerConfiguration.InitializationInformation.ApplicationConstants.Initialize(apiServerConfiguration.InitializationInformation.BaseFolder);
+                apiServerConfiguration.InitializationInformation.ApplicationConstants.KnownTypes.Add(typeof(PersistedApplicationSpecificConfiguration));
+                apiServerConfiguration.InitializationInformation.InitialApplicationConfiguration = PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>.Create(new PersistedApplicationSpecificConfiguration(), gryConsoleApplicationInitialInformation.Environment);
+                apiServerConfiguration.InitializationInformation.BasicInformationFile = AbstractFilePath.FromString("./BasicApplicationInformation.xml");
+                apiServerConfiguration.InitializationInformation.InitialLogger.Log($"Base-folder: {apiServerConfiguration.InitializationInformation.ApplicationConstants.BaseFolder}", LogLevel.Debug);
+                apiServerConfiguration.InitializationInformation.InitialLogger.Log($"Configuration-folder: {apiServerConfiguration.InitializationInformation.ApplicationConstants.GetConfigurationFile()}", LogLevel.Debug);
+                apiServerConfiguration.InitializationInformation.InitialLogger.Log($"Data-folder: {apiServerConfiguration.InitializationInformation.ApplicationConstants.GetDataFolder()}", LogLevel.Debug);
+                apiServerConfiguration.InitializationInformation.InitialLogger.Log($"Log-folder: {apiServerConfiguration.InitializationInformation.ApplicationConstants.GetLogFolder()}", LogLevel.Debug);
+                apiServerConfiguration.SetInitialzationInformationAction(apiServerConfiguration.InitializationInformation);
+                #endregion
 
-            #region Load configuration
-            IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedAPIServerConfiguration = LoadConfiguration(apiServerConfiguration.InitializationInformation.ApplicationConstants.KnownTypes, apiServerConfiguration.InitializationInformation.ApplicationConstants.Environment, apiServerConfiguration.InitializationInformation.ApplicationConstants.ExecutionMode, apiServerConfiguration.InitializationInformation.ApplicationConstants.GetConfigurationFile(), apiServerConfiguration.InitializationInformation.ApplicationConstants.ThrowErrorIfConfigurationDoesNotExistInProduction, apiServerConfiguration.InitializationInformation.InitialApplicationConfiguration, out bool fileWasCreatedNew);
-            GUtilities.AssertCondition(persistedAPIServerConfiguration != null, "Could not load persisted API-server configuration.");
-            if (fileWasCreatedNew && apiServerConfiguration.InitializationInformation.ApplicationConstants.AdminHasToEnterInformationAfterInitialConfigurationFileGeneration)
-            {
-                throw new InitializationException($"Configuration-file was created. You have to edit certain values there.");
-            }
-            #endregion
+                #region Load configuration
+                IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedAPIServerConfiguration = LoadConfiguration(apiServerConfiguration.InitializationInformation.ApplicationConstants.KnownTypes, apiServerConfiguration.InitializationInformation.ApplicationConstants.Environment, apiServerConfiguration.InitializationInformation.ApplicationConstants.ExecutionMode, apiServerConfiguration.InitializationInformation.ApplicationConstants.GetConfigurationFile(), apiServerConfiguration.InitializationInformation.ApplicationConstants.ThrowErrorIfConfigurationDoesNotExistInProduction, apiServerConfiguration.InitializationInformation.InitialApplicationConfiguration, out bool fileWasCreatedNew);
+                GUtilities.AssertCondition(persistedAPIServerConfiguration != null, "Could not load persisted API-server configuration.");
+                if (fileWasCreatedNew && apiServerConfiguration.InitializationInformation.ApplicationConstants.AdminHasToEnterInformationAfterInitialConfigurationFileGeneration)
+                {
+                    throw new InitializationException($"Configuration-file was created. You have to edit certain values there.");
+                }
+                #endregion
 
-            #region Run APIServer
-            APIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> server = new APIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
-            {
-                _Configuration = apiServerConfiguration
-            };
-            return server.Run(apiServerConfiguration, persistedAPIServerConfiguration);
+                #region Run APIServer
+                APIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> server = new APIServer<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>
+                {
+                    _Configuration = apiServerConfiguration
+                };
+                return server.Run(apiServerConfiguration, persistedAPIServerConfiguration);
                 #endregion
 
             }
@@ -121,16 +122,17 @@ namespace GRYLibrary.Core.APIServer
             {
                 throw;
             }
-        
+
         }
         public static string GetDefaultBaseFolder<AppConstantsType>(IApplicationConstants<AppConstantsType> applicationConstants, bool isTestRun)
         {
-            return GetDefaultBaseFolder(Assembly.GetExecutingAssembly(), applicationConstants.ExecutionMode, applicationConstants.Environment,isTestRun);
+            return GetDefaultBaseFolder(Assembly.GetExecutingAssembly(), applicationConstants.ExecutionMode, applicationConstants.Environment, isTestRun);
         }
-        public static string GetDefaultBaseFolder(Assembly executingAssembly,ExecutionMode executionMode,GRYEnvironment environment, bool isTestRun)
+        public static string GetDefaultBaseFolder(Assembly executingAssembly, ExecutionMode executionMode, GRYEnvironment environment, bool isTestRun)
         {
             string programFolder = Core.Misc.Utilities.GetValue(Path.GetDirectoryName(executingAssembly.Location));
-            return executionMode.Accept(new GetBaseFolder(environment, programFolder,isTestRun));
+            string result = executionMode.Accept(new GetBaseFolder(environment, programFolder, isTestRun));
+            return result;
         }
 
         #region Create or load config-file
@@ -226,7 +228,7 @@ namespace GRYLibrary.Core.APIServer
             }
             catch (Exception exception)
             {
-                logger.Log( "Fatal error occurred.", exception);
+                logger.Log("Fatal error occurred.", exception);
                 return 1;
             }
         }
@@ -239,224 +241,218 @@ namespace GRYLibrary.Core.APIServer
             try
             {
 
-            logger.Log($"BaseFolder: {apiServerConfiguration.InitializationInformation.BaseFolder}", LogLevel.Debug);
-            WebApplicationBuilder builder = WebApplication.CreateBuilder(new WebApplicationOptions
-            {
-                ApplicationName = this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName,
-                EnvironmentName = this._Configuration.InitializationInformation.ApplicationConstants.Environment.GetType().Name
-            });
-            IServiceCollection services = builder.Services;
-            IMvcBuilder mvcBuilder = services.AddControllers(mvcOptions =>
-            {
-                mvcOptions.InputFormatters.Add(new ByteArrayInputFormatter());
-                mvcOptions.UseGeneralRoutePrefix(ServerConfiguration.APIRoutePrefix);
-            });//TODO add handling for /robots.txt
-            mvcBuilder = mvcBuilder.ConfigureApplicationPartManager(manager =>
+                logger.Log($"BaseFolder: {apiServerConfiguration.InitializationInformation.BaseFolder}", LogLevel.Debug);
+                WebApplicationBuilder builder = WebApplication.CreateBuilder(new WebApplicationOptions
                 {
-                    manager.FeatureProviders.Clear();
-                    manager.FeatureProviders.Add(new CustomControllerFeatureProvider<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>(this._Configuration, logger));
+                    ApplicationName = this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName,
+                    EnvironmentName = this._Configuration.InitializationInformation.ApplicationConstants.Environment.GetType().Name
                 });
-            mvcBuilder.AddApplicationPart(this.GetType().Assembly);
+                IServiceCollection services = builder.Services;
+                IMvcBuilder mvcBuilder = services.AddControllers(mvcOptions =>
+                {
+                    mvcOptions.InputFormatters.Add(new ByteArrayInputFormatter());
+                    mvcOptions.UseGeneralRoutePrefix(ServerConfiguration.APIRoutePrefix);
+                });//TODO add handling for /robots.txt
+                mvcBuilder = mvcBuilder.ConfigureApplicationPartManager(manager =>
+                    {
+                        manager.FeatureProviders.Clear();
+                        manager.FeatureProviders.Add(new CustomControllerFeatureProvider<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>(this._Configuration, logger));
+                    });
+                mvcBuilder.AddApplicationPart(this.GetType().Assembly);
                 builder.Services.AddSingleton<IAPIServerCommandlineParameter>((serviceProvider) => apiServerConfiguration.InitializationInformation.CommandlineParameter);
                 builder.Services.AddSingleton<CommandlineParameterType>((serviceProvider) => apiServerConfiguration.InitializationInformation.CommandlineParameter);
                 builder.Services.AddSingleton((serviceProvider) => logger);
-            builder.Services.AddSingleton<IGeneralLogger>(sp => sp.GetRequiredService<IGRYLog>());
+                builder.Services.AddSingleton<IGeneralLogger>(sp => sp.GetRequiredService<IGRYLog>());
                 builder.Services.AddSingleton((serviceProvider) => persistedAPIServerConfiguration);
                 builder.Services.AddSingleton((serviceProvider) => persistedAPIServerConfiguration.ServerConfiguration);
                 builder.Services.AddSingleton((serviceProvider) => this._Configuration.InitializationInformation.ApplicationConstants);
                 builder.Services.AddSingleton<IApplicationConstants>((serviceProvider) => this._Configuration.InitializationInformation.ApplicationConstants);
 
-            apiServerConfiguration.FunctionalInformation = new FunctionalInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>(
-                apiServerConfiguration.InitializationInformation,
-                builder,
-                persistedAPIServerConfiguration,
-                logger
-            );
-            apiServerConfiguration.SetFunctionalInformationAction(apiServerConfiguration.FunctionalInformation);
+                apiServerConfiguration.FunctionalInformation = new FunctionalInformation<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>(
+                    apiServerConfiguration.InitializationInformation,
+                    builder,
+                    persistedAPIServerConfiguration,
+                    logger
+                );
+                apiServerConfiguration.SetFunctionalInformationAction(apiServerConfiguration.FunctionalInformation);
 
-            #region Load middlewares
-            List<Type> specialMiddlewares1 = new List<Type>();
-            List<Type> specialMiddlewares2 = new List<Type>();
-            List<Type> businessMiddlewares1 = new List<Type>();
-            List<Type> businessMiddlewares2 = new List<Type>();
+                #region Load middlewares
+                List<Type> specialMiddlewares1 = new List<Type>();
+                List<Type> specialMiddlewares2 = new List<Type>();
+                List<Type> businessMiddlewares1 = new List<Type>();
+                List<Type> businessMiddlewares2 = new List<Type>();
 
-            IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration = apiServerConfiguration.FunctionalInformation.PersistedAPIServerConfiguration;
+                IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration = apiServerConfiguration.FunctionalInformation.PersistedAPIServerConfiguration;
 
-            specialMiddlewares1.Add(typeof(GeneralMiddleware<PersistedApplicationSpecificConfiguration>));
-            #region General Threat-Protection
-            if (this._Configuration.InitializationInformation.ApplicationConstants.Environment is not Development)
-            {
-                this.AddDefinedMiddleware((ISupportDDOSProtectionMiddleware c) => c.ConfigurationForDDOSProtection, this._Configuration.InitializationInformation.ApplicationConstants.DDOSProtectionMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);
-                this.AddDefinedMiddleware((ISupportBlacklistMiddleware c) => c.ConfigurationForBlacklistMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.BlackListMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);
-                this.AddDefinedMiddleware((ISupportWebApplicationFirewallMiddleware c) => c.ConfigurationForWebApplicationFirewall, this._Configuration.InitializationInformation.ApplicationConstants.WebApplicationFirewallMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);
-                this.AddDefinedMiddleware((ISupportObfuscationMiddleware c) => c.ConfigurationForObfuscationMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.ObfuscationMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);
-                this.AddDefinedMiddleware((ISupportCaptchaMiddleware c) => c.ConfigurationForCaptchaMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.CaptchaMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);
-            }
-            this.AddDefinedMiddleware((ISupportRequestLoggingMiddleware c) => c.ConfigurationForLoggingMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.LoggingMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);
-            this.AddDefinedMiddleware((ISupportExceptionManagerMiddleware c) => c.ConfigurationForExceptionManagerMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.ExceptionManagerMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);
-            foreach (Type customMiddleware in this._Configuration.InitializationInformation.ApplicationConstants.CustomMiddlewares1)
-            {
-                businessMiddlewares1.Add(customMiddleware);
-            }
-            #endregion
-
-            #region Bussiness-implementation
-            this.AddDefinedMiddleware((ISupportMaintenanceSiteMiddleware c) => c.ConfigurationForMaintenanceSiteMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.MaintenanceSiteMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares2, logger);
-            this.AddDefinedMiddleware((ISupportAuthenticationMiddleware c) => c.ConfigurationForAuthenticationMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.AuthenticationMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares2, logger);
-            this.AddDefinedMiddleware((ISupportAuthorizationMiddleware c) => c.ConfigurationForAuthorizationMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.AuthorizationMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares2, logger);
-            if (this._Configuration.InitializationInformation.ApplicationConstants.Environment is not Development)
-            {
-                this.AddDefinedMiddleware((ISupportRequestCounterMiddleware c) => c.ConfigurationForRequestCounterMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.RequestCounterMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares2, logger);
-            }
-            foreach (Type customMiddleware in this._Configuration.InitializationInformation.ApplicationConstants.CustomMiddlewares2)
-            {
-                businessMiddlewares2.Add(customMiddleware);
-            }
-            #endregion
-            #endregion
-
-            builder.WebHost.ConfigureKestrel(kestrelOptions =>
-            {
-                kestrelOptions.AllowSynchronousIO = true;
-                kestrelOptions.AddServerHeader = false;
-                Action<ListenOptions> lOptions = listenOptions =>
+                specialMiddlewares1.Add(typeof(GeneralMiddleware<PersistedApplicationSpecificConfiguration>));
+                this.AddDefinedMiddleware((ISupportExceptionManagerMiddleware c) => c.ConfigurationForExceptionManagerMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.ExceptionManagerMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);
+                #region General Threat-Protection
+                if (this._Configuration.InitializationInformation.ApplicationConstants.Environment is not Development)
                 {
-                    if (persistedApplicationSpecificConfiguration.ServerConfiguration.Protocol is HTTPS https)
-                    {
-                        string pfxFilePath = https.TLSCertificateInformation.CertificatePFXFile.GetPath(this._Configuration.InitializationInformation.ApplicationConstants.GetCertificateFolder());
-                        string passwordFilePath = https.TLSCertificateInformation.CertificatePasswordFile.GetPath(this._Configuration.InitializationInformation.ApplicationConstants.GetCertificateFolder());
-                        string password = File.ReadAllText(passwordFilePath, new UTF8Encoding(false));
-                        X509Certificate2 certificate = certificate = new X509Certificate2(pfxFilePath, password);
-                        if (this._Configuration.InitializationInformation.ApplicationConstants.Environment is Productive && GUtilities.IsSelfSIgned(certificate))
-                        {
-                            logger.Log($"The used certificate '{pfxFilePath}' is self-signed. Using self-signed certificates is not recommended in a productive environment.", LogLevel.Warning);
-                        }
-                        listenOptions.UseHttps(certificate);
-                        string dnsName = certificate.GetNameInfo(X509NameType.DnsName, false);
-                        if (this._Configuration.InitializationInformation.ApplicationConstants.Environment is not Development && dnsName != persistedApplicationSpecificConfiguration.ServerConfiguration.Domain)
-                        {
-                            logger.Log($"The used certificate has the DNS-name '{dnsName}' which differs from the domain '{persistedApplicationSpecificConfiguration.ServerConfiguration.Domain}' which is set in the configuration.", LogLevel.Warning);
-                        }
-                    }
-                };
-                if (apiServerConfiguration.InitializationInformation.ApplicationConstants.ListenOnEveryIP)
-                {
-                    kestrelOptions.ListenAnyIP(persistedApplicationSpecificConfiguration.ServerConfiguration.Protocol.Port, lOptions);
+                    this.AddDefinedMiddleware((ISupportWebApplicationFirewallMiddleware c) => c.ConfigurationForWebApplicationFirewall, this._Configuration.InitializationInformation.ApplicationConstants.WebApplicationFirewallMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);
+                    this.AddDefinedMiddleware((ISupportObfuscationMiddleware c) => c.ConfigurationForObfuscationMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.ObfuscationMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);
+                    this.AddDefinedMiddleware((ISupportCaptchaMiddleware c) => c.ConfigurationForCaptchaMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.CaptchaMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);
                 }
-                else
+                this.AddDefinedMiddleware((ISupportRequestLoggingMiddleware c) => c.ConfigurationForLoggingMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.LoggingMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);
+                foreach (Type customMiddleware in this._Configuration.InitializationInformation.ApplicationConstants.CustomMiddlewares1)
                 {
-                    kestrelOptions.ListenLocalhost(persistedApplicationSpecificConfiguration.ServerConfiguration.Protocol.Port, lOptions);
+                    businessMiddlewares1.Add(customMiddleware);
                 }
-            });
-            string appVersionString = $"v{this._Configuration.InitializationInformation.ApplicationConstants.ApplicationVersion}";
+                #endregion
 
-            bool hostAPIDocumentation = HostAPIDocumentation(this._Configuration.InitializationInformation.ApplicationConstants.Environment, persistedApplicationSpecificConfiguration.ServerConfiguration.HostAPISpecificationForInNonDevelopmentEnvironment, this._Configuration.InitializationInformation.ApplicationConstants.ExecutionMode);
-            string apiUITitle = $"{this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName} v{this._Configuration.InitializationInformation.ApplicationConstants.ApplicationVersion} API documentation";
-            if (hostAPIDocumentation)
-            {
-                builder.Services.AddEndpointsApiExplorer();
-
-                builder.Services.AddSwaggerGen(swaggerOptions =>
+                #region Bussiness-implementation
+                this.AddDefinedMiddleware((ISupportMaintenanceSiteMiddleware c) => c.ConfigurationForMaintenanceSiteMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.MaintenanceSiteMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares2, logger);
+                this.AddDefinedMiddleware((ISupportAuthenticationMiddleware c) => c.ConfigurationForAuthenticationMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.AuthenticationMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares2, logger);
+                this.AddDefinedMiddleware((ISupportAuthorizationMiddleware c) => c.ConfigurationForAuthorizationMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.AuthorizationMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares2, logger);
+                foreach (Type customMiddleware in this._Configuration.InitializationInformation.ApplicationConstants.CustomMiddlewares2)
                 {
-                    foreach (FilterDescriptor filter in this._Configuration.FunctionalInformation.Filter)
+                    businessMiddlewares2.Add(customMiddleware);
+                }
+                #endregion
+                #endregion
+
+                builder.WebHost.ConfigureKestrel(kestrelOptions =>
+                {
+                    kestrelOptions.AllowSynchronousIO = true;
+                    kestrelOptions.AddServerHeader = false;
+                    Action<ListenOptions> lOptions = listenOptions =>
                     {
-                        swaggerOptions.OperationFilterDescriptors.Add(filter);
-                    }
-                    OpenApiInfo openAPIInfo = new OpenApiInfo
-                    {
-                        Version = appVersionString,
-                        Title = apiUITitle,
-                        Description = this._Configuration.InitializationInformation.ApplicationConstants.ApplicationDescription,
+                        if (persistedApplicationSpecificConfiguration.ServerConfiguration.Protocol is HTTPS https)
+                        {
+                            string pfxFilePath = https.TLSCertificateInformation.CertificatePFXFile.GetPath(this._Configuration.InitializationInformation.ApplicationConstants.GetCertificateFolder());
+                            string passwordFilePath = https.TLSCertificateInformation.CertificatePasswordFile.GetPath(this._Configuration.InitializationInformation.ApplicationConstants.GetCertificateFolder());
+                            string password = File.ReadAllText(passwordFilePath, new UTF8Encoding(false));
+                            X509Certificate2 certificate = certificate = new X509Certificate2(pfxFilePath, password);
+                            if (this._Configuration.InitializationInformation.ApplicationConstants.Environment is Productive && GUtilities.IsSelfSIgned(certificate))
+                            {
+                                logger.Log($"The used certificate '{pfxFilePath}' is self-signed. Using self-signed certificates is not recommended in a productive environment.", LogLevel.Warning);
+                            }
+                            listenOptions.UseHttps(certificate);
+                            string dnsName = certificate.GetNameInfo(X509NameType.DnsName, false);
+                            if (this._Configuration.InitializationInformation.ApplicationConstants.Environment is not Development && dnsName != persistedApplicationSpecificConfiguration.ServerConfiguration.Domain)
+                            {
+                                logger.Log($"The used certificate has the DNS-name '{dnsName}' which differs from the domain '{persistedApplicationSpecificConfiguration.ServerConfiguration.Domain}' which is set in the configuration.", LogLevel.Warning);
+                            }
+                        }
                     };
-                    if (this._Configuration.InitializationInformation.ApplicationConstants.CommonRoutesHostInformation is HostCommonRoutes)
+                    if (apiServerConfiguration.InitializationInformation.ApplicationConstants.ListenOnEveryIP)
                     {
-                        openAPIInfo.TermsOfService = new Uri(persistedApplicationSpecificConfiguration.ServerConfiguration.GetServerAddress() + ServerConfiguration.TermsOfServiceURLSubPath);
-                        openAPIInfo.Contact = new OpenApiContact
-                        {
-                            Name = "Contact",
-                            Url = new Uri(persistedApplicationSpecificConfiguration.ServerConfiguration.GetServerAddress() + ServerConfiguration.ContactURLSubPath)
-                        };
-                        openAPIInfo.License = new OpenApiLicense
-                        {
-                            Name = "License",
-                            Url = new Uri(persistedApplicationSpecificConfiguration.ServerConfiguration.GetServerAddress() + ServerConfiguration.LicenseURLSubPath)
-                        };
+                        kestrelOptions.ListenAnyIP(persistedApplicationSpecificConfiguration.ServerConfiguration.Protocol.Port, lOptions);
                     }
-                    swaggerOptions.SwaggerDoc(ServerConfiguration.APISpecificationDocumentName, openAPIInfo);
-                    string xmlFilename = $"{this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName}.xml";
-                    swaggerOptions.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-                    //TODO add support for swaggerOptions.MapType<SomeType>(() => ...);
+                    else
+                    {
+                        kestrelOptions.ListenLocalhost(persistedApplicationSpecificConfiguration.ServerConfiguration.Protocol.Port, lOptions);
+                    }
                 });
-            }
+                string appVersionString = $"v{this._Configuration.InitializationInformation.ApplicationConstants.ApplicationVersion}";
 
-            builder.Services.AddLogging(c => c.ClearProviders());
-
-            WebApplication app = builder.Build();
-            if (this._Configuration.InitializationInformation.ApplicationConstants.UseWebSockets)
-            {
-                app.UseWebSockets();
-            }
-            app.UseRouting();
-
-            #region Add middlewares
-            foreach (Type middleware in specialMiddlewares1)
-            {
-                app.UseMiddleware(middleware);
-            }
-            foreach (Type middleware in businessMiddlewares1)
-            {
-                app.UseMiddleware(middleware);
-            }
-            foreach (Type middleware in specialMiddlewares2)
-            {
-                app.UseMiddleware(middleware);
-            }
-            if (persistedApplicationSpecificConfiguration.ServerConfiguration.Protocol is HTTPS)
-            {
-                app.UseHsts();
-            }
-            foreach (Type middleware in businessMiddlewares2)
-            {
-                app.UseMiddleware(middleware);
-            }
-            #endregion
-
-            #region API Documentation
-            string apiLink = persistedApplicationSpecificConfiguration.ServerConfiguration.GetServerAddress() + ServerConfiguration.APIRoutePrefix;
-            if (hostAPIDocumentation)
-            {
-                string openAPISpecificationRoute = $"/{ServerConfiguration.ResourcesSubPath}/{ServerConfiguration.APISpecificationDocumentName}";
-                string apiDocumentationSubRoute = $"{ServerConfiguration.ResourcesSubPath}/{ServerConfiguration.APISpecificationDocumentName}";
-                string entireAPIDocumentationRoute = $"{ServerConfiguration.APIRoutePrefix[1..]}/{apiDocumentationSubRoute}";
-
-                app.UseSwagger(options => options.RouteTemplate = $"{entireAPIDocumentationRoute}/{{documentName}}/{this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName}.api.json");
-                app.UseSwaggerUI(options =>
+                bool hostAPIDocumentation = HostAPIDocumentation(this._Configuration.InitializationInformation.ApplicationConstants.Environment, persistedApplicationSpecificConfiguration.ServerConfiguration.HostAPISpecificationForInNonDevelopmentEnvironment, this._Configuration.InitializationInformation.ApplicationConstants.ExecutionMode);
+                string apiUITitle = $"{this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName} v{this._Configuration.InitializationInformation.ApplicationConstants.ApplicationVersion} API documentation";
+                if (hostAPIDocumentation)
                 {
-                    string appVersionString = $"v{this._Configuration.InitializationInformation.ApplicationConstants.ApplicationVersion}";
-                    string ui = $"{ServerConfiguration.APISpecificationDocumentName}/{this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName}.api.json";
-                    options.SwaggerEndpoint(ui, this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName + " " + appVersionString);
-                    options.RoutePrefix = entireAPIDocumentationRoute;
-                    options.DocumentTitle = apiUITitle;
-                    apiLink = $"{apiLink}/{apiDocumentationSubRoute}/index.html";
-                });
-            }
-            #endregion
+                    builder.Services.AddEndpointsApiExplorer();
 
-            app.UseEndpoints(endpoints => endpoints.MapControllers());
-            apiServerConfiguration.FunctionalInformationForWebApplication = new FunctionalInformationForWebApplication<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>(
-                apiServerConfiguration.InitializationInformation,
-                builder.Services,
-                persistedAPIServerConfiguration,
-                app
-            );
-            apiServerConfiguration.ConfigureWebApplication(apiServerConfiguration.FunctionalInformationForWebApplication);
-            logger.Log($"The API will now be available under the following URL:", LogLevel.Information);
-            logger.Log(apiLink, LogLevel.Information);
-            if (this._MaintenanceModeEnabled)
-            {
-                logger.Log($"Maintenancemode is enabled.", LogLevel.Information);
-            }
-            return app;
+                    builder.Services.AddSwaggerGen(swaggerOptions =>
+                    {
+                        foreach (FilterDescriptor filter in this._Configuration.FunctionalInformation.Filter)
+                        {
+                            swaggerOptions.OperationFilterDescriptors.Add(filter);
+                        }
+                        OpenApiInfo openAPIInfo = new OpenApiInfo
+                        {
+                            Version = appVersionString,
+                            Title = apiUITitle,
+                            Description = this._Configuration.InitializationInformation.ApplicationConstants.ApplicationDescription,
+                        };
+                        if (this._Configuration.InitializationInformation.ApplicationConstants.CommonRoutesHostInformation is HostCommonRoutes)
+                        {
+                            openAPIInfo.TermsOfService = new Uri(persistedApplicationSpecificConfiguration.ServerConfiguration.GetServerAddress() + ServerConfiguration.TermsOfServiceURLSubPath);
+                            openAPIInfo.Contact = new OpenApiContact
+                            {
+                                Name = "Contact",
+                                Url = new Uri(persistedApplicationSpecificConfiguration.ServerConfiguration.GetServerAddress() + ServerConfiguration.ContactURLSubPath)
+                            };
+                            openAPIInfo.License = new OpenApiLicense
+                            {
+                                Name = "License",
+                                Url = new Uri(persistedApplicationSpecificConfiguration.ServerConfiguration.GetServerAddress() + ServerConfiguration.LicenseURLSubPath)
+                            };
+                        }
+                        swaggerOptions.SwaggerDoc(ServerConfiguration.APISpecificationDocumentName, openAPIInfo);
+                        string xmlFilename = $"{this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName}.xml";
+                        swaggerOptions.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+                        //TODO add support for swaggerOptions.MapType<SomeType>(() => ...);
+                    });
+                }
+
+                builder.Services.AddLogging(c => c.ClearProviders());
+
+                WebApplication app = builder.Build();
+                if (this._Configuration.InitializationInformation.ApplicationConstants.UseWebSockets)
+                {
+                    app.UseWebSockets();
+                }
+                app.UseRouting();
+
+                #region Add middlewares
+                foreach (Type middleware in specialMiddlewares1)
+                {
+                    app.UseMiddleware(middleware);
+                }
+                foreach (Type middleware in businessMiddlewares1)
+                {
+                    app.UseMiddleware(middleware);
+                }
+                foreach (Type middleware in specialMiddlewares2)
+                {
+                    app.UseMiddleware(middleware);
+                }
+                if (persistedApplicationSpecificConfiguration.ServerConfiguration.Protocol is HTTPS)
+                {
+                    app.UseHsts();
+                }
+                foreach (Type middleware in businessMiddlewares2)
+                {
+                    app.UseMiddleware(middleware);
+                }
+                #endregion
+
+                #region API Documentation
+                string apiLink = persistedApplicationSpecificConfiguration.ServerConfiguration.GetServerAddress() + ServerConfiguration.APIRoutePrefix;
+                if (hostAPIDocumentation)
+                {
+                    string openAPISpecificationRoute = $"/{ServerConfiguration.ResourcesSubPath}/{ServerConfiguration.APISpecificationDocumentName}";
+                    string apiDocumentationSubRoute = $"{ServerConfiguration.ResourcesSubPath}/{ServerConfiguration.APISpecificationDocumentName}";
+                    string entireAPIDocumentationRoute = $"{ServerConfiguration.APIRoutePrefix[1..]}/{apiDocumentationSubRoute}";
+
+                    app.UseSwagger(options => options.RouteTemplate = $"{entireAPIDocumentationRoute}/{{documentName}}/{this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName}.api.json");
+                    app.UseSwaggerUI(options =>
+                    {
+                        string appVersionString = $"v{this._Configuration.InitializationInformation.ApplicationConstants.ApplicationVersion}";
+                        string ui = $"{ServerConfiguration.APISpecificationDocumentName}/{this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName}.api.json";
+                        options.SwaggerEndpoint(ui, this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName + " " + appVersionString);
+                        options.RoutePrefix = entireAPIDocumentationRoute;
+                        options.DocumentTitle = apiUITitle;
+                        apiLink = $"{apiLink}/{apiDocumentationSubRoute}/index.html";
+                    });
+                }
+                #endregion
+
+                app.UseEndpoints(endpoints => endpoints.MapControllers());
+                apiServerConfiguration.FunctionalInformationForWebApplication = new FunctionalInformationForWebApplication<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>(
+                    apiServerConfiguration.InitializationInformation,
+                    builder.Services,
+                    persistedAPIServerConfiguration,
+                    app
+                );
+                apiServerConfiguration.ConfigureWebApplication(apiServerConfiguration.FunctionalInformationForWebApplication);
+                logger.Log($"The API will now be available under the following URL:", LogLevel.Information);
+                logger.Log(apiLink, LogLevel.Information);
+                if (this._MaintenanceModeEnabled)
+                {
+                    logger.Log($"Maintenancemode is enabled.", LogLevel.Information);
+                }
+                return app;
             }
             catch
             {

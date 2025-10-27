@@ -52,6 +52,10 @@ namespace GRYLibrary.Core.APIServer.Mid.Ex
             {
                 context.Response.StatusCode = badHttpRequestException.HTTPStatusCode;
             }
+            else if (exceptionForFormatting is InvalidCredentialsException)
+            {
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            }
             else if (exceptionForFormatting is NotAuthorizedException)
             {
                 context.Response.StatusCode = StatusCodes.Status403Forbidden;

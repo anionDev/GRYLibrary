@@ -18,7 +18,7 @@ namespace GRYLibrary.Core.APIServer.Services.OtherServices
 
         public DateTimeOffset GetCurrentTimeInTimezone(TimeZoneInfo timeZone)
         {
-            return TimeZoneInfo.ConvertTime(this.GetCurrentTimeInUTC(), timeZone);
+            return TimeZoneInfo.ConvertTime(this.GetCurrentTimeInUTCAsDateTimeOffset(), timeZone);
         }
 
         public GRYDateTime GetCurrentTimeInTimezoneAsGRYDateTime(TimeZoneInfo timeZone)
@@ -26,7 +26,7 @@ namespace GRYLibrary.Core.APIServer.Services.OtherServices
             return GRYDateTime.FromDateTime(this.GetCurrentTimeInTimezone(timeZone));
         }
 
-        public DateTimeOffset GetCurrentTimeInUTC()
+        public DateTimeOffset GetCurrentTimeInUTCAsDateTimeOffset()
         {
             return DateTimeOffset.UtcNow;
         }
