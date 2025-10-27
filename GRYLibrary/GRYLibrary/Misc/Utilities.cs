@@ -677,6 +677,17 @@ namespace GRYLibrary.Core.Misc
                 Directory.CreateDirectory(path);
             }
         }
+        public static void EnsureDirectoryExistsAndIfEmpty(string path)
+        {
+            if (Directory.Exists(path))
+            {
+                DeleteContentOfFolder(path);
+            }
+            else
+            {
+                Directory.CreateDirectory(path);
+            }
+        }
 
         public static string DurationToUserFriendlyString(TimeSpan timespan, uint desiredMilliSecondsDigitsCount = 0)
         {
@@ -1775,7 +1786,7 @@ namespace GRYLibrary.Core.Misc
                     Debugger.Break();
                 }
                 string message = messageForFailedAssertion();
-                throw new AssertionException("Assertion failed. Condition is false: " + (string.IsNullOrWhiteSpace(message) ? string.Empty : " " + message));
+                throw new AssertionException("Assertion failed. Condition is false" + (string.IsNullOrWhiteSpace(message) ? "." : ": " + message));
             }
         }
         /// <summary>

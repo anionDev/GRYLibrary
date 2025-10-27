@@ -14,15 +14,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
         protected override void ExecuteImplementation(LogItem logItem, GRYLog logObject)
         {
             using EventLog eventLog = new(Utilities.GetNameOfCurrentExecutable()) { Source = logObject.Configuration.Name };
-            string messageId;
-            if (string.IsNullOrWhiteSpace(logItem.MessageId))
-            {
-                messageId = string.Empty;
-            }
-            else
-            {
-                messageId = $"{logItem.MessageId}: ";
-            }
+            string messageId = string.Empty;
             eventLog.WriteEntry(messageId + logItem.PlainMessage, ConvertLogLevel(logItem.LogLevel), logItem.EventId, logItem.Category);
         }
 

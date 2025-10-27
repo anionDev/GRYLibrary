@@ -127,7 +127,8 @@ namespace GRYLibrary.Core.ExecutePrograms
             }
             if (this.LogObject == default)
             {
-                this.LogObject = GRYLog.Create();
+                GRYLog grylog = GRYLog.Create();
+                this.LogObject = grylog;
                 if (this.Configuration.Verbosity == Verbosity.Verbose)
                 {
                     foreach (GRYLogTarget logtarget in this.LogObject.Configuration.LogTargets)
@@ -323,13 +324,6 @@ namespace GRYLibrary.Core.ExecutePrograms
                         throw new ArgumentException("Running as another user is currently only supported on Windows.");
                     }
                 }
-                if (this.Configuration.DelegateToEpew)
-                {
-                    StartInfo.Arguments = CreateEpewArgumentString(
-                        this.Configuration.Program, this.Configuration.Argument, this.Configuration.WorkingDirectory, this.Configuration.PrintErrorsAsInformation, this.Configuration.TimeoutInMilliseconds, this.Configuration.Verbosity,
-                        this.Configuration.AddLogOverhead, this.Configuration.LogFile, this.Configuration.Title, this.Configuration.WaitingState, this.Configuration.LogNamespace, this.Configuration.User, this.Configuration.Password);
-                    StartInfo.FileName = "epew";
-                }
                 this._Process.StartInfo = StartInfo;
                 this._Process.OutputDataReceived += (sender, dataReceivedEventArgs) =>
                 {
@@ -349,8 +343,6 @@ namespace GRYLibrary.Core.ExecutePrograms
                 SupervisedThread readLogItemsThread;
                 stopWatch.Start();
                 this._Process.Start();
-                //if (this.Configuration.WaitingState is RunSynchronously)
-                //{
                 if (this.Configuration.RedirectStandardOutput)
                 {
                     this._Process.BeginOutputReadLine();
@@ -449,7 +441,7 @@ namespace GRYLibrary.Core.ExecutePrograms
             {
                 if (!process.WaitForExit(this.Configuration.TimeoutInMilliseconds.Value))
                 {
-                    process.Kill();
+                    process.Kill(true);
                     process.WaitForExit();
                     stopwatch.Stop();
                     if (this.Configuration.Verbosity != Verbosity.Quiet)
@@ -476,13 +468,20 @@ namespace GRYLibrary.Core.ExecutePrograms
                 }
             }
             this._Running = false;
+            GRYLibrary.Core.Misc.Utilities.WaitUntilConditionIsTrue(() => this._NotLoggedOutputLines.IsEmpty);
             this.CurrentExecutionState = ExecutionState.Terminated;
         }
         public void WaitUntilTerminated()
         {
-            Utilities.WaitUntilConditionIsTrue(() => this.CurrentExecutionState == ExecutionState.Terminated);
+            Utilities.WaitUntilConditionIsTrue(() =>
+            {
+                if (this.CurrentExecutionState != ExecutionState.Terminated)
+                {
+                    return false;
+                }
+                return true;
+            });
         }
-
         private void CheckIfStartOperationWasAlreadyCalled()
         {
             lock (this._LockObject)

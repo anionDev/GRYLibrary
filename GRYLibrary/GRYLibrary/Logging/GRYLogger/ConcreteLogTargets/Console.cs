@@ -23,7 +23,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
             {
                 output = System.Console.Out;
             }
-            logItem.Format(logObject.Configuration, out string formattedMessage, out int cb, out int ce, out ConsoleColor _, this.Format, logItem.MessageId);
+            logItem.Format(logObject.Configuration, out string formattedMessage, out int cb, out int ce, out ConsoleColor _, this.Format);
             string part1 = formattedMessage.AsSpan(0, cb).ToString();
             string part2 = formattedMessage[cb..ce];
             string part3 = formattedMessage[ce..] + Environment.NewLine;

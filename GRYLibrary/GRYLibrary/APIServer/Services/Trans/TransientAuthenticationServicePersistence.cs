@@ -112,7 +112,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
                 }
                 GUtilities.AssertCondition(tokenCount == 1, "Internal error while checking access token");
                 CommonAuthenticationTypes.AccessToken token = tokens.First();
-                System.DateTimeOffset now = this._TimeService.GetCurrentLocalTime();
+                System.DateTimeOffset now = this._TimeService.GetCurrentLocalTimeAsDateTimeOffset();
                 if (token.ExpiredMoment < now)
                 {
                     throw new CredentialsExpiredException();

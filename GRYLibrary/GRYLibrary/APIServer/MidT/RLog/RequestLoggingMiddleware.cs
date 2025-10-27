@@ -11,7 +11,7 @@ namespace GRYLibrary.Core.APIServer.MidT.RLog
     /// </summary>
     public abstract class RequestLoggingMiddleware : AbstractMiddleware
     {
-        private readonly ITimeService _TimeService;
+        protected readonly ITimeService _TimeService;
         public RequestLoggingMiddleware(RequestDelegate next, ITimeService timeService) : base(next)
         {
             this._TimeService = timeService;
@@ -21,9 +21,9 @@ namespace GRYLibrary.Core.APIServer.MidT.RLog
         {
             try
             {
-                DateTimeOffset begin = this._TimeService.GetCurrentLocalTime();
+                DateTimeOffset begin = this._TimeService.GetCurrentLocalTimeAsDateTimeOffset();
                 (byte[] requestBodyBytes, byte[] responseBodyBytes) = Tools.ExecuteNextMiddlewareAndGetRequestAndResponseBody(context, this._Next);
-                DateTimeOffset end = this._TimeService.GetCurrentLocalTime();
+                DateTimeOffset end = this._TimeService.GetCurrentLocalTimeAsDateTimeOffset();
                 TimeSpan duration = end - begin;
                 context.Items["Duration"] = duration;
                 //TODO provide resposne-status-code and duration also as metrics.
