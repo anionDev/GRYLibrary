@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Text;
 
 namespace GRYLibrary.Core.APIServer.Services.Res
 {
@@ -9,6 +10,7 @@ namespace GRYLibrary.Core.APIServer.Services.Res
         private readonly IDictionary<string, byte[]> _Cache = new Dictionary<string, byte[]>();
         private readonly string _BaseNamespace;
         protected readonly Assembly _Assembly;
+        private static readonly Encoding UTF8EncodingInstance = new UTF8Encoding(false);
         public GeneralResourceLoader(string baseNamespace, Assembly assembly)
         {
             this._BaseNamespace = baseNamespace;
@@ -32,6 +34,11 @@ namespace GRYLibrary.Core.APIServer.Services.Res
                 }
             }
             return value;
+        }
+
+        public string GetResourceAsString(string resourceName)
+        {
+          return UTF8EncodingInstance.GetString(this.GetResource(resourceName));
         }
     }
 }
