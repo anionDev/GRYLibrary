@@ -68,6 +68,10 @@ namespace GRYLibrary.Core.APIServer.Mid.Ex
             {
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             }
+            else if (exceptionForFormatting is DependencyNotAvailableException)
+            {
+                context.Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
+            }
             else
             {
                 this._GeneralLogger.Log("Error while processing request", exceptionForFormatting);
