@@ -10,11 +10,7 @@ namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
 {
     public static class GeneralLoggerExtensions
     {
-        public static void Log(this IGeneralLogger logger, string message, LogLevel logLevel)
-        {
-            LogItem logItem = new LogItem(message, logLevel);
-            logger.AddLogEntry(logItem);
-        }
+       
         public static void Log(this IGeneralLogger logger, string actionName, LogLevel logLevelForOverhead, bool throwExceptionIfOccurrs, bool logStartOfAction, bool logExceptionOfAtion, bool logEndOfAtion, bool printDuration, Action action)
         {
             if (logStartOfAction)
@@ -33,7 +29,7 @@ namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
                 stopwatch.Stop();
                 if (logExceptionOfAtion)
                 {
-                    logger.LogException(exception, $"Error in action \"{actionName}\".");
+                    logger.Log( $"Error in action \"{actionName}\".", exception);
                 }
                 if (throwExceptionIfOccurrs)
                 {
@@ -73,7 +69,7 @@ namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
                 }
                 catch (Exception exception)
                 {
-                    logger.LogException(exception, $"Error occurred while doing action for item '{name}'.");
+                    logger.Log( $"Error occurred while doing action for item '{name}'.", exception);
                     if (!continueOnError)
                     {
                         throw;
@@ -89,16 +85,6 @@ namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
             logger.Log(GUtilies.LongLine, loglevelForOverhead);
         }
 
-        public static void LogException(this IGeneralLogger logger, Exception exception, string message)
-        {
-            logger.LogException(exception, message, LogLevel.Error);
-        }
-
-        public static void LogException(this IGeneralLogger logger, Exception exception, string message, LogLevel logLevel)
-        {
-            LogItem logItem = new LogItem(message, logLevel, exception);
-            logger.AddLogEntry(logItem);
-        }
 
         public static IGRYLog SetupLogger(GRYLogConfiguration configuration, string basePath, string subnamespace)
         {

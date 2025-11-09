@@ -120,74 +120,42 @@ namespace GRYLibrary.Core.APIServer.Utilities
             return exitCode;
         }
 
-        public static void ConnectToDatabaseWrapper(Action connectAction, IGeneralLogger logger, string adaptedConnectionString)
+        public static void WaitUntilDatabaseIsAvailable(Func<bool> databaseIsAvailableCheck, IGeneralLogger logger,uint maximalAmountOfAttempts=25, uint initialAmountOfSecondsToWait = 0)
         {
-            bool connected = ConnectToDatabase(connectAction, logger, adaptedConnectionString, out string? notConnectionReason);
-            GUtilities.AssertCondition(connected, "Could not connect to database." + (notConnectionReason == null ? string.Empty : " " + notConnectionReason));
-        }
-        public static bool ConnectToDatabase(Action connectAction, IGeneralLogger logger, string adaptedConnectionString, out string? notConnectionReason)
-        {
-            TimeSpan timeout;
-            if (Debugger.IsAttached)
+            bool isAvailable;
+            try
             {
-                timeout = TimeSpan.FromDays(7);
+                isAvailable = databaseIsAvailableCheck();//check if the database is already available
             }
-            else
+            catch
             {
-                timeout = TimeSpan.FromMinutes(1);
+                isAvailable = false;
             }
-            return ConnectToDatabase(connectAction, logger, adaptedConnectionString, timeout, out notConnectionReason);
-        }
-
-        public static bool ConnectToDatabase(Action connectAction, IGeneralLogger logger, string adaptedConnectionString, TimeSpan timeout, out string? notConnectionReason)
-        {
-            bool connected = false;
-            notConnectionReason = null;
-            string? notConnectionReasonInner = null;
-            //TODO add also a reconnect-mechanism
-            if (GUtilities.RunWithTimeout(() =>
-             {
-                 while (!connected)
-                 {
-                     Exception? lastException = null;
-                     try
-                     {
-                         Thread.Sleep(TimeSpan.FromSeconds(0.5));
-                         logger.Log($"Try to connect to database using connection-string \"{adaptedConnectionString}\".", LogLevel.Debug);
-                         connectAction();
-                         logger.Log($"Connected successfully to database.", LogLevel.Information);
-                         connected = true;
-                     }
-                     catch (AbortException abortException)
-                     {
-                         string message = "Error while connecting to database due to timeout.";
-                         if (lastException != null)
-                         {
-                             string lastExceptionMessage = GUtilities.GetExceptionMessage(lastException, "Error while connecting to database.", true);
-                             message = $"{message} Last catched exception on connection-try: {lastExceptionMessage}";
-                         }
-                         notConnectionReasonInner = GUtilities.GetExceptionMessage(abortException, message, true);
-                         return;
-                     }
-                     catch (Exception exception)
-                     {
-                         lastException = exception;
-                         //catch and do nothing more so that it will tried again next.
-                     }
-                 }
-             }, timeout))
+            uint amoutnOfFails = 0;
+            if (!isAvailable)
             {
-                string? existingMessage = notConnectionReasonInner;
-                notConnectionReasonInner = "Could not connect to database inside of required timespan.";
-                if (existingMessage != null)
+                Thread.Sleep(TimeSpan.FromSeconds(initialAmountOfSecondsToWait));
+                while (!isAvailable)
                 {
-                    notConnectionReasonInner = $"{notConnectionReasonInner} (Reason: '{existingMessage}')";
+                    try
+                    {
+                        isAvailable = databaseIsAvailableCheck();
+                    }
+                    catch (Exception ex)
+                    {
+                        amoutnOfFails = amoutnOfFails + 1;
+                        if (amoutnOfFails== maximalAmountOfAttempts)
+                        {
+                            throw new DependencyNotAvailableException("Database not available.", ex);
+                        }
+                        logger.Log("Database not available yet.", ex, LogLevel.Warning);
+                        Thread.Sleep(TimeSpan.FromSeconds(5));
+                    }
                 }
             }
-            notConnectionReason = notConnectionReasonInner;
-            return connected;
+            logger.Log("Database is now available.", LogLevel.Information);
         }
-
+        
         public static bool TryGetAuthentication(ICredentialsProvider credentialsProvider, HttpContext context, out string accessToken)
         {
             try

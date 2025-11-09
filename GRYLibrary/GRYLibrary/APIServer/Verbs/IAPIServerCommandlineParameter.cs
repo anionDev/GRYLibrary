@@ -1,5 +1,4 @@
-﻿using CommandLine;
-using GRYLibrary.Core.Misc.ConsoleApplication;
+﻿using GRYLibrary.Core.Misc.ConsoleApplication;
 
 namespace GRYLibrary.Core.APIServer.Verbs
 {

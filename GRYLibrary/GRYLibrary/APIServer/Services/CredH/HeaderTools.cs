@@ -4,7 +4,7 @@ namespace GRYLibrary.Core.APIServer.Services.CredH
 {
     public static class HeaderTools
     {
-        public static string HeaderName { get; set; } = "X-Accesstoken";
+        public static string HeaderName { get; set; } = "X-AccessToken";
         public static (string key, string value) GetAccessTokenHeader(string username, string accessToken, DateTime expires)
         {
             return GetHeaderWithSpecificExpiredDate(username, expires, accessToken);

@@ -100,7 +100,8 @@ namespace GRYLibrary.Core.APIServer.Settings
 
         public string GetConfigurationFolder()
         {
-            return this.ConfigurationFolder.GetPath(this.BaseFolder);
+            string result = this.ConfigurationFolder.GetPath(this.BaseFolder);
+            return result;
         }
 
         public string GetCertificateFolder()
@@ -115,7 +116,8 @@ namespace GRYLibrary.Core.APIServer.Settings
 
         public string GetLogFolder()
         {
-            return this.LogFolder.GetPath(this.BaseFolder);
+            string result = this.LogFolder.GetPath(this.BaseFolder);
+            return result;
         }
 
         public CommonRoutesHostInformation CommonRoutesHostInformation { get; set; } = new HostCommonRoutes();

@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using GRYLibrary.Core.APIServer.Services.Interfaces;
+using GRYLibrary.Core.APIServer.Services.OtherServices;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using GUtilities = GRYLibrary.Core.Misc.Utilities;
@@ -15,6 +17,9 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         private ConsoleColor _ConsoleColor;
         private string _PlainMessage;
         private readonly Func<string> _GetMessageFunction;
+        internal ITimeService _TimeService = new TimeService();
+        internal bool TimestampInUTC = false;
+        public DateTimeOffset Moment { get; set; }
         /**
          * Only relevant for  <see cref="ConcreteLogTargets.WindowsEventLog"/>.
          */
@@ -26,9 +31,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
 
         public LogLevel LogLevel { get; internal set; }
         public Exception Exception { get; }
-        public DateTimeOffset MomentOfLogEntry { get; } = GUtilities.GetNow();
         public ISet<GRYLogTarget> LogTargets { get; set; } = GRYLogTarget.GetAll();
-        public string MessageId { get; }
         public string PlainMessage
         {
             get
@@ -49,73 +52,47 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         }
 
         #region Constructors
-        public LogItem(string message, string messageId = null) : this(() => message, GUtilities.GetNow(), messageId)
+        public LogItem(DateTimeOffset moment, Exception exception) : this(moment,() => "An error occurred.", exception, LogLevel.Error)
         {
         }
-        public LogItem(string message, LogLevel logLevel) : this(() => message, GUtilities.GetNow(), logLevel, null)
+        public LogItem(DateTimeOffset moment, string message) : this(moment, () => message, null, LogLevel.Information)
         {
         }
-
-        public LogItem(string message, Exception exception, string messageId = null) : this(() => message, GUtilities.GetNow(), LogLevel.Error, exception, messageId)
-        {
-        }
-        public LogItem(string message, LogLevel logLevel, Exception exception, string messageId = null) : this(() => message, GUtilities.GetNow(), logLevel, exception, messageId)
-        {
-        }
-        public LogItem(Func<string> getMessageFunction, string messageId = null) : this(getMessageFunction, GUtilities.GetNow(), LogLevel.Information, messageId)
-        {
-        }
-        public LogItem(Func<string> getMessageFunction, LogLevel logLevel, string messageId = null) : this(getMessageFunction, GUtilities.GetNow(), logLevel, null, messageId)
+        public LogItem(DateTimeOffset moment, string message, LogLevel logLevel) : this(moment, () => message, null, logLevel)
         {
         }
 
-        public LogItem(Func<string> getMessageFunction, Exception exception, string messageId = null) : this(getMessageFunction, GUtilities.GetNow(), LogLevel.Error, exception, messageId)
+        public LogItem(DateTimeOffset moment, string message, Exception exception) : this(moment, () => message, exception, LogLevel.Error)
+        {
+        }
+        public LogItem(DateTimeOffset moment, string message, Exception exception, LogLevel logLevel) : this(moment, () => message, exception, logLevel)
         {
         }
 
-        public LogItem(Func<string> getMessageFunction, LogLevel logLevel, Exception exception, string messageId) : this(getMessageFunction, GUtilities.GetNow(), logLevel, exception, messageId)
-        {
-        }
-        public LogItem(string message, DateTimeOffset dateTime, string messageId = null) : this(() => message, dateTime, messageId)
-        {
-        }
-        public LogItem(string message, DateTimeOffset dateTime, LogLevel logLevel) : this(() => message, dateTime, logLevel, null)
-        {
-        }
-        public LogItem(string message, DateTimeOffset dateTime, Exception exception, string messageId = null) : this(() => message, dateTime, LogLevel.Error, exception, messageId)
-        {
-        }
-        public LogItem(string message, DateTimeOffset dateTime, LogLevel logLevel, Exception exception, string messageId = null) : this(() => message, dateTime, logLevel, exception, messageId)
-        {
-        }
-        public LogItem(Func<string> getMessageFunction, DateTimeOffset dateTime, string messageId = null) : this(getMessageFunction, dateTime, LogLevel.Information, messageId)
-        {
-        }
-        public LogItem(Func<string> getMessageFunction, DateTimeOffset dateTime, LogLevel logLevel, string messageId = null) : this(getMessageFunction, dateTime, logLevel, null, messageId)
+        public LogItem(DateTimeOffset moment, Func<string> message, LogLevel logLevel) : this(moment, message, null, logLevel)
         {
         }
 
-        public LogItem(Func<string> getMessageFunction, DateTimeOffset dateTime, Exception exception, string messageId = null) : this(getMessageFunction, dateTime, LogLevel.Error, exception, messageId)
+        public LogItem(DateTimeOffset moment, Func<string> message, Exception exception) : this(moment, message, exception, LogLevel.Error)
         {
         }
-        public LogItem(Func<string> getMessageFunction, DateTimeOffset dateTime, LogLevel logLevel, Exception exception, string messageId) : this()
+        public LogItem(DateTimeOffset moment,Func<string> getMessageFunction, Exception? exception, LogLevel logLevel) : this()
         {
             this._GetMessageFunction = getMessageFunction;
             this._MessageLoaded = false;
             this._FormatingLoaded = false;
-            this.MessageId = messageId;
             this.LogLevel = logLevel;
             this.Exception = exception;
-            this.MomentOfLogEntry = dateTime;
             this.EventId = 101;
             this.Category = 1;
+            this.Moment = moment;
         }
         #endregion 
-        public void Format(IGRYLogConfiguration configuration, out string formattedMessage, out int colorBegin, out int colorEnd, out ConsoleColor consoleColor, GRYLogLogFormat format, string messageIdValue)
+        public void Format(IGRYLogConfiguration configuration, out string formattedMessage, out int colorBegin, out int colorEnd, out ConsoleColor consoleColor, GRYLogLogFormat format)
         {
             if (!this._FormatingLoaded)
             {
-                this.FormatMessage(configuration, this.PlainMessage, this.MomentOfLogEntry, this.LogLevel, format, out string fm, out int cb, out int ce, out ConsoleColor cc, messageIdValue);
+                this.FormatMessage(configuration, this.PlainMessage, this.Moment, this.LogLevel, format, out string fm, out int cb, out int ce, out ConsoleColor cc);
                 this._FormattedMessage = fm;
                 this._ColorBegin = cb;
                 this._ColorEnd = ce;
@@ -132,7 +109,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
             return this.LogLevel is LogLevel.Critical or LogLevel.Error;
         }
 
-        private readonly void FormatMessage(IGRYLogConfiguration configuration, string message, DateTimeOffset momentOfLogEntry, LogLevel loglevel, GRYLogLogFormat format, out string formattedMessage, out int colorBegin, out int colorEnd, out ConsoleColor consoleColor, string messageIdValue)
+        private readonly void FormatMessage(IGRYLogConfiguration configuration, string message, DateTimeOffset momentOfLogEntry, LogLevel loglevel, GRYLogLogFormat format, out string formattedMessage, out int colorBegin, out int colorEnd, out ConsoleColor consoleColor)
         {
             consoleColor = configuration.GetLoggedMessageTypesConfigurationByLogLevel(loglevel).ConsoleColor;
             if (!string.IsNullOrEmpty(configuration.Name))
@@ -151,16 +128,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
                     colorEnd = 0;
                     break;
                 case GRYLogLogFormat.GRYLogFormat:
-                    string messageId;
-                    if (string.IsNullOrWhiteSpace(messageIdValue))
-                    {
-                        messageId = string.Empty;
-                    }
-                    else
-                    {
-                        messageId = $"[{messageIdValue}] ";
-                    }
-                    string part1 = $"[{momentOfLogEntry.ToString(configuration.DateFormat)}] {messageId}[";
+                    string part1 = $"[{momentOfLogEntry.ToString(configuration.DateFormat)}] [";
                     string part2 = configuration.GetLoggedMessageTypesConfigurationByLogLevel(loglevel).CustomText;
                     string part3 = "] " + message;
                     formattedMessage = part1 + part2 + part3;
@@ -183,14 +151,12 @@ namespace GRYLibrary.Core.Logging.GRYLogger
                    this._PlainMessage == item._PlainMessage &&
                    this.EventId == item.EventId &&
                    this.Category == item.Category &&
-                   this.LogLevel == item.LogLevel &&
-                   this.MomentOfLogEntry == item.MomentOfLogEntry &&
-                   this.MessageId == item.MessageId;
+                   this.LogLevel == item.LogLevel;
         }
 
         public override readonly int GetHashCode()
         {
-            return HashCode.Combine(this._PlainMessage, this.EventId, this.Category, this.LogLevel, this.MomentOfLogEntry, this.MessageId);
+            return HashCode.Combine(this._PlainMessage, this.EventId, this.Category, this.LogLevel);
         }
 
         public static bool operator ==(LogItem left, LogItem right)

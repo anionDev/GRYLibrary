@@ -27,7 +27,15 @@ namespace GRYLibrary.Core.APIServer.MidT.Exception
             }
             catch (System.Exception exception)
             {
+                try
+                {
                 this.HandleException(context, exception);
+                }
+                catch(System.Exception e)
+                {
+                    System.Console.Error.WriteLine("Error while handling error-response: "+e.ToString());
+                }
+                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             }
             return Task.CompletedTask;
         }

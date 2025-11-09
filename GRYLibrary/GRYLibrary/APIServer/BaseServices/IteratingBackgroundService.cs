@@ -30,8 +30,9 @@ namespace GRYLibrary.Core.APIServer.BaseServices
                 if (this.ShouldBeExecuted())
                 {
                     this._Logger.Log($"Background-service {this.GetType().Name} will be started.", LogLevel.Information);
-                    Task.Run(() =>
+                    Task task =Task.Run(() =>
                     {
+                        Thread.CurrentThread.Name=this.GetType().Name;
                         while (this.Enabled)
                         {
                             Thread.Sleep(50);

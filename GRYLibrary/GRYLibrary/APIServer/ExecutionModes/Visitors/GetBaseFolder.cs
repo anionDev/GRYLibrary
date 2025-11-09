@@ -8,17 +8,17 @@ namespace GRYLibrary.Core.APIServer.ExecutionModes.Visitors
     {
         private readonly GRYEnvironment _TargetEnvironmentType;
         private readonly string _ProgramFolder;
-        private bool _IsTestRun;
+        private readonly bool _IsTestRun;
         public GetBaseFolder(GRYEnvironment targetEnvironmentType, string programFolder, bool isTestRun)
         {
             this._TargetEnvironmentType = targetEnvironmentType;
             this._ProgramFolder = programFolder;
-            _IsTestRun = isTestRun;
+            this._IsTestRun = isTestRun;
         }
 
         public string Handle(RunProgram runProgram)
         {
-            return GetBaseFolderForProjectInCommonProjectStructure(this._TargetEnvironmentType, this._ProgramFolder, runProgram,_IsTestRun);
+            return GetBaseFolderForProjectInCommonProjectStructure(this._TargetEnvironmentType, this._ProgramFolder, runProgram, this._IsTestRun);
         }
 
         public string Handle(TestRun testRun)
@@ -37,18 +37,31 @@ namespace GRYLibrary.Core.APIServer.ExecutionModes.Visitors
             Misc.Utilities.EnsureDirectoryExists(result);
             return result;
         }
+        public static bool IsRunningInContainer()
+        {
+            string? value = Environment.GetEnvironmentVariable("ISRUNNINGINCONTAINER");
+
+            if (value != null)
+            {
+                return value.Equals("true", StringComparison.CurrentCultureIgnoreCase);
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         public static string GetBaseFolderForProjectInCommonProjectStructure(GRYEnvironment environment, string programFolder, ExecutionMode executionMode, bool isTestRun)
         {
             string workspaceFolderName = "Workspace";
             string result;
-            if (environment is Development || executionMode is not RunProgram|| isTestRun)
+            if (IsRunningInContainer())
             {
-                result = Misc.Utilities.ResolveToFullPath($"../../{workspaceFolderName}", programFolder);//running locally
+                result = $"/{workspaceFolderName}";//running in container
             }
             else
             {
-                result = $"/{workspaceFolderName}";//running in container
+                result = Misc.Utilities.ResolveToFullPath($"../../{workspaceFolderName}", programFolder);//running locally
             }
             return result;
         }

@@ -1,4 +1,6 @@
-﻿using GRYLibrary.Core.Logging.GRYLogger;
+﻿using GRYLibrary.Core.Exceptions;
+using GRYLibrary.Core.Logging.GRYLogger;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -43,7 +45,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
         }
         private void StartTryToConnectScheduler()
         {
-            while (_ThreadEnabled)
+            while (this._ThreadEnabled)
             {
 
                 try
@@ -102,8 +104,30 @@ namespace GRYLibrary.Core.APIServer.Services.Database
         }
         public DbConnection GetConnection()
         {
-            GRYLibrary.Core.Misc.Utilities.AssertCondition(this.IsConnected(), "Not connected");
-            return this.GetConnectionInternal();
+            if (this.TryGetConnection(out DbConnection? connection))
+            {
+                return connection!;
+            }
+            else
+            {
+                string message = "Database not available.";
+                this.Log.Log(message, LogLevel.Warning);
+                throw new DependencyNotAvailableException(message);
+            }
+        }
+        public bool TryGetConnection(out DbConnection? connection)
+        {
+            try
+            {
+                GRYLibrary.Core.Misc.Utilities.AssertCondition(this.IsConnected(), "Not connected");
+                connection = this.GetConnectionInternal();
+                return true;
+            }
+            catch
+            {
+                connection = null;
+                return false;
+            }
         }
 
         public bool IsConnected()
@@ -115,10 +139,6 @@ namespace GRYLibrary.Core.APIServer.Services.Database
             else
             {
                 bool result = this.GetConnectionInternal().State == System.Data.ConnectionState.Open;
-                if (!result)
-                {
-                    int i = 3;
-                }
                 return result;
             }
         }
@@ -167,7 +187,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
 
         public void Dispose()
         {
-            _ThreadEnabled = false;
+            this._ThreadEnabled = false;
         }
     }
 
