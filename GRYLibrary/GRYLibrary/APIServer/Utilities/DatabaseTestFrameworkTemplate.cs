@@ -1,10 +1,8 @@
 ﻿using GRYLibrary.Core.APIServer.Services.Database;
-using GRYLibrary.Core.Exceptions;
 using GRYLibrary.Core.ExecutePrograms;
 using GRYLibrary.Core.ExecutePrograms.WaitingStates;
 using GRYLibrary.Core.Logging.GRYLogger;
 using System;
-using System.Collections.Generic;
 using System.Data.Common;
 using System.Diagnostics;
 using System.IO;
@@ -56,7 +54,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
                     bool connected = false;
                     while (!connected)
                     {
-                        connected = this._GenericDatabaseInteractor.IsAvailable();
+                        connected = this._GenericDatabaseInteractor.IsAvailable().Item1;
                         if (!connected)
                         {
                             Thread.Sleep(TimeSpan.FromSeconds(1));
@@ -74,44 +72,6 @@ namespace GRYLibrary.Core.APIServer.Utilities
         public IGenericDatabaseInteractor GenericDatabaseInteractor()
         {
             return this._GenericDatabaseInteractor;
-        }
-        private void TryToConnect(ExternalProgramExecutor externalProgramExecutor, string resetDatabaseScript, IDatabasePersistenceConfiguration configuration)
-        {
-
-            this._GenericDatabaseInteractor = DBUtilities.ToGenericDatabaseInteractor(configuration, this._Log);
-            if (!externalProgramExecutor.IsRunning && externalProgramExecutor.ExitCode != 0)
-            {
-                throw new AbortException(new InternalAlgorithmException($"docker exited with exitcode {externalProgramExecutor.ExitCode}; StdOut: {string.Join(Environment.NewLine, externalProgramExecutor.AllStdOutLines)}; StdErrt: {string.Join(Environment.NewLine, externalProgramExecutor.AllStdErrLines)};"));
-            }
-            bool connected = false;
-            while (!connected)
-            {
-                connected = this._GenericDatabaseInteractor.IsAvailable();
-                Thread.Sleep(TimeSpan.FromSeconds(1));
-            }
-
-
-
-            List<string> tables = this._GenericDatabaseInteractor.GetAllTableNames().ToList();
-            if (1 < tables.Count)
-            {
-                DbConnection connection = this._GenericDatabaseInteractor.GetConnection();
-                using DbTransaction tx = connection.BeginTransaction();
-                try
-                {
-                    using DbCommand cmd = connection.CreateCommand();
-                    cmd.Transaction = tx;
-                    cmd.CommandText = resetDatabaseScript;
-                    cmd.ExecuteNonQuery();
-                    tx.Commit();
-                }
-                catch
-                {
-                    tx.Rollback();
-                    throw;
-                }
-            }
-
         }
         protected virtual void Dispose(bool disposing)
         {

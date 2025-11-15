@@ -283,9 +283,7 @@ namespace GRYLibrary.Core.APIServer
                 List<Type> businessMiddlewares2 = new List<Type>();
 
                 IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration = apiServerConfiguration.FunctionalInformation.PersistedAPIServerConfiguration;
-
-                specialMiddlewares1.Add(typeof(GeneralMiddleware<PersistedApplicationSpecificConfiguration>));
-                this.AddDefinedMiddleware((ISupportExceptionManagerMiddleware c) => c.ConfigurationForExceptionManagerMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.ExceptionManagerMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);
+  
                 #region General Threat-Protection
                 if (this._Configuration.InitializationInformation.ApplicationConstants.Environment is not Development)
                 {
@@ -293,22 +291,31 @@ namespace GRYLibrary.Core.APIServer
                     this.AddDefinedMiddleware((ISupportObfuscationMiddleware c) => c.ConfigurationForObfuscationMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.ObfuscationMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);
                     this.AddDefinedMiddleware((ISupportCaptchaMiddleware c) => c.ConfigurationForCaptchaMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.CaptchaMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);
                 }
+                #endregion
+
+                specialMiddlewares1.Add(typeof(GeneralMiddleware<PersistedApplicationSpecificConfiguration>));
+
+
                 this.AddDefinedMiddleware((ISupportRequestLoggingMiddleware c) => c.ConfigurationForLoggingMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.LoggingMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);
+
+                this.AddDefinedMiddleware((ISupportExceptionManagerMiddleware c) => c.ConfigurationForExceptionManagerMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.ExceptionManagerMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);
+
                 foreach (Type customMiddleware in this._Configuration.InitializationInformation.ApplicationConstants.CustomMiddlewares1)
                 {
                     businessMiddlewares1.Add(customMiddleware);
                 }
-                #endregion
 
                 #region Bussiness-implementation
                 this.AddDefinedMiddleware((ISupportMaintenanceSiteMiddleware c) => c.ConfigurationForMaintenanceSiteMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.MaintenanceSiteMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares2, logger);
                 this.AddDefinedMiddleware((ISupportAuthenticationMiddleware c) => c.ConfigurationForAuthenticationMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.AuthenticationMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares2, logger);
                 this.AddDefinedMiddleware((ISupportAuthorizationMiddleware c) => c.ConfigurationForAuthorizationMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.AuthorizationMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares2, logger);
+
                 foreach (Type customMiddleware in this._Configuration.InitializationInformation.ApplicationConstants.CustomMiddlewares2)
                 {
                     businessMiddlewares2.Add(customMiddleware);
                 }
                 #endregion
+          
                 #endregion
 
                 builder.WebHost.ConfigureKestrel(kestrelOptions =>
@@ -493,7 +500,7 @@ namespace GRYLibrary.Core.APIServer
                             else
                             {
                                 middlewares.Add(middlewareType);
-                                logger.Log($"Added middleware {middlewareType.FullName}.", LogLevel.Debug);
+                                logger.Log($"Added middleware {middlewareType.FullName}.", LogLevel.Information);
                                 if (middlewareType.IsAssignableTo(typeof(MaintenanceSiteMiddleware)))
                                 {
                                     IMaintenanceSiteConfiguration maintenanceSiteConfiguration = (IMaintenanceSiteConfiguration)middlewareConfiguration;
@@ -507,7 +514,7 @@ namespace GRYLibrary.Core.APIServer
                     }
                     else
                     {
-                        logger.Log($"Middleware {middlewareType.FullName} is disabled.", LogLevel.Debug);
+                        logger.Log($"Middleware {middlewareType.FullName} is disabled.", LogLevel.Information);
                     }
                 }
             }

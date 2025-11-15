@@ -4,6 +4,7 @@ namespace GRYLibrary.Core.APIServer.Services
 {
     public interface IExternalService : IDisposable
     {
-        public bool IsAvailable();
+        /// <returns>returns (true, null) if available and (false,reason) if not.</returns>
+        public (bool, Exception?) IsAvailable();
     }
 }

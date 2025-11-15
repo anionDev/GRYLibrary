@@ -1,6 +1,7 @@
 ﻿using GRYLibrary.Core.APIServer.MidT.General;
 using GRYLibrary.Core.APIServer.Settings.Configuration;
 using Microsoft.AspNetCore.Http;
+using System;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -17,6 +18,14 @@ namespace GRYLibrary.Core.APIServer.Mid.General
 
         public override Task Invoke(HttpContext context)
         {
+            if (context.Request.Headers.ContainsKey("X-RequestId") && !string.IsNullOrEmpty(context.Request.Headers["X-RequestId"]))
+            {
+                context.Items["RequestId"] = context.Request.Headers["X-RequestId"];
+            }
+            else
+            {
+                context.Items["RequestId"] = Guid.NewGuid().ToString();
+            }
             context.Items["ClientIPAddress"] = this.GetIPAddress(context);
             return this._Next(context);
         }

@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System;
-using System.Security.Claims;
 
 namespace GRYLibrary.Core.APIServer.Services.Aut.Prov.OpenId
 {

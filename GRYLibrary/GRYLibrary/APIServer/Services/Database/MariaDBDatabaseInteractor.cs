@@ -70,7 +70,7 @@ insert into {migrationTableName}(MigrationName, ExecutionTimestamp) values ('{mi
         }
         public override DbParameter GetParameter(string parameterName, object? value, Type type)
         {
-            return new MySqlParameter(parameterName, value ?? DBNull.Value)
+            return new MySqlParameter("@" + parameterName, value ?? DBNull.Value)
             {
                 MySqlDbType = this.GetType(type)
             };

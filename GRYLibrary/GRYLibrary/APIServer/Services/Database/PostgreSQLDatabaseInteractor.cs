@@ -78,6 +78,7 @@ WHERE schemaname NOT IN ('pg_catalog', 'information_schema');";
             NpgsqlDbType dbType = this.GetType(adaptedType);
             return new NpgsqlParameter()
             {
+                ParameterName = "@"+parameterName,
                 Value = formattedValue,
                 NpgsqlDbType = dbType,
             };
@@ -129,6 +130,7 @@ WHERE schemaname NOT IN ('pg_catalog', 'information_schema');";
                 var t when t == typeof(short) => NpgsqlDbType.Smallint,
                 var t when t == typeof(bool) => NpgsqlDbType.Boolean,
                 var t when t == typeof(DateTime) => NpgsqlDbType.Timestamp,
+                var t when t == typeof(DateTimeOffset) => NpgsqlDbType.TimestampTz,
                 var t when t == typeof(float) => NpgsqlDbType.Real,
                 var t when t == typeof(double) => NpgsqlDbType.Double,
                 var t when t == typeof(decimal) => NpgsqlDbType.Numeric,

@@ -32,6 +32,8 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         public event ErrorOccurredEventHandler ErrorOccurred;
         public FixedSizeQueue<LogItem> LastLogEntries { get; private set; } = new FixedSizeQueue<LogItem>(1000);
         public delegate void ErrorOccurredEventHandler(Exception exception, LogItem logItem);
+        private static uint _LoggerCounter = 0;
+        private string _LoggerId;
         private bool AnyLogTargetEnabled
         {
             get
@@ -53,6 +55,8 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         {
             lock (_LockObject)
             {
+                _LoggerCounter = _LoggerCounter + 1;
+                this._LoggerId = this.GetType().Name+_LoggerCounter.ToString();
                 this._ConsoleDefaultColor = System.Console.ForegroundColor;
                 this.Configuration = configuration;
                 this.AddLogEntry = this.Log;
@@ -431,7 +435,12 @@ namespace GRYLibrary.Core.Logging.GRYLogger
             this.Log(() => $"{this.FormatEvent(eventId)} | {formatter(state, exception)}", logLevel);
         }
 
+
         #endregion
+        public string GetLoggerId()
+        {
+            return this._LoggerId;
+        }
 
     }
 }

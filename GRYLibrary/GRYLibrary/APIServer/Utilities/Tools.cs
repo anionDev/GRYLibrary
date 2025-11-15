@@ -120,42 +120,50 @@ namespace GRYLibrary.Core.APIServer.Utilities
             return exitCode;
         }
 
-        public static void WaitUntilDatabaseIsAvailable(Func<bool> databaseIsAvailableCheck, IGeneralLogger logger,uint maximalAmountOfAttempts=25, uint initialAmountOfSecondsToWait = 0)
+        public static void WaitUntilDatabaseIsAvailable(IReconnectableDatabase reconnectableDatabase, IGeneralLogger logger, uint maximalAmountOfAttempts = 24, uint initialAmountOfSecondsToWait = 10)
         {
-            bool isAvailable;
+            reconnectableDatabase.SetLogConnectionAttemptErrors(false);
+            (bool, Exception?) isAvailableResult;
             try
             {
-                isAvailable = databaseIsAvailableCheck();//check if the database is already available
+                isAvailableResult = reconnectableDatabase.IsAvailable();//check if the database is already available
             }
-            catch
+            catch (Exception e)
             {
-                isAvailable = false;
+                isAvailableResult = (false, e);
             }
             uint amoutnOfFails = 0;
-            if (!isAvailable)
+            reconnectableDatabase.SetLogConnectionAttemptErrors(true);
+            if (!isAvailableResult.Item1)
             {
+                logger.Log("Wait until database is available...", LogLevel.Information);
                 Thread.Sleep(TimeSpan.FromSeconds(initialAmountOfSecondsToWait));
-                while (!isAvailable)
+                while (!isAvailableResult.Item1)
                 {
                     try
                     {
-                        isAvailable = databaseIsAvailableCheck();
+                        isAvailableResult = reconnectableDatabase.IsAvailable();
                     }
                     catch (Exception ex)
                     {
+                        isAvailableResult = (false, ex);
+                    }
+                    if (!isAvailableResult.Item1)
+                    {
+                        logger.Log($"Database is not available yet because of the reason \"{isAvailableResult.Item2!.Message}\".", LogLevel.Information);
                         amoutnOfFails = amoutnOfFails + 1;
-                        if (amoutnOfFails== maximalAmountOfAttempts)
+                        if (amoutnOfFails == maximalAmountOfAttempts)
                         {
-                            throw new DependencyNotAvailableException("Database not available.", ex);
+                            throw new DependencyNotAvailableException("Database is not available.", isAvailableResult.Item2!);
                         }
-                        logger.Log("Database not available yet.", ex, LogLevel.Warning);
                         Thread.Sleep(TimeSpan.FromSeconds(5));
                     }
+
                 }
             }
-            logger.Log("Database is now available.", LogLevel.Information);
+            logger.Log("Connected. Database is now available.", LogLevel.Information);
         }
-        
+
         public static bool TryGetAuthentication(ICredentialsProvider credentialsProvider, HttpContext context, out string accessToken)
         {
             try
@@ -190,39 +198,29 @@ namespace GRYLibrary.Core.APIServer.Utilities
             }
             throw new KeyNotFoundException($"Unknown algorithm: {passwordHashAlgorithmIdentifier}");
         }
-        public static void CheckService(IGeneralLogger logger, string name, IExternalService service, ref HealthStatus result, IList<string> messages, bool logIfNotAvailable, bool serviceIsRequired)
+        public static void CheckSingleExternalService(IGeneralLogger logger, string name, IExternalService service, ref HealthStatus result, IList<string> messages, bool logIfNotAvailable, bool serviceIsRequired)
         {
-            CheckService(logger, name, service == null, service.IsAvailable, ref result, messages, logIfNotAvailable, serviceIsRequired);
+            CheckService(logger, name, service.IsAvailable, ref result, messages, logIfNotAvailable, serviceIsRequired);
         }
 
-        public static void CheckService(IGeneralLogger logger, string name, bool serviceIsNull, Func<bool> isAvailable, ref HealthStatus result, IList<string> messages, bool logIfNotAvailable, bool serviceIsRequired)
+        public static void CheckService(IGeneralLogger logger, string name, Func<(bool, Exception?)> isAvailable, ref HealthStatus result, IList<string> messages, bool logIfNotAvailable, bool serviceIsRequired)
         {
-            if (serviceIsNull)
+            (bool available, Exception? error) = isAvailable();
+            if (!available)
             {
-                string message = $"{name} is null.";
+                string message = $"Service {name} is not available. Reason: " + error!.Message;
                 messages.Add(message);
                 if (logIfNotAvailable)
                 {
                     logger.Log(message, LogLevel.Warning);
                 }
-                result = CalculateNotAvailableResult(result, serviceIsRequired);
-                return;
-            }
-            if (!isAvailable())
-            {
-                string message = $"{name} is not available.";
-                messages.Add(message);
-                if (logIfNotAvailable)
-                {
-                    logger.Log(message, LogLevel.Warning);
-                }
-                result = CalculateNotAvailableResult(result, serviceIsRequired);
+                result = CalculateFinalHealthStatus(result, serviceIsRequired);
                 return;
             }
             //more checks can be added
         }
 
-        public static HealthStatus CalculateNotAvailableResult(HealthStatus resultUntilNow, bool dependencyIsRequired)
+        private static HealthStatus CalculateFinalHealthStatus(HealthStatus resultUntilNow, bool dependencyIsRequired)
         {
             if (resultUntilNow == HealthStatus.Unhealthy)
             {
@@ -244,23 +242,61 @@ namespace GRYLibrary.Core.APIServer.Utilities
         public static Task<HealthCheckResult> CheckHealthAsync(IGeneralLogger logger, Func<(HealthStatus, IEnumerable<string>)> check, HealthCheckContext context, CancellationToken cancellationToken, IInitializationService? initializationService)
 #pragma warning restore IDE0060 // Remove unused parameter
         {
-            (HealthStatus result, IEnumerable<string> messages) result;
-            try
+            return Task.FromResult(GetHealthCheckResult(logger, check, initializationService));//TODO pass cancellationToken
+        }
+
+        private static HealthCheckResult GetHealthCheckResult(IGeneralLogger logger, Func<(HealthStatus, IEnumerable<string>)> check, IInitializationService? initializationService)
+        {
+            if (initializationService == null)
             {
-                if (initializationService != null && initializationService.GetInitializationState().Equals(new InitializationFailed()))
-                {
-                    result = (HealthStatus.Degraded, new List<string>() { "Initializing" });
-                }
-                else
-                {
-                    result = check();
-                }
+                return CalculateHealthState(logger, check);//TODO pass cancellationToken
             }
-            catch (Exception exception)
+            else
             {
-                result = (HealthStatus.Unhealthy, new List<string>() { GUtilities.GetExceptionMessage(exception, "Error while calculating health-status", true) });
+                return initializationService.GetInitializationState().Accept(new InitializationStateVisitor(logger, check));//TODO pass cancellationToken
             }
-            int messageCount = result.messages.Count();
+        }
+
+        public static User GetUser(ClaimsPrincipal principal, IAuthenticationService authenticationService)
+        {
+            User result = authenticationService.GetUser(principal.Claims.Where(claim => claim.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").First().Value);
+            return result;
+        }
+        private class InitializationStateVisitor : IInitializationStateVisitor<HealthCheckResult>
+        {
+            private readonly IGeneralLogger _Logger;
+            private readonly Func<(HealthStatus, IEnumerable<string>)> _Check;
+            public InitializationStateVisitor(IGeneralLogger logger, Func<(HealthStatus, IEnumerable<string>)> check)
+            {
+                this._Logger = logger;
+                this._Check = check;
+            }
+            public HealthCheckResult Handle(InitializationFailed initializationFailed)
+            {
+                return HealthCheckResult.Unhealthy("Initialization failed");
+            }
+
+            public HealthCheckResult Handle(Uninitialized uninitialized)
+            {
+                return HealthCheckResult.Healthy("Not initialized yet");
+            }
+
+            public HealthCheckResult Handle(Initializing initializing)
+            {
+                return HealthCheckResult.Healthy("Initializing");
+            }
+
+            public HealthCheckResult Handle(Initialized initialized)
+            {
+                return CalculateHealthState(this._Logger, this._Check);//TODO pass cancellationToken
+            }
+
+        }
+        private static HealthCheckResult CalculateHealthState(IGeneralLogger logger, Func<(HealthStatus, IEnumerable<string>)> check)
+        {
+            //TODO consider cancellationToken
+            (HealthStatus result, IEnumerable<string> messages) result = check();
+
             LogLevel loglevel;
             string message;
             if (result.result.Equals(HealthStatus.Healthy))
@@ -283,7 +319,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
                 throw new InternalAlgorithmException($"Unknown healthstatus: {(int)result.result}");
             }
 
-            if (messageCount > 0)
+            if (0 < result.messages.Count())
             {
                 message = $"{message} The following messages occurred: " + string.Join(", ", result.messages.Select(message => "\"" + message + "\""));
             }
@@ -305,12 +341,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
             {
                 throw new InternalAlgorithmException($"Undknown healthstatus: {(int)result.result}");
             }
-            return Task.FromResult(healthCheckResult);
-        }
-        public static User GetUser(ClaimsPrincipal principal, IAuthenticationService authenticationService)
-        {
-            User result = authenticationService.GetUser(principal.Claims.Where(claim => claim.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").First().Value);
-            return result;
+            return healthCheckResult;
         }
     }
 }

@@ -12,6 +12,13 @@ namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
     {
         public Action<LogItem> AddLogEntry { get; set; }
         internal ITimeService _TimeService = new TimeService();
+        private static uint _LoggerCounter = 0;
+        private string _LoggerId;
+        public GeneralLogger()
+        {
+            _LoggerCounter = _LoggerCounter + 1;
+            this._LoggerId = this.GetType().Name + _LoggerCounter.ToString();
+        }
         public static GeneralLogger NoLog()
         {
             return new GeneralLogger() { AddLogEntry = (logItem) => { } };
@@ -92,6 +99,10 @@ namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
         public void Log(LogItem logitem)
         {
             this.AddLogEntry(logitem);
+        }
+        public string GetLoggerId()
+        {
+            return this._LoggerId;
         }
     }
 }

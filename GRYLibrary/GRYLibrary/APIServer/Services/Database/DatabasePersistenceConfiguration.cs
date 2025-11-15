@@ -4,5 +4,6 @@
     {
         public string DatabaseConnectionString { get; set; }
         public string DatabaseType { get; set; }
+        public bool EscapePasswordInLog { get; set; } = true;
     }
 }

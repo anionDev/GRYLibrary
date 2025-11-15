@@ -6,7 +6,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
 {
     public static class DBUtilities
     {
-        public static GenericDatabaseInteractor ToGenericDatabaseInteractor(IDatabasePersistenceConfiguration databasePersistenceConfiguration,IGRYLog log)
+        public static GenericDatabaseInteractor ToGenericDatabaseInteractor(IDatabasePersistenceConfiguration databasePersistenceConfiguration, IGRYLog log)
         {
             switch (databasePersistenceConfiguration.DatabaseType)
             {
