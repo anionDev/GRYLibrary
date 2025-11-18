@@ -1,6 +1,9 @@
 ﻿using GRYLibrary.Core.Logging.GRYLogger;
 using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
+using System.Linq;
 
 namespace GRYLibrary.Core.APIServer.Services.Database
 {
@@ -8,19 +11,14 @@ namespace GRYLibrary.Core.APIServer.Services.Database
     {
         public static GenericDatabaseInteractor ToGenericDatabaseInteractor(IDatabasePersistenceConfiguration databasePersistenceConfiguration, IGRYLog log)
         {
-            switch (databasePersistenceConfiguration.DatabaseType)
+            return databasePersistenceConfiguration.DatabaseType switch
             {
-                case "MariaDB":
-                    return new MariaDBDatabaseInteractor(databasePersistenceConfiguration, log);
-                case "PostgreSQL":
-                    return new PostgreSQLDatabaseInteractor(databasePersistenceConfiguration, log);
-                case "Oracle":
-                    return new OracleDatabaseInteractor(databasePersistenceConfiguration, log);
-                case "SQLServer":
-                    return new SQLServerDatabaseInteractor(databasePersistenceConfiguration, log);
-                default:
-                    throw new NotSupportedException($"Database type {databasePersistenceConfiguration.DatabaseType} is not supported.");
-            }
+                "MariaDB" => new MariaDBDatabaseInteractor(databasePersistenceConfiguration, log),
+                "PostgreSQL" => new PostgreSQLDatabaseInteractor(databasePersistenceConfiguration, log),
+                "Oracle" => new OracleDatabaseInteractor(databasePersistenceConfiguration, log),
+                "SQLServer" => new SQLServerDatabaseInteractor(databasePersistenceConfiguration, log),
+                _ => throw new NotSupportedException($"Database type {databasePersistenceConfiguration.DatabaseType} is not supported."),
+            };
         }
         public static T? GetNullableValue<T>(DbDataReader reader, int parameterIndex)
         {
@@ -32,6 +30,81 @@ namespace GRYLibrary.Core.APIServer.Services.Database
             {
                 return (T)reader.GetValue(parameterIndex);
             }
+        }
+        public static void AccessDatabase<ProjectSpecificDatabaseInteractor>(ProjectSpecificDatabaseInteractor database,Action<ProjectSpecificDatabaseInteractor> action)
+            where ProjectSpecificDatabaseInteractor : IProjectSpecificDatabaseInteractor
+        {
+            AccessDatabase<object?, ProjectSpecificDatabaseInteractor>(database, (db) =>
+            {
+                action(db);
+                return null;
+            });
+        }
+
+        public static T AccessDatabase<T, ProjectSpecificDatabaseInteractor>(ProjectSpecificDatabaseInteractor database, Func<ProjectSpecificDatabaseInteractor, T> function)
+            where ProjectSpecificDatabaseInteractor : IProjectSpecificDatabaseInteractor
+        {
+            return function(database);
+        }
+        public static void RunTransaction<ProjectSpecificDatabaseInteractor>(string nameOfAction, IGRYLog log, ProjectSpecificDatabaseInteractor database, params Action<DbCommand>[] actions)
+            where ProjectSpecificDatabaseInteractor : IProjectSpecificDatabaseInteractor
+        {
+            RunTransaction<object, ProjectSpecificDatabaseInteractor>(nameOfAction, log, database, actions.Select<Action<DbCommand>, Func<DbCommand, object?>>(action => (command) =>
+            {
+                action(command);
+                return null;
+            }
+            ).ToArray());
+        }
+
+        public static T?[] RunTransaction<T, ProjectSpecificDatabaseInteractor>(string nameOfAction, IGRYLog log, ProjectSpecificDatabaseInteractor database, params Func<DbCommand, T?>[] functions)
+            where ProjectSpecificDatabaseInteractor : IProjectSpecificDatabaseInteractor
+        {
+            List<T?> results = new List<T?>();
+            AccessDatabase(database,interactor =>
+            {
+                log.Log("Run DB-transaction " + nameOfAction, Microsoft.Extensions.Logging.LogLevel.Trace);
+                DbConnection connection = interactor.GetGenericDatabaseInteractor().GetConnection();
+                using DbTransaction transaction = connection.BeginTransaction();
+                bool commit = true;
+                try
+                {
+                    foreach (Func<DbCommand, T?> function in functions)
+                    {
+                        using (DbCommand cmd = connection.CreateCommand())
+                        {
+                            cmd.CommandType = CommandType.Text;
+                            cmd.CommandTimeout = 300;
+                            cmd.Transaction = transaction;
+                            try
+                            {
+                                T? result = function(cmd);
+                                results.Add(result);
+                            }
+                            catch (Exception e)
+                            {
+                                commit = false;
+                                log.Log($"Error in database occurred while doing DB-transaction {nameOfAction}.", e);
+                                throw;
+                            }
+                        }
+                    }
+                }
+                finally
+                {
+                    if (commit)
+                    {
+                        log.Log("Commit DB-transaction " + nameOfAction, Microsoft.Extensions.Logging.LogLevel.Trace);
+                        transaction.Commit();
+                    }
+                    else
+                    {
+                        log.Log("Rollback DB-transaction " + nameOfAction, Microsoft.Extensions.Logging.LogLevel.Trace);
+                        transaction.Rollback();
+                    }
+                }
+            });
+            return results.ToArray();
         }
     }
 }

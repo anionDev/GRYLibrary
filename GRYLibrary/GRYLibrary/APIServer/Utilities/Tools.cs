@@ -200,10 +200,10 @@ namespace GRYLibrary.Core.APIServer.Utilities
         }
         public static void CheckSingleExternalService(IGeneralLogger logger, string name, IExternalService service, ref HealthStatus result, IList<string> messages, bool logIfNotAvailable, bool serviceIsRequired)
         {
-            CheckService(logger, name, service.IsAvailable, ref result, messages, logIfNotAvailable, serviceIsRequired);
+            CheckSingleExternalService(logger, name, service.IsAvailable, ref result, messages, logIfNotAvailable, serviceIsRequired);
         }
 
-        public static void CheckService(IGeneralLogger logger, string name, Func<(bool, Exception?)> isAvailable, ref HealthStatus result, IList<string> messages, bool logIfNotAvailable, bool serviceIsRequired)
+        public static void CheckSingleExternalService(IGeneralLogger logger, string name, Func<(bool, Exception?)> isAvailable, ref HealthStatus result, IList<string> messages, bool logIfNotAvailable, bool serviceIsRequired)
         {
             (bool available, Exception? error) = isAvailable();
             if (!available)

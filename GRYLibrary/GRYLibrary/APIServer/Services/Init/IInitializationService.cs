@@ -14,6 +14,5 @@ namespace GRYLibrary.Core.APIServer.Services.Init
         where CommandlineParameter : ICommandlineParameter
     {
         public void Initialize(CommandlineParameter commandlineParameter);
-        public InitializationState GetInitializationState();
     }
 }

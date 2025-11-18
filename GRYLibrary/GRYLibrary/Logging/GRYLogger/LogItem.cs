@@ -1,7 +1,6 @@
 ﻿using GRYLibrary.Core.APIServer.Services.Interfaces;
 using GRYLibrary.Core.APIServer.Services.OtherServices;
 using Microsoft.Extensions.Logging;
-using Microsoft.SqlServer.Server;
 using System;
 using System.Collections.Generic;
 using GUtilities = GRYLibrary.Core.Misc.Utilities;
@@ -90,7 +89,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
             this.EventId = 101;
             this.Category = 1;
             this.Moment = moment;
-            DefaultConfigurationGRYLogConfiguration.Initliaze();
+            this.DefaultConfigurationGRYLogConfiguration.Initliaze();
         }
         #endregion 
         public void Format(IGRYLogConfiguration configuration, out string formattedMessage, out int colorBegin, out int colorEnd, out ConsoleColor consoleColor, GRYLogLogFormat format)
@@ -151,7 +150,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         }
         public override string ToString()
         {
-            FormatMessage(DefaultConfigurationGRYLogConfiguration, this.PlainMessage, this.Moment, this.LogLevel, GRYLogLogFormat.GRYLogFormat, out string fm, out int cb, out int ce, out ConsoleColor cc);
+            this.FormatMessage(this.DefaultConfigurationGRYLogConfiguration, this.PlainMessage, this.Moment, this.LogLevel, GRYLogLogFormat.GRYLogFormat, out string fm, out int cb, out int ce, out ConsoleColor cc);
             return fm;
         }
         public override readonly bool Equals(object obj)

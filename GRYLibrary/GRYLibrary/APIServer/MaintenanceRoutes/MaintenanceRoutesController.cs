@@ -10,6 +10,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using GRYLibrary.Core.Misc;
 using System.IO;
 using GRYLibrary.Core.APIServer.Services.Init;
+using GRYLibrary.Core.APIServer.Utilities;
 
 namespace GRYLibrary.Core.APIServer.MaintenanceRoutes
 {
@@ -63,7 +64,8 @@ namespace GRYLibrary.Core.APIServer.MaintenanceRoutes
             {
                 return disabledResult!;
             }
-            return this.Ok(this._InitializationService.GetInitializationState());
+            InitializationState result = this._InitializationService.GetInitializationState();
+            return this.Ok(result.ToString());
         }
 
         [HttpGet]

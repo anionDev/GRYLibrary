@@ -29,7 +29,7 @@
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>..\..\Other\Resources\PublicKeys\StronglyNamedKey\GRYLibraryPublicKey.snk</AssemblyOriginatorKeyFile>
         <DelaySign>true</DelaySign>
-        <NoWarn>1701;1702;CA1822;CS1591;CS1573;IDE0045;IDE0046;IDE0054;IDE0058;IDE0074;IDE0090;ASP0014;SYSLIB10;IDE0017;CS8002;CA1859;IDE0034</NoWarn>
+        <NoWarn>1701;1702;CA1822;CS1591;CS1573;IDE0045;IDE0046;IDE0054;IDE0058;IDE0074;IDE0090;ASP0014;SYSLIB10;IDE0017;CS8002;CA1859;IDE0034;IDE0063</NoWarn>
         <WarningsAsErrors>NU1605</WarningsAsErrors>
         <ErrorLog>..\Other\Resources\CodeAnalysisResult\GRYLibrary.sarif</ErrorLog>
         <OutputType>Library</OutputType>
@@ -82,7 +82,7 @@
         <PackageReference Include="NJsonSchema" Version="11.5.2" />
         <PackageReference Include="NSwag.AspNetCore" Version="14.6.2" />
         <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
         <PackageReference Include="System.Reactive" Version="6.1.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="10.0.1" />
         <PackageReference Include="System.Text.Encodings.Web" Version="10.0.0" />

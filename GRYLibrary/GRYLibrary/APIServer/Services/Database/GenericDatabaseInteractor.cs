@@ -19,6 +19,8 @@ namespace GRYLibrary.Core.APIServer.Services.Database
         private DbConnection _Connection;
         private readonly Thread _ConnectionThread;
         private bool _ThreadEnabled = true;//TODO make this variable threadsafe
+        private bool _ThreadRunning = false;//TODO make this variable threadsafe
+
         public IGRYLog Log { get; private set; }
         private bool _LogConnectionErrors = false;
         public GenericDatabaseInteractor(IDatabasePersistenceConfiguration configuration, IGRYLog log)
@@ -48,6 +50,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
         }
         private void StartTryToConnectScheduler()
         {
+            this._ThreadRunning = true;
             while (this._ThreadEnabled)
             {
                 try
@@ -72,7 +75,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
                             }
                         }
                     }
-                    Thread.Sleep(TimeSpan.FromSeconds(15));//connected. wait some seconds and before checking again if the database is still available.
+                    Thread.Sleep(TimeSpan.FromSeconds(5));//connected. wait some seconds and before checking again if the database is still available.
                 }
                 catch
                 {
@@ -80,6 +83,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
                 }
             }
             this._Connection.Dispose();
+            this._ThreadRunning = false;
         }
         private DbConnection CreateConnection()
         {
@@ -191,6 +195,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
         public void Dispose()
         {
             this._ThreadEnabled = false;
+            GUtilities.WaitUntilConditionIsTrue(()=>!this._ThreadRunning);
         }
 
         public void SetLogConnectionAttemptErrors(bool enabled)
@@ -200,7 +205,6 @@ namespace GRYLibrary.Core.APIServer.Services.Database
                 this._LogConnectionErrors = enabled;
             }
         }
-
 
         public void DoAllMigrations(IList<MigrationInstance> migrations, ITimeService timeService)
         {

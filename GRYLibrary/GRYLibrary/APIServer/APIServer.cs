@@ -39,6 +39,7 @@ using System.IO;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using GUtilities = GRYLibrary.Core.Misc.Utilities;
 
@@ -67,6 +68,7 @@ namespace GRYLibrary.Core.APIServer
                 {
                     APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> apiServerConfiguration = new APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>();
                     apiServerConfiguration.CommandlineParameter = commandlineParameter;
+                    apiServerConfiguration.CancellationTokenSource = new CancellationTokenSource();
                     init(apiServerConfiguration);
                     return APIMain(commandlineParameter, gryConsoleApplicationInitialInformation, apiServerConfiguration);
                 }
@@ -212,10 +214,32 @@ namespace GRYLibrary.Core.APIServer
                 WebApplication webApplication = this.CreateWebApplication(config, logger, persistedAPIServerConfiguration);
                 Action runAction = () =>
                 {
+                    Task? waitTask = null;
                     this._Configuration.FunctionalInformationForWebApplication.PreRun();
                     try
                     {
+                        Task abortListener = Task.Run(() =>
+                        {
+                            try
+                            {
+                                bool enabled = true;
+                                while (enabled)
+                                {
+                                    Thread.Sleep(TimeSpan.FromSeconds(1));
+                                    if (config.CancellationTokenSource.Token.IsCancellationRequested)
+                                    {
+                                        enabled = false;
+                                        waitTask = webApplication.StopAsync();
+                                    }
+                                }
+                            }
+                            catch
+                            {
+                                throw;
+                            }
+                        });
                         webApplication.Run();
+                        GUtilities.AssertNotNull(waitTask, nameof(waitTask)).Wait();
                     }
                     catch (TaskCanceledException)//will be thrown when application will be stopped. This is expected behavior.
                     {

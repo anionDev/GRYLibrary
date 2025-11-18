@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace GRYLibrary.Core.APIServer.Settings
 {
@@ -16,5 +17,9 @@ namespace GRYLibrary.Core.APIServer.Settings
         internal FunctionalInformationForWebApplication<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> FunctionalInformationForWebApplication { get; set; }
         public Action<FunctionalInformationForWebApplication<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>> ConfigureWebApplication { get; set; } = (_) => { };
         public CommandlineParameterType CommandlineParameter { get; set; }
+        /// <summary>
+        /// Token to stop the web-API.
+        /// </summary>
+        public CancellationTokenSource CancellationTokenSource { get; set; }
     }
 }
