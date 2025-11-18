@@ -212,7 +212,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
 
         public Role GetRoleById(string roleId)
         {
-            return _Roles[roleId];
+            return this._Roles[roleId];
         }
     }
 }

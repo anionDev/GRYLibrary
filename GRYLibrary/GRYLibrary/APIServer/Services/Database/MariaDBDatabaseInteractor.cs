@@ -70,11 +70,30 @@ insert into {migrationTableName}(MigrationName, ExecutionTimestamp) values ('{mi
         }
         public override DbParameter GetParameter(string parameterName, object? value, Type type)
         {
-            return new MySqlParameter("@" + parameterName, value ?? DBNull.Value)
+            return new MySqlParameter("@" + parameterName, this.FormatValue(value))
             {
                 MySqlDbType = this.GetType(type)
             };
         }
+
+        private object FormatValue(object? value)
+        {
+            object result;
+            if (value == null)
+            {
+                result = DBNull.Value;
+            }
+            else if (value is DateTimeOffset typedValue)
+            {
+                result = typedValue.ToUniversalTime();
+            }
+            else
+            {
+                result = value;
+            }
+            return result;
+        }
+
         private MySqlDbType GetType(Type type)
         {
             return type switch
@@ -85,6 +104,7 @@ insert into {migrationTableName}(MigrationName, ExecutionTimestamp) values ('{mi
                 var t when t == typeof(short) => MySqlDbType.Int16,
                 var t when t == typeof(bool) => MySqlDbType.Bit,
                 var t when t == typeof(DateTime) => MySqlDbType.DateTime,
+                var t when t == typeof(DateTimeOffset) => MySqlDbType.DateTime,
                 var t when t == typeof(float) => MySqlDbType.Float,
                 var t when t == typeof(double) => MySqlDbType.Double,
                 var t when t == typeof(decimal) => MySqlDbType.Decimal,

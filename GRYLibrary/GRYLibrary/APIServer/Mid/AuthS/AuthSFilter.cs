@@ -1,7 +1,7 @@
 ﻿using GRYLibrary.Core.APIServer.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +29,7 @@ namespace GRYLibrary.Core.APIServer.Mid.AuthS
         {
             if (operation.Parameters == null)
             {
-                operation.Parameters = new List<OpenApiParameter>();
+                operation.Parameters = new List<IOpenApiParameter>();
             }
             if (context.MethodInfo.GetCustomAttributes(typeof(AuthenticateAttribute), false).Length != 0)
             {
@@ -38,9 +38,8 @@ namespace GRYLibrary.Core.APIServer.Mid.AuthS
                     Name = HeaderName,
                     Description = "Access Token",
                     In = ParameterLocation.Header,
-                    Schema = new OpenApiSchema() { Type = "string" },
+                    Schema = new OpenApiSchema() { Type = JsonSchemaType.String },
                     Required = true,
-                    //Example = new OpenApiString("some example")
                 });
             }
         }

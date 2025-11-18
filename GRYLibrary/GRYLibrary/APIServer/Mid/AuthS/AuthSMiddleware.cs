@@ -1,6 +1,5 @@
 ﻿using GRYLibrary.Core.APIServer.MidT.Auth;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
-using GRYLibrary.Core.APIServer.Utilities;
 using GRYLibrary.Core.Logging.GRYLogger;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;

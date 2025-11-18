@@ -29,8 +29,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
@@ -212,8 +213,26 @@ namespace GRYLibrary.Core.APIServer
                 Action runAction = () =>
                 {
                     this._Configuration.FunctionalInformationForWebApplication.PreRun();
-                    webApplication.Run();
+                    try
+                    {
+                        webApplication.Run();
+                    }
+                    catch (TaskCanceledException)//will be thrown when application will be stopped. This is expected behavior.
+                    {
+                        GUtilities.NoOperation();
+                    }
+                    try
+                    {
+                        logger.Log($"Service will be shutdown", LogLevel.Information);
+                        webApplication.WaitForShutdownAsync().Wait();//catch required because this throws "Cannot access a disposed object. Object name: 'IServiceProvider'" for unknown reasons.
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Log("Error while shutdown API-Server", ex, LogLevel.Warning);
+                    }
+                    logger.Log($"Run post-tasks", LogLevel.Information);
                     this._Configuration.FunctionalInformationForWebApplication.PostRun();
+                    logger.Log($"Service finished.", LogLevel.Information);
                 };
                 if (this._Configuration.FunctionalInformationForWebApplication.RunAsync)
                 {
@@ -283,7 +302,7 @@ namespace GRYLibrary.Core.APIServer
                 List<Type> businessMiddlewares2 = new List<Type>();
 
                 IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration = apiServerConfiguration.FunctionalInformation.PersistedAPIServerConfiguration;
-  
+
                 #region General Threat-Protection
                 if (this._Configuration.InitializationInformation.ApplicationConstants.Environment is not Development)
                 {
@@ -315,7 +334,7 @@ namespace GRYLibrary.Core.APIServer
                     businessMiddlewares2.Add(customMiddleware);
                 }
                 #endregion
-          
+
                 #endregion
 
                 builder.WebHost.ConfigureKestrel(kestrelOptions =>

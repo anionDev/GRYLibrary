@@ -90,13 +90,11 @@ WHERE schemaname NOT IN ('pg_catalog', 'information_schema');";
             if (value == null)
             {
                 result = DBNull.Value;
-            }
-            /*
-            else if (value is DateTime typedValue)
+            }            
+            else if (value is DateTimeOffset typedValue)
             {
-                 result= typedValue.ToString("yyyy-MM-dd'T'HH:mm:ss");
-            }
-            */
+                 result= typedValue.ToUniversalTime();
+            }            
             else if (value is UInt16 valusAsUInt16)
             {
                 result = (Int16)valusAsUInt16;
