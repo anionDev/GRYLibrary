@@ -1,4 +1,5 @@
 ﻿using GRYLibrary.Core.APIServer.Mid.M01APIK;
+using GRYLibrary.Core.Logging.GRYLogger;
 using Microsoft.AspNetCore.Http;
 
 namespace GRYLibrary.Core.APIServer.Mid.PreDAPIK
@@ -9,7 +10,7 @@ namespace GRYLibrary.Core.APIServer.Mid.PreDAPIK
     public class PreDAPIKValidatorMiddleware : APIKeyValidatorMiddleware
     {
         private readonly IPreDAPIKValidatorConfiguration _PreDAPIKValidatorConfiguration;
-        public PreDAPIKValidatorMiddleware(RequestDelegate next, IPreDAPIKValidatorConfiguration apiKeyValidatorSettings) : base(next, apiKeyValidatorSettings)
+        public PreDAPIKValidatorMiddleware(RequestDelegate next, IPreDAPIKValidatorConfiguration apiKeyValidatorSettings,IGRYLog log) : base(next, apiKeyValidatorSettings,log)
         {
             this._PreDAPIKValidatorConfiguration = apiKeyValidatorSettings;
         }

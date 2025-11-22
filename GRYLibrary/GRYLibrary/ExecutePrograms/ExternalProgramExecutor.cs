@@ -537,7 +537,7 @@ namespace GRYLibrary.Core.ExecutePrograms
         private string GetInvalidOperationDueToNotTerminatedMessageByMembername(string name, ExecutionState state, bool requiredIn)
         {
             string requiredInAsString = requiredIn ? string.Empty : " not";
-            return $"'{name}' is not avilable because the current {nameof(ExecutionState)}-value state is {Enum.GetName(typeof(ExecutionState), this.CurrentExecutionState)} but it must{requiredInAsString} be in the state {Enum.GetName(typeof(ExecutionState), state)} to be able to query it.";
+            return $"'{name}' is not avilable because the current {nameof(ExecutionState)}-value state is {Enum.GetName(this.CurrentExecutionState)} but it must{requiredInAsString} be in the state {Enum.GetName(state)} to be able to query it.";
         }
 
         private bool _processWasAbortedDueToTimeout;

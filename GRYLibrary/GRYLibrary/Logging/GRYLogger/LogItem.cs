@@ -120,10 +120,6 @@ namespace GRYLibrary.Core.Logging.GRYLogger
             {
                 message = $"[{configuration.Name.Trim()}] {message}";
             }
-            if (configuration.ConvertTimeForLogEntriesToUTCFormat)
-            {
-                momentOfLogEntry = momentOfLogEntry.ToUniversalTime();
-            }
             switch (format)
             {
                 case GRYLogLogFormat.OnlyMessage:

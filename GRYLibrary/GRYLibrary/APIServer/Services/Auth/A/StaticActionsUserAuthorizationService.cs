@@ -1,5 +1,6 @@
 ﻿using GRYLibrary.Core.APIServer.CommonDBTypes;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
+using GRYLibrary.Core.Logging.GRYLogger;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,16 +14,20 @@ namespace GRYLibrary.Core.APIServer.Services.Auth.A
     {
         private readonly IAuthenticationService<UserType> _AuthenticationService;
         private readonly IStaticActionBasedUserAuthorizationServiceConfiguration _StaticGroupUserAuthorizationServiceConfiguration;
-        public StaticActionsUserAuthorizationService(IAuthenticationService<UserType> authenticationService, IStaticActionBasedUserAuthorizationServiceConfiguration staticGroupUserAuthorizationServiceConfiguration)
+        private readonly IGRYLog _Log;
+        public StaticActionsUserAuthorizationService(IAuthenticationService<UserType> authenticationService, IStaticActionBasedUserAuthorizationServiceConfiguration staticGroupUserAuthorizationServiceConfiguration, IGRYLog log)
         {
             this._AuthenticationService = authenticationService;
             this._StaticGroupUserAuthorizationServiceConfiguration = staticGroupUserAuthorizationServiceConfiguration;
+            this._Log = log;
         }
 
         public bool IsAuthorized(string userId, string action)
         {
             ISet<string> groupsOfUser = this._AuthenticationService.GetRolesOfUser(userId);
-            return groupsOfUser.Intersect(this._StaticGroupUserAuthorizationServiceConfiguration.AuthorizedGroups[action]).Any();
+            var result = groupsOfUser.Intersect(this._StaticGroupUserAuthorizationServiceConfiguration.AuthorizedGroups[action]).Any();
+            this._Log.Log($"User {userId} is" + (result ? string.Empty : " not") + $" authorized for action {action}. " + "Groups of user: {" + string.Join(", ", groupsOfUser) + "}; Authorized groups: {" + string.Join(", ", this._StaticGroupUserAuthorizationServiceConfiguration.AuthorizedGroups[action]) + "}", Microsoft.Extensions.Logging.LogLevel.Trace);
+            return result;
         }
     }
 }

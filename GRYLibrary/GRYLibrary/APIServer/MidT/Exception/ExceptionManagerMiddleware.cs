@@ -20,10 +20,6 @@ namespace GRYLibrary.Core.APIServer.MidT.Exception
             try
             {
                 this._Next(context).Wait();
-                if (!context.Response.HasStarted && (context.Response.StatusCode == 404))
-                {
-                    throw new NotFoundException();
-                }
             }
             catch (System.Exception exception)
             {

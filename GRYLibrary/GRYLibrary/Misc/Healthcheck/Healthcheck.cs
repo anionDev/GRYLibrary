@@ -24,7 +24,7 @@ namespace GRYLibrary.Core.Misc.Healthcheck
             {
                 text = string.Empty;
             }
-            text = text + Enum.GetName(typeof(HealthcheckValue), value);
+            text = text + Enum.GetName(value);
             if (!string.IsNullOrWhiteSpace(message))
             {
                 text = $"{text} ({message})";

@@ -3,6 +3,7 @@ using GRYLibrary.Core.APIServer.Services.OtherServices;
 using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets;
 using GRYLibrary.Core.Misc;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -56,7 +57,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
             lock (_LockObject)
             {
                 _LoggerCounter = _LoggerCounter + 1;
-                this._LoggerId = this.GetType().Name+_LoggerCounter.ToString();
+                this._LoggerId = this.GetType().Name + _LoggerCounter.ToString();
                 this._ConsoleDefaultColor = System.Console.ForegroundColor;
                 this.Configuration = configuration;
                 this.AddLogEntry = this.Log;
@@ -211,14 +212,8 @@ namespace GRYLibrary.Core.Logging.GRYLogger
 
         private DateTimeOffset GetTimeForLogItem()
         {
-            if (this.Configuration.ConvertTimeForLogEntriesToUTCFormat)
-            {
-                return this._TimeService.GetCurrentTimeInUTCAsDateTimeOffset();
-            }
-            else
-            {
-                return this._TimeService.GetCurrentLocalTimeAsDateTimeOffset();
-            }
+            DateTimeOffset result = this._TimeService.GetCurrentLocalTimeAsDateTimeOffset();
+            return result;
         }
         public void LogProgramOutput(string message, string[] stdOutLines, string[] stdErrLines, LogLevel logevel)
         {
