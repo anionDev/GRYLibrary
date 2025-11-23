@@ -1,3 +1,4 @@
+using GRYLibrary.Core.Exceptions;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
@@ -13,29 +14,24 @@ namespace GRYLibrary.Core.APIServer.MidT.Exception
         {
         }
         protected abstract void HandleException(HttpContext context, System.Exception exception);
-        protected abstract void HandleNotFound(HttpContext context);
         /// <inheritdoc/>
         public override Task Invoke(HttpContext context)
         {
             try
             {
                 this._Next(context).Wait();
-                if (!context.Response.HasStarted && (context.Response.StatusCode == 404))
-                {
-                    this.HandleNotFound(context);
-                }
             }
             catch (System.Exception exception)
             {
                 try
                 {
-                this.HandleException(context, exception);
+                    this.HandleException(context, exception);
                 }
-                catch(System.Exception e)
+                catch (System.Exception e)
                 {
-                    System.Console.Error.WriteLine("Error while handling error-response: "+e.ToString());
+                    System.Console.Error.WriteLine("Error while handling error-response: " + e.ToString());
+                    context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 }
-                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             }
             return Task.CompletedTask;
         }

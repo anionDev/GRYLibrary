@@ -275,5 +275,10 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         {
             return this._AuthenticationServiceSettings.BaseRoleOfAllUser;
         }
+
+        public ClaimsPrincipal GetPrincipal(string accessToken)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

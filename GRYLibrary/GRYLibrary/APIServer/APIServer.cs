@@ -29,8 +29,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
@@ -38,6 +39,7 @@ using System.IO;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using GUtilities = GRYLibrary.Core.Misc.Utilities;
 
@@ -66,6 +68,7 @@ namespace GRYLibrary.Core.APIServer
                 {
                     APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> apiServerConfiguration = new APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>();
                     apiServerConfiguration.CommandlineParameter = commandlineParameter;
+                    apiServerConfiguration.CancellationTokenSource = new CancellationTokenSource();
                     init(apiServerConfiguration);
                     return APIMain(commandlineParameter, gryConsoleApplicationInitialInformation, apiServerConfiguration);
                 }
@@ -211,9 +214,49 @@ namespace GRYLibrary.Core.APIServer
                 WebApplication webApplication = this.CreateWebApplication(config, logger, persistedAPIServerConfiguration);
                 Action runAction = () =>
                 {
+                    Task? waitTask = null;
                     this._Configuration.FunctionalInformationForWebApplication.PreRun();
-                    webApplication.Run();
+                    try
+                    {
+                        Task abortListener = Task.Run(() =>
+                        {
+                            try
+                            {
+                                bool enabled = true;
+                                while (enabled)
+                                {
+                                    Thread.Sleep(TimeSpan.FromSeconds(1));
+                                    if (config.CancellationTokenSource.Token.IsCancellationRequested)
+                                    {
+                                        enabled = false;
+                                        waitTask = webApplication.StopAsync();
+                                    }
+                                }
+                            }
+                            catch
+                            {
+                                throw;
+                            }
+                        });
+                        webApplication.Run();
+                        GUtilities.AssertNotNull(waitTask, nameof(waitTask)).Wait();
+                    }
+                    catch (TaskCanceledException)//will be thrown when application will be stopped. This is expected behavior.
+                    {
+                        GUtilities.NoOperation();
+                    }
+                    try
+                    {
+                        logger.Log($"Service will be shutdown", LogLevel.Information);
+                        webApplication.WaitForShutdownAsync().Wait();//catch required because this throws "Cannot access a disposed object. Object name: 'IServiceProvider'" for unknown reasons.
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Log("Error while shutdown API-Server", ex, LogLevel.Warning);
+                    }
+                    logger.Log($"Run post-tasks", LogLevel.Information);
                     this._Configuration.FunctionalInformationForWebApplication.PostRun();
+                    logger.Log($"Service finished.", LogLevel.Information);
                 };
                 if (this._Configuration.FunctionalInformationForWebApplication.RunAsync)
                 {
@@ -284,8 +327,6 @@ namespace GRYLibrary.Core.APIServer
 
                 IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration = apiServerConfiguration.FunctionalInformation.PersistedAPIServerConfiguration;
 
-                specialMiddlewares1.Add(typeof(GeneralMiddleware<PersistedApplicationSpecificConfiguration>));
-                this.AddDefinedMiddleware((ISupportExceptionManagerMiddleware c) => c.ConfigurationForExceptionManagerMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.ExceptionManagerMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);
                 #region General Threat-Protection
                 if (this._Configuration.InitializationInformation.ApplicationConstants.Environment is not Development)
                 {
@@ -293,22 +334,31 @@ namespace GRYLibrary.Core.APIServer
                     this.AddDefinedMiddleware((ISupportObfuscationMiddleware c) => c.ConfigurationForObfuscationMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.ObfuscationMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);
                     this.AddDefinedMiddleware((ISupportCaptchaMiddleware c) => c.ConfigurationForCaptchaMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.CaptchaMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);
                 }
+                #endregion
+
+                specialMiddlewares1.Add(typeof(GeneralMiddleware<PersistedApplicationSpecificConfiguration>));
+
+
                 this.AddDefinedMiddleware((ISupportRequestLoggingMiddleware c) => c.ConfigurationForLoggingMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.LoggingMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);
+
+                this.AddDefinedMiddleware((ISupportExceptionManagerMiddleware c) => c.ConfigurationForExceptionManagerMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.ExceptionManagerMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);
+
                 foreach (Type customMiddleware in this._Configuration.InitializationInformation.ApplicationConstants.CustomMiddlewares1)
                 {
                     businessMiddlewares1.Add(customMiddleware);
                 }
-                #endregion
 
                 #region Bussiness-implementation
                 this.AddDefinedMiddleware((ISupportMaintenanceSiteMiddleware c) => c.ConfigurationForMaintenanceSiteMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.MaintenanceSiteMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares2, logger);
                 this.AddDefinedMiddleware((ISupportAuthenticationMiddleware c) => c.ConfigurationForAuthenticationMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.AuthenticationMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares2, logger);
                 this.AddDefinedMiddleware((ISupportAuthorizationMiddleware c) => c.ConfigurationForAuthorizationMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.AuthorizationMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares2, logger);
+
                 foreach (Type customMiddleware in this._Configuration.InitializationInformation.ApplicationConstants.CustomMiddlewares2)
                 {
                     businessMiddlewares2.Add(customMiddleware);
                 }
                 #endregion
+
                 #endregion
 
                 builder.WebHost.ConfigureKestrel(kestrelOptions =>
@@ -493,7 +543,7 @@ namespace GRYLibrary.Core.APIServer
                             else
                             {
                                 middlewares.Add(middlewareType);
-                                logger.Log($"Added middleware {middlewareType.FullName}.", LogLevel.Debug);
+                                logger.Log($"Added middleware {middlewareType.FullName}.", LogLevel.Information);
                                 if (middlewareType.IsAssignableTo(typeof(MaintenanceSiteMiddleware)))
                                 {
                                     IMaintenanceSiteConfiguration maintenanceSiteConfiguration = (IMaintenanceSiteConfiguration)middlewareConfiguration;
@@ -507,7 +557,7 @@ namespace GRYLibrary.Core.APIServer
                     }
                     else
                     {
-                        logger.Log($"Middleware {middlewareType.FullName} is disabled.", LogLevel.Debug);
+                        logger.Log($"Middleware {middlewareType.FullName} is disabled.", LogLevel.Information);
                     }
                 }
             }

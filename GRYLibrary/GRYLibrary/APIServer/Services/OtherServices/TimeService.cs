@@ -8,7 +8,8 @@ namespace GRYLibrary.Core.APIServer.Services.OtherServices
     {
         public DateTimeOffset GetCurrentLocalTimeAsDateTimeOffset()
         {
-            return DateTimeOffset.Now;
+            DateTimeOffset result = DateTimeOffset.Now;
+            return result;
         }
 
         public GRYDateTime GetCurrentLocalTimeAsGRYDateTime()
@@ -28,7 +29,8 @@ namespace GRYLibrary.Core.APIServer.Services.OtherServices
 
         public DateTimeOffset GetCurrentTimeInUTCAsDateTimeOffset()
         {
-            return DateTimeOffset.UtcNow;
+            DateTimeOffset result = DateTimeOffset.UtcNow;
+            return result;
         }
 
         public GRYDateTime GetCurrentTimeInUTCAsGRYDateTime()

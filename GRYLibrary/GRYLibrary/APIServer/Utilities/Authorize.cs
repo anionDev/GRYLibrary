@@ -14,7 +14,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
         public AuthorizeAttribute() : this(null)
         {
         }
-        public AuthorizeAttribute(params string[] groups)
+        public AuthorizeAttribute(params string[]? groups)
         {
             if (groups == null)
             {

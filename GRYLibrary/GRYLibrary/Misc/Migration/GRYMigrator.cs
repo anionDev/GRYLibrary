@@ -38,7 +38,7 @@ namespace GRYLibrary.Core.Misc.Migration
                 cmd.ExecuteNonQuery();
             }
 
-            IEnumerable<string> namesOfAlreadyExecutedMigrations = this.GetExecutedMigrations().Select(m => m.MigrationName);
+            IEnumerable<string> namesOfAlreadyExecutedMigrations = this.GetExecutedMigrations().Select(m => m.MigrationName).ToList();
 
             IList<MigrationInstance> migrationsToRun = new List<MigrationInstance>();
             foreach (MigrationInstance migration in this._Migrations)

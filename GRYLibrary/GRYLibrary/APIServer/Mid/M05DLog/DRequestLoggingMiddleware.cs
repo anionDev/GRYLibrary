@@ -71,7 +71,8 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
                 string requestRoute = context.Request.Path;
                 ushort responseHTTPStatusCode = (ushort)context.Response.StatusCode;
                 IPAddress? clientIP = (IPAddress?)context.Items["ClientIPAddress"];
-                Request request = new Request(moment, clientIP, context.Request.Method, requestRoute, context.Request.Query, context.Request.Headers, requestBody, null/*TODO*/, responseHTTPStatusCode, context.Response.Headers, responseBody);
+                string requestId = (string)context.Items["RequestId"];
+                Request request = new Request(requestId, moment, clientIP, context.Request.Method, requestRoute, context.Request.Query, context.Request.Headers, requestBody, null/*TODO*/, responseHTTPStatusCode, context.Response.Headers, responseBody);
                 TimeSpan? duration = context.Items.ContainsKey("Duration") ? (TimeSpan)context.Items["Duration"] : default;
                 bool isAuthenticated;
                 if (context.Items.ContainsKey(AuthenticationMiddleware.IsAuthenticatedInformationName))
@@ -224,6 +225,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
         {
             string clientIPAsString = this.FormatIPAddress(request.ClientIPAddress);
             string result = $"Request received:{Environment.NewLine}"
+                        + $"  Request-id: {request.RequestId}{Environment.NewLine}"
                         + $"  Timestamp: {this.FormatTimestamp(request.Timestamp)}{Environment.NewLine}"
                         + $"  Client-ip: {clientIPAsString}{Environment.NewLine}"
                         + $"  Request-details:{Environment.NewLine}"
@@ -293,7 +295,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
                 additionalInformation = $" ({additionalInformation})";
             }
             additionalInformationFinal = additionalInformation;
-            return $"Request received: {this.FormatTimestamp(request.Timestamp)} {clientIPAsString} requested \"{request.Method} {request.Route}{request.GetFormattedQuery()}\" and got response-code {request.ResponseStatusCode}.{additionalInformationFinal}";
+            return $"Request received: {this.FormatTimestamp(request.Timestamp)} Id: {request.RequestId}; {clientIPAsString} requested \"{request.Method} {request.Route}{request.GetFormattedQuery()}\" and got response-code {request.ResponseStatusCode}.{additionalInformationFinal}";
         }
 
         public virtual string GetAdditionalInformation(Request request, string clientIPAsString, TimeSpan? duration, ClaimsPrincipal user)

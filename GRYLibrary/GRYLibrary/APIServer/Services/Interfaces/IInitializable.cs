@@ -1,8 +1,10 @@
-﻿namespace GRYLibrary.Core.APIServer.Services.Interfaces
+﻿using GRYLibrary.Core.APIServer.Utilities;
+
+namespace GRYLibrary.Core.APIServer.Services.Interfaces
 {
     public interface IInitializable
     {
-        public bool IsInitialized { get; }
+        public InitializationState InitializationState { get; }
         public void Initialize();
     }
 }

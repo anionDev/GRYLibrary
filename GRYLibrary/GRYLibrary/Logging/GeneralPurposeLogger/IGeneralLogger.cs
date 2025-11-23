@@ -19,5 +19,6 @@ namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
         public void Log(Func<string> message, Exception exception);
         public void Log(Func<string> getMessageFunction, Exception? exception, LogLevel logLevel);
         public void Log(LogItem logitem);
+        public string GetLoggerId();
     }
 }

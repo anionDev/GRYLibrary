@@ -75,9 +75,10 @@ WHERE schemaname NOT IN ('pg_catalog', 'information_schema');";
         {
             object formattedValue = this.FormatValue(value);
             Type adaptedType = this.AdaptType(type);
-            NpgsqlDbType dbType = this.GetType(adaptedType);
+            NpgsqlDbType dbType = this.GetType(adaptedType, parameterName);
             return new NpgsqlParameter()
             {
+                ParameterName = "@"+parameterName,
                 Value = formattedValue,
                 NpgsqlDbType = dbType,
             };
@@ -89,13 +90,11 @@ WHERE schemaname NOT IN ('pg_catalog', 'information_schema');";
             if (value == null)
             {
                 result = DBNull.Value;
-            }
-            /*
-            else if (value is DateTime typedValue)
+            }            
+            else if (value is DateTimeOffset typedValue)
             {
-                 result= typedValue.ToString("yyyy-MM-dd'T'HH:mm:ss");
-            }
-            */
+                 result= typedValue.ToUniversalTime();
+            }            
             else if (value is UInt16 valusAsUInt16)
             {
                 result = (Int16)valusAsUInt16;
@@ -119,7 +118,7 @@ WHERE schemaname NOT IN ('pg_catalog', 'information_schema');";
             return result;
         }
 
-        private NpgsqlDbType GetType(Type type)
+        private NpgsqlDbType GetType(Type type,string parameterName)
         {
             return type switch
             {
@@ -127,8 +126,10 @@ WHERE schemaname NOT IN ('pg_catalog', 'information_schema');";
                 var t when t == typeof(int) => NpgsqlDbType.Integer,
                 var t when t == typeof(long) => NpgsqlDbType.Bigint,
                 var t when t == typeof(short) => NpgsqlDbType.Smallint,
+                var t when t == typeof(byte) => NpgsqlDbType.Smallint,
                 var t when t == typeof(bool) => NpgsqlDbType.Boolean,
                 var t when t == typeof(DateTime) => NpgsqlDbType.Timestamp,
+                var t when t == typeof(DateTimeOffset) => NpgsqlDbType.TimestampTz,
                 var t when t == typeof(float) => NpgsqlDbType.Real,
                 var t when t == typeof(double) => NpgsqlDbType.Double,
                 var t when t == typeof(decimal) => NpgsqlDbType.Numeric,
@@ -137,7 +138,7 @@ WHERE schemaname NOT IN ('pg_catalog', 'information_schema');";
                 var t when t == typeof(char) => NpgsqlDbType.Varchar,
                 var t when t == typeof(TimeSpan) => NpgsqlDbType.Interval,
 
-                _ => throw new NotSupportedException($"Type '{type.FullName}' is not supported.")
+                _ => throw new NotSupportedException($"Type '{type.FullName}' is not supported. (Parametername: {parameterName})")
             };
         }
         private Type AdaptType(Type type)

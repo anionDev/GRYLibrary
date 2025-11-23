@@ -1,9 +1,12 @@
-﻿using GRYLibrary.Core.Exceptions;
+﻿using GRYLibrary.Core.APIServer.Services.Interfaces;
+using GRYLibrary.Core.Exceptions;
 using GRYLibrary.Core.Logging.GRYLogger;
+using GRYLibrary.Core.Misc.Migration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Text.RegularExpressions;
 using System.Threading;
 using GUtilities = GRYLibrary.Core.Misc.Utilities;
 
@@ -12,18 +15,20 @@ namespace GRYLibrary.Core.APIServer.Services.Database
     public abstract class GenericDatabaseInteractor : IGenericDatabaseInteractor
     {
         private readonly IDatabasePersistenceConfiguration _Configuration;
-        private readonly ReaderWriterLockSlim _Lock = new();
+        private readonly object _Lock = new object();
         private DbConnection _Connection;
         private readonly Thread _ConnectionThread;
         private bool _ThreadEnabled = true;//TODO make this variable threadsafe
+        private bool _ThreadRunning = false;//TODO make this variable threadsafe
+
         public IGRYLog Log { get; private set; }
+        private bool _LogConnectionErrors = false;
         public GenericDatabaseInteractor(IDatabasePersistenceConfiguration configuration, IGRYLog log)
         {
-            this._Configuration = configuration;
             this.Log = log;
+            this._Configuration = configuration;
             this._ConnectionThread = new Thread(this.StartTryToConnectScheduler);
             this._ConnectionThread.Start();
-
         }
 
         protected abstract DbConnection CreateNewConnectionObject(string connectionString);
@@ -41,70 +46,76 @@ namespace GRYLibrary.Core.APIServer.Services.Database
         public DbParameter GetParameter(string parameterName, object value)
         {
             GUtilities.AssertCondition(value != null, $"value for parameter {parameterName} is null, so a speicfic type for it must be set.");
-            return this.GetParameter(parameterName, value, value.GetType());
+            return this.GetParameter(parameterName, value, value!.GetType());
         }
         private void StartTryToConnectScheduler()
         {
+            this._ThreadRunning = true;
             while (this._ThreadEnabled)
             {
-
                 try
                 {
-                    this._Lock.EnterUpgradeableReadLock();
-                    try
+                    lock (this._Lock)
                     {
-                        if (!this.IsAvailable())
+                        (bool isAvailable, Exception? exc) = this.IsAvailable();
+                        if (!this.IsAvailable().Item1)
                         {
-                            this._Lock.EnterWriteLock();
                             try
                             {
                                 this._Connection?.Dispose();
                                 this._Connection = this.CreateConnection();
                             }
-                            catch
+                            catch (Exception ex)
                             {
+                                if (this._LogConnectionErrors)
+                                {
+                                    this.Log.Log("Error while connecting to database.", ex);
+                                }
                                 throw;
-                            }
-                            finally
-                            {
-                                this._Lock.ExitWriteLock();
                             }
                         }
                     }
-                    finally
-                    {
-                        this._Lock.ExitUpgradeableReadLock();
-                    }
-                    Thread.Sleep(TimeSpan.FromMinutes(1));//connected
+                    Thread.Sleep(TimeSpan.FromSeconds(5));//connected. wait some seconds and before checking again if the database is still available.
                 }
                 catch
                 {
-                    Thread.Sleep(TimeSpan.FromSeconds(2));//not connected
+                    Thread.Sleep(TimeSpan.FromSeconds(2));//not connected. wait a few seconds until checking again if the database is avbailable.
                 }
             }
             this._Connection.Dispose();
+            this._ThreadRunning = false;
         }
         private DbConnection CreateConnection()
         {
+            string connectionStringForLog = this._Configuration.DatabaseConnectionString;
+            if (this._Configuration.EscapePasswordInLog)
+            {
+                connectionStringForLog = this.EscapePassword(this._Configuration.DatabaseConnectionString);
+            }
+            this.Log.Log($"Try to create database-connection using connection-string \"{connectionStringForLog}\".", LogLevel.Information);
             DbConnection conn = this.CreateNewConnectionObject(this._Configuration.DatabaseConnectionString);
             conn.Open();
             return conn;
         }
+
+        private string EscapePassword(string databaseConnectionString)
+        {
+            string output = Regex.Replace(databaseConnectionString, @"Password=[^;]*", "Password=********");
+            return output;
+        }
+
         private DbConnection GetConnectionInternal()
         {
-            this._Lock.EnterReadLock();
-            try
+            DbConnection result = this._Connection;
+            lock (this._Lock)
             {
-                return this._Connection!;
+                result = this._Connection!;
             }
-            finally
-            {
-                this._Lock.ExitReadLock();
-            }
+            return result;
         }
         public DbConnection GetConnection()
         {
-            if (this.TryGetConnection(out DbConnection? connection))
+            if (this.TryGetConnection(out DbConnection? connection, out _))
             {
                 return connection!;
             }
@@ -115,17 +126,19 @@ namespace GRYLibrary.Core.APIServer.Services.Database
                 throw new DependencyNotAvailableException(message);
             }
         }
-        public bool TryGetConnection(out DbConnection? connection)
+        public bool TryGetConnection(out DbConnection? connection, out Exception? err)
         {
             try
             {
                 GRYLibrary.Core.Misc.Utilities.AssertCondition(this.IsConnected(), "Not connected");
                 connection = this.GetConnectionInternal();
+                err = null;
                 return true;
             }
-            catch
+            catch (Exception e)
             {
                 connection = null;
+                err = e;
                 return false;
             }
         }
@@ -143,9 +156,8 @@ namespace GRYLibrary.Core.APIServer.Services.Database
             }
         }
 
-        internal bool IsAvailable()
+        public (bool, Exception?) IsAvailable()
         {
-            bool result;
             try
             {
                 GUtilities.AssertCondition(this.IsConnected(), "Database is not connected");
@@ -157,13 +169,12 @@ namespace GRYLibrary.Core.APIServer.Services.Database
                         GUtilities.NoOperation(); // Just to ensure that we can read from the reader without any exceptions
                     }
                 }
-                result = true;
+                return (true, null);
             }
-            catch
+            catch (Exception e)
             {
-                result = false;
+                return (false, e);
             }
-            return result;
         }
 
         public IEnumerable<string> GetAllTableNames()
@@ -180,14 +191,25 @@ namespace GRYLibrary.Core.APIServer.Services.Database
             return result;
         }
 
-        bool IGenericDatabaseInteractor.IsAvailable()
-        {
-            return this.IsAvailable();
-        }
 
         public void Dispose()
         {
             this._ThreadEnabled = false;
+            GUtilities.WaitUntilConditionIsTrue(()=>!this._ThreadRunning);
+        }
+
+        public void SetLogConnectionAttemptErrors(bool enabled)
+        {
+            lock (this._Lock)
+            {
+                this._LogConnectionErrors = enabled;
+            }
+        }
+
+        public void DoAllMigrations(IList<MigrationInstance> migrations, ITimeService timeService)
+        {
+            GRYMigrator migrator = new GRYMigrator(timeService, migrations, this);
+            migrator.InitializeDatabaseAndMigrateIfRequired();
         }
     }
 

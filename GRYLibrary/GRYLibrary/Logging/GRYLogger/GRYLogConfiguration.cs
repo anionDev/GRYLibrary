@@ -27,7 +27,6 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         public string Name { get; set; }
         public string DateFormat { get; set; }
         public List<SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>> LoggedMessageTypesConfiguration { get; set; }
-        public bool ConvertTimeForLogEntriesToUTCFormat { get; set; }
         public bool LogEveryLineOfLogEntryInNewLine { get; set; }
         public bool StoreProcessedLogItemsInternally { get; set; }
         public LoggedMessageTypeConfiguration GetLoggedMessageTypesConfigurationByLogLevel(LogLevel logLevel);
@@ -45,7 +44,6 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         public string Name { get; set; }
         public string DateFormat { get; set; }
         public List<SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>> LoggedMessageTypesConfiguration { get; set; }
-        public bool ConvertTimeForLogEntriesToUTCFormat { get; set; }
         public bool LogEveryLineOfLogEntryInNewLine { get; set; }
         public bool StoreProcessedLogItemsInternally { get; set; }
         public GRYLogConfiguration() : this(false)
@@ -80,7 +78,6 @@ namespace GRYLibrary.Core.Logging.GRYLogger
                 new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Error, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Error), ConsoleColor = ConsoleColor.Red }),
                 new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Critical, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Critical), ConsoleColor = ConsoleColor.DarkRed })
             };
-            this.ConvertTimeForLogEntriesToUTCFormat = false;
             this.LogEveryLineOfLogEntryInNewLine = false;
             this.StoreProcessedLogItemsInternally = false;
         }

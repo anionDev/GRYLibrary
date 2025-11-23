@@ -1,6 +1,9 @@
 ﻿using GRYLibrary.Core.APIServer.CommonDBTypes;
+using Keycloak.Net.Models.Users;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using User = GRYLibrary.Core.APIServer.CommonDBTypes.User;
 
 namespace GRYLibrary.Core.APIServer.Services.Auth.R
 {
@@ -16,7 +19,8 @@ namespace GRYLibrary.Core.APIServer.Services.Auth.R
 
         public bool IsAuthorized(ISet<string> groupsOfUser, ISet<string> authorizedGroups)
         {
-            return groupsOfUser.Intersect(authorizedGroups).Any();
+            bool result = groupsOfUser.Intersect(authorizedGroups).Any();
+            return result;
         }
     }
 }

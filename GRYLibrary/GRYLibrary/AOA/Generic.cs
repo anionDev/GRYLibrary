@@ -105,7 +105,7 @@ namespace GRYLibrary.Core.AOA/*AOA=AdvancedObjectAnalysis*/
         public static T GenericDeserialize<T>(string serializedObject)
         {
             using XmlReader xmlReader = XmlReader.Create(new StringReader(serializedObject));
-            T result = (T)Activator.CreateInstance(typeof(T));
+            T result = Activator.CreateInstance<T>();
             GenericReadXml(result, xmlReader);
             return result;
         }

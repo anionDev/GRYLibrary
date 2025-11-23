@@ -32,6 +32,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         public LogLevel LogLevel { get; internal set; }
         public Exception Exception { get; }
         public ISet<GRYLogTarget> LogTargets { get; set; } = GRYLogTarget.GetAll();
+
         public string PlainMessage
         {
             get
@@ -51,8 +52,10 @@ namespace GRYLibrary.Core.Logging.GRYLogger
             }
         }
 
+        private readonly GRYLogConfiguration DefaultConfigurationGRYLogConfiguration = new GRYLogConfiguration();
+
         #region Constructors
-        public LogItem(DateTimeOffset moment, Exception exception) : this(moment,() => "An error occurred.", exception, LogLevel.Error)
+        public LogItem(DateTimeOffset moment, Exception exception) : this(moment, () => "An error occurred.", exception, LogLevel.Error)
         {
         }
         public LogItem(DateTimeOffset moment, string message) : this(moment, () => message, null, LogLevel.Information)
@@ -76,7 +79,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         public LogItem(DateTimeOffset moment, Func<string> message, Exception exception) : this(moment, message, exception, LogLevel.Error)
         {
         }
-        public LogItem(DateTimeOffset moment,Func<string> getMessageFunction, Exception? exception, LogLevel logLevel) : this()
+        public LogItem(DateTimeOffset moment, Func<string> getMessageFunction, Exception? exception, LogLevel logLevel) : this()
         {
             this._GetMessageFunction = getMessageFunction;
             this._MessageLoaded = false;
@@ -86,6 +89,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
             this.EventId = 101;
             this.Category = 1;
             this.Moment = moment;
+            this.DefaultConfigurationGRYLogConfiguration.Initliaze();
         }
         #endregion 
         public void Format(IGRYLogConfiguration configuration, out string formattedMessage, out int colorBegin, out int colorEnd, out ConsoleColor consoleColor, GRYLogLogFormat format)
@@ -116,10 +120,6 @@ namespace GRYLibrary.Core.Logging.GRYLogger
             {
                 message = $"[{configuration.Name.Trim()}] {message}";
             }
-            if (configuration.ConvertTimeForLogEntriesToUTCFormat)
-            {
-                momentOfLogEntry = momentOfLogEntry.ToUniversalTime();
-            }
             switch (format)
             {
                 case GRYLogLogFormat.OnlyMessage:
@@ -144,7 +144,11 @@ namespace GRYLibrary.Core.Logging.GRYLogger
                     throw new KeyNotFoundException($"Formatting {nameof(GRYLogLogFormat)} '{loglevel}' is not implemented yet.");
             }
         }
-
+        public override string ToString()
+        {
+            this.FormatMessage(this.DefaultConfigurationGRYLogConfiguration, this.PlainMessage, this.Moment, this.LogLevel, GRYLogLogFormat.GRYLogFormat, out string fm, out int cb, out int ce, out ConsoleColor cc);
+            return fm;
+        }
         public override readonly bool Equals(object obj)
         {
             return obj is LogItem item &&
