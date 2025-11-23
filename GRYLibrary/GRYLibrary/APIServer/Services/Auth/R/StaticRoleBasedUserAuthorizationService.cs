@@ -19,7 +19,7 @@ namespace GRYLibrary.Core.APIServer.Services.Auth.R
 
         public bool IsAuthorized(ISet<string> groupsOfUser, ISet<string> authorizedGroups)
         {
-            var result= groupsOfUser.Intersect(authorizedGroups).Any();
+            bool result = groupsOfUser.Intersect(authorizedGroups).Any();
             return result;
         }
     }

@@ -75,7 +75,7 @@ WHERE schemaname NOT IN ('pg_catalog', 'information_schema');";
         {
             object formattedValue = this.FormatValue(value);
             Type adaptedType = this.AdaptType(type);
-            NpgsqlDbType dbType = this.GetType(adaptedType);
+            NpgsqlDbType dbType = this.GetType(adaptedType, parameterName);
             return new NpgsqlParameter()
             {
                 ParameterName = "@"+parameterName,
@@ -118,7 +118,7 @@ WHERE schemaname NOT IN ('pg_catalog', 'information_schema');";
             return result;
         }
 
-        private NpgsqlDbType GetType(Type type)
+        private NpgsqlDbType GetType(Type type,string parameterName)
         {
             return type switch
             {
@@ -126,6 +126,7 @@ WHERE schemaname NOT IN ('pg_catalog', 'information_schema');";
                 var t when t == typeof(int) => NpgsqlDbType.Integer,
                 var t when t == typeof(long) => NpgsqlDbType.Bigint,
                 var t when t == typeof(short) => NpgsqlDbType.Smallint,
+                var t when t == typeof(byte) => NpgsqlDbType.Smallint,
                 var t when t == typeof(bool) => NpgsqlDbType.Boolean,
                 var t when t == typeof(DateTime) => NpgsqlDbType.Timestamp,
                 var t when t == typeof(DateTimeOffset) => NpgsqlDbType.TimestampTz,
@@ -137,7 +138,7 @@ WHERE schemaname NOT IN ('pg_catalog', 'information_schema');";
                 var t when t == typeof(char) => NpgsqlDbType.Varchar,
                 var t when t == typeof(TimeSpan) => NpgsqlDbType.Interval,
 
-                _ => throw new NotSupportedException($"Type '{type.FullName}' is not supported.")
+                _ => throw new NotSupportedException($"Type '{type.FullName}' is not supported. (Parametername: {parameterName})")
             };
         }
         private Type AdaptType(Type type)

@@ -25,7 +25,7 @@ namespace GRYLibrary.Core.APIServer.Services.Auth.A
         public bool IsAuthorized(string userId, string action)
         {
             ISet<string> groupsOfUser = this._AuthenticationService.GetRolesOfUser(userId);
-            var result = groupsOfUser.Intersect(this._StaticGroupUserAuthorizationServiceConfiguration.AuthorizedGroups[action]).Any();
+            bool result = groupsOfUser.Intersect(this._StaticGroupUserAuthorizationServiceConfiguration.AuthorizedGroups[action]).Any();
             this._Log.Log($"User {userId} is" + (result ? string.Empty : " not") + $" authorized for action {action}. " + "Groups of user: {" + string.Join(", ", groupsOfUser) + "}; Authorized groups: {" + string.Join(", ", this._StaticGroupUserAuthorizationServiceConfiguration.AuthorizedGroups[action]) + "}", Microsoft.Extensions.Logging.LogLevel.Trace);
             return result;
         }
