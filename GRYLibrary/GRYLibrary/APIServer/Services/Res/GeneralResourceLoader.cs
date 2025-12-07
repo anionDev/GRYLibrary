@@ -38,7 +38,12 @@ namespace GRYLibrary.Core.APIServer.Services.Res
 
         public string GetResourceAsString(string resourceName)
         {
-          return UTF8EncodingInstance.GetString(this.GetResource(resourceName));
+            return UTF8EncodingInstance.GetString(this.GetResource(resourceName));
+        }
+
+        public ISet<string> GetAllResourceNames()
+        {
+            return new HashSet<string>(_Assembly.GetManifestResourceNames());
         }
     }
 }
