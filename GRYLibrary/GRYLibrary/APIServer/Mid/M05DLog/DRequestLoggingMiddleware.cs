@@ -65,7 +65,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
         {
             try
             {
-                DateTimeOffset moment = GUtilities.GetNow();
+                DateTimeOffset moment = _TimeService.GetCurrentLocalTimeAsDateTimeOffset();
                 (string info, string content, byte[] plainContent) requestBody = BytesToString(requestBodyBytes, this._Encoding);
                 (string info, string content, byte[] plainContent) responseBody = BytesToString(responseBodyBytes, this._Encoding);
                 string requestRoute = context.Request.Path;
@@ -176,7 +176,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
                 {
                     formatted = this.FormatLogEntrySummary(request, duration, user);
                 }
-                LogItem logItem = new LogItem(this._TimeService.GetCurrentTimeInUTCAsDateTimeOffset(), formatted, logLevel)
+                LogItem logItem = new LogItem(this._TimeService.GetCurrentLocalTimeAsDateTimeOffset(), formatted, logLevel)
                 {
                     LogTargets = logTargets
                 };
@@ -244,13 +244,20 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
                         + $"  Response-details:{Environment.NewLine}"
                         + $"    Statuscode: {request.ResponseStatusCode}{Environment.NewLine}"
                         + $"    Body: {this.FormatBody(request.ResponseBody, maximalLengthofResponseBodies)}{Environment.NewLine}";
-            if (user == null)
+            if (user == null )
             {
                 result = result + $"  Authentication: (anonymous){Environment.NewLine}";
             }
             else
             {
-                result = result + $"  Authentication: user \"{user.Identity.Name}\"{Environment.NewLine}";
+                if (user.Identity == null)
+                {
+                    result = result + $"  Authentication: (unknown identity){Environment.NewLine}";
+                }
+                else
+                { 
+                    result = result + $"  Authentication: user \"{user.Identity.Name}\"{Environment.NewLine}";
+                }
             }
             if (duration.HasValue)
             {
@@ -311,7 +318,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
             }
             if (duration.HasValue)
             {
-                result = this.AddAdditionalInformtion(result, $"Duration: {GUtilities.DurationToUserFriendlyString(duration.Value, 3)}");
+                result = this.AddAdditionalInformtion(result, $"Duration: {GUtilities.DurationToUserFriendlyString(duration.Value,0)}");
             }
             //add more additional information if desired
             return result;
@@ -346,7 +353,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
                 return $"\"{value[..(int)maxLength]}...\" (Content truncated; Original length: {originalLength} bytes)";
             }
         }
-        public virtual string FormatIPAddress(IPAddress clientIP)
+        public virtual string FormatIPAddress(IPAddress? clientIP)
         {
             if (this._RequestLoggingSettings.LogClientIP)
             {

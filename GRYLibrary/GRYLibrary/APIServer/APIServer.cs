@@ -239,6 +239,7 @@ namespace GRYLibrary.Core.APIServer
                             }
                         });
                         webApplication.Run();
+                        Thread.Sleep(TimeSpan.FromSeconds(2));
                         GUtilities.AssertNotNull(waitTask, nameof(waitTask)).Wait();
                     }
                     catch (TaskCanceledException)//will be thrown when application will be stopped. This is expected behavior.

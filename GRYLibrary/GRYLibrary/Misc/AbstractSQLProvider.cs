@@ -35,7 +35,7 @@ namespace GRYLibrary.Core.Misc
         {
             using Stream stream = this.GetType().Assembly.GetManifestResourceStream($"{this._SQLFilesNamespace}.{sqlFileName}.sql");
             using StreamReader reader = new StreamReader(stream);
-            this._ScriptCache[sqlFileName] = reader.ReadToEnd();
+            this._ScriptCache[sqlFileName] = $"{reader.ReadToEnd()}";
         }
     }
 }
