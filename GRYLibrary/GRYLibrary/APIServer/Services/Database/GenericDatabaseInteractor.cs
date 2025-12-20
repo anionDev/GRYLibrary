@@ -5,6 +5,7 @@ using GRYLibrary.Core.Misc.Migration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -92,6 +93,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
             {
                 connectionStringForLog = this.EscapePassword(this._Configuration.DatabaseConnectionString);
             }
+            GRYLibrary.Core.Misc.Utilities.AssertCondition(Regex.IsMatch(connectionStringForLog, @"Database=[^;]+", RegexOptions.IgnoreCase), $"Connectionstring \"{connectionStringForLog}\" does not contain a databasename-specification.");
             this.Log.Log($"Try to create database-connection using connection-string \"{connectionStringForLog}\".", LogLevel.Information);
             DbConnection conn = this.CreateNewConnectionObject(this._Configuration.DatabaseConnectionString);
             conn.Open();
@@ -100,7 +102,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
 
         private string EscapePassword(string databaseConnectionString)
         {
-            string output = Regex.Replace(databaseConnectionString, @"Password=[^;]*", "Password=********");
+            string output = Regex.Replace(databaseConnectionString, @"Password=[^;]+", "Password=********");
             return output;
         }
 
@@ -115,7 +117,8 @@ namespace GRYLibrary.Core.APIServer.Services.Database
         }
         public DbConnection GetConnection()
         {
-            if (this.TryGetConnection(out DbConnection? connection, out _))
+            Exception? error;
+            if (this.TryGetConnection(out DbConnection? connection, out error))
             {
                 return connection!;
             }
@@ -123,17 +126,41 @@ namespace GRYLibrary.Core.APIServer.Services.Database
             {
                 string message = "Database not available.";
                 this.Log.Log(message, LogLevel.Warning);
-                throw new DependencyNotAvailableException(message);
+                if (error == null)
+                {
+                    throw new DependencyNotAvailableException(message);
+                }
+                else
+                {
+                    throw new DependencyNotAvailableException(message, error);
+                }
             }
         }
         public bool TryGetConnection(out DbConnection? connection, out Exception? err)
         {
             try
             {
-                GRYLibrary.Core.Misc.Utilities.AssertCondition(this.IsConnected(), "Not connected");
-                connection = this.GetConnectionInternal();
-                err = null;
-                return true;
+                Exception? connectedException;
+                bool isConnected = this.IsConnected(out connectedException);
+                if (isConnected)
+                {
+                    err = null;
+                    connection = this.GetConnectionInternal();
+                    return true;
+                }
+                else
+                {
+                    if (connectedException == null)
+                    {
+                        err = new DependencyNotAvailableException("Not connected");
+                    }
+                    else
+                    {
+                        err = new DependencyNotAvailableException("Not connected", connectedException);
+                    }
+                    connection = null;
+                    return false;
+                }
             }
             catch (Exception e)
             {
@@ -143,16 +170,27 @@ namespace GRYLibrary.Core.APIServer.Services.Database
             }
         }
 
-        public bool IsConnected()
+        public bool IsConnected(out Exception? exception)
         {
             if (this.GetConnectionInternal() == null)
             {
+                exception = new DependencyNotAvailableException("Connection is null.");
                 return false;
             }
             else
             {
-                bool result = this.GetConnectionInternal().State == System.Data.ConnectionState.Open;
-                return result;
+                ConnectionState state = this.GetConnectionInternal().State;
+                bool result = state == System.Data.ConnectionState.Open;
+                if (result)
+                {
+                    exception = null;
+                    return true;
+                }
+                else
+                {
+                    exception = new DependencyNotAvailableException($"Connection-state is \"{state}\".");
+                    return false;
+                }
             }
         }
 
@@ -160,16 +198,26 @@ namespace GRYLibrary.Core.APIServer.Services.Database
         {
             try
             {
-                GUtilities.AssertCondition(this.IsConnected(), "Database is not connected");
-                using (DbDataReader reader = this.CreateCommand("select 1;").ExecuteReader())
+                var connected = this.IsConnected(out Exception? connectionExceptionN);
+                if (connected)
                 {
-                    GUtilities.AssertCondition(reader.HasRows, "Test-statement did not return any row. So database-connection is not ready.");
-                    while (reader.Read())
+                    GUtilities.AssertCondition(connected, "Database is not connected.");
+                    using (DbDataReader reader = this.CreateCommand("select 1;").ExecuteReader())
                     {
-                        GUtilities.NoOperation(); // Just to ensure that we can read from the reader without any exceptions
+                        GUtilities.AssertCondition(reader.HasRows, "Test-statement did not return any row. So database-connection is not ready.");
+                        while (reader.Read())
+                        {
+                            GUtilities.NoOperation(); // Just to ensure that we can read from the reader without any exceptions
+                        }
                     }
+                    return (true, null);
                 }
-                return (true, null);
+                else
+                {
+                    Exception connectionException = GRYLibrary.Core.Misc.Utilities.AssertNotNull(connectionExceptionN, "Unknown connection-exception.");
+                    return (false, connectionException);
+                }
+
             }
             catch (Exception e)
             {
@@ -180,12 +228,20 @@ namespace GRYLibrary.Core.APIServer.Services.Database
         public IEnumerable<string> GetAllTableNames()
         {
             IList<string> result = new List<string>();
-            using (DbCommand cmd = this.CreateCommand(this.CreateSQLStatementForGetAllTableNames()))
+            string sql = this.CreateSQLStatementForGetAllTableNames();
+            using (DbCommand cmd = this.CreateCommand(sql))
             {
-                using DbDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
+                try
                 {
-                    result.Add(reader.GetString(0));
+                    using DbDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        result.Add(reader.GetString(0));
+                    }
+                }
+                catch
+                {
+                    throw;
                 }
             }
             return result;
@@ -195,7 +251,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
         public void Dispose()
         {
             this._ThreadEnabled = false;
-            GUtilities.WaitUntilConditionIsTrue(()=>!this._ThreadRunning);
+            GUtilities.WaitUntilConditionIsTrue(() => !this._ThreadRunning);
         }
 
         public void SetLogConnectionAttemptErrors(bool enabled)

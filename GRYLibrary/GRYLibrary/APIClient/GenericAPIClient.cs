@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GRYLibrary.Core.Misc;
+using System;
 using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -51,7 +52,7 @@ namespace GRYLibrary.Core.APIClient
             return await response.Content.ReadAsStringAsync();
         }
 
-        public async Task<bool> IsAvailable()
+        public (bool, Exception?) IsAvailable()
         {
             if (this.Configuration.TestRoute == null)
             {
@@ -61,12 +62,12 @@ namespace GRYLibrary.Core.APIClient
             {
                 try
                 {
-                    await this.GetResponse(this.Configuration.TestRoute, HttpMethod.Get, null);
-                    return true;
+                    this.GetResponse(this.Configuration.TestRoute, HttpMethod.Get, null).WaitAndGetResult();
+                    return (true, null);
                 }
-                catch
+                catch (Exception e)
                 {
-                    return false;
+                    return (false, e);
                 }
             }
         }

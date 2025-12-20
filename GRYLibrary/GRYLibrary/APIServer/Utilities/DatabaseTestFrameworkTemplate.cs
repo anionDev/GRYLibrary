@@ -1,4 +1,5 @@
 ﻿using GRYLibrary.Core.APIServer.Services.Database;
+using GRYLibrary.Core.Exceptions;
 using GRYLibrary.Core.ExecutePrograms;
 using GRYLibrary.Core.ExecutePrograms.WaitingStates;
 using GRYLibrary.Core.Logging.GRYLogger;
@@ -20,7 +21,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
         private bool _Disposed = false;
         private readonly string _TestDatabaseFolder;
         private readonly IGenericDatabaseInteractor _GenericDatabaseInteractor;
-        public abstract string GetDatabaseName();
+        public abstract string GetDatabaseTypeName();
         private readonly string _TaskNameStart;
         private readonly string _TaskNameStop;
         private readonly IGRYLog _Log;
@@ -45,18 +46,32 @@ namespace GRYLibrary.Core.APIServer.Utilities
                     Thread.Sleep(TimeSpan.FromSeconds(5));//TODO replace this by wait until healthcheck says service is ready/healthy (with a timeout of 1 minute)
                 }
                 this._GenericDatabaseInteractor = DBUtilities.ToGenericDatabaseInteractor(configuration, log);
-                GUtilities.RunWithTimeout(() =>
+                Exception? lastException = null;
+                if (!GUtilities.RunWithTimeout(() =>
                 {
                     bool connected = false;
                     while (!connected)
                     {
-                        connected = this._GenericDatabaseInteractor.IsAvailable().Item1;
+                        (bool, Exception?) isAvailable = this._GenericDatabaseInteractor.IsAvailable();
+                        connected = isAvailable.Item1;
+                        lastException = isAvailable.Item2;
                         if (!connected)
                         {
                             Thread.Sleep(TimeSpan.FromSeconds(1));
                         }
                     }
-                }, Debugger.IsAttached ? TimeSpan.FromHours(2) : TimeSpan.FromSeconds(30));
+                }, TimeSpan.FromMinutes(2)))
+                {
+                    string message = $"{this.GetType().Name} was not able to connect to the test-database.";
+                    if (lastException == null)
+                    {
+                        throw new NotReadyException(message);
+                    }
+                    else
+                    {
+                        throw new NotReadyException(message, lastException);
+                    }
+                }
             }
             catch
             {
