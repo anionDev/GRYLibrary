@@ -3,7 +3,6 @@ using GRYLibrary.Core.APIServer.Services.OtherServices;
 using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets;
 using GRYLibrary.Core.Misc;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
