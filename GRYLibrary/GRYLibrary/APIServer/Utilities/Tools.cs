@@ -103,6 +103,10 @@ namespace GRYLibrary.Core.APIServer.Utilities
             Exception? exception = null;//for debugging-purposes
             try
             {
+                if (Debugger.IsAttached)
+                {
+                    Console.Clear();
+                }
                 GRYConsoleApplication<GCodeUnitSpecificCommandlineParameter> consoleApp = new GRYConsoleApplication<GCodeUnitSpecificCommandlineParameter>(new VerbParser<GCodeUnitSpecificCommandlineParameter>(APIServer<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>.CreateMain(initializer)), codeUnitName, codeUnitVersion.ToString(), codeUnitDescription, true, executionMode, environmentTargetType, additionalHelpText);
                 exitCode = consoleApp.Main(commandlineArguments);
             }
