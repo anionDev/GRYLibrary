@@ -9,7 +9,7 @@ namespace GRYLibrary.Core.AOA.SerializeHelper.SimplifiedObjects
     [XmlRoot(ElementName = "FO")]
     public class FlatComplexObject : FlatObject
     {
-        public List<FlatAttribute> Attributes { get; set; } = new List<FlatAttribute>();
+        public List<FlatAttribute> Attributes { get; set; } = [];
 
         public override void Accept(IFlatObjectVisitor visitor)
         {

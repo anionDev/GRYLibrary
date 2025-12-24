@@ -18,7 +18,7 @@ namespace GRYLibrary.Core.AOA.SerializeHelper
     {
         public Guid RootObjectId { get; set; }
         public HashSet<FlatObject> Objects { get; set; }
-        private readonly IList<object> _DeserializedSets = new List<object>();
+        private readonly IList<object> _DeserializedSets = [];
         public static GRYSObject Create(object @object, SerializationConfiguration serializationConfiguration)
         {
             Dictionary<object, FlatObject> dictionary = new(new ReferenceEqualsComparer());
@@ -147,16 +147,16 @@ namespace GRYLibrary.Core.AOA.SerializeHelper
                     if (isDictionaryGeneric)
                     {
                         XMLSerializer.KeyValuePair<object, object> gkvp = (XMLSerializer.KeyValuePair<object, object>)itemForEnumerable;
-                        arguments = new object[] { gkvp.Key, gkvp.Value };
+                        arguments = [gkvp.Key, gkvp.Value];
                     }
                     else if (isDictionaryNotGeneric)
                     {
                         DictionaryEntry keyValuePair = EnumerableTools.ObjectToDictionaryEntry(itemForEnumerable);
-                        arguments = new object[] { keyValuePair.Key, keyValuePair.Value };
+                        arguments = [keyValuePair.Key, keyValuePair.Value];
                     }
                     else
                     {
-                        arguments = new object[] { itemForEnumerable };
+                        arguments = [itemForEnumerable];
                     }
                     EnumerableTools.AddItemToEnumerable(enumerable, arguments);
                 }
@@ -288,7 +288,7 @@ namespace GRYLibrary.Core.AOA.SerializeHelper
 
             public void Handle(FlatEnumerable simplifiedEnumerable)
             {
-                simplifiedEnumerable.Items = new List<Guid>();
+                simplifiedEnumerable.Items = [];
                 foreach (object @object in EnumerableTools.ObjectToEnumerable<object>(this._Object))
                 {
                     simplifiedEnumerable.Items.Add(FillDictionary(this._Dictionary, @object, this._SerializationConfiguration));
@@ -324,7 +324,7 @@ namespace GRYLibrary.Core.AOA.SerializeHelper
 
         internal object Get()
         {
-            Dictionary<Guid, object> deserializedObjects = new();
+            Dictionary<Guid, object> deserializedObjects = [];
             IList<FlatObject> sorted = this.Objects.ToList();
             sorted = sorted.OrderBy((item) =>
             {

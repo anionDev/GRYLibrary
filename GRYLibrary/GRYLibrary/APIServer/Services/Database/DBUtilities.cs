@@ -60,7 +60,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
         public static T?[] RunTransaction<T, ProjectSpecificDatabaseInteractor>(string nameOfAction, IGRYLog log, ProjectSpecificDatabaseInteractor database, params Func<DbCommand, T?>[] functions)
             where ProjectSpecificDatabaseInteractor : IProjectSpecificDatabaseInteractor
         {
-            List<T?> results = new List<T?>();
+            List<T?> results = [];
             AccessDatabase(database,interactor =>
             {
                 log.Log("Run DB-transaction " + nameOfAction, Microsoft.Extensions.Logging.LogLevel.Trace);

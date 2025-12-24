@@ -29,7 +29,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M01APIK
         {
             if (operation.Parameters == null)
             {
-                operation.Parameters = new List<IOpenApiParameter>();
+                operation.Parameters = [];
             }
             if (context.MethodInfo.GetCustomAttributes(typeof(AuthorizeAttribute), false).Length != 0)
             {

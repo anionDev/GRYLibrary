@@ -74,7 +74,7 @@ namespace GRYLibrary.Core.AOA
             }
             object objectForRealSerialization = GRYSObject.Create(@object, this.SerializationConfiguration);
             IEnumerable<(object, Type)> allReferencedObjects = new PropertyIterator().IterateOverObjectTransitively(objectForRealSerialization);
-            HashSet<Type> extraTypes = new();
+            HashSet<Type> extraTypes = [];
             foreach ((object, Type) referencedObject in allReferencedObjects)
             {
                 if (referencedObject.Item1 is not null and IGRYSerializable extraTypesProvider)
@@ -137,7 +137,7 @@ namespace GRYLibrary.Core.AOA
                 {
                     foreach (object item in deserializedObject as IEnumerable)
                     {
-                        EnumerableTools.AddItemToEnumerable(thisObject, new object[] { item });
+                        EnumerableTools.AddItemToEnumerable(thisObject, [item]);
                     }
                 }
                 else

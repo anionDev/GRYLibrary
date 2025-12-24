@@ -7,7 +7,7 @@ namespace GRYLibrary.Core.Tree
         public List<TreeItem<ContainedItemType>> Children { get; set; }
         public Container()
         {
-            this.Children = new List<TreeItem<ContainedItemType>>();
+            this.Children = [];
         }
         public IList<TreeItem<ContainedItemType>> GetDirectChildren()
         {
@@ -16,8 +16,7 @@ namespace GRYLibrary.Core.Tree
 
         public IEnumerable<TreeItem<ContainedItemType>> GetDirectAndTransitiveChildren()
         {
-            List<TreeItem<ContainedItemType>> result = new();
-            result.AddRange(this.Children);
+            List<TreeItem<ContainedItemType>> result = [.. this.Children];
             foreach (TreeItem<ContainedItemType> child in this.Children)
             {
                 if (child is Container<ContainedItemType> container)

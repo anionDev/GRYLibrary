@@ -10,7 +10,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
 
         public override HashSet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization()
         {
-            return new HashSet<Type>();
+            return [];
         }
 
         protected override void ExecuteImplementation(LogItem logItem, GRYLog logObject)

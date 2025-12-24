@@ -8,7 +8,7 @@ namespace GRYLibrary.Core.APIServer.Settings.Regulations.GDPR
     {
         public bool ServiceProcessesPersonalData { get; set; }
         public bool ServiceIsSubjectOfGDPR { get; set; }
-        public override IList<Type> RequiredServices { get; set; } = new List<Type>() { typeof(IGDPRService) };
+        public override IList<Type> RequiredServices { get; set; } = [typeof(IGDPRService)];
 
         public GDPRegulation(bool serviceProcessesPersonalData, bool serviceIsSubjectOfGDPR)
         {

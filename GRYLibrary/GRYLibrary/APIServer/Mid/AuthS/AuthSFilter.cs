@@ -29,7 +29,7 @@ namespace GRYLibrary.Core.APIServer.Mid.AuthS
         {
             if (operation.Parameters == null)
             {
-                operation.Parameters = new List<IOpenApiParameter>();
+                operation.Parameters = [];
             }
             if (context.MethodInfo.GetCustomAttributes(typeof(AuthenticateAttribute), false).Length != 0)
             {

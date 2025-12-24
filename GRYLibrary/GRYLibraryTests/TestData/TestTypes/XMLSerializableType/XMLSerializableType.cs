@@ -25,8 +25,8 @@ namespace GRYLibrary.Tests.TestData.TestTypes.XMLSerializableType
                 SimpleDataStructure1 = SimpleDataStructure1.GetRandom(),
                 GenericInt = new GenericType<int>()
                 {
-                    TList = new List<int>() { 21, 22 },
-                    TSet = new HashSet<int>() { 23, 24 },
+                    TList = [21, 22],
+                    TSet = [23, 24],
                     TObject = 42,
                     Enumerable = new ArrayList() { 25, 26 },
                     TDictionary1 = new Dictionary<string, int>() { { "key1", 27 }, { "key2", 28 } },
@@ -35,8 +35,8 @@ namespace GRYLibrary.Tests.TestData.TestTypes.XMLSerializableType
                 },
                 GenericSimpleDataStructure1 = new GenericType<SimpleDataStructure1>()
                 {
-                    TList = new List<SimpleDataStructure1>() { SimpleDataStructure1.GetRandom(), SimpleDataStructure1.GetRandom() },
-                    TSet = new HashSet<SimpleDataStructure1>() { SimpleDataStructure1.GetRandom(), SimpleDataStructure1.GetRandom() },
+                    TList = [SimpleDataStructure1.GetRandom(), SimpleDataStructure1.GetRandom()],
+                    TSet = [SimpleDataStructure1.GetRandom(), SimpleDataStructure1.GetRandom()],
                     TDictionary1 = new Dictionary<string, SimpleDataStructure1>() { { "key", null } },
                     TDictionary2 = new Dictionary<int, SimpleDataStructure1>() { { 5, SimpleDataStructure1.GetRandom() }, { default, SimpleDataStructure1.GetRandom() } },
                     TObject = SimpleDataStructure1.GetRandom()

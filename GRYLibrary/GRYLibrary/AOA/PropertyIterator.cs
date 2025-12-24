@@ -20,7 +20,7 @@ namespace GRYLibrary.Core.AOA
         }
         public IEnumerable<(object, Type)> IterateOverObjectTransitively(object @object)
         {
-            List<(object, Type)> result = new();
+            List<(object, Type)> result = [];
             this.IterateOverObjectTransitively(@object, result);
             return result;
         }

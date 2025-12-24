@@ -40,7 +40,7 @@ namespace GRYLibrary.Core.Misc.Migration
 
             IEnumerable<string> namesOfAlreadyExecutedMigrations = this.GetExecutedMigrations().Select(m => m.MigrationName).ToList();
 
-            IList<MigrationInstance> migrationsToRun = new List<MigrationInstance>();
+            IList<MigrationInstance> migrationsToRun = [];
             foreach (MigrationInstance migration in this._Migrations)
             {
                 if (!namesOfAlreadyExecutedMigrations.Contains(migration.MigrationName))
@@ -89,7 +89,7 @@ namespace GRYLibrary.Core.Misc.Migration
         }
         public static IList<MigrationInstance> LoadMigrationsFromResources(Assembly assembly, string migrationsResourceNamePrefix)
         {
-            IList<MigrationInstance> migrationInstances = new List<MigrationInstance>();
+            IList<MigrationInstance> migrationInstances = [];
             List<string> resources = assembly.GetManifestResourceNames().Order().ToList();
             uint i = 0;
             foreach (string resourceName in resources)
@@ -110,7 +110,7 @@ namespace GRYLibrary.Core.Misc.Migration
         }
         public IList<MigrationExecutionInformation> GetExecutedMigrations()
         {
-            IList<MigrationExecutionInformation> result = new List<MigrationExecutionInformation>();
+            IList<MigrationExecutionInformation> result = [];
             using (DbCommand cmd = this._DatabaseInteractor.CreateCommand(this._DatabaseInteractor.GetSQLStatementForSelectMigrationMaintenanceTableContent(MigrationTableName)))
             {
                 using DbDataReader reader = cmd.ExecuteReader();

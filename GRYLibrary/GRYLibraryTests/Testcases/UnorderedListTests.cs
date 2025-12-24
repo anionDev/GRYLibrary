@@ -10,8 +10,8 @@ namespace GRYLibrary.Tests.Testcases
         public void UnorderedList_True_1()
         {
             // arrange 
-            UnorderedList<int> list1 = new UnorderedList<int>() { 1, 2, 2, 3 };
-            UnorderedList<int> list2 = new UnorderedList<int>() { 2, 3, 2, 1 };
+            UnorderedList<int> list1 = [1, 2, 2, 3];
+            UnorderedList<int> list2 = [2, 3, 2, 1];
             bool expected = true;
 
             // act
@@ -25,8 +25,8 @@ namespace GRYLibrary.Tests.Testcases
         public void UnorderedList_True_2()
         {
             // arrange 
-            UnorderedList<int> list1 = new UnorderedList<int>() { };
-            UnorderedList<int> list2 = new UnorderedList<int>() { };
+            UnorderedList<int> list1 = [];
+            UnorderedList<int> list2 = [];
             bool expected = true;
 
             // act
@@ -40,8 +40,8 @@ namespace GRYLibrary.Tests.Testcases
         public void UnorderedList_False_1()
         {
             // arrange 
-            UnorderedList<int> list1 = new UnorderedList<int>() { 1, 2, 2, 3 };
-            UnorderedList<int> list2 = new UnorderedList<int>() { 2, 3, 2, 1, 2 };
+            UnorderedList<int> list1 = [1, 2, 2, 3];
+            UnorderedList<int> list2 = [2, 3, 2, 1, 2];
             bool expected = false;
 
             // act
@@ -55,8 +55,8 @@ namespace GRYLibrary.Tests.Testcases
         public void UnorderedList_False_2()
         {
             // arrange 
-            UnorderedList<int> list1 = new UnorderedList<int>() { 1, 2, 3 };
-            UnorderedList<int> list2 = new UnorderedList<int>() { 2, 3, 1, 4 };
+            UnorderedList<int> list1 = [1, 2, 3];
+            UnorderedList<int> list2 = [2, 3, 1, 4];
             bool expected = false;
 
             // act
@@ -70,8 +70,8 @@ namespace GRYLibrary.Tests.Testcases
         public void UnorderedList_False_3()
         {
             // arrange 
-            UnorderedList<int> list1 = new UnorderedList<int>() { 1, 2, 3, 4 };
-            UnorderedList<int> list2 = new UnorderedList<int>() { 2, 3, 1 };
+            UnorderedList<int> list1 = [1, 2, 3, 4];
+            UnorderedList<int> list2 = [2, 3, 1];
             bool expected = false;
 
             // act

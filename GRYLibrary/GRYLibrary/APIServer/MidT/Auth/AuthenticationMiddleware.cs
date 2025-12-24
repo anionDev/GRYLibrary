@@ -31,7 +31,7 @@ namespace GRYLibrary.Core.APIServer.MidT.Auth
 
         private IDictionary<string, IAuthenticationProvider> GetAllAvailableAuthenticationProvider(IDictionary<string, IAuthenticationProviderConfiguration> externalAuthentificationMethods)
         {
-            Dictionary<string, IAuthenticationProvider> result = new Dictionary<string, IAuthenticationProvider>();
+            Dictionary<string, IAuthenticationProvider> result = [];
             foreach (KeyValuePair<string, IAuthenticationProviderConfiguration> method in externalAuthentificationMethods)
             {
                 result[method.Key] = method.Value.CreateProvider();

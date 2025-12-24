@@ -99,7 +99,7 @@ namespace GRYLibrary.Core.Misc.ConsoleApplication
 
         protected override Type[] GetVerbsImplementation()
         {
-            return new Type[] { typeof(Verb01) };
+            return [typeof(Verb01)];
         }
 
         #region Overhead
@@ -135,7 +135,7 @@ namespace GRYLibrary.Core.Misc.ConsoleApplication
 
         protected override Type[] GetVerbsImplementation()
         {
-            return new Type[] { typeof(Verb01), typeof(Verb02) };
+            return [typeof(Verb01), typeof(Verb02)];
         }
 
         #region Overhead
@@ -174,7 +174,7 @@ namespace GRYLibrary.Core.Misc.ConsoleApplication
 
         protected override Type[] GetVerbsImplementation()
         {
-            return new Type[] { typeof(Verb01), typeof(Verb02), typeof(Verb03) };
+            return [typeof(Verb01), typeof(Verb02), typeof(Verb03)];
         }
 
         #region Overhead

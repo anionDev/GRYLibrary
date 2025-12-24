@@ -5,7 +5,6 @@ using GRYLibrary.Core.ExecutePrograms.WaitingStates;
 using GRYLibrary.Core.Logging.GRYLogger;
 using System;
 using System.Data.Common;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -26,7 +25,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
         private readonly string _TaskNameStop;
         private readonly IGRYLog _Log;
         private readonly string _ResetDatabaseScript;
-        public DatabaseTestFrameworkTemplate(string dockerProjectName, IDatabasePersistenceConfiguration configuration, string testDatabaseFolder, string repositoryFolder, string taskNameStart, string taskNameStop, string resetDatabaseScript, IGRYLog log)
+        public DatabaseTestFrameworkTemplate(IDatabasePersistenceConfiguration configuration, string testDatabaseFolder, string repositoryFolder, string taskNameStart, string taskNameStop, string resetDatabaseScript, IGRYLog log)
         {
             this._TaskNameStart = taskNameStart;
             this._TaskNameStop = taskNameStop;

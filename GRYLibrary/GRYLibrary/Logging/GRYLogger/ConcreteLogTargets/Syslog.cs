@@ -18,7 +18,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
 
         public override HashSet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization()
         {
-            return new HashSet<Type>();
+            return [];
         }
 
         public override void Dispose()

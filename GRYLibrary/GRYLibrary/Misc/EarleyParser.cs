@@ -13,7 +13,7 @@ namespace GRYLibrary.Core.Misc
             this.S = new SortedSet<State>[words.Length + 1];
             for (int k = 0; k <= words.Length; k++)
             {
-                this.S[k] = new SortedSet<State>();
+                this.S[k] = [];
             }
         }
         public SortedSet<State>[] Parse(object[] words, Grammar grammar)
@@ -63,7 +63,7 @@ namespace GRYLibrary.Core.Misc
                     Rule = new ProductionRuleWithExpection()
                     {
                         Identifier = (NonTerminalSymbol)state.Rule.Expected.First(),
-                        Substituted = new List<Symbol>(),
+                        Substituted = [],
                         Expected = rule.Subsitution,
                     },
                     J = k,

@@ -17,9 +17,9 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
         public bool UserIsActivated { get; set; } = true;
         public bool UserIsLocked { get; set; } = false;
         public DateTimeOffset RegistrationMoment { get; set; } = default;
-        public HashSet<RefreshToken> RefreshToken { get; set; } = new HashSet<RefreshToken>();
-        public HashSet<AccessToken> AccessToken { get; set; } = new HashSet<AccessToken>();
-        public HashSet<Role> Roles { get; set; } = new HashSet<Role>();
+        public HashSet<RefreshToken> RefreshToken { get; set; } = [];
+        public HashSet<AccessToken> AccessToken { get; set; } = [];
+        public HashSet<Role> Roles { get; set; } = [];
         public TOTP? TOTP { get; set; } = default;
 
         public User()
@@ -41,9 +41,9 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
             user.EMailAddress = null;
             user.PasswordHash = passwordHash;
             user.RegistrationMoment = timeService.GetCurrentLocalTimeAsDateTimeOffset();
-            user.RefreshToken = new HashSet<RefreshToken>();
-            user.AccessToken = new HashSet<AccessToken>();
-            user.Roles = new HashSet<Role>();
+            user.RefreshToken = [];
+            user.AccessToken = [];
+            user.Roles = [];
             user.TOTP = new GRYLibrary.Core.APIServer.MFA.TOTP() { IsActicated = false, SecretKey = Guid.NewGuid().ToString("N") };
             return user;
         }

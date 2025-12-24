@@ -114,7 +114,7 @@ namespace GRYLibrary.Tests.Testcases
             public SerializeTestAttributeClass TestAttribute { get; set; }
             public SerializeTestBaseClass()
             {
-                this.ListTest = new List<bool>();
+                this.ListTest = [];
             }
             public override bool Equals(object obj)
             {

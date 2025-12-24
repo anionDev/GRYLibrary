@@ -6,7 +6,7 @@ namespace GRYLibrary.Core.Streams
     public class SimpleStreamMultiplier
     {
         public Stream Source { get; set; }
-        public IList<Stream> Destinations { get; } = new List<Stream>();
+        public IList<Stream> Destinations { get; } = [];
         public int Read(int maximalAmountOfBytesToRead)
         {
             byte[] buffer = new byte[maximalAmountOfBytesToRead];

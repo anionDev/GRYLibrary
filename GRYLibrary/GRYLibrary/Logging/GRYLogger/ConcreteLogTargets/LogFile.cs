@@ -11,7 +11,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
         public LogFile() { }
         public AbstractFilePath File { get; set; }
         public string Encoding { get; set; } = "utf-8";
-        private readonly IList<string> _Pool = new List<string>();
+        private readonly IList<string> _Pool = [];
         public int PreFlushPoolSize { get; set; } = 1;
         private string _BasePath;
         protected override void ExecuteImplementation(LogItem logItem, GRYLog logObject)
@@ -49,7 +49,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
 
         public override HashSet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization()
         {
-            return new HashSet<Type>();
+            return [];
         }
 
         public override void Dispose()

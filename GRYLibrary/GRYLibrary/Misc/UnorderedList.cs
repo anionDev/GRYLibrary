@@ -7,7 +7,7 @@ namespace GRYLibrary.Core.Misc
 {
     public class UnorderedList<T> : IList<T>, IEquatable<UnorderedList<T>>
     {
-        private readonly IList<T> _Items = new List<T>();
+        private readonly IList<T> _Items = [];
         public int Count => this._Items.Count;
 
         public bool IsReadOnly => this._Items.IsReadOnly;
@@ -32,7 +32,7 @@ namespace GRYLibrary.Core.Misc
 
         private ISet<WriteableTuple<T, ulong>> GetItemsWithCount(UnorderedList<T> items)
         {
-            Dictionary<T, ulong> result = new Dictionary<T, ulong>();
+            Dictionary<T, ulong> result = [];
             foreach (T item in items)
             {
                 if (result.ContainsKey(item))

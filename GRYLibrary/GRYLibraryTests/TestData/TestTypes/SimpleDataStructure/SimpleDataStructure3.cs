@@ -17,11 +17,11 @@ namespace GRYLibrary.Tests.TestData.TestTypes.SimpleDataStructure
             SimpleDataStructure3 result = new()
             {
                 Property4 = "Property4_e7df34db-bb6f-4a11-8c6d-66bccafbd041",
-                Property5 = new List<SimpleDataStructure2>
-                {
+                Property5 =
+                [
                     new SimpleDataStructure2() { Guid = Guid.Parse("a54f4945-e928-4296-bf9b-e9ae16b35744") },
                     new SimpleDataStructure2() { Guid = Guid.Parse("1735ece2-942f-4380-aec4-27aaa4021ed5") }
-                }
+                ]
             };
             return result;
         }

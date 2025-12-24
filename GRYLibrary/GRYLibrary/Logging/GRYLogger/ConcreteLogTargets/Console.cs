@@ -44,7 +44,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
         }
         public override HashSet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization()
         {
-            return new HashSet<Type>() { typeof(ConsoleColor) };
+            return [typeof(ConsoleColor)];
         }
 
         private void WriteWithColorToConsole(string message, TextWriter output, LogLevel logLevel, GRYLog logObject)

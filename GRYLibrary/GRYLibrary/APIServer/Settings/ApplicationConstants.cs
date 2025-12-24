@@ -83,7 +83,7 @@ namespace GRYLibrary.Core.APIServer.Settings
         public string BaseFolder { get; private set; }
         public string ApplicationName { get; set; }
         public string ApplicationDescription { get; set; }
-        public IList<Regulation> Regulations { get; set; } = new List<Regulation>();
+        public IList<Regulation> Regulations { get; set; } = [];
         public Version3 ApplicationVersion { get; set; }
         public ExecutionMode ExecutionMode { get; set; }
         public GRYEnvironment Environment { get; set; }
@@ -133,8 +133,8 @@ namespace GRYLibrary.Core.APIServer.Settings
         public Type LoggingMiddleware { get; set; } = null;
         public Type WebApplicationFirewallMiddleware { get; set; } = null;
         public Type MaintenanceSiteMiddleware { get; set; } = null;
-        public IList<Type> CustomMiddlewares1 { get; set; } = new List<Type>();
-        public IList<Type> CustomMiddlewares2 { get; set; } = new List<Type>();
+        public IList<Type> CustomMiddlewares1 { get; set; } = [];
+        public IList<Type> CustomMiddlewares2 { get; set; } = [];
         public ISet<Type> KnownTypes { get; set; } = new HashSet<Type>();
         public bool UseWebSockets { get; set; }
         public bool ListenOnEveryIP { get; set; }

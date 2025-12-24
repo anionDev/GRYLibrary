@@ -43,7 +43,7 @@ namespace GRYLibrary.Core.Graph
         /// </remarks>
         public override ISet<Vertex> GetDirectSuccessors(Vertex vertex, bool doNotWalkAgainstDirectedEdges = true)
         {
-            HashSet<Vertex> result = new();
+            HashSet<Vertex> result = [];
             foreach (DirectedEdge edge in vertex.GetConnectedEdges())
             {
                 if (edge.Source.Equals(vertex))
@@ -65,7 +65,7 @@ namespace GRYLibrary.Core.Graph
         /// </remarks>
         public ISet<Vertex> GetDirectPredecessors(Vertex vertex)
         {
-            HashSet<Vertex> result = new();
+            HashSet<Vertex> result = [];
             foreach (DirectedEdge edge in vertex.GetConnectedEdges())
             {
                 if (edge.Target.Equals(vertex))
@@ -93,7 +93,7 @@ namespace GRYLibrary.Core.Graph
 
         public ISet<DirectedEdge> GetIncomingEdges(Vertex vertex)
         {
-            HashSet<DirectedEdge> result = new();
+            HashSet<DirectedEdge> result = [];
             foreach (DirectedEdge edge in vertex.GetConnectedEdges())
             {
                 if (edge.Target.Equals(vertex))
@@ -105,7 +105,7 @@ namespace GRYLibrary.Core.Graph
         }
         public ISet<DirectedEdge> GetOutgoingEdges(Vertex vertex)
         {
-            HashSet<DirectedEdge> result = new();
+            HashSet<DirectedEdge> result = [];
             foreach (DirectedEdge edge in vertex.GetConnectedEdges())
             {
                 if (edge.Source.Equals(vertex))
@@ -136,13 +136,13 @@ namespace GRYLibrary.Core.Graph
             {
                 throw new Exception("The row-count must be equal to the column-count.");
             }
-            IList<Vertex> vertices = new List<Vertex>();
+            IList<Vertex> vertices = [];
             for (int i = 0; i < adjacencyMatrix.GetLength(0); i++)
             {
                 Vertex newVertex = new("Vertex_" + (i + 1).ToString());
                 vertices.Add(newVertex);
             }
-            IList<DirectedEdge> edges = new List<DirectedEdge>();
+            IList<DirectedEdge> edges = [];
             for (int i = 0; i < adjacencyMatrix.GetLength(0); i++)
             {
                 for (int j = 0; j < adjacencyMatrix.GetLength(1); j++)

@@ -185,7 +185,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
                 Role newRole = new Role();
                 newRole.Id = Guid.NewGuid().ToString();
                 newRole.Name = roleName;
-                newRole.InheritedRoles = new HashSet<Role>();
+                newRole.InheritedRoles = [];
                 this._TransientAuthenticationServicePersistence.AddRole(newRole);
             }
         }

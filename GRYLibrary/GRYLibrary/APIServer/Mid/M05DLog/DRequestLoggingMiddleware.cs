@@ -46,7 +46,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
             this._RequestLogger = this._AppConstants.ExecutionMode.Accept(new GetLoggerVisitor(this._RequestLoggingSettings.RequestsLogConfiguration, this._AppConstants.GetLogFolder(), "Requests"));
             CounterConfiguration counterMetricConfig = new CounterConfiguration()
             {
-                LabelNames = new[] { "domain" },
+                LabelNames = ["domain"],
             };
             this._RequestCounterSum = Metrics.CreateCounter("http_requests_sum", "Sum of all HTTP-requests", counterMetricConfig);
             this._RequestCounterSum.IncTo(0);
@@ -127,12 +127,12 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
 
         private IDictionary<string, IList<string?>> GetHeader(HttpRequest request)
         {
-            Dictionary<string, IList<string?>> result = new Dictionary<string, IList<string?>>();
+            Dictionary<string, IList<string?>> result = [];
             foreach (string headerToLog in this._RequestLoggingSettings.LoggedHTTPRequeustHeader)
             {
                 if (!result.TryGetValue(headerToLog, out IList<string?>? value))
                 {
-                    value = new List<string?>();
+                    value = [];
                     result.Add(headerToLog, value);
                 }
                 if (request.Headers.TryGetValue(headerToLog, out Microsoft.Extensions.Primitives.StringValues values))

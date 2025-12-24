@@ -98,7 +98,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         /// <remarks>
         /// Will only be used if <see cref="GRYLogConfiguration.StoreProcessedLogItemsInternally"/> is set to true.ls -la
         /// </remarks>
-        public IList<LogItem> ProcessedLogItems { get; set; } = new List<LogItem>();
+        public IList<LogItem> ProcessedLogItems { get; set; } = [];
         public Action<LogItem> AddLogEntry { get; set; }
 
         public int GetAmountOfErrors()
@@ -260,7 +260,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
                     }
                     if (logItem.PlainMessage.Contains(Environment.NewLine) && this.Configuration.LogEveryLineOfLogEntryInNewLine)
                     {
-                        foreach (string line in logItem.PlainMessage.Split(new string[] { Environment.NewLine }, StringSplitOptions.None))
+                        foreach (string line in logItem.PlainMessage.Split([Environment.NewLine], StringSplitOptions.None))
                         {
                             this.Log(new LogItem(this.GetTimeForLogItem(), line, logItem.Exception, logItem.LogLevel));
                         }

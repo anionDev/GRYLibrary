@@ -227,7 +227,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
 
         public IEnumerable<string> GetAllTableNames()
         {
-            IList<string> result = new List<string>();
+            IList<string> result = [];
             string sql = this.CreateSQLStatementForGetAllTableNames();
             using (DbCommand cmd = this.CreateCommand(sql))
             {

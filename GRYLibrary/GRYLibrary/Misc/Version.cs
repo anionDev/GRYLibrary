@@ -72,7 +72,7 @@ namespace GRYLibrary.Core.Misc
             {
                 throw Utilities.CreateNullReferenceExceptionDueToParameter(nameof(version));
             }
-            char[] chArray1 = new char[1] { '.' };
+            char[] chArray1 = ['.'];
             string[] textArray1 = version.Split(chArray1);
             int num1 = textArray1.Length;
             if (num1 is < 2 or > 4)
@@ -402,7 +402,7 @@ namespace GRYLibrary.Core.Misc
             }
             if (fieldCount == 3)
             {
-                objArray1 = new object[5] { this.major, ".", this.minor, ".", this.build };
+                objArray1 = [this.major, ".", this.minor, ".", this.build];
                 return string.Concat(objArray1);
             }
             if (this.revision == -1)
@@ -411,7 +411,7 @@ namespace GRYLibrary.Core.Misc
             }
             if (fieldCount == 4)
             {
-                objArray1 = new object[7] { this.major, ".", this.minor, ".", this.build, ".", this.revision };
+                objArray1 = [this.major, ".", this.minor, ".", this.build, ".", this.revision];
                 return string.Concat(objArray1);
             }
             throw new ArgumentException(string.Format("ArgumentOutOfRange_Bounds_Lower_Upper {0},{1}", "0", "4"), nameof(fieldCount));

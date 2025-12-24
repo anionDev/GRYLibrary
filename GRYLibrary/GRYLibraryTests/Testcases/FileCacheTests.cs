@@ -14,7 +14,7 @@ namespace GRYLibrary.Tests.Testcases
         {
             // arrange
             using TempFile tempFile = new TempFile();
-            File.WriteAllLines(tempFile.Path, new string[] { "k1;v1", "k2;v2" });
+            File.WriteAllLines(tempFile.Path, ["k1;v1", "k2;v2"]);
             FileCache<TestSerializable, TestSerializable> fileCache = new FileCache<TestSerializable, TestSerializable>(tempFile.Path);
             fileCache.Load();
             TestSerializable k2 = new TestSerializable();
@@ -34,7 +34,7 @@ namespace GRYLibrary.Tests.Testcases
         {
             // arrange
             using TempFile tempFile = new TempFile();
-            File.WriteAllLines(tempFile.Path, new string[] { "k1;v1" });
+            File.WriteAllLines(tempFile.Path, ["k1;v1"]);
             FileCache<TestSerializable, TestSerializable> fileCache = new FileCache<TestSerializable, TestSerializable>(tempFile.Path);
             fileCache.Load();
             TestSerializable k2 = new TestSerializable();
@@ -57,7 +57,7 @@ namespace GRYLibrary.Tests.Testcases
         {
             // arrange
             using TempFile tempFile = new TempFile();
-            File.WriteAllLines(tempFile.Path, new string[] { "k1;v1", "k2;v2" });
+            File.WriteAllLines(tempFile.Path, ["k1;v1", "k2;v2"]);
             FileCache<TestSerializable, TestSerializable> fileCache = new FileCache<TestSerializable, TestSerializable>(tempFile.Path);
             fileCache.Load();
             TestSerializable k2 = new TestSerializable();
