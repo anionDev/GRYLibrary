@@ -355,7 +355,7 @@ namespace GRYLibrary.Tests.Testcases
 
             Assert.IsTrue(EnumerableTools.SetEquals(new HashSet<char> { 's', 'o', 'm', 'e', 't' }, EnumerableTools.ObjectToSet<char>(new HashSet<char> { 's', 'o', 'm', 'e', 't', 'e', 's', 't' })));
 
-            HashSet<int> testSet = new() { 3, 4, 5 };
+            HashSet<int> testSet = [3, 4, 5];
             object testSetAsObject = testSet;
             Assert.IsTrue(EnumerableTools.SetEquals(testSet, EnumerableTools.ObjectToSet<int>(testSetAsObject)));
         }
@@ -365,7 +365,7 @@ namespace GRYLibrary.Tests.Testcases
             Assert.Throws<InvalidCastException>(() => EnumerableTools.ObjectToList<object>(new object()));
             Assert.Throws<InvalidCastException>(() => EnumerableTools.ObjectToList<object>("sometest"));
 
-            List<int> testList = new() { 3, 4, 5 };
+            List<int> testList = [3, 4, 5];
             object testListAsObject = testList;
             Assert.IsTrue(EnumerableTools.ListEquals(testList, EnumerableTools.ObjectToList<int>(testListAsObject)));
 
@@ -435,7 +435,7 @@ namespace GRYLibrary.Tests.Testcases
         [TestMethod]
         public void EnumerableCount()
         {
-            List<object> list = new() { 3, 4, 5 };
+            List<object> list = [3, 4, 5];
             IEnumerable listAsEnumerable = list;
             Assert.AreEqual(list.Count, GUtilities.Count(listAsEnumerable));
         }
@@ -542,7 +542,7 @@ namespace GRYLibrary.Tests.Testcases
         {
             // arrange
             string input = "de";
-            byte[] expected = new byte[] { 222 };
+            byte[] expected = [222];
 
             // act
             byte[] actual = GUtilities.HexStringToByteArray(input);
@@ -554,7 +554,7 @@ namespace GRYLibrary.Tests.Testcases
         public void ByteArrayToHexStringTest()
         {
             // arrange
-            byte[] input = new byte[] { 222 };
+            byte[] input = [222];
             string expected = "DE";
 
             // act
@@ -654,7 +654,7 @@ namespace GRYLibrary.Tests.Testcases
         public void UnsignedInteger32BitToByteArrayAndViceVersaTest2()
         {
             // arrange
-            byte[] expected = new byte[] { 1, 34, 241, 25 };
+            byte[] expected = [1, 34, 241, 25];
 
             // act
             byte[] actual = GUtilities.UnsignedInteger32BitToByteArray(GUtilities.ByteArrayToUnsignedInteger32Bit(expected));

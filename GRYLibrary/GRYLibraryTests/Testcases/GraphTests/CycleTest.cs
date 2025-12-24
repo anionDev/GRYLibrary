@@ -21,19 +21,11 @@ namespace GRYLibrary.Tests.Testcases.GraphTests
             DirectedEdge edge3 = new(v1, v2, "e3");
             DirectedEdge edge4 = new(v2, v3, "e4");
 
-            List<Edge> cycleItems = new();
-            cycleItems.Add(edge3);
-            cycleItems.Add(edge4);
-            cycleItems.Add(edge1);
-            cycleItems.Add(edge2);
+            List<Edge> cycleItems = [edge3, edge4, edge1, edge2];
 
             Cycle cycle = new(cycleItems);
 
-            List<DirectedEdge> cycleInternalOrder = new();
-            cycleInternalOrder.Add(edge3);
-            cycleInternalOrder.Add(edge4);
-            cycleInternalOrder.Add(edge1);
-            cycleInternalOrder.Add(edge2);
+            List<DirectedEdge> cycleInternalOrder = [edge3, edge4, edge1, edge2];
 
             Assert.IsTrue(cycle.Edges.SequenceEqual(cycleInternalOrder));
         }
@@ -50,9 +42,7 @@ namespace GRYLibrary.Tests.Testcases.GraphTests
             DirectedEdge edge4 = new(v3, v4, "e4");
             DirectedEdge edge5 = new(v4, v3, "e5");
 
-            List<Edge> cycleItems = new();
-
-            cycleItems.Add(edge1);
+            List<Edge> cycleItems = [edge1];
             Assert.IsFalse(Cycle.RepresentsCycle(cycleItems));
 
             cycleItems.Add(edge2);

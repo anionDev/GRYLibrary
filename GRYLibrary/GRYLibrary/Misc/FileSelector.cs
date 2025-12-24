@@ -54,7 +54,7 @@ namespace GRYLibrary.Core.Misc
         public static FileSelector FilesInFolder(string folder, Func<string, bool> filter, bool deepSearch = true)
         {
             FileSelector result = new();
-            List<string> list = new();
+            List<string> list = [];
             if (deepSearch)
             {
                 Utilities.ForEachFileAndDirectoryTransitively(folder, null, (string file, object argument) =>

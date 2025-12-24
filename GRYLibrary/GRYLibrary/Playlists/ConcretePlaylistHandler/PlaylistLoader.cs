@@ -155,7 +155,7 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
 
         private ISet<string> LoadItems(IEnumerable<string> items, ISet<string> notExistingItems, string workingDirectory)
         {
-            HashSet<string> result = new HashSet<string>();
+            HashSet<string> result = [];
             foreach (string item in items)
             {
                 string normalizedItem = this.NormalizedItem(item, workingDirectory);

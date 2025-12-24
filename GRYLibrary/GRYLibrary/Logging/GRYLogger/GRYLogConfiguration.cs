@@ -59,25 +59,25 @@ namespace GRYLibrary.Core.Logging.GRYLogger
 
         public void Initliaze()
         {
-            this.LogTargets = new List<GRYLogTarget> {
+            this.LogTargets = [
                 new Console() { Enabled = true, Format = GRYLogLogFormat.OnlyMessage },
                 new LogFile() { Enabled = false, Format = GRYLogLogFormat.GRYLogFormat }
-            };
+            ];
             this.WriteLogEntriesAsynchronous = false;
             this.Enabled = true;
             this.PrintEmptyLines = false;
             this.PrintErrorsAsInformation = false;
             this.Name = string.Empty;
             this.DateFormat = Misc.Utilities.FormatForDateTimesInFullFormatISO8601;
-            this.LoggedMessageTypesConfiguration = new List<SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>>
-            {
+            this.LoggedMessageTypesConfiguration =
+            [
                 new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Trace, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Trace), ConsoleColor = ConsoleColor.Gray }),
                 new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Debug, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Debug), ConsoleColor = ConsoleColor.Cyan }),
                 new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Information, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Information), ConsoleColor = ConsoleColor.DarkGreen }),
                 new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Warning, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Warning), ConsoleColor = ConsoleColor.DarkYellow }),
                 new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Error, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Error), ConsoleColor = ConsoleColor.Red }),
                 new SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>(LogLevel.Critical, new LoggedMessageTypeConfiguration() { CustomText = nameof(LogLevel.Critical), ConsoleColor = ConsoleColor.DarkRed })
-            };
+            ];
             this.LogEveryLineOfLogEntryInNewLine = false;
             this.StoreProcessedLogItemsInternally = false;
         }

@@ -42,9 +42,9 @@ namespace GRYLibrary.Core.Misc.TextTransformUtilities
         public static string GenerateConstants(string repositoryFolder, string codeUnitName, bool addDebugInformation)
         {
             string constantsFolder = Path.Combine(repositoryFolder, codeUnitName, "Other", "Resources", "Constants");
-            List<string> contentLines = new List<string>();
+            List<string> contentLines = [];
             bool constantsFolderExists = Directory.Exists(constantsFolder);
-            List<string> constantsfiles = new List<string>();
+            List<string> constantsfiles = [];
             if (constantsFolderExists)
             {
                 constantsfiles = Directory.GetFiles(constantsFolder).ToList();
@@ -53,7 +53,7 @@ namespace GRYLibrary.Core.Misc.TextTransformUtilities
                     if (file.EndsWith(".constant.xml"))
                     {
                         IDictionary<string, string> constantProperties = GetConstantProperties(file);
-                        List<string> constantDocumentationSummaryLines = new List<string>();
+                        List<string> constantDocumentationSummaryLines = [];
                         if (constantProperties["documentationsummary"].Contains('\n'))
                         {
                             constantDocumentationSummaryLines.AddRange(constantProperties["documentationsummary"].Split('\n'));

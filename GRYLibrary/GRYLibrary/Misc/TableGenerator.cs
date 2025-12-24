@@ -51,7 +51,7 @@ namespace GRYLibrary.Core.Misc
 
             public string[] Handle(ASCIITable tableOutputType)
             {
-                List<string> result = new();
+                List<string> result = [];
                 if (!string.IsNullOrEmpty(tableOutputType.Title))
                 {
                     result.Add(tableOutputType.Title);
@@ -78,10 +78,10 @@ namespace GRYLibrary.Core.Misc
 
             public string[] Handle(CSV csv)
             {
-                List<string> result = new();
+                List<string> result = [];
                 for (int i = 0; i < this.Array.GetLength(0); i++)
                 {
-                    List<string> lineItems = new();
+                    List<string> lineItems = [];
                     for (int j = 0; j < this.Array.GetLength(1); j++)
                     {
                         lineItems.Add(this.Array[i, j]);

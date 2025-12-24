@@ -33,8 +33,8 @@ namespace GRYLibrary.Core.Playlists.ConcretePlaylistHandler
             IEnumerable<string> lines = File.ReadAllLines(playlistFile, this.Encoding)
                 .Where(line => !string.IsNullOrWhiteSpace(line) && !line.StartsWith('#'))
                 .Select(line => line.Replace("\"", string.Empty));
-            HashSet<string> includedItems = new();
-            HashSet<string> excludedItems = new();
+            HashSet<string> includedItems = [];
+            HashSet<string> excludedItems = [];
             foreach (string line in lines)
             {
                 if (line.StartsWith('-'))

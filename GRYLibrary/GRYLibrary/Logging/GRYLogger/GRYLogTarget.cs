@@ -16,13 +16,13 @@ namespace GRYLibrary.Core.Logging.GRYLogger
     {
         public GRYLogLogFormat Format { get; set; } = GRYLogLogFormat.GRYLogFormat;
 
-        public HashSet<LogLevel> LogLevels { get; set; } = new HashSet<LogLevel>
-            {
+        public HashSet<LogLevel> LogLevels { get; set; } =
+            [
                  LogLevel.Information,
                  LogLevel.Warning,
                  LogLevel.Error,
                  LogLevel.Critical
-            };
+            ];
         public bool Enabled { get; set; } = true;
         public abstract HashSet<Type> FurtherGetExtraTypesWhichAreRequiredForSerialization();
         internal void Execute(LogItem logItem, GRYLog logObject)
@@ -51,13 +51,13 @@ namespace GRYLibrary.Core.Logging.GRYLogger
 
         internal static ISet<GRYLogTarget> GetAll()
         {
-            HashSet<GRYLogTarget> result = new HashSet<GRYLogTarget>
-            {
+            HashSet<GRYLogTarget> result =
+            [
                 new ConcreteLogTargets.Console(),
                 new LogFile(),
                 new Observer(),
                 new Syslog()
-            };
+            ];
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 result.Add(new WindowsEventLog());

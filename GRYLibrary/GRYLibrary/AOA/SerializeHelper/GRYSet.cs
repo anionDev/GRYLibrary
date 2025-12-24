@@ -7,7 +7,7 @@ namespace GRYLibrary.Core.AOA.SerializeHelper
     {
         private bool _AllowDuplicatedElements = true;
         private ISet<T> _ItemsAsSet = null;
-        private readonly IList<T> _ItemsAsList = new List<T>();
+        private readonly IList<T> _ItemsAsList = [];
         internal void DisallowDuplicatedElements()
         {
             if (this._AllowDuplicatedElements)

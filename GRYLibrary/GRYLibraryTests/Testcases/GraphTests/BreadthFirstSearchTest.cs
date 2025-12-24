@@ -12,7 +12,7 @@ namespace GRYLibrary.Tests.Testcases.GraphTests
         [TestMethod]
         public void TestSimpleBreadthFirstSearch()
         {
-            List<int> order = new();
+            List<int> order = [];
             Graph g = TestGraphs.GetTestGraphWithoutLoop();
             g.BreadthFirstSearch((v, edges) =>
             {
@@ -28,7 +28,7 @@ namespace GRYLibrary.Tests.Testcases.GraphTests
         [TestMethod]
         public void TestSimpleBreadthFirstSearch2()
         {
-            List<Tuple<Vertex, IList<Edge>>> order = new();
+            List<Tuple<Vertex, IList<Edge>>> order = [];
             Graph g = TestGraphs.GetTestGraphWithoutLoop();
             g.BreadthFirstSearch((v, edges) =>
             {

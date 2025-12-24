@@ -4,7 +4,7 @@ namespace GRYLibrary.Core.Misc
 {
     public class NonPersistentInputHistoryList
     {
-        private readonly IList<string> UserInputs = new List<string>();
+        private readonly IList<string> UserInputs = [];
         private int CurrentuserInputIndex = 0;
         public void EnterPressed(string input)
         {

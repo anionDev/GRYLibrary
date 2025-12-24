@@ -105,7 +105,14 @@ namespace GRYLibrary.Core.APIServer.Utilities
             {
                 if (Debugger.IsAttached)
                 {
-                    Console.Clear();
+                    try
+                    {
+                        Console.Clear();
+                    }
+                    catch
+                    {
+                        GRYLibrary.Core.Misc.Utilities.NoOperation();
+                    }
                 }
                 GRYConsoleApplication<GCodeUnitSpecificCommandlineParameter> consoleApp = new GRYConsoleApplication<GCodeUnitSpecificCommandlineParameter>(new VerbParser<GCodeUnitSpecificCommandlineParameter>(APIServer<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>.CreateMain(initializer)), codeUnitName, codeUnitVersion.ToString(), codeUnitDescription, true, executionMode, environmentTargetType, additionalHelpText);
                 exitCode = consoleApp.Main(commandlineArguments);
@@ -116,10 +123,6 @@ namespace GRYLibrary.Core.APIServer.Utilities
                 exception = ex;
 #pragma warning restore IDE0059 // Unnecessary assignment of a value
                 exitCode = 1;
-            }
-            if (exitCode != 0 && Debugger.IsAttached)
-            {
-                Console.ReadLine();
             }
             return exitCode;
         }
@@ -189,7 +192,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
             accessToken = null;
             return false;
         }
-        private readonly static IList<HashAlgorithm> _HashAlgorithms = new List<HashAlgorithm>() { new SHA256(), new SHA256PureCSharp() };
+        private readonly static IList<HashAlgorithm> _HashAlgorithms = [new SHA256(), new SHA256PureCSharp()];
         public static HashAlgorithm GetHashAlgorithm(string passwordHashAlgorithmIdentifier)
         {
             byte[] passwordHashAlgorithmIdentifierBytes = GUtilities.PadLeft(new UTF8Encoding(false).GetBytes(passwordHashAlgorithmIdentifier), 10);

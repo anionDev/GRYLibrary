@@ -11,7 +11,7 @@ namespace GRYLibrary.Tests.Testcases.GraphTests
         [TestMethod]
         public void TestSimpleSearch()
         {
-            IList<Tuple<int, IList<Edge>>> order = new List<Tuple<int, IList<Edge>>>();
+            IList<Tuple<int, IList<Edge>>> order = [];
             Graph g = TestGraphs.GetTestGraphWithoutLoop();
             g.DepthFirstSearch((v, edges) =>
             {

@@ -67,7 +67,7 @@ namespace GRYLibrary.Core.Misc
 
         public static void AddItemToEnumerable(object enumerable, object[] addMethodArguments)
         {
-            List<object> castedArguments = new();
+            List<object> castedArguments = [];
             System.Reflection.MethodInfo addMethod = enumerable.GetType().GetMethod("Add");
             AssertCondition(addMethod.GetParameters().Length == addMethodArguments.Length);
             for (int i = 0; i < addMethodArguments.Length; i++)
@@ -144,7 +144,7 @@ namespace GRYLibrary.Core.Misc
                 throw new InvalidCastException();
             }
             IEnumerable objects = ObjectToEnumerable(@object);
-            List<T> result = new();
+            List<T> result = [];
             foreach (object obj in objects)
             {
                 if (obj is T t)
@@ -169,7 +169,7 @@ namespace GRYLibrary.Core.Misc
                 throw new InvalidCastException();
             }
             IEnumerable objects = ObjectToEnumerable(@object);
-            HashSet<T> result = new();
+            HashSet<T> result = [];
             foreach (object obj in objects)
             {
                 if (obj is T t)
@@ -200,7 +200,7 @@ namespace GRYLibrary.Core.Misc
                 throw new InvalidCastException();
             }
             IEnumerable objects = ObjectToEnumerable(@object);
-            List<T> result = new();
+            List<T> result = [];
             foreach (object obj in objects)
             {
                 if (obj is T t)
@@ -234,7 +234,7 @@ namespace GRYLibrary.Core.Misc
                 throw new InvalidCastException();
             }
             IEnumerable<object> objects = ObjectToEnumerable<object>(@object);
-            Dictionary<TKey, TValue> result = new();
+            Dictionary<TKey, TValue> result = [];
             foreach (object obj in objects)
             {
                 KeyValuePair<TKey, TValue> kvp = ObjectToKeyValuePair<TKey, TValue>(obj);

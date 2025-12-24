@@ -34,7 +34,7 @@ namespace GRYLibrary.Core.Graph
             }
             return this.Name.Equals(typedObject.Name);
         }
-        internal List<Edge> ConnectedEdges { get; } = new List<Edge>();
+        internal List<Edge> ConnectedEdges { get; } = [];
         public List<Edge> GetConnectedEdges()
         {
             return new List<Edge>(this.ConnectedEdges);
@@ -52,7 +52,7 @@ namespace GRYLibrary.Core.Graph
 
         internal IEnumerable<Vertex> GetSuccessorVertices()
         {
-            List<Vertex> result = new();
+            List<Vertex> result = [];
             foreach (Edge edge in this.ConnectedEdges)
             {
                 if (edge.GetInputs().Contains(this))

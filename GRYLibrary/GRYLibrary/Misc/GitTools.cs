@@ -28,7 +28,7 @@ namespace GRYLibrary.Core.Misc
         public static IEnumerable<string> GetGitSubmodulePaths(string repositoryFolder, bool recursive = true)
         {
             GitCommandResult commandresult = ExecuteGitCommand(repositoryFolder, "submodule status" + (recursive ? " --recursive" : string.Empty), true);
-            List<string> result = new();
+            List<string> result = [];
             foreach (string rawLine in commandresult.StdOutLines)
             {
                 string line = rawLine.Trim();
@@ -54,12 +54,12 @@ namespace GRYLibrary.Core.Misc
         }
         public static bool GitRepositoryContainsObligatoryFiles(string repositoryFolder, out ISet<string> missingFiles)
         {
-            List<Tuple<string, ISet<string>>> fileLists = new()
-            {
+            List<Tuple<string, ISet<string>>> fileLists =
+            [
                 Tuple.Create<string, ISet<string>>(".gitignore", new HashSet<string>()),
                 Tuple.Create<string, ISet<string>>("License.txt", new HashSet<string>() { "License", "License.md" }),
                 Tuple.Create<string, ISet<string>>("ReadMe.md", new HashSet<string>() { "ReadMe", "ReadMe.txt" })
-            };
+            ];
             return GitRepositoryContainsFiles(repositoryFolder, out missingFiles, fileLists);
         }
         public static void AddGitRemote(string repositoryFolder, string remoteFolder, string remoteName)
@@ -137,7 +137,7 @@ namespace GRYLibrary.Core.Misc
             return false;
         }
 
-        private static readonly char[] _Separators = new[] { '/' };
+        private static readonly char[] _Separators = ['/'];
 
         /// <returns>
         /// Returns a tuple.

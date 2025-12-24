@@ -45,7 +45,7 @@ namespace GRYLibrary.Core.AOA.EqualsHelper
         public List<AbstractCustomComparer> CustomComparer { get; set; }
         public PropertyEqualsCalculatorConfiguration()
         {
-            this.CustomComparer = new List<AbstractCustomComparer>() {
+            this.CustomComparer = [
               new PrimitiveComparer(this),
               new TypeComparer(this),
               new KeyValuePairComparer(this),
@@ -55,7 +55,7 @@ namespace GRYLibrary.Core.AOA.EqualsHelper
               new DictionaryComparer(this),
               new EnumerableComparer(this),
               new AttributeValueComparer(this),
-            };
+            ];
         }
         internal void AddPending(object object1, object object2)
         {

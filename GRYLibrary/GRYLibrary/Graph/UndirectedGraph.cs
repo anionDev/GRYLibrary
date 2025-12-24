@@ -28,7 +28,7 @@ namespace GRYLibrary.Core.Graph
         /// </remarks>
         public override ISet<Vertex> GetDirectSuccessors(Vertex vertex, bool doNotWalkAgainstDirectedEdges = true)
         {
-            HashSet<Vertex> result = new();
+            HashSet<Vertex> result = [];
             foreach (UndirectedEdge edge in vertex.GetConnectedEdges())
             {
                 List<Vertex> vertices = edge.ConnectedVertices.ToList();
@@ -52,7 +52,7 @@ namespace GRYLibrary.Core.Graph
         }
         public override ISet<Edge> GetDirectSuccessorEdges(Vertex vertex)
         {
-            HashSet<Edge> result = new();
+            HashSet<Edge> result = [];
             foreach (Edge edge in vertex.GetConnectedEdges())
             {
                 UndirectedEdge undirectedEdge = (UndirectedEdge)edge;

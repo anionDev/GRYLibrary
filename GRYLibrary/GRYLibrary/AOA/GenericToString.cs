@@ -73,7 +73,7 @@ namespace GRYLibrary.Core.AOA
                 }
                 else
                 {
-                    List<(string/*Propertyname*/, object)> propertyValues = new();
+                    List<(string/*Propertyname*/, object)> propertyValues = [];
                     foreach (FieldInfo field in type.GetFields())
                     {
                         if (this.FieldSelector(field))

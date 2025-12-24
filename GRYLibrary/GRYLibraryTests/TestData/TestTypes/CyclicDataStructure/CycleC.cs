@@ -11,7 +11,7 @@ namespace GRYLibrary.Tests.TestData.TestTypes.CyclicDataStructure
     public class CycleC : IGRYSerializable
     {
         public Guid Id { get; set; } = Guid.NewGuid();
-        public IList<CycleA> A { get; set; } = new List<CycleA>();
+        public IList<CycleA> A { get; set; } = [];
 
         #region Overhead
         public override bool Equals(object @object)

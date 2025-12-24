@@ -163,7 +163,7 @@ namespace GRYLibrary.Core.Graph
                 return true;
             }
             Vertex startVertex = this._Vertices.First();
-            Dictionary<Vertex, bool> visited = new();
+            Dictionary<Vertex, bool> visited = [];
             foreach (Vertex vertex in this._Vertices)
             {
                 visited.Add(vertex, false);
@@ -238,7 +238,7 @@ namespace GRYLibrary.Core.Graph
             this.InitializeSearchAndDoSomeChecks(startVertex, out Dictionary<Vertex, bool> visitedMap);
             Queue<Tuple<Vertex, IList<Edge>>> queue = new();
             visitedMap[startVertex] = true;
-            List<Edge> initialList = new();
+            List<Edge> initialList = [];
             if (!customAction(startVertex, initialList))
             {
                 return;
@@ -280,7 +280,7 @@ namespace GRYLibrary.Core.Graph
         {
             this.InitializeSearchAndDoSomeChecks(startVertex, out Dictionary<Vertex, bool> visitedMap);
             Stack<Tuple<Vertex, IList<Edge>>> stack = new();
-            stack.Push(new Tuple<Vertex, IList<Edge>>(startVertex, new List<Edge>()));
+            stack.Push(new Tuple<Vertex, IList<Edge>>(startVertex, []));
             while (stack.Count > 0)
             {
                 Tuple<Vertex, IList<Edge>> currentVertex = stack.Pop();
@@ -316,7 +316,7 @@ namespace GRYLibrary.Core.Graph
             {
                 throw new Exceptions.InternalAlgorithmException($"Vertex '{startVertex}' is not contained in this graph.");
             }
-            visitedMap = new Dictionary<Vertex, bool>();
+            visitedMap = [];
             foreach (Vertex vertex in this.Vertices)
             {
                 visitedMap.Add(vertex, false);

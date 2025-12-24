@@ -121,7 +121,7 @@ namespace GRYLibrary.Core.Misc
 
         private static string CalculateSimilarityHelperGetIntersection(string string1, string string2)
         {
-            IList<char> list = new List<char>();
+            IList<char> list = [];
             foreach (char character in string1)
             {
                 if (string2.Contains(character))
@@ -134,7 +134,7 @@ namespace GRYLibrary.Core.Misc
         }
         private static IDictionary<char, int> CalculateSimilarityHelperGetCharFrequencyMap(string str)
         {
-            Dictionary<char, int> result = new();
+            Dictionary<char, int> result = [];
             foreach (char chr in str)
             {
                 if (result.ContainsKey(chr))
@@ -155,7 +155,7 @@ namespace GRYLibrary.Core.Misc
 
         private static HashSet<string> CalculateSimilarityHelperGetIntersectionOfCharSet(ICollection<string> keys1, ICollection<string> keys2)
         {
-            HashSet<string> result = new();
+            HashSet<string> result = [];
             result.UnionWith(keys1);
             result.IntersectWith(keys2);
             return result;

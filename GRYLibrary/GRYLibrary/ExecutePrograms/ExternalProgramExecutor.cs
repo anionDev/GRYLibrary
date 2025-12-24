@@ -514,7 +514,7 @@ namespace GRYLibrary.Core.ExecutePrograms
                 this.Configuration.WorkingDirectory = Utilities.ResolveToFullPath(this.Configuration.WorkingDirectory);
             }
         }
-        private readonly IList<string> _AllStdErrLines = new List<string>();
+        private readonly IList<string> _AllStdErrLines = [];
         private string[] _AllStdErrLinesAsArray;
         /// <exception cref="InvalidOperationException">
         /// If the process is not terminated yet.
@@ -595,7 +595,7 @@ namespace GRYLibrary.Core.ExecutePrograms
             private set => this._ProcessId = value;
         }
 
-        private readonly IList<string> _AllStdOutLines = new List<string>();
+        private readonly IList<string> _AllStdOutLines = [];
         private string[] _AllStdOutLinesAsArray;
         /// <exception cref="InvalidOperationException">
         /// If the process is not terminated yet.

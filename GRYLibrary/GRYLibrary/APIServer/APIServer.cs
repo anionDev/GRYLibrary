@@ -321,10 +321,10 @@ namespace GRYLibrary.Core.APIServer
                 apiServerConfiguration.SetFunctionalInformationAction(apiServerConfiguration.FunctionalInformation);
 
                 #region Load middlewares
-                List<Type> specialMiddlewares1 = new List<Type>();
-                List<Type> specialMiddlewares2 = new List<Type>();
-                List<Type> businessMiddlewares1 = new List<Type>();
-                List<Type> businessMiddlewares2 = new List<Type>();
+                List<Type> specialMiddlewares1 = [];
+                List<Type> specialMiddlewares2 = [];
+                List<Type> businessMiddlewares1 = [];
+                List<Type> businessMiddlewares2 = [];
 
                 IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration = apiServerConfiguration.FunctionalInformation.PersistedAPIServerConfiguration;
 

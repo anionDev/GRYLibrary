@@ -205,7 +205,7 @@ namespace GRYLibrary.Core.Misc
         }
         public static IList<T> NTimes<T>(this IEnumerable<T> input, uint n)
         {
-            List<T> result = new();
+            List<T> result = [];
             int i = 0;
             while (i < n)
             {
@@ -259,7 +259,7 @@ namespace GRYLibrary.Core.Misc
             uint[] result = new uint[byteArray.Length / 4];
             for (int i = 0; i < byteArray.Length / 4; i++)
             {
-                result[i] = ByteArrayToUnsignedInteger32Bit(new byte[] { byteArray[4 * i], byteArray[(4 * i) + 1], byteArray[(4 * i) + 2], byteArray[(4 * i) + 3] });
+                result[i] = ByteArrayToUnsignedInteger32Bit([byteArray[4 * i], byteArray[(4 * i) + 1], byteArray[(4 * i) + 2], byteArray[(4 * i) + 3]]);
             }
             return result;
         }
@@ -303,7 +303,7 @@ namespace GRYLibrary.Core.Misc
 
         public static IEnumerable<PropertyInfo> GetPropertiesWhichHaveGetterAndSetter(Type type)
         {
-            List<PropertyInfo> result = new();
+            List<PropertyInfo> result = [];
             foreach (PropertyInfo property in type.GetType().GetProperties())
             {
                 if (property.CanWrite && property.CanRead)
@@ -316,7 +316,7 @@ namespace GRYLibrary.Core.Misc
 
         public static IEnumerable<string> GetFilesOfFolderRecursively(string folder)
         {
-            List<string> result = new();
+            List<string> result = [];
             foreach (string subfolder in Directory.GetDirectories(folder))
             {
                 result.AddRange(GetFilesOfFolderRecursively(subfolder));
@@ -473,7 +473,7 @@ namespace GRYLibrary.Core.Misc
         }
         public static ISet<Type> GetTypeWithParentTypesAndInterfaces(Type type)
         {
-            HashSet<Type> result = new() { type };
+            HashSet<Type> result = [type];
             result.UnionWith(type.GetInterfaces());
             if (type.BaseType != null)
             {
@@ -530,16 +530,12 @@ namespace GRYLibrary.Core.Misc
         }
         public static IList<IList<string>> CSVStringToEntryList(string csvString)
         {
-            List<IList<string>> result = new List<IList<string>>();
+            List<IList<string>> result = [];
             if (csvString != EmptyString)
             {
                 foreach (string line in csvString.Split(Environment.NewLine))
                 {
-                    List<string> lineAsList = new List<string>();
-                    foreach (string cell in line.Split(";"))
-                    {
-                        lineAsList.Add(cell);
-                    }
+                    List<string> lineAsList = [.. line.Split(";")];
                     result.Add(lineAsList);
                 }
             }
@@ -557,7 +553,7 @@ namespace GRYLibrary.Core.Misc
 
         public static IList<IList<string>> PadTable(IList<IList<string>> table)
         {
-            List<IList<string>> result = new List<IList<string>>();
+            List<IList<string>> result = [];
             if (table.Count == 0)
             {
                 return result;
@@ -579,7 +575,7 @@ namespace GRYLibrary.Core.Misc
             }
             foreach (IList<string> line in table)
             {
-                List<string> cells = new List<string>();
+                List<string> cells = [];
                 for (int i = 0; i < columnAmount; i++)
                 {
                     cells.Add(line[i].PadRight((int)columnWidths[i], ' '));
@@ -626,14 +622,10 @@ namespace GRYLibrary.Core.Misc
 
         public static IEnumerable<IEnumerable<T>> JaggedArrayToEnumerableOfEnumerable<T>(T[][] items)
         {
-            List<List<T>> result = new();
+            List<List<T>> result = [];
             foreach (T[] innerArray in items)
             {
-                List<T> innerList = new();
-                foreach (T item in innerArray)
-                {
-                    innerList.Add(item);
-                }
+                List<T> innerList = [.. innerArray];
                 result.Add(innerList);
             }
             return result;
@@ -986,7 +978,7 @@ namespace GRYLibrary.Core.Misc
             public (bool, string) Handle(GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems.Windows operatingSystem)
             {
                 string program = null;
-                string[] knownExtension = new string[] { ".exe", ".cmd", ".bat" };
+                string[] knownExtension = [".exe", ".cmd", ".bat"];
                 string paths = Environment.ExpandEnvironmentVariables("%PATH%");
                 bool @break = false;
                 foreach (string path in paths.Split(';'))
@@ -1034,7 +1026,7 @@ namespace GRYLibrary.Core.Misc
                     return new string[] { Path.Combine(path, programToLower) };
                 }
             }
-            List<string> result = new();
+            List<string> result = [];
             foreach (string extension in knownExtensions)
             {
                 result.Add(Path.Combine(path, program + extension));
@@ -1165,7 +1157,7 @@ namespace GRYLibrary.Core.Misc
         /// <returns>The results of all finished <paramref name="functions"/>-methods with their results.</returns>
         public static ISet<Tuple<Func<T>, T, Exception>> RunAllConcurrentAndReturnAllResults<T>(this ISet<Func<T>> functions, int maximalDegreeOfParallelism = 4)
         {
-            ConcurrentBag<Tuple<Func<T>, T, Exception>> result = new();
+            ConcurrentBag<Tuple<Func<T>, T, Exception>> result = [];
             Parallel.ForEach(functions, new ParallelOptions { MaxDegreeOfParallelism = maximalDegreeOfParallelism }, (function) =>
             {
                 try
@@ -1317,7 +1309,7 @@ namespace GRYLibrary.Core.Misc
             return Cast(@object, targetType, DefaultConversions);
         }
 
-        private static readonly IList<object> _DefaultConversions = new List<object>() { /*TODO*/};
+        private static readonly IList<object> _DefaultConversions = [];
         public static IList<object> DefaultConversions => _DefaultConversions.ToList();
         public static object Cast(object @object, Type targetType, IList<object> customConversions)
         {
@@ -1334,8 +1326,8 @@ namespace GRYLibrary.Core.Misc
                 }
             }
             MethodInfo method = typeof(Utilities).GetMethod(nameof(CastHelper), BindingFlags.NonPublic | BindingFlags.Static);
-            method = method.MakeGenericMethod(new Type[] { targetType });
-            return method.Invoke(null, new object[] { @object });
+            method = method.MakeGenericMethod([targetType]);
+            return method.Invoke(null, [@object]);
 
         }
         private static T CastHelper<T>(object @object)
@@ -1775,7 +1767,7 @@ namespace GRYLibrary.Core.Misc
         }
         public static string[] SplitOnNewLineCharacter(string input)
         {
-            return input.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).Select(line => line.Replace("\r", string.Empty).Replace("\n", string.Empty)).ToArray();
+            return input.Split([Environment.NewLine], StringSplitOptions.None).Select(line => line.Replace("\r", string.Empty).Replace("\n", string.Empty)).ToArray();
         }
         public static void AssertCondition(bool condition, Func<string> messageForFailedAssertion, bool @break = false)
         {
@@ -1871,9 +1863,9 @@ namespace GRYLibrary.Core.Misc
 
         public static IList<string[]> ReadCSVFile(string file, Encoding encoding, out string[] headLines, string separator = ";", bool firstLineContainsHeadlines = false, bool trimValues = true, bool treatHashAsComment = false)
         {
-            List<string[]> outterList = new();
+            List<string[]> outterList = [];
             string[] lines = File.ReadAllLines(file, encoding);
-            List<string> headlineValues = new();
+            List<string> headlineValues = [];
             bool isFirstLine = true;
             for (int i = 0; i < lines.Length; i++)
             {
@@ -1882,16 +1874,16 @@ namespace GRYLibrary.Core.Misc
                 {
                     if (isFirstLine && firstLineContainsHeadlines)
                     {
-                        headlineValues.AddRange(line.Split(new string[] { separator }, StringSplitOptions.None).Select(item => NormalizeCSVItemForReading(item, trimValues)));
+                        headlineValues.AddRange(line.Split([separator], StringSplitOptions.None).Select(item => NormalizeCSVItemForReading(item, trimValues)));
                     }
                     else
                     {
                         if (!string.IsNullOrEmpty(line))
                         {
-                            List<string> innerList = new();
+                            List<string> innerList = [];
                             if (line.Contains(separator))
                             {
-                                innerList.AddRange(line.Split(new string[] { separator }, StringSplitOptions.None).Select(item => NormalizeCSVItemForReading(item, trimValues)));
+                                innerList.AddRange(line.Split([separator], StringSplitOptions.None).Select(item => NormalizeCSVItemForReading(item, trimValues)));
                             }
                             else
                             {
@@ -2078,13 +2070,13 @@ namespace GRYLibrary.Core.Misc
         }
         public static bool ValidateXMLAgainstXSD(XmlDocument xmlDocument, XmlSchema xsdDocument, out IList<object> errorMessages)
         {
-            errorMessages = new List<object>();
+            errorMessages = [];
             try
             {
                 XmlSchemaSet schemaSet = new();
                 schemaSet.Add(xsdDocument);
 
-                List<object> events = new();
+                List<object> events = [];
                 XDocument xDocument = xmlDocument.XMLDocumentToXDocument();
                 xDocument.Validate(schemaSet, (o, eventArgument) => events.Add(eventArgument));
                 foreach (object @event in events)
@@ -2266,7 +2258,7 @@ namespace GRYLibrary.Core.Misc
             {
                 throw new Exception($"Exitcode of mountvol was {externalProgramExecutor.ExitCode}. StdErr:" + string.Join(Environment.NewLine, externalProgramExecutor.AllStdErrLines));
             }
-            HashSet<Guid> result = new();
+            HashSet<Guid> result = [];
             for (int i = 0; i < externalProgramExecutor.AllStdOutLines.Length - 1; i++)
             {
                 string rawLine = externalProgramExecutor.AllStdOutLines[i];
@@ -2294,7 +2286,7 @@ namespace GRYLibrary.Core.Misc
         }
         public static ISet<string> GetAllMountPointsOfAllAvailableVolumes()
         {
-            HashSet<string> result = new();
+            HashSet<string> result = [];
             foreach (Guid volumeId in GetAvailableVolumeIds())
             {
                 result.UnionWith(GetMountPoints(volumeId));
@@ -2304,7 +2296,7 @@ namespace GRYLibrary.Core.Misc
         public static ISet<string> GetMountPoints(Guid volumeId)
         {
             //TODO this function must be implemented depending on os
-            HashSet<string> result = new();
+            HashSet<string> result = [];
             using ExternalProgramExecutor externalProgramExecutor = new("mountvol", string.Empty);
             externalProgramExecutor.LogObject = GRYLog.Create();
             externalProgramExecutor.LogObject.Configuration.Enabled = false;
@@ -2455,11 +2447,11 @@ namespace GRYLibrary.Core.Misc
             {
                 if (PadLeft)
                 {
-                    Concat(new T[] { Equals(default(T), fillItem!) ? default(T) : fillItem }, result);
+                    Concat([Equals(default(T), fillItem!) ? default(T) : fillItem], result);
                 }
                 else
                 {
-                    Concat(result, new T[] { fillItem });
+                    Concat(result, [fillItem]);
                 }
             }
             return result;
@@ -2781,7 +2773,7 @@ namespace GRYLibrary.Core.Misc
 
         public static SerializableDictionary<TKey, TValue> ToSerializableDictionary<TKey, TValue>(this IDictionary<TKey, TValue> dictionary)
         {
-            SerializableDictionary<TKey, TValue> result = new();
+            SerializableDictionary<TKey, TValue> result = [];
             foreach (System.Collections.Generic.KeyValuePair<TKey, TValue> kvp in dictionary)
             {
                 result.Add(kvp.Key, kvp.Value);
@@ -2995,8 +2987,8 @@ namespace GRYLibrary.Core.Misc
             }
             return input.First().ToString().ToUpper() + input[1..].ToLower();
         }
-        private static readonly char[] Whitespace = new char[] { ' ' };
-        private static readonly char[] WhitespaceAndPartialWordIndicators = new char[] { ' ', '_', '-' };
+        private static readonly char[] Whitespace = [' '];
+        private static readonly char[] WhitespaceAndPartialWordIndicators = [' ', '_', '-'];
         public static string ToOnlyFirstCharOfEveryWordToUpper(this string input)
         {
             return ToOnlyFirstCharOfEveryWordToUpper(input, (lastCharacter) => Whitespace.Contains(lastCharacter));
@@ -3064,7 +3056,7 @@ namespace GRYLibrary.Core.Misc
             }
             return true;
         }
-        private static readonly char[] ToPascalCaseSeparator = new[] { '-', '_' };
+        private static readonly char[] ToPascalCaseSeparator = ['-', '_'];
         public static string ToPascalCase(this string input)
         {
             IEnumerable<string> words = input
@@ -3377,7 +3369,7 @@ namespace GRYLibrary.Core.Misc
 
         private static IList<string> FormatStackTrace(Exception exception)
         {
-            List<string> result = new();
+            List<string> result = [];
             if (exception.StackTrace == null)
             {
                 result.Add("Stack-trace: null");

@@ -36,7 +36,7 @@ namespace GRYLibrary.Tests.Testcases
             {
                 Format = GRYLogLogFormat.GRYLogFormat
             };
-            logObject.Configuration.LogTargets = new System.Collections.Generic.List<GRYLogTarget> { logTarget };
+            logObject.Configuration.LogTargets = [logTarget];
             DateTimeOffset moment = new System.DateTimeOffset(2025, 10, 19, 00, 25, 04, TimeSpan.FromHours(2));
             logObject.Log(new LogItem(moment, nameof(TestLogTimezone), Microsoft.Extensions.Logging.LogLevel.Information));
             LogItem logItem = logObject.LastLogEntries.Dequeue();
