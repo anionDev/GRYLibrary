@@ -1,5 +1,4 @@
-﻿using Flurl;
-using GRYLibrary.Core.APIServer.CommonRoutes;
+﻿using GRYLibrary.Core.APIServer.CommonRoutes;
 using GRYLibrary.Core.APIServer.ConcreteEnvironments;
 using GRYLibrary.Core.APIServer.ExecutionModes;
 using GRYLibrary.Core.APIServer.ExecutionModes.Visitors;
@@ -37,7 +36,6 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -501,13 +499,6 @@ namespace GRYLibrary.Core.APIServer
                 apiServerConfiguration.ConfigureWebApplication(apiServerConfiguration.FunctionalInformationForWebApplication);
                 logger.Log($"The API will now be available under the following URL:", LogLevel.Information);
                 logger.Log(apiLink, LogLevel.Information);
-                bool generateHealthCheckCommand = false;
-                if (generateHealthCheckCommand)
-                {
-                string healthCheckCommand = GetHealthCheckCommand(persistedApplicationSpecificConfiguration,out string key);
-                File.WriteAllText("/Workspace/Other/EntryPoint/HealthCheck.sh", string.Join<string>('\n',new List<string> { "#!/bin/sh" , healthCheckCommand })+"\n");
-                }
-
                 if (this._MaintenanceModeEnabled)
                 {
                     logger.Log($"Maintenancemode is enabled.", LogLevel.Information);
@@ -518,18 +509,6 @@ namespace GRYLibrary.Core.APIServer
             {
                 throw;
             }
-        }
-
-        private string GetHealthCheckCommand(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration,out string key)
-        {
-            key = Guid.NewGuid().ToString();
-            var result = $"curl -H \"X-HealthCheckAuthorization: {key}\" http";
-            if (persistedApplicationSpecificConfiguration.ServerConfiguration.Protocol is HTTPS)
-            {
-                result = result + "s";
-            }
-            result = result + "://127.0.0.1:" + persistedApplicationSpecificConfiguration.ServerConfiguration.Protocol.Port.ToString() + "/API/Other/Maintenance/HealthCheck";
-            return result;
         }
 
         private void AddDefinedMiddleware<SupportDefinedMiddlewareType>(
