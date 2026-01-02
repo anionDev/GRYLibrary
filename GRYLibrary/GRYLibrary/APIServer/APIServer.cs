@@ -291,6 +291,19 @@ namespace GRYLibrary.Core.APIServer
                     ApplicationName = this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName,
                     EnvironmentName = this._Configuration.InitializationInformation.ApplicationConstants.Environment.GetType().Name
                 });
+                bool cors = false;//only for testing-purposes
+                if (cors)
+                {
+                    builder.Services.AddCors(options =>
+                    {
+                        options.AddPolicy("AllowDev", policy =>
+                        {
+                            policy.WithOrigins("http://localhost:4200")
+                                  .AllowAnyHeader()
+                                  .AllowAnyMethod();
+                        });
+                    });
+                }
                 IServiceCollection services = builder.Services;
                 IMvcBuilder mvcBuilder = services.AddControllers(mvcOptions =>
                 {
@@ -346,6 +359,7 @@ namespace GRYLibrary.Core.APIServer
 
                 foreach (Type customMiddleware in this._Configuration.InitializationInformation.ApplicationConstants.CustomMiddlewares1)
                 {
+                    logger.Log($"Added custom middleware {customMiddleware.FullName}.", LogLevel.Information);
                     businessMiddlewares1.Add(customMiddleware);
                 }
 
@@ -356,6 +370,7 @@ namespace GRYLibrary.Core.APIServer
 
                 foreach (Type customMiddleware in this._Configuration.InitializationInformation.ApplicationConstants.CustomMiddlewares2)
                 {
+                    logger.Log($"Added custom middleware {customMiddleware.FullName}.", LogLevel.Information);
                     businessMiddlewares2.Add(customMiddleware);
                 }
                 #endregion
