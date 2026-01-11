@@ -43,7 +43,7 @@ namespace GRYLibrary.Core.APIServer.Services.Res
 
         public ISet<string> GetAllResourceNames()
         {
-            return new HashSet<string>(_Assembly.GetManifestResourceNames());
+            return new HashSet<string>(this._Assembly.GetManifestResourceNames());
         }
     }
 }

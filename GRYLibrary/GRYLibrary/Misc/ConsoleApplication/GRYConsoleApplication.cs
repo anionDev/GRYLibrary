@@ -20,18 +20,18 @@ namespace GRYLibrary.Core.Misc.ConsoleApplication
         private readonly string _ProgramVersion;
         private readonly string _ProgramDescription;
         private readonly bool _ProgramCanRunWithoutArguments;
-        private readonly GRYLog _Log;
+        private readonly IGRYLog _Log;
         private readonly ExecutionMode _ExecutionMode;
         private readonly SentenceBuilder _SentenceBuilder;
         private readonly GRYConsoleApplicationInitialInformation _GRYConsoleApplicationInitialInformation;
-        public GRYConsoleApplication(ParserBase mains, string programName, string programVersion, string programDescription, bool programCanRunWithoutArguments, ExecutionMode executionMode, GRYEnvironment environment, string? additionalHelpText)
+        public GRYConsoleApplication(ParserBase mains, string programName, string programVersion, string programDescription, bool programCanRunWithoutArguments, ExecutionMode executionMode, GRYEnvironment environment, string? additionalHelpText,IGRYLog log)
         {
             this._Mains = mains;
             this._ProgramName = programName;
             this._ProgramVersion = programVersion;
             this._ProgramDescription = programDescription;
             this._ProgramCanRunWithoutArguments = programCanRunWithoutArguments;
-            this._Log = GRYLog.Create();
+            this._Log = log;
             this._Log.Configuration.PrintEmptyLines = true;
             this._SentenceBuilder = SentenceBuilder.Create();
             this._ExecutionMode = executionMode;

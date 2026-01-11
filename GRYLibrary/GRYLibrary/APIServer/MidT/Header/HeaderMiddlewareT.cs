@@ -1,8 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Net.Http.Headers;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GRYLibrary.Core.APIServer.MidT.Header
@@ -16,7 +12,7 @@ namespace GRYLibrary.Core.APIServer.MidT.Header
 
         public override Task Invoke(HttpContext context)
         {
-            SetHeaders(context); 
+            this.SetHeaders(context); 
             return this._Next(context);
         }
 

@@ -22,7 +22,7 @@ namespace GRYLibrary.Core.Misc
 
         public void Enqueue(T item)
         {
-            if (0< this._Queue.Count && this._Queue.Count + 1 < this._MaxSize)
+            if (this._MaxSize < this._Queue.Count + 1)
             {
                 this._Queue.Dequeue();
             }

@@ -436,5 +436,9 @@ namespace GRYLibrary.Core.Logging.GRYLogger
             return this._LoggerId;
         }
 
+        public void ApplyConfiguration(IGRYLogConfiguration configuration)
+        {
+            this.Configuration = configuration;
+        }
     }
 }

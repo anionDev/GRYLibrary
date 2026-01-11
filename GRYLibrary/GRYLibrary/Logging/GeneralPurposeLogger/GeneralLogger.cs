@@ -31,7 +31,12 @@ namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
 
         public static IGRYLog CreateUsingGRYLog(IGRYLogConfiguration configuration, string basePath = null)
         {
-            GRYLog logObject = GRYLog.Create(configuration);
+            return CreateUsingGRYLog(configuration, basePath, GRYLog.Create(configuration));
+        }
+        public static IGRYLog CreateUsingGRYLog(IGRYLogConfiguration configuration, string basePath, IGRYLog logToUse)
+        {
+            IGRYLog logObject = logToUse;
+            logObject.ApplyConfiguration(configuration);
             logObject.BasePath = basePath;
             return logObject;
         }
@@ -46,8 +51,17 @@ namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
 
         public static IGRYLog CreateUsingConsole()
         {
+            return CreateUsingConsole(LogLevel.Information);
+        }
+        public static IGRYLog CreateUsingConsole(LogLevel logLevel)
+        {
             GRYLog logObject = GRYLog.Create();
             logObject.Configuration.LogTargets = logObject.Configuration.LogTargets.Where(target => target is GRYLogger.ConcreteLogTargets.Console).ToList();
+            foreach (var target in logObject.Configuration.LogTargets)
+            {
+                target.Format = GRYLogLogFormat.GRYLogFormat;
+                target.SetLogLevel(logLevel);
+            }
             return logObject;
         }
 
