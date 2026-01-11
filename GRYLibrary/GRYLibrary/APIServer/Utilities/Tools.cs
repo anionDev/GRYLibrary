@@ -11,6 +11,7 @@ using GRYLibrary.Core.APIServer.Verbs;
 using GRYLibrary.Core.Crypto;
 using GRYLibrary.Core.Exceptions;
 using GRYLibrary.Core.Logging.GeneralPurposeLogger;
+using GRYLibrary.Core.Logging.GRYLogger;
 using GRYLibrary.Core.Misc;
 using GRYLibrary.Core.Misc.ConsoleApplication;
 using Microsoft.AspNetCore.Http;
@@ -94,7 +95,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
             return context.Request.Path.ToString().StartsWith($"{ServerConfiguration.APIRoutePrefix}/Other/Maintenance/");
         }
 
-        public static int RunAPIServer<GCodeUnitSpecificCommandlineParameter, GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration>(string codeUnitName, string codeUnitDescription, Version3 codeUnitVersion, GRYEnvironment environmentTargetType, ExecutionMode executionMode, string[] commandlineArguments, string? additionalHelpText, Action<APIServerConfiguration<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>> initializer)
+        public static int RunAPIServer<GCodeUnitSpecificCommandlineParameter, GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration>(string codeUnitName, string codeUnitDescription, Version3 codeUnitVersion, GRYEnvironment environmentTargetType, ExecutionMode executionMode, string[] commandlineArguments, string? additionalHelpText, Action<APIServerConfiguration<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>> initializer, IGRYLog? log)
             where GCodeUnitSpecificConfiguration : new()
             where GCodeUnitSpecificConstants : new()
             where GCodeUnitSpecificCommandlineParameter : class, IAPIServerCommandlineParameter, new()
@@ -114,7 +115,8 @@ namespace GRYLibrary.Core.APIServer.Utilities
                         GRYLibrary.Core.Misc.Utilities.NoOperation();
                     }
                 }
-                GRYConsoleApplication<GCodeUnitSpecificCommandlineParameter> consoleApp = new GRYConsoleApplication<GCodeUnitSpecificCommandlineParameter>(new VerbParser<GCodeUnitSpecificCommandlineParameter>(APIServer<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>.CreateMain(initializer)), codeUnitName, codeUnitVersion.ToString(), codeUnitDescription, true, executionMode, environmentTargetType, additionalHelpText);
+                log = log ?? GeneralLogger.CreateUsingConsole();
+                GRYConsoleApplication<GCodeUnitSpecificCommandlineParameter> consoleApp = new GRYConsoleApplication<GCodeUnitSpecificCommandlineParameter>(new VerbParser<GCodeUnitSpecificCommandlineParameter>(APIServer<GCodeUnitSpecificConstants, GCodeUnitSpecificConfiguration, GCodeUnitSpecificCommandlineParameter>.CreateMain(initializer, log)), codeUnitName, codeUnitVersion.ToString(), codeUnitDescription, true, executionMode, environmentTargetType, additionalHelpText, log);
                 exitCode = consoleApp.Main(commandlineArguments);
             }
             catch (Exception ex)
@@ -349,6 +351,22 @@ namespace GRYLibrary.Core.APIServer.Utilities
                 throw new InternalAlgorithmException($"Undknown healthstatus: {(int)result.result}");
             }
             return healthCheckResult;
+        }
+
+        public static TimeSpan GetTimeout(TimeSpan? debugTimeout)
+        {
+            if (debugTimeout == null)
+            {
+                debugTimeout = TimeSpan.FromHours(1);
+            }
+            if (Debugger.IsAttached)
+            {
+                return debugTimeout.Value;
+            }
+            else
+            {
+                return TimeSpan.FromMinutes(2);
+            }
         }
     }
 }

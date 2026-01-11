@@ -60,7 +60,7 @@ namespace GRYLibrary.Core.APIServer
 
         }
 
-        public static Func<CommandlineParameterType, GRYConsoleApplicationInitialInformation, int> CreateMain(Action<APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>> init)
+        public static Func<CommandlineParameterType, GRYConsoleApplicationInitialInformation, int> CreateMain(Action<APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>> init, IGRYLog initialLog)
         {
             return (CommandlineParameterType commandlineParameter, GRYConsoleApplicationInitialInformation gryConsoleApplicationInitialInformation) =>
             {
@@ -70,7 +70,7 @@ namespace GRYLibrary.Core.APIServer
                     apiServerConfiguration.CommandlineParameter = commandlineParameter;
                     apiServerConfiguration.CancellationTokenSource = new CancellationTokenSource();
                     init(apiServerConfiguration);
-                    return APIMain(commandlineParameter, gryConsoleApplicationInitialInformation, apiServerConfiguration);
+                    return APIMain(commandlineParameter, gryConsoleApplicationInitialInformation, apiServerConfiguration, initialLog);
                 }
                 catch
                 {
@@ -79,7 +79,7 @@ namespace GRYLibrary.Core.APIServer
             };
         }
 
-        public static int APIMain(CommandlineParameterType commandlineParameter, GRYConsoleApplicationInitialInformation gryConsoleApplicationInitialInformation, APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> apiServerConfiguration)
+        public static int APIMain(CommandlineParameterType commandlineParameter, GRYConsoleApplicationInitialInformation gryConsoleApplicationInitialInformation, APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> apiServerConfiguration, IGRYLog initialLogger)
         {
             try
             {
@@ -90,14 +90,14 @@ namespace GRYLibrary.Core.APIServer
                     CommandlineParameter = commandlineParameter,
                     ApplicationConstants = new ApplicationConstants<ApplicationSpecificConstants>(gryConsoleApplicationInitialInformation.ProgramName, gryConsoleApplicationInitialInformation.ProgramDescription, Version3.Parse(gryConsoleApplicationInitialInformation.ProgramVersion), gryConsoleApplicationInitialInformation.ExecutionMode, gryConsoleApplicationInitialInformation.Environment, new ApplicationSpecificConstants())
                 };
-                apiServerConfiguration.InitializationInformation.InitialLogger = GeneralLogger.CreateUsingConsole();
+                apiServerConfiguration.InitializationInformation.InitialLogger = initialLogger;
                 apiServerConfiguration.InitializationInformation.BaseFolder = GetDefaultBaseFolder(apiServerConfiguration.InitializationInformation.ApplicationConstants, !apiServerConfiguration.CommandlineParameter.RealRun);
                 apiServerConfiguration.InitializationInformation.ApplicationConstants.Initialize(apiServerConfiguration.InitializationInformation.BaseFolder);
                 apiServerConfiguration.InitializationInformation.ApplicationConstants.KnownTypes.Add(typeof(PersistedApplicationSpecificConfiguration));
                 apiServerConfiguration.InitializationInformation.InitialApplicationConfiguration = PersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration>.Create(new PersistedApplicationSpecificConfiguration(), gryConsoleApplicationInitialInformation.Environment);
                 apiServerConfiguration.InitializationInformation.BasicInformationFile = AbstractFilePath.FromString("./BasicApplicationInformation.xml");
                 apiServerConfiguration.InitializationInformation.InitialLogger.Log($"Base-folder: {apiServerConfiguration.InitializationInformation.ApplicationConstants.BaseFolder}", LogLevel.Debug);
-                apiServerConfiguration.InitializationInformation.InitialLogger.Log($"Configuration-folder: {apiServerConfiguration.InitializationInformation.ApplicationConstants.GetConfigurationFile()}", LogLevel.Debug);
+                apiServerConfiguration.InitializationInformation.InitialLogger.Log($"Configuration-folder: {apiServerConfiguration.InitializationInformation.ApplicationConstants.ConfigurationFolder}", LogLevel.Debug);
                 apiServerConfiguration.InitializationInformation.InitialLogger.Log($"Data-folder: {apiServerConfiguration.InitializationInformation.ApplicationConstants.GetDataFolder()}", LogLevel.Debug);
                 apiServerConfiguration.InitializationInformation.InitialLogger.Log($"Log-folder: {apiServerConfiguration.InitializationInformation.ApplicationConstants.GetLogFolder()}", LogLevel.Debug);
                 apiServerConfiguration.SetInitialzationInformationAction(apiServerConfiguration.InitializationInformation);
@@ -202,11 +202,11 @@ namespace GRYLibrary.Core.APIServer
 
         public int Run(APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> config, IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedAPIServerConfiguration)
         {
-            IGRYLog logger = GeneralLogger.CreateUsingConsole();
+            IGRYLog logger = config.InitializationInformation.InitialLogger;
             try
             {
-                this.CreateRequiredFolder();
-                logger = this.GetApplicationLogger(persistedAPIServerConfiguration);
+                this.CreateRequiredFolder(config.CommandlineParameter.RealRun);
+                logger = this.GetApplicationLogger(persistedAPIServerConfiguration, logger);
                 logger.Log($"Start {this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName} (v{this._Configuration.InitializationInformation.ApplicationConstants.ApplicationVersion})", LogLevel.Information);
                 logger.Log($"Environment: {this._Configuration.InitializationInformation.ApplicationConstants.Environment}", LogLevel.Debug);
                 logger.Log($"Executionmode: {this._Configuration.InitializationInformation.ApplicationConstants.ExecutionMode}", LogLevel.Debug);
@@ -352,10 +352,10 @@ namespace GRYLibrary.Core.APIServer
 
                 specialMiddlewares1.Add(typeof(GeneralMiddleware<PersistedApplicationSpecificConfiguration>));
 
+                this.AddDefinedMiddleware((ISupportExceptionManagerMiddleware c) => c.ConfigurationForExceptionManagerMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.ExceptionManagerMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);
 
                 this.AddDefinedMiddleware((ISupportRequestLoggingMiddleware c) => c.ConfigurationForLoggingMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.LoggingMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);
 
-                this.AddDefinedMiddleware((ISupportExceptionManagerMiddleware c) => c.ConfigurationForExceptionManagerMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.ExceptionManagerMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);
 
                 foreach (Type customMiddleware in this._Configuration.InitializationInformation.ApplicationConstants.CustomMiddlewares1)
                 {
@@ -645,13 +645,24 @@ namespace GRYLibrary.Core.APIServer
             }
         }
 
-        private IGRYLog GetApplicationLogger(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration)
+        private IGRYLog GetApplicationLogger(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration, IGRYLog initialLog)
         {
-            return this._Configuration.InitializationInformation.ApplicationConstants.ExecutionMode.Accept(new GetLoggerVisitor(persistedApplicationSpecificConfiguration.ApplicationLogConfiguration, this._Configuration.InitializationInformation.ApplicationConstants.GetLogFolder(), "Server"));
+            if (this._Configuration.CommandlineParameter.RealRun)
+            {
+                return this._Configuration.InitializationInformation.ApplicationConstants.ExecutionMode.Accept(new GetLoggerVisitor(persistedApplicationSpecificConfiguration.ApplicationLogConfiguration, this._Configuration.InitializationInformation.ApplicationConstants.GetLogFolder(), "Server", initialLog));
+            }
+            else
+            {
+                return initialLog;
+            }
         }
 
-        private void CreateRequiredFolder()
+        private void CreateRequiredFolder(bool isRealRun)
         {
+            if (!isRealRun)
+            {
+                GUtilities.EnsureDirectoryDoesNotExist(this._Configuration.InitializationInformation.ApplicationConstants.GetConfigurationFolder());
+            }
             GUtilities.EnsureDirectoryExists(this._Configuration.InitializationInformation.ApplicationConstants.GetConfigurationFolder());
             GUtilities.EnsureDirectoryExists(this._Configuration.InitializationInformation.ApplicationConstants.GetLogFolder());
             GUtilities.EnsureDirectoryExists(this._Configuration.InitializationInformation.ApplicationConstants.GetCertificateFolder());

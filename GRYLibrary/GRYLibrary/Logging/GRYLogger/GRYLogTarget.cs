@@ -14,6 +14,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
     [XmlInclude(typeof(WindowsEventLog))]
     public abstract class GRYLogTarget : IDisposable
     {
+
         public GRYLogLogFormat Format { get; set; } = GRYLogLogFormat.GRYLogFormat;
 
         public HashSet<LogLevel> LogLevels { get; set; } =
@@ -65,6 +66,29 @@ namespace GRYLibrary.Core.Logging.GRYLogger
             return result;
         }
 
+        internal void SetLogLevel(LogLevel logLevel)
+        {
+            this.LogLevels.Clear();
+            foreach (LogLevel level in GetAllLogLevel())
+            {
+                if (level >= logLevel)
+                {
+                    this.LogLevels.Add(level);
+                }
+            }
+        }
+        public static ISet<LogLevel> GetAllLogLevel()
+        {
+            ISet<LogLevel> result=new HashSet<LogLevel>() {
+                LogLevel.Trace,
+                LogLevel.Debug,
+                LogLevel.Information,
+                LogLevel.Warning,
+                LogLevel.Error,
+                LogLevel.Critical,
+            };
+            return result;
+        }
         #endregion
     }
 }

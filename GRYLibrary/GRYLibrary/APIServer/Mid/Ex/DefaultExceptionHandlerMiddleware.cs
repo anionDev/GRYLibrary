@@ -1,6 +1,6 @@
 ﻿using GRYLibrary.Core.APIServer.MidT.Exception;
 using GRYLibrary.Core.Exceptions;
-using GRYLibrary.Core.Logging.GeneralPurposeLogger;
+using GRYLibrary.Core.Logging.GRYLogger;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.IO;
@@ -9,10 +9,10 @@ namespace GRYLibrary.Core.APIServer.Mid.Ex
 {
     public class DefaultExceptionHandlerMiddleware : ExceptionManagerMiddleware
     {
-        private readonly IGeneralLogger _GeneralLogger;
-        public DefaultExceptionHandlerMiddleware(RequestDelegate next, IGeneralLogger logger) : base(next)
+        private readonly IGRYLog _Log;
+        public DefaultExceptionHandlerMiddleware(RequestDelegate next, IGRYLog logger) : base(next)
         {
-            this._GeneralLogger = logger;
+            this._Log = logger;
         }
 
         protected override void HandleException(HttpContext context, Exception exception)
@@ -91,7 +91,7 @@ namespace GRYLibrary.Core.APIServer.Mid.Ex
 
         private void Log(string technicalReason, HttpContext context, Exception exception, uint statuscode)
         {
-            this._GeneralLogger.Log($"Request {context.Items["RequestId"]} resulted in statuscode {statuscode}. Technical reason: {technicalReason}", exception, Microsoft.Extensions.Logging.LogLevel.Trace);
+            this._Log.Log($"Request {context.Items["RequestId"]} resulted in statuscode {statuscode}. Technical reason: {technicalReason}", exception, Microsoft.Extensions.Logging.LogLevel.Error);
         }
 
         public virtual (string ContentType, string bodyContent) GetExceptionResponceContent(int httpStatusCode, HttpContext context, Exception exception)

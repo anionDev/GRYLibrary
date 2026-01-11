@@ -4,7 +4,7 @@ using GRYLibrary.Core.APIServer.Services.Interfaces;
 using GRYLibrary.Core.APIServer.Settings;
 using GRYLibrary.Core.APIServer.Settings.Configuration;
 using GRYLibrary.Core.APIServer.Utilities;
-using GRYLibrary.Core.Logging.GeneralPurposeLogger;
+using GRYLibrary.Core.APIServer.Verbs;
 using GRYLibrary.Core.Logging.GRYLogger;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -25,8 +25,8 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
     /// </summary>
     public class DRequestLoggingMiddleware : RequestLoggingMiddleware
     {
-        private readonly IGeneralLogger _RequestLogger;
-        private readonly IGeneralLogger _Logger;
+        private readonly IGRYLog _RequestLogger;
+        private readonly IGRYLog _Logger;
         private readonly IDRequestLoggingConfiguration _RequestLoggingSettings;
         private readonly IApplicationConstants _AppConstants;
         private readonly Encoding _Encoding = new UTF8Encoding(false);
@@ -36,14 +36,23 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
         private readonly Counter _RequestCounter5xx;
         private readonly Counter _RequestCounterOther;
         private readonly IServerConfiguration _ServerConfiguration;
+        private readonly IAPIServerCommandlineParameter _CommandlineParameter;
         /// <inheritdoc/>
-        public DRequestLoggingMiddleware(RequestDelegate next, IDRequestLoggingConfiguration requestLoggingSettings, IApplicationConstants appConstants, IGeneralLogger logger, ITimeService timeService, IServerConfiguration serverConfiguration) : base(next, timeService)
+        public DRequestLoggingMiddleware(RequestDelegate next, IDRequestLoggingConfiguration requestLoggingSettings, IApplicationConstants appConstants, IGRYLog logger, ITimeService timeService, IServerConfiguration serverConfiguration, IAPIServerCommandlineParameter commandlineParameter) : base(next, timeService)
         {
             this._RequestLoggingSettings = requestLoggingSettings;
+            this._CommandlineParameter = commandlineParameter;
             this._AppConstants = appConstants;
             this._Logger = logger;
             this._ServerConfiguration = serverConfiguration;
-            this._RequestLogger = this._AppConstants.ExecutionMode.Accept(new GetLoggerVisitor(this._RequestLoggingSettings.RequestsLogConfiguration, this._AppConstants.GetLogFolder(), "Requests"));
+            if(this._CommandlineParameter.RealRun)//for run-mode server-logs and request-logs should be separated, for test- and analysis-mode it should be visible in one single log
+            {
+                this._RequestLogger = this._AppConstants.ExecutionMode.Accept(new GetLoggerVisitor(this._RequestLoggingSettings.RequestsLogConfiguration, this._AppConstants.GetLogFolder(), "Requests", this._Logger));
+            }
+            else
+            {
+                this._RequestLogger = logger;
+            }
             CounterConfiguration counterMetricConfig = new CounterConfiguration()
             {
                 LabelNames = ["domain"],
@@ -65,7 +74,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
         {
             try
             {
-                DateTimeOffset moment = _TimeService.GetCurrentLocalTimeAsDateTimeOffset();
+                DateTimeOffset moment = this._TimeService.GetCurrentLocalTimeAsDateTimeOffset();
                 (string info, string content, byte[] plainContent) requestBody = BytesToString(requestBodyBytes, this._Encoding);
                 (string info, string content, byte[] plainContent) responseBody = BytesToString(responseBodyBytes, this._Encoding);
                 string requestRoute = context.Request.Path;

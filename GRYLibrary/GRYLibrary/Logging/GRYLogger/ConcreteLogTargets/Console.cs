@@ -9,13 +9,15 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
     public sealed class Console : GRYLogTarget
     {
         public bool WriteWarningsToStdErr { get; set; } = true;
-        private bool _UseColors = !Utilities.RunningInContainer;
+        public bool WriteEntireOutputToStdOut { get; set; } = false;
+
+        public bool UseColors { get; set; } = !Utilities.RunningInContainer;
         private static readonly object _Lock = new object();
         public Console() { }
         protected override void ExecuteImplementation(LogItem logItem, GRYLog logObject)
         {
             TextWriter output;
-            if (logItem.IsErrorEntry() || (this.WriteWarningsToStdErr && logItem.LogLevel == LogLevel.Warning))
+            if ((logItem.IsErrorEntry() || (this.WriteWarningsToStdErr && logItem.LogLevel == LogLevel.Warning)) && !this.WriteEntireOutputToStdOut)
             {
                 output = System.Console.Error;
             }
@@ -29,7 +31,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
             string part3 = formattedMessage[ce..] + Environment.NewLine;
             lock (_Lock)
             {
-                if (this._UseColors)
+                if (this.UseColors)
                 {
                     output.Write(part1);
                     this.WriteWithColorToConsole(part2, output, logItem.LogLevel, logObject);
@@ -80,12 +82,12 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
 
         public void EnableColors()
         {
-            this._UseColors = true;
+            this.UseColors = true;
         }
 
         public void DisableColors()
         {
-            this._UseColors = false;
+            this.UseColors = false;
         }
     }
 }
