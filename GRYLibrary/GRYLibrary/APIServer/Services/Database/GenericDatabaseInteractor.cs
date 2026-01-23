@@ -16,7 +16,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
     public abstract class GenericDatabaseInteractor : IGenericDatabaseInteractor
     {
         private readonly IDatabasePersistenceConfiguration _Configuration;
-        private readonly object _Lock = new object();
+        public static object Lock = new object();
         private DbConnection _Connection;
         private readonly Thread _ConnectionThread;
         private bool _ThreadEnabled = true;//TODO make this variable threadsafe
@@ -56,7 +56,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
             {
                 try
                 {
-                    lock (this._Lock)
+                    lock (Lock)
                     {
                         (bool isAvailable, Exception? exc) = this.IsAvailable();
                         if (!this.IsAvailable().Item1)
@@ -109,7 +109,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
         private DbConnection GetConnectionInternal()
         {
             DbConnection result = this._Connection;
-            lock (this._Lock)
+            lock (Lock)
             {
                 result = this._Connection!;
             }
@@ -256,7 +256,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
 
         public void SetLogConnectionAttemptErrors(bool enabled)
         {
-            lock (this._Lock)
+            lock (Lock)
             {
                 this._LogConnectionErrors = enabled;
             }

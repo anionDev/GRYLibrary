@@ -142,11 +142,11 @@ namespace GRYLibrary.Core.APIServer.Utilities
                 isAvailableResult = (false, e);
             }
             uint amoutnOfFails = 0;
-            reconnectableDatabase.SetLogConnectionAttemptErrors(true);
             if (!isAvailableResult.Item1)
             {
                 logger.Log("Wait until database is available...", LogLevel.Information);
                 Thread.Sleep(TimeSpan.FromSeconds(initialAmountOfSecondsToWait));
+                reconnectableDatabase.SetLogConnectionAttemptErrors(true);
                 while (!isAvailableResult.Item1)
                 {
                     try

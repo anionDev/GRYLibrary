@@ -31,7 +31,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
                 return (T)reader.GetValue(parameterIndex);
             }
         }
-        public static void AccessDatabase<ProjectSpecificDatabaseInteractor>(ProjectSpecificDatabaseInteractor database,Action<ProjectSpecificDatabaseInteractor> action)
+        public static void AccessDatabase<ProjectSpecificDatabaseInteractor>(ProjectSpecificDatabaseInteractor database, Action<ProjectSpecificDatabaseInteractor> action)
             where ProjectSpecificDatabaseInteractor : IProjectSpecificDatabaseInteractor
         {
             AccessDatabase<object?, ProjectSpecificDatabaseInteractor>(database, (db) =>
@@ -61,15 +61,15 @@ namespace GRYLibrary.Core.APIServer.Services.Database
             where ProjectSpecificDatabaseInteractor : IProjectSpecificDatabaseInteractor
         {
             List<T?> results = [];
-            AccessDatabase(database,interactor =>
+            AccessDatabase(database, interactor =>
             {
                 log.Log("Run DB-transaction " + nameOfAction, Microsoft.Extensions.Logging.LogLevel.Trace);
                 DbConnection connection = interactor.GetGenericDatabaseInteractor().GetConnection();
-                using DbTransaction transaction = connection.BeginTransaction();
                 bool commit = true;
-                try
+                foreach (Func<DbCommand, T?> function in functions)
                 {
-                    foreach (Func<DbCommand, T?> function in functions)
+                    using DbTransaction transaction = connection.BeginTransaction();
+                    try
                     {
                         using (DbCommand cmd = connection.CreateCommand())
                         {
@@ -89,18 +89,18 @@ namespace GRYLibrary.Core.APIServer.Services.Database
                             }
                         }
                     }
-                }
-                finally
-                {
-                    if (commit)
+                    finally
                     {
-                        log.Log("Commit DB-transaction " + nameOfAction, Microsoft.Extensions.Logging.LogLevel.Trace);
-                        transaction.Commit();
-                    }
-                    else
-                    {
-                        log.Log("Rollback DB-transaction " + nameOfAction, Microsoft.Extensions.Logging.LogLevel.Trace);
-                        transaction.Rollback();
+                        if (commit)
+                        {
+                            log.Log("Commit DB-transaction " + nameOfAction, Microsoft.Extensions.Logging.LogLevel.Trace);
+                            transaction.Commit();
+                        }
+                        else
+                        {
+                            log.Log("Rollback DB-transaction " + nameOfAction, Microsoft.Extensions.Logging.LogLevel.Trace);
+                            transaction.Rollback();
+                        }
                     }
                 }
             });
