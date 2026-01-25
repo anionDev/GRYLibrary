@@ -25,6 +25,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
         private readonly string _TaskNameStop;
         private readonly IGRYLog _Log;
         private readonly string _ResetDatabaseScript;
+        public TimeSpan ConnectionTimeout { get; set; } = TimeSpan.FromMinutes(2);
         public DatabaseTestFrameworkTemplate(IDatabasePersistenceConfiguration configuration, string testDatabaseFolder, string repositoryFolder, string taskNameStart, string taskNameStop, string resetDatabaseScript, IGRYLog log)
         {
             this._TaskNameStart = taskNameStart;
@@ -59,7 +60,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
                             Thread.Sleep(TimeSpan.FromSeconds(1));
                         }
                     }
-                }, TimeSpan.FromMinutes(2)))
+                }, ConnectionTimeout))
                 {
                     string message = $"{this.GetType().Name} was not able to connect to the test-database.";
                     if (lastException == null)

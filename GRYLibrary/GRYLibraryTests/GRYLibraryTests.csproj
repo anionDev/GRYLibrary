@@ -2,9 +2,9 @@
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
         <Authors>Marius Göcke</Authors>
-        <Version>2.0.1</Version>
-        <AssemblyVersion>2.0.1</AssemblyVersion>
-        <FileVersion>2.0.1</FileVersion>
+        <Version>2.0.2</Version>
+        <AssemblyVersion>2.0.2</AssemblyVersion>
+        <FileVersion>2.0.2</FileVersion>
         <SelfContained>false</SelfContained>
         <IsPackable>false</IsPackable>
         <PreserveCompilationContext>false</PreserveCompilationContext>
@@ -67,21 +67,21 @@
     </PackageReference>
     <PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
     <PackageReference Include="Microsoft.CodeCoverage" Version="18.0.1" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.2" />
     <PackageReference Include="MSTest.TestAdapter" Version="4.0.2" />
     <PackageReference Include="MSTest.TestFramework" Version="4.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="10.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="10.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
     <PackageReference Include="NJsonSchema" Version="11.5.2" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.9" />
     <PackageReference Include="NSwag.AspNetCore" Version="14.6.3" />
-    <PackageReference Include="System.Collections.Immutable" Version="10.0.1" />
+    <PackageReference Include="System.Collections.Immutable" Version="10.0.2" />
     <PackageReference Include="System.Reactive" Version="6.1.0" />
-    <PackageReference Include="System.Text.Encodings.Web" Version="10.0.1" />
+    <PackageReference Include="System.Text.Encodings.Web" Version="10.0.2" />
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
   </ItemGroup>
   <ItemGroup>

@@ -57,7 +57,7 @@ namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
         {
             GRYLog logObject = GRYLog.Create();
             logObject.Configuration.LogTargets = logObject.Configuration.LogTargets.Where(target => target is GRYLogger.ConcreteLogTargets.Console).ToList();
-            foreach (var target in logObject.Configuration.LogTargets)
+            foreach (GRYLogTarget target in logObject.Configuration.LogTargets)
             {
                 target.Format = GRYLogLogFormat.GRYLogFormat;
                 target.SetLogLevel(logLevel);

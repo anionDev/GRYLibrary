@@ -57,6 +57,7 @@ namespace GRYLibrary.Tests.Testcases
                 File.Delete(testFile);
             }
         }
+
         [TestMethod]
         public void UtilitiesTestEnsureFileDoesNotExist()
         {
@@ -68,6 +69,7 @@ namespace GRYLibrary.Tests.Testcases
             GUtilities.EnsureFileDoesNotExist(testFile);
             Assert.IsFalse(File.Exists(testFile));
         }
+
         [TestMethod]
         public void UtilitiesTestEnsureDirectoryExists()
         {
@@ -85,6 +87,7 @@ namespace GRYLibrary.Tests.Testcases
                 Directory.Delete(testDir);
             }
         }
+
         [TestMethod]
         public void UtilitiesTestEnsureDirectoryDoesNotExist()
         {
@@ -96,6 +99,7 @@ namespace GRYLibrary.Tests.Testcases
             GUtilities.EnsureDirectoryDoesNotExist(testDir);
             Assert.IsFalse(Directory.Exists(testDir));
         }
+
         [TestMethod]
         public void UtilitiesTestEnsureDirectoryDoesNotExist2()
         {
@@ -106,6 +110,7 @@ namespace GRYLibrary.Tests.Testcases
             GUtilities.EnsureDirectoryDoesNotExist(dir);
             Assert.IsFalse(Directory.Exists(testFile));
         }
+
         [TestMethod]
         public void FileSelectorTest1()
         {
@@ -131,6 +136,7 @@ namespace GRYLibrary.Tests.Testcases
                 GUtilities.EnsureDirectoryDoesNotExist(baseDir);
             }
         }
+
         [TestMethod]
         public void IncrementGuidTest1()
         {
@@ -139,6 +145,7 @@ namespace GRYLibrary.Tests.Testcases
             Guid result = GUtilities.IncrementGuid(inputId);
             Assert.AreEqual("5fe3eb8e-39dc-469c-a9cd-ea740e90d339", result.ToString());
         }
+
         [TestMethod]
         public void IncrementGuidTest2()
         {
@@ -147,6 +154,7 @@ namespace GRYLibrary.Tests.Testcases
             Guid result = GUtilities.IncrementGuid(inputId);
             Assert.AreEqual("0003eb8e-39dc-469c-a9cd-00740e90d339", result.ToString());
         }
+
         [TestMethod]
         public void IncrementGuidTest3()
         {
@@ -155,6 +163,7 @@ namespace GRYLibrary.Tests.Testcases
             Guid result = GUtilities.IncrementGuid(inputId, BigInteger.Parse("100000000000", NumberStyles.HexNumber));
             Assert.AreEqual("0003eb8e-39dc-469c-a9cd-a0740e90d338", result.ToString());
         }
+
         [TestMethod]
         public void IncrementGuidTest4()
         {
@@ -163,6 +172,7 @@ namespace GRYLibrary.Tests.Testcases
             Guid result = GUtilities.IncrementGuid(inputId);
             Assert.AreNotEqual(input, result.ToString());
         }
+
         [Ignore]
         [TestMethod]
         public void GenericSerializerTest1()
@@ -173,6 +183,7 @@ namespace GRYLibrary.Tests.Testcases
             SimpleDataStructure3 deserialized = serializer.Deserialize(serialized);
             Assert.AreEqual(testObject, deserialized);
         }
+
         [TestMethod]
         public void SerializeableDictionaryTest()
         {
@@ -188,6 +199,7 @@ namespace GRYLibrary.Tests.Testcases
             Assert.AreEqual("test1", reloadedDictionary[1]);
             Assert.AreEqual("test2", reloadedDictionary[2]);
         }
+
         [TestMethod]
         public void IsListTest()
         {
@@ -199,6 +211,7 @@ namespace GRYLibrary.Tests.Testcases
             Assert.IsFalse(EnumerableTools.ObjectIsList("somestring"));
             Assert.IsTrue(EnumerableTools.ObjectIsList("somestring".ToCharArray()));
         }
+
         [TestMethod]
         public void IsPrimitiveTest()
         {
@@ -224,6 +237,7 @@ namespace GRYLibrary.Tests.Testcases
             Assert.IsTrue(GUtilities.ObjectIsPrimitive(typeof(IList<>)));
             Assert.IsTrue(GUtilities.ObjectIsPrimitive(typeof(IList<Func<Uri>>)));
         }
+
         [TestMethod]
         public void TypeRepresentsTypeTest()
         {
@@ -232,6 +246,7 @@ namespace GRYLibrary.Tests.Testcases
             Assert.IsTrue(GUtilities.TypeRepresentsType(typeof(Type)));
             Assert.IsTrue(GUtilities.TypeRepresentsType(typeof(TypeInfo)));
         }
+
         [TestMethod]
         public void IsDictionaryEntryTest()
         {
@@ -242,6 +257,7 @@ namespace GRYLibrary.Tests.Testcases
             Assert.IsTrue(EnumerableTools.ObjectIsDictionaryEntry(new DictionaryEntry()));
             Assert.IsTrue(EnumerableTools.ObjectIsDictionaryEntry(new DictionaryEntry(new object(), new object())));
         }
+
         [TestMethod]
         public void IsDictionaryTest()
         {
@@ -251,6 +267,7 @@ namespace GRYLibrary.Tests.Testcases
             Assert.IsFalse(EnumerableTools.ObjectIsDictionary(new object()));
             Assert.IsFalse(EnumerableTools.ObjectIsDictionary("somestring"));
         }
+
         [TestMethod]
         public void IsSetTest()
         {
@@ -260,26 +277,31 @@ namespace GRYLibrary.Tests.Testcases
             Assert.IsFalse(EnumerableTools.ObjectIsSet(new object()));
             Assert.IsFalse(EnumerableTools.ObjectIsSet("somestring"));
         }
+
         [TestMethod]
         public void IsKeyValuePairTest11()
         {
             Assert.IsTrue(EnumerableTools.ObjectIsKeyValuePair(new System.Collections.Generic.KeyValuePair<object, object>(new object(), new object())));
         }
+
         [TestMethod]
         public void IsKeyValuePairTest12()
         {
             Assert.IsTrue(EnumerableTools.ObjectIsKeyValuePair(new System.Collections.Generic.KeyValuePair<int, string>()));
         }
+
         [TestMethod]
         public void IsKeyValuePairTest21()
         {
             Assert.IsTrue(EnumerableTools.ObjectIsKeyValuePair(new System.Collections.Generic.KeyValuePair<object, object>(new object(), new object())));
         }
+
         [TestMethod]
         public void IsKeyValuePairTest22()
         {
             Assert.IsTrue(EnumerableTools.ObjectIsKeyValuePair(new System.Collections.Generic.KeyValuePair<int, string>()));
         }
+
         [TestMethod]
         public void ObjectToKeyValuePairTest1()
         {
@@ -291,6 +313,7 @@ namespace GRYLibrary.Tests.Testcases
             Assert.AreEqual(kvp11, kvp1Typed.Key);
             Assert.AreEqual(kvp12, kvp1Typed.Value);
         }
+
         [TestMethod]
         public void ObjectToKeyValuePairTest2()
         {
@@ -308,21 +331,25 @@ namespace GRYLibrary.Tests.Testcases
         {
             Assert.IsTrue(EnumerableTools.ObjectIsTuple(new Tuple<object, object>(new object(), new object())));
         }
+
         [TestMethod]
         public void IsTupleTest12()
         {
             Assert.IsTrue(EnumerableTools.ObjectIsTuple(new WriteableTuple<object, object>()));
         }
+
         [TestMethod]
         public void IsTupleTest21()
         {
             Assert.IsTrue(EnumerableTools.ObjectIsTuple(new Tuple<int, string>(5, "test")));
         }
+
         [TestMethod]
         public void IsTupleTest22()
         {
             Assert.IsTrue(EnumerableTools.ObjectIsTuple(new WriteableTuple<int, string>()));
         }
+
         [TestMethod]
         public void ObjectToTupleTest1()
         {
@@ -334,6 +361,7 @@ namespace GRYLibrary.Tests.Testcases
             Assert.AreEqual(kvp11, kvp1Typed.Item1);
             Assert.AreEqual(kvp12, kvp1Typed.Item2);
         }
+
         [TestMethod]
         public void ObjectToTupleTest2()
         {
@@ -345,7 +373,6 @@ namespace GRYLibrary.Tests.Testcases
             Assert.AreEqual(kvp11, kvp1Typed.Item1);
             Assert.AreEqual(kvp12, kvp1Typed.Item2);
         }
-
 
         [TestMethod]
         public void ObjectToSettTest()
@@ -359,6 +386,7 @@ namespace GRYLibrary.Tests.Testcases
             object testSetAsObject = testSet;
             Assert.IsTrue(EnumerableTools.SetEquals(testSet, EnumerableTools.ObjectToSet<int>(testSetAsObject)));
         }
+
         [TestMethod]
         public void ObjectToListTest()
         {
@@ -378,6 +406,7 @@ namespace GRYLibrary.Tests.Testcases
             Assert.Throws<InvalidCastException>(() => EnumerableTools.ObjectToDictionary<object, object>(new object()));
             Assert.Throws<InvalidCastException>(() => EnumerableTools.ObjectToDictionary<object, object>("somestring"));
         }
+
         [TestMethod]
         public void ObjectToDictionarySuccessTest()
         {
@@ -404,6 +433,7 @@ namespace GRYLibrary.Tests.Testcases
             object testDictionaryAsObject = testDictionary;
             Assert.IsTrue(EnumerableTools.DictionaryEquals(testDictionary, EnumerableTools.ObjectToDictionary<int, string>(testDictionaryAsObject)));
         }
+
         [TestMethod]
         public void DictionaryEqualsSuccessTest2()
         {
@@ -420,6 +450,7 @@ namespace GRYLibrary.Tests.Testcases
 
             Assert.IsTrue(EnumerableTools.DictionaryEquals(testDictionary, testDictionary2));
         }
+
         [TestMethod]
         public void ObjectIsEnumerableTest()
         {
@@ -430,8 +461,8 @@ namespace GRYLibrary.Tests.Testcases
             Assert.IsTrue(EnumerableTools.ObjectIsEnumerable(new List<SimpleDataStructure3>()));
             Assert.IsTrue(EnumerableTools.ObjectIsEnumerable(string.Empty));
             Assert.IsFalse(EnumerableTools.ObjectIsEnumerable(4));
-
         }
+
         [TestMethod]
         public void EnumerableCount()
         {
@@ -439,12 +470,14 @@ namespace GRYLibrary.Tests.Testcases
             IEnumerable listAsEnumerable = list;
             Assert.AreEqual(list.Count, GUtilities.Count(listAsEnumerable));
         }
+
         [TestMethod]
         public void IsAssignableFromTest()
         {
             Assert.IsTrue(GUtilities.IsAssignableFrom(new SimpleDataStructure1(), typeof(SimpleDataStructure1)));
             Assert.IsTrue(GUtilities.IsAssignableFrom(new SimpleDataStructure1(), typeof(IXmlSerializable)));
         }
+
         [Ignore]
         [TestMethod]
         public void ReferenceEqualsWithCommonValuesTest()
@@ -472,17 +505,20 @@ namespace GRYLibrary.Tests.Testcases
             Assert.IsFalse(GUtilities.ImprovedReferenceEquals(new System.Collections.Generic.KeyValuePair<int, string>(5, "s"), new System.Collections.Generic.KeyValuePair<int, string>(6, "s")));
             Assert.IsTrue(GUtilities.ImprovedReferenceEquals(new System.Collections.Generic.KeyValuePair<int, string>(5, null), new System.Collections.Generic.KeyValuePair<int, object>(5, null)));
         }
+
         [TestMethod]
         public void ReferenceEqualsCycleTest1()
         {
             CycleA cycle = CycleA.GetRandom();
             Assert.IsTrue(GUtilities.ImprovedReferenceEquals(cycle, cycle));
         }
+
         [TestMethod]
         public void ReferenceEqualsCycleTest2()
         {
             Assert.IsFalse(GUtilities.ImprovedReferenceEquals(CycleA.GetRandom(), CycleA.GetRandom()));
         }
+
         [TestMethod]
         public void ReferenceEqualsCycleTest3()
         {
@@ -531,12 +567,14 @@ namespace GRYLibrary.Tests.Testcases
         {
             Assert.AreEqual("a", GUtilities.EnsurePathHasNoLeadingOrTrailingQuotes("'\"'\"a\"'\"'"));
         }
+
         [TestMethod]
         public void EnsurePathDoesNotHaveLeadingOrTrailingSlashOrBackslashTest()
         {
             Assert.AreEqual("a", GUtilities.EnsurePathEndsWithoutSlashOrBackslash("a/"));
             Assert.AreEqual("a", GUtilities.EnsurePathEndsWithoutSlashOrBackslash("a\\"));
         }
+
         [TestMethod]
         public void HexStringToByteArrayTest()
         {
@@ -550,6 +588,7 @@ namespace GRYLibrary.Tests.Testcases
             // assert
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
+
         [TestMethod]
         public void ByteArrayToHexStringTest()
         {
@@ -669,8 +708,8 @@ namespace GRYLibrary.Tests.Testcases
             // assert
             Assert.IsTrue(GUtilities.TypeComparerIgnoringGenerics.Equals(typeof(System.Collections.Generic.KeyValuePair<Hashtable, ulong>), typeof(System.Collections.Generic.KeyValuePair<int, string>)));
             Assert.IsFalse(GUtilities.TypeComparerIgnoringGenerics.Equals(typeof(HashSet<int>), typeof(List<int>)));
-
         }
+
         [TestMethod]
         [Ignore]
         public void CastTest()
@@ -687,12 +726,13 @@ namespace GRYLibrary.Tests.Testcases
             Assert.AreNotEqual(testObject, actualObject);
             Assert.AreEqual(expectedObject, actualObject);
         }
+
         [TestMethod]
         public void DateAndTimeToStringTest()
         {
             Assert.AreEqual("2022-02-27_15-05-00", GUtilities.DateTimeForFilename(new DateTime(2022, 02, 27, 15, 05, 00)));
-            Assert.AreEqual("2022-02-27T15:05:00,120 +03:00", GUtilities.DateTimeToISO8601String(new DateTimeOffset(2022, 02, 27, 15, 05, 00, 120,TimeSpan.FromHours(3))));
-            Assert.AreEqual("2022-02-27T15:05:00 +03:00", GUtilities.DateTimeToUserFriendlyString(new DateTimeOffset(2022, 02, 27, 15, 05, 00, TimeSpan.FromHours(3))));
+            Assert.AreEqual("2022-02-27T15:05:00,120+03:00", GUtilities.DateTimeToISO8601String(new DateTimeOffset(2022, 02, 27, 15, 05, 00, 120,TimeSpan.FromHours(3))));
+            Assert.AreEqual("2022-02-27T15:05:00+03:00", GUtilities.DateTimeToUserFriendlyString(new DateTimeOffset(2022, 02, 27, 15, 05, 00, TimeSpan.FromHours(3))));
             Assert.AreEqual("2022-02-27", GUtilities.DateToUserFriendlyString(new DateOnly(2022, 02, 27)));
             Assert.AreEqual("15:05:00", GUtilities.TimeToUserFriendlyString(new TimeOnly(15, 05, 00)));
         }

@@ -762,11 +762,11 @@ namespace GRYLibrary.Core.Misc
             {
                 if (addMilliseconds)
                 {
-                    format = "yyyy-MM-dd'T'HH:mm:ss,fff zzz";
+                    format = "yyyy-MM-dd'T'HH:mm:ss,fffzzz";
                 }
                 else
                 {
-                    format = "yyyy-MM-dd'T'HH:mm:ss zzz";
+                    format = "yyyy-MM-dd'T'HH:mm:sszzz";
                 }
             }
             else
