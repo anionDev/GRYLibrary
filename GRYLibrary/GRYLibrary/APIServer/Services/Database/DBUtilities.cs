@@ -46,10 +46,11 @@ namespace GRYLibrary.Core.APIServer.Services.Database
         {
             return function(database);
         }
-        public static void RunTransaction<ProjectSpecificDatabaseInteractor>(string nameOfAction, IGRYLog log, ProjectSpecificDatabaseInteractor database, params Action<DbCommand>[] actions)
+
+        public static void RunTransaction<ProjectSpecificDatabaseInteractor>(string nameOfAction, IGRYLog log, ProjectSpecificDatabaseInteractor database, bool runTransactional, params Action<DbCommand>[] actions)
             where ProjectSpecificDatabaseInteractor : IProjectSpecificDatabaseInteractor
         {
-            RunTransaction<object, ProjectSpecificDatabaseInteractor>(nameOfAction, log, database, actions.Select<Action<DbCommand>, Func<DbCommand, object?>>(action => (command) =>
+            RunTransaction<object, ProjectSpecificDatabaseInteractor>(nameOfAction, log, database, runTransactional, actions.Select<Action<DbCommand>, Func<DbCommand, object?>>(action => (command) =>
             {
                 action(command);
                 return null;
@@ -57,7 +58,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
             ).ToArray());
         }
 
-        public static T?[] RunTransaction<T, ProjectSpecificDatabaseInteractor>(string nameOfAction, IGRYLog log, ProjectSpecificDatabaseInteractor database, params Func<DbCommand, T?>[] functions)
+        public static T?[] RunTransaction<T, ProjectSpecificDatabaseInteractor>(string nameOfAction, IGRYLog log, ProjectSpecificDatabaseInteractor database, bool runTransactional, params Func<DbCommand, T?>[] functions)
             where ProjectSpecificDatabaseInteractor : IProjectSpecificDatabaseInteractor
         {
             List<T?> results = [];
@@ -68,14 +69,21 @@ namespace GRYLibrary.Core.APIServer.Services.Database
                 bool commit = true;
                 foreach (Func<DbCommand, T?> function in functions)
                 {
-                    using DbTransaction transaction = connection.BeginTransaction();
+                    DbTransaction? transaction = null;
+                    if (runTransactional)
+                    {
+                        transaction = connection.BeginTransaction();
+                    }
                     try
                     {
                         using (DbCommand cmd = connection.CreateCommand())
                         {
                             cmd.CommandType = CommandType.Text;
                             cmd.CommandTimeout = 300;
-                            cmd.Transaction = transaction;
+                            if (runTransactional)
+                            {
+                                cmd.Transaction = transaction;
+                            }
                             try
                             {
                                 T? result = function(cmd);
@@ -101,6 +109,10 @@ namespace GRYLibrary.Core.APIServer.Services.Database
                             log.Log("Rollback DB-transaction " + nameOfAction, Microsoft.Extensions.Logging.LogLevel.Trace);
                             transaction.Rollback();
                         }
+                    }
+                    if (runTransactional)
+                    {
+                        GRYLibrary.Core.Misc.Utilities.GetValue(transaction).Dispose();
                     }
                 }
             });
