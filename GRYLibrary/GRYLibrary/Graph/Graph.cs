@@ -196,7 +196,7 @@ namespace GRYLibrary.Core.Graph
 
         private IList<Vertex> GetOrderedVertices()
         {
-            return this.Vertices.OrderBy(vertex => vertex.Name).ToList();
+            return [.. this.Vertices.OrderBy(vertex => vertex.Name)];
         }
 
         /// <remarks>This operations does not work yet due to missing implementation of <see cref="GetAllCyclesThroughASpecificVertex"/>.</remarks>
@@ -252,7 +252,7 @@ namespace GRYLibrary.Core.Graph
                     if (!visitedMap[successor])
                     {
                         visitedMap[successor] = true;
-                        List<Edge> successorPath = currentVertex.Item2.ToList();
+                        List<Edge> successorPath = [.. currentVertex.Item2];
                         if (this.TryGetEdge(currentVertex.Item1, successor, out Edge edge))
                         {
                             successorPath.Add(edge);
@@ -293,7 +293,7 @@ namespace GRYLibrary.Core.Graph
                     }
                     foreach (Vertex successor in this.GetDirectSuccessors(currentVertex.Item1, doNotWalkAgainstDirectedEdges))
                     {
-                        List<Edge> successorPath = currentVertex.Item2.ToList();
+                        List<Edge> successorPath = [.. currentVertex.Item2];
                         if (this.TryGetEdge(currentVertex.Item1, successor, out Edge edge))
                         {
                             successorPath.Add(edge);

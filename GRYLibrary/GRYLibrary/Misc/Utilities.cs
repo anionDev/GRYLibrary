@@ -560,7 +560,7 @@ namespace GRYLibrary.Core.Misc
             }
             AssertCondition(table.Select(lines => lines.Count).ToHashSet().Count == 1, @break: true);
             int columnAmount = table.First().Count;
-            uint[] columnWidths = Enumerable.Repeat((uint)0, columnAmount).ToArray();
+            uint[] columnWidths = [.. Enumerable.Repeat((uint)0, columnAmount)];
 
             //collect column-widths
             foreach (IList<string> line in table)
@@ -587,7 +587,7 @@ namespace GRYLibrary.Core.Misc
 
         public static T[][] EnumerableOfEnumerableToJaggedArray<T>(IEnumerable<IEnumerable<T>> items)
         {
-            return items.Select(Enumerable.ToArray).ToArray();
+            return [.. items.Select(Enumerable.ToArray)];
         }
 
         public static T[,] JaggedArrayToTwoDimensionalArray<T>(T[][] items)
@@ -1310,7 +1310,7 @@ namespace GRYLibrary.Core.Misc
         }
 
         private static readonly IList<object> _DefaultConversions = [];
-        public static IList<object> DefaultConversions => _DefaultConversions.ToList();
+        public static IList<object> DefaultConversions => [.. _DefaultConversions];
         public static object Cast(object @object, Type targetType, IList<object> customConversions)
         {
             Type typeOfObject = @object.GetType();
@@ -1438,7 +1438,7 @@ namespace GRYLibrary.Core.Misc
                 else
                 {
                     int colonCount = this._Path.Count(c => c == ':');
-                    List<char> invalidFileNameChars = Path.GetInvalidFileNameChars().ToList();
+                    List<char> invalidFileNameChars = [.. Path.GetInvalidFileNameChars()];
                     invalidFileNameChars.Remove(':');
                     invalidFileNameChars.Remove('\\');
                     invalidFileNameChars.Remove('/');
@@ -1767,7 +1767,7 @@ namespace GRYLibrary.Core.Misc
         }
         public static string[] SplitOnNewLineCharacter(string input)
         {
-            return input.Split([Environment.NewLine], StringSplitOptions.None).Select(line => line.Replace("\r", string.Empty).Replace("\n", string.Empty)).ToArray();
+            return [.. input.Split([Environment.NewLine], StringSplitOptions.None).Select(line => line.Replace("\r", string.Empty).Replace("\n", string.Empty))];
         }
         public static void AssertCondition(bool condition, Func<string> messageForFailedAssertion, bool @break = false)
         {
@@ -1815,7 +1815,7 @@ namespace GRYLibrary.Core.Misc
         public static void UpdateCSVFileEntry(string file, Encoding encoding, Func<string[], string[]> updateFunction, string separator = ";", bool firstLineContainsHeadlines = false)
         {
             IList<string[]> content = ReadCSVFile(file, encoding, out string[] headlines, separator, firstLineContainsHeadlines);
-            content = content.Select(line => updateFunction(line)).ToList();
+            content = [.. content.Select(line => updateFunction(line))];
             WriteCSVFile(file, content, headlines, separator);
         }
         public static void WriteCSVFile(string file, IList<string[]> content, string[] headLines, string separator = ";")
@@ -1825,7 +1825,7 @@ namespace GRYLibrary.Core.Misc
 
         public static void WriteCSVFile(string file, Encoding encoding, IList<string[]> content, string[] headLines, string separator = ";")
         {
-            List<string[]> contentAdjusted = content.ToList();
+            List<string[]> contentAdjusted = [.. content];
             if (headLines != null)
             {
                 contentAdjusted.Insert(0, headLines);
@@ -1889,7 +1889,7 @@ namespace GRYLibrary.Core.Misc
                             {
                                 innerList.Add(line);
                             }
-                            outterList.Add(innerList.ToArray());
+                            outterList.Add([.. innerList]);
                         }
                     }
                     isFirstLine = false;
@@ -1897,7 +1897,7 @@ namespace GRYLibrary.Core.Misc
             }
             if (firstLineContainsHeadlines)
             {
-                headLines = headlineValues.ToArray();
+                headLines = [.. headlineValues];
             }
             else
             {
@@ -3384,7 +3384,7 @@ namespace GRYLibrary.Core.Misc
 
         private static IList<string> FormatStackInnerException(Exception exception, uint indentationLevel, bool wrapInOneLine = false)
         {
-            return SplitOnNewLineCharacter(GetExceptionMessage(exception.InnerException, null, wrapInOneLine, indentationLevel + 1, "Inner exception")).ToList();
+            return [.. SplitOnNewLineCharacter(GetExceptionMessage(exception.InnerException, null, wrapInOneLine, indentationLevel + 1, "Inner exception"))];
         }
         #endregion
 

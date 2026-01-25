@@ -52,7 +52,7 @@ namespace GRYLibrary.Core.Misc
         private void Save()
         {
             List<string> lines = [];
-            List<KeyValuePair<TKey, TValue>> kvps = this.Cache.ToList();
+            List<KeyValuePair<TKey, TValue>> kvps = [.. this.Cache];
             if (this.Sorter != null)
             {
                 kvps.Sort(this.Sorter);

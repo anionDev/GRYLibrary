@@ -85,8 +85,8 @@ namespace GRYLibrary.Core.Misc
                     Rule = new ProductionRuleWithExpection()
                     {
                         Identifier = state.Rule.Identifier,
-                        Substituted = state.Rule.Substituted.Concat(new List<Symbol>() { state.Rule.Expected.First() }).ToList(),
-                        Expected = state.Rule.Expected.Skip(1).ToList()
+                        Substituted = [.. state.Rule.Substituted, .. new List<Symbol>() { state.Rule.Expected.First() }],
+                        Expected = [.. state.Rule.Expected.Skip(1)]
                     },
                     J = state.J
                 });
@@ -107,8 +107,8 @@ namespace GRYLibrary.Core.Misc
                     Rule = new ProductionRuleWithExpection()
                     {
                         Identifier = state2.Rule.Identifier,
-                        Substituted = state2.Rule.Substituted.Concat(new List<Symbol>() { state2.Rule.Expected.First() }).ToList(),
-                        Expected = state2.Rule.Expected.Skip(1).ToList()
+                        Substituted = [.. state2.Rule.Substituted, .. new List<Symbol>() { state2.Rule.Expected.First() }],
+                        Expected = [.. state2.Rule.Expected.Skip(1)]
                     },
                     J = state2.J
                 });

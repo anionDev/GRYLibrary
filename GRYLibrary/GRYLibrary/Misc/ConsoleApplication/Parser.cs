@@ -18,7 +18,7 @@ namespace GRYLibrary.Core.Misc.ConsoleApplication
         protected abstract int RunImplementation(ParserResult<object> parsed);
         public Type[] GetVerbs()
         {
-            Type[] result = this.GetVerbsImplementation().Append(typeof(Help)).Append(typeof(Info)).ToArray();
+            Type[] result = [.. this.GetVerbsImplementation(), typeof(Help), typeof(Info)];
             //TODO check if all types inherit from ICommandlineParameter
             return result;
         }

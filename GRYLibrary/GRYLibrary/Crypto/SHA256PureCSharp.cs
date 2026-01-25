@@ -28,21 +28,21 @@ namespace GRYLibrary.Core.Crypto
 
         public override byte[] Hash(byte[] data)
         {
-            uint[] H = this.H_InitialValue.ToArray();
-            uint[] K = this.K_InitialValue.ToArray();
+            uint[] H = [.. this.H_InitialValue];
+            uint[] K = [.. this.K_InitialValue];
 
             byte[] message = data;
             int L_messageLengthInBits = data.Length * 8;
 
-            message = message.Concat(new byte[] { 128 }).ToArray();
+            message = [.. message, .. new byte[] { 128 }];
 
             int K_amountOfBitsToAppend = 512 - ((L_messageLengthInBits + 8 + 64) % 512);
             Utilities.AssertCondition(K_amountOfBitsToAppend % 8 == 0);
             int K_amountOfBytesToAppend = K_amountOfBitsToAppend / 8;
-            message = message.Concat(new byte[K_amountOfBytesToAppend]).ToArray();
+            message = [.. message, .. new byte[K_amountOfBytesToAppend]];
             Utilities.AssertCondition((L_messageLengthInBits + 8 + K_amountOfBitsToAppend + 64) % 512 == 0);
 
-            message = message.Concat(Utilities.UnsignedInteger64BitToByteArray((ulong)L_messageLengthInBits)).ToArray();
+            message = [.. message, .. Utilities.UnsignedInteger64BitToByteArray((ulong)L_messageLengthInBits)];
             Utilities.AssertCondition(message.Length % 64 == 0);
 
             int chunkSizeInBits = 512;
@@ -50,7 +50,7 @@ namespace GRYLibrary.Core.Crypto
             int amountOfChunks = message.Length / chunkSizeInBytes;
             for (int chunkIndex = 0; chunkIndex < amountOfChunks; chunkIndex++)
             {
-                byte[] currentChunk = message.Skip(chunkIndex * chunkSizeInBytes).Take(chunkSizeInBytes).ToArray();
+                byte[] currentChunk = [.. message.Skip(chunkIndex * chunkSizeInBytes).Take(chunkSizeInBytes)];
                 Utilities.AssertCondition(currentChunk.Length == chunkSizeInBytes);
                 uint[] W = new uint[64];
                 uint[] currentChunkAsUnsignedIntegerArray = Utilities.ByteArrayToUnsignedInteger32BitArray(currentChunk);
@@ -98,15 +98,18 @@ namespace GRYLibrary.Core.Crypto
                 H[7] = Add(h, H[7]);
 
             }
-            return Utilities.UnsignedInteger32BitToByteArray(H[0])
-           .Concat(Utilities.UnsignedInteger32BitToByteArray(H[1]))
-           .Concat(Utilities.UnsignedInteger32BitToByteArray(H[2]))
-           .Concat(Utilities.UnsignedInteger32BitToByteArray(H[3]))
-           .Concat(Utilities.UnsignedInteger32BitToByteArray(H[4]))
-           .Concat(Utilities.UnsignedInteger32BitToByteArray(H[5]))
-           .Concat(Utilities.UnsignedInteger32BitToByteArray(H[6]))
-           .Concat(Utilities.UnsignedInteger32BitToByteArray(H[7]))
-           .ToArray();
+            return
+            [
+                .. Utilities.UnsignedInteger32BitToByteArray(H[0])
+,
+                .. Utilities.UnsignedInteger32BitToByteArray(H[1]),
+                .. Utilities.UnsignedInteger32BitToByteArray(H[2]),
+                .. Utilities.UnsignedInteger32BitToByteArray(H[3]),
+                .. Utilities.UnsignedInteger32BitToByteArray(H[4]),
+                .. Utilities.UnsignedInteger32BitToByteArray(H[5]),
+                .. Utilities.UnsignedInteger32BitToByteArray(H[6]),
+                .. Utilities.UnsignedInteger32BitToByteArray(H[7]),
+            ];
         }
 
         public static uint CalculateS1(uint e)

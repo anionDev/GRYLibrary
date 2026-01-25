@@ -32,7 +32,7 @@ namespace GRYLibrary.Core.Graph
 
         public override bool Connects(Vertex fromVertex, Vertex toVertex)
         {
-            List<Vertex> vertices = this.ConnectedVertices.ToList();
+            List<Vertex> vertices = [.. this.ConnectedVertices];
             bool x1 = vertices[0].Equals(fromVertex);
             bool x2 = vertices[1].Equals(toVertex);
             bool x3 = vertices[1].Equals(fromVertex);
@@ -86,7 +86,7 @@ namespace GRYLibrary.Core.Graph
         {
             if (this.ConnectedVertices.Contains(vertex))
             {
-                List<Vertex> result = this.ConnectedVertices.ToList();
+                List<Vertex> result = [.. this.ConnectedVertices];
                 if (!result.RemoveItemOnlyOnce(vertex))
                 {
                     throw new Exception();

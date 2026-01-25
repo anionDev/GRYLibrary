@@ -25,7 +25,7 @@ namespace GRYLibrary.Core.Misc.Captcha
 
         internal static string GetNewRandomExpectedUserInput(CaptchaGenerationSettings settings)
         {
-            return new string(Enumerable.Repeat(settings.Alphabet, settings.Length).Select(s => s[_Random.Next(s.Length)]).ToArray());
+            return new string([.. Enumerable.Repeat(settings.Alphabet, settings.Length).Select(s => s[_Random.Next(s.Length)])]);
         }
 
         internal static byte[] GetPictureForString(string expectedUserInput)

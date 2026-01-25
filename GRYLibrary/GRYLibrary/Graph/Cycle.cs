@@ -11,7 +11,7 @@ namespace GRYLibrary.Core.Graph
         public Cycle() { }
         public Cycle(IList<Edge> edgesList)
         {
-            List<Edge> edges = edgesList.ToList();
+            List<Edge> edges = [.. edgesList];
             if (edges.Count == 0)
             {
                 throw new InvalidGraphStructureException("A cycle can not be empty.");

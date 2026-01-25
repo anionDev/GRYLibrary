@@ -37,7 +37,7 @@ namespace GRYLibrary.Core.Crypto
         /// <inheritdoc/>
         public override byte[] Encrypt(byte[] unencryptedData)
         {
-            return EncryptAndSerialize(unencryptedData, this.PasswordEncryptionKeys.ToArray(), this.InternalEncryptionAlgorithmForKeys, this.HashAlgorithm);
+            return EncryptAndSerialize(unencryptedData, [.. this.PasswordEncryptionKeys], this.InternalEncryptionAlgorithmForKeys, this.HashAlgorithm);
         }
 
         /// <inheritdoc/>
@@ -52,7 +52,7 @@ namespace GRYLibrary.Core.Crypto
         public static byte[] EncryptAndSerialize(byte[] unencryptedData, (byte[], AsymmetricEncryptionAlgorithm)[] unencryptedPublicPasswordEncryptionKeys, SymmetricEncryptionAlgorithm internalEncryptionAlgorithmForKeys, HashAlgorithm hashAlgorithm)
         {
             byte[] internalKey = internalEncryptionAlgorithmForKeys.GenerateRandomKey();
-            (byte[], AsymmetricEncryptionAlgorithm)[] encryptedKeysForDecryption = unencryptedPublicPasswordEncryptionKeys.Select(unencryptedPublicPasswordEncryptionKey => (unencryptedPublicPasswordEncryptionKey.Item2.Encrypt(internalKey, unencryptedPublicPasswordEncryptionKey.Item1), unencryptedPublicPasswordEncryptionKey.Item2)).ToArray();
+            (byte[], AsymmetricEncryptionAlgorithm)[] encryptedKeysForDecryption = [.. unencryptedPublicPasswordEncryptionKeys.Select(unencryptedPublicPasswordEncryptionKey => (unencryptedPublicPasswordEncryptionKey.Item2.Encrypt(internalKey, unencryptedPublicPasswordEncryptionKey.Item1), unencryptedPublicPasswordEncryptionKey.Item2))];
             byte[] content = internalEncryptionAlgorithmForKeys.Encrypt(unencryptedData, internalKey);
             byte[] header = Utilities.Concat(hashAlgorithm.GetIdentifier(), internalEncryptionAlgorithmForKeys.GetIdentifier(), Utilities.UnsignedInteger32BitToByteArray((uint)encryptedKeysForDecryption.Length), Utilities.UnsignedInteger32BitToByteArray((uint)content.Length));
             foreach ((byte[], AsymmetricEncryptionAlgorithm) encryptedKeyForDecryption in encryptedKeysForDecryption)

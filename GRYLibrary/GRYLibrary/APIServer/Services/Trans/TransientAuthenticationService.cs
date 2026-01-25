@@ -72,7 +72,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         {
             if (this._TransientAuthenticationServicePersistence.AccessTokenExists(accessToken, out UserType user))
             {
-                user.AccessToken = user.AccessToken.Where(at => at.Value != accessToken).ToHashSet();
+                user.AccessToken = [.. user.AccessToken.Where(at => at.Value != accessToken)];
             }
             else
             {

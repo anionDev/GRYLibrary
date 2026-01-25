@@ -68,7 +68,7 @@ namespace GRYLibrary.Core.Misc
                     result.Add(this.GetLineForASCIITable(tableOutputType, columnLengths, lineNumber));
                 }
                 result.Add(this.GetLastLineForASCIITable(tableOutputType, columnLengths));
-                return result.ToArray();
+                return [.. result];
             }
 
             public string[] Handle(HTMLTable tableOutputType)
@@ -88,7 +88,7 @@ namespace GRYLibrary.Core.Misc
                     }
                     result.Add(string.Join(";", lineItems));
                 }
-                return result.ToArray();
+                return [.. result];
             }
             #region Helper
             private string GetLineForASCIITable(ASCIITable tableOutputType, int[] columnLengths, int lineNumber)
@@ -158,7 +158,7 @@ namespace GRYLibrary.Core.Misc
 
             private T[] NTimes<T>(T value, int amount)
             {
-                return Enumerable.Repeat(value, amount).ToArray();
+                return [.. Enumerable.Repeat(value, amount)];
             }
 
             private int[] GetColumnLengths(string[,] array, int maximalWidth)

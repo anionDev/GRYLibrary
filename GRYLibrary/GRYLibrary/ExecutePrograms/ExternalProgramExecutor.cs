@@ -399,8 +399,8 @@ namespace GRYLibrary.Core.ExecutePrograms
                     {
                         Thread.Sleep(60);
                     }
-                    this._ExternalProgramExecutor._AllStdOutLinesAsArray = this._ExternalProgramExecutor._AllStdOutLines.ToArray();
-                    this._ExternalProgramExecutor._AllStdErrLinesAsArray = this._ExternalProgramExecutor._AllStdErrLines.ToArray();
+                    this._ExternalProgramExecutor._AllStdOutLinesAsArray = [.. this._ExternalProgramExecutor._AllStdOutLines];
+                    this._ExternalProgramExecutor._AllStdErrLinesAsArray = [.. this._ExternalProgramExecutor._AllStdErrLines];
                     this._ExternalProgramExecutor.LogEnd();
                     try
                     {

@@ -129,7 +129,7 @@ namespace GRYLibrary.Core.Misc
                     list.Add(character);
                 }
             }
-            string result = new(list.ToArray());
+            string result = new([.. list]);
             return result;
         }
         private static IDictionary<char, int> CalculateSimilarityHelperGetCharFrequencyMap(string str)

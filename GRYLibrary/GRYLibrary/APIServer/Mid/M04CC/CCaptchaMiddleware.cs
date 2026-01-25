@@ -41,7 +41,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M04CC
                     bool result = this.TrySolve(captchaId, captchaValue, out string accessKey, out string failMessage);
                     if (result)
                     {
-                        List<KeyValuePair<string, string>> query = context.Request.Query.SelectMany(x => x.Value, (col, value) => new KeyValuePair<string, string>(col.Key, value)).ToList();
+                        List<KeyValuePair<string, string>> query = [.. context.Request.Query.SelectMany(x => x.Value, (col, value) => new KeyValuePair<string, string>(col.Key, value))];
                         query.RemoveAll(queryParameter => queryParameter.Key == captchaIdKey || queryParameter.Key == captchaValueKey);
                         context.Request.QueryString = new QueryBuilder(query).ToQueryString();
                         this.SetAccessToken(this._CaptchaMiddlewareSettings, context, accessKey);

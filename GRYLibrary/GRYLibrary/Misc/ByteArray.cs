@@ -119,7 +119,7 @@ namespace GRYLibrary.Core.Misc
         }
         public bool Contains(ByteArray value)
         {
-            return this._Data.ToList().ContainsSublist(value._Data.ToList(), (@byte) => @byte.ToString());
+            return this._Data.ToList().ContainsSublist([.. value._Data], (@byte) => @byte.ToString());
         }
     }
 }
