@@ -57,7 +57,7 @@ namespace GRYLibrary.Core.AOA
 
                 if (EnumerableTools.ObjectIsEnumerable(@object))
                 {
-                    IList<object> objectAsEnumerable = EnumerableTools.ObjectToEnumerable<object>(@object).ToList();
+                    IList<object> objectAsEnumerable = [.. EnumerableTools.ObjectToEnumerable<object>(@object)];
                     string result = this.GetIndentation(currentIndentationLevel) + "[" + Environment.NewLine;
                     int count = objectAsEnumerable.Count;
                     for (int i = 0; i < count; i++)

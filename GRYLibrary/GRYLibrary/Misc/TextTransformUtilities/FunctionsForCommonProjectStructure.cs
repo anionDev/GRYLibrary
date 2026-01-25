@@ -47,7 +47,7 @@ namespace GRYLibrary.Core.Misc.TextTransformUtilities
             List<string> constantsfiles = [];
             if (constantsFolderExists)
             {
-                constantsfiles = Directory.GetFiles(constantsFolder).ToList();
+                constantsfiles = [.. Directory.GetFiles(constantsFolder)];
                 foreach (string file in constantsfiles)
                 {
                     if (file.EndsWith(".constant.xml"))

@@ -316,7 +316,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         {
             GeneralLoggerExtensions.Log(this, nameOfEntireLoopAction, logLevelForOverhead, !preventThrowingExceptions, true, false, true, true, () =>
             {
-                List<T> itemsAsList = items.ToList();
+                List<T> itemsAsList = [.. items];
                 uint amountOfItems = (uint)itemsAsList.Count;
                 for (uint currentIndex = 0; currentIndex < itemsAsList.Count; currentIndex++)
                 {

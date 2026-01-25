@@ -31,7 +31,7 @@ namespace GRYLibrary.Core.Graph
             HashSet<Vertex> result = [];
             foreach (UndirectedEdge edge in vertex.GetConnectedEdges())
             {
-                List<Vertex> vertices = edge.ConnectedVertices.ToList();
+                List<Vertex> vertices = [.. edge.ConnectedVertices];
                 if (vertices[0].Equals(vertices[1]) && vertices[0].Equals(vertex))
                 {
                     result.Add(vertex);
@@ -86,7 +86,7 @@ namespace GRYLibrary.Core.Graph
                 throw new InvalidEdgeTypeException($"{nameof(UndirectedGraph)}-objects can only have edges of type {nameof(UndirectedEdge)}");
             }
             UndirectedEdge undirectedEdge = (UndirectedEdge)edge;
-            List<Vertex> connectedVertices = undirectedEdge.ConnectedVertices.ToList();
+            List<Vertex> connectedVertices = [.. undirectedEdge.ConnectedVertices];
             this.AddCheck(edge, connectedVertices[0], connectedVertices[1]);
             this._UndirectedEdges.Add((UndirectedEdge)edge);
             this.OnEdgeAdded(edge);

@@ -90,7 +90,7 @@ namespace GRYLibrary.Core.Misc.Migration
         public static IList<MigrationInstance> LoadMigrationsFromResources(Assembly assembly, string migrationsResourceNamePrefix)
         {
             IList<MigrationInstance> migrationInstances = [];
-            List<string> resources = assembly.GetManifestResourceNames().Order().ToList();
+            List<string> resources = [.. assembly.GetManifestResourceNames().Order()];
             uint i = 0;
             foreach (string resourceName in resources)
             {
@@ -105,7 +105,7 @@ namespace GRYLibrary.Core.Misc.Migration
                     i = i + 1;
                 }
             }
-            migrationInstances = migrationInstances.OrderBy(migration => migration.Index).ToList();
+            migrationInstances = [.. migrationInstances.OrderBy(migration => migration.Index)];
             return migrationInstances;
         }
         public IList<MigrationExecutionInformation> GetExecutedMigrations()
@@ -119,7 +119,7 @@ namespace GRYLibrary.Core.Misc.Migration
                     result.Add(new MigrationExecutionInformation(reader.GetString(0), reader.GetDateTime(1)));
                 }
             }
-            return result.OrderBy(o => o.ExecutionTimestamp).ToList();
+            return [.. result.OrderBy(o => o.ExecutionTimestamp)];
         }
     }
 }

@@ -18,7 +18,7 @@ namespace GRYLibrary.Core.Misc
             GRYLibrary.Core.Misc.Utilities.AssertCondition(0 < maxSize, $"{maxSize} must be grater than 0.");
             this._MaxSize = maxSize;
         }
-        public T[] GetEntries() => this._Queue.ToArray();
+        public T[] GetEntries() => [.. this._Queue];
 
         public void Enqueue(T item)
         {

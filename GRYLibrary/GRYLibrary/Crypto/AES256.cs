@@ -47,7 +47,7 @@ namespace GRYLibrary.Core.Crypto
                     }
                     encrypted = msEncrypt.ToArray();
                 }
-                encrypted = aesAlg.IV.Concat(encrypted).ToArray();
+                encrypted = [.. aesAlg.IV, .. encrypted];
             }
             return encrypted;
         }
@@ -66,8 +66,8 @@ namespace GRYLibrary.Core.Crypto
                 throw new ArgumentNullException("Key");
             }
 
-            byte[] iv = data.Take(_IVLength).ToArray();
-            data = data.Skip(_IVLength).ToArray();
+            byte[] iv = [.. data.Take(_IVLength)];
+            data = [.. data.Skip(_IVLength)];
             if (iv == null || iv.Length <= 0)
             {
                 throw new ArgumentNullException("IV");

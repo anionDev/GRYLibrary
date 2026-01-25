@@ -79,7 +79,7 @@ namespace GRYLibrary.Core.Misc
                 }
                 castedArguments.Add(argument);
             }
-            enumerable.GetType().GetMethod("Add").Invoke(enumerable, castedArguments.ToArray());
+            enumerable.GetType().GetMethod("Add").Invoke(enumerable, [.. castedArguments]);
         }
         public static bool TypeIsDictionary(this Type type)
         {

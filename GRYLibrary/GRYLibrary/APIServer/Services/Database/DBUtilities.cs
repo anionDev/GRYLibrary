@@ -50,12 +50,12 @@ namespace GRYLibrary.Core.APIServer.Services.Database
         public static void RunTransaction<ProjectSpecificDatabaseInteractor>(string nameOfAction, IGRYLog log, ProjectSpecificDatabaseInteractor database, bool runTransactional, params Action<DbCommand>[] actions)
             where ProjectSpecificDatabaseInteractor : IProjectSpecificDatabaseInteractor
         {
-            RunTransaction<object, ProjectSpecificDatabaseInteractor>(nameOfAction, log, database, runTransactional, actions.Select<Action<DbCommand>, Func<DbCommand, object?>>(action => (command) =>
+            RunTransaction<object, ProjectSpecificDatabaseInteractor>(nameOfAction, log, database, runTransactional, [.. actions.Select<Action<DbCommand>, Func<DbCommand, object?>>(action => (command) =>
             {
                 action(command);
                 return null;
             }
-            ).ToArray());
+            )]);
         }
 
         public static T?[] RunTransaction<T, ProjectSpecificDatabaseInteractor>(string nameOfAction, IGRYLog log, ProjectSpecificDatabaseInteractor database, bool runTransactional, params Func<DbCommand, T?>[] functions)
@@ -116,7 +116,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
                     }
                 }
             });
-            return results.ToArray();
+            return [.. results];
         }
     }
 }

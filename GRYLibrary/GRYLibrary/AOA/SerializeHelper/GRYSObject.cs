@@ -325,8 +325,8 @@ namespace GRYLibrary.Core.AOA.SerializeHelper
         internal object Get()
         {
             Dictionary<Guid, object> deserializedObjects = [];
-            IList<FlatObject> sorted = this.Objects.ToList();
-            sorted = sorted.OrderBy((item) =>
+            IList<FlatObject> sorted = [.. this.Objects];
+            sorted = [.. sorted.OrderBy((item) =>
             {
                 if (item.TypeName.StartsWith("GRYLibrary.Core.XMLSerializer.KeyValuePair"))
                 {
@@ -336,7 +336,7 @@ namespace GRYLibrary.Core.AOA.SerializeHelper
                 {
                     return 1;
                 }
-            }).ToList();
+            })];
             foreach (FlatObject simplified in sorted)
             {
                 CreateObjectVisitor createObjectVisitor = new();
