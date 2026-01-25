@@ -117,18 +117,14 @@ namespace GRYLibrary.Core.APIServer.Utilities
             if (0 < this.GenericDatabaseInteractor().GetAllTableNames().ToList().Count)
             {
                 DbConnection connection = this._GenericDatabaseInteractor.GetConnection();
-                using DbTransaction tx = connection.BeginTransaction();
                 try
                 {
                     using DbCommand cmd = connection.CreateCommand();
-                    cmd.Transaction = tx;
                     cmd.CommandText = this._ResetDatabaseScript;
                     cmd.ExecuteNonQuery();
-                    tx.Commit();
                 }
                 catch
                 {
-                    tx.Rollback();
                     throw;
                 }
             }
