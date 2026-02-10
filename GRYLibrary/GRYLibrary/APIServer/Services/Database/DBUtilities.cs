@@ -9,7 +9,16 @@ namespace GRYLibrary.Core.APIServer.Services.Database
 {
     public static class DBUtilities
     {
+        public static readonly IDictionary<string, GenericDatabaseInteractor> DatabaseInteractors = new Dictionary<string, GenericDatabaseInteractor>();
         public static GenericDatabaseInteractor ToGenericDatabaseInteractor(IDatabasePersistenceConfiguration databasePersistenceConfiguration, IGRYLog log)
+        {
+            if (!DatabaseInteractors.ContainsKey(databasePersistenceConfiguration.DatabaseType))
+            {
+                DatabaseInteractors[databasePersistenceConfiguration.DatabaseType] = ToNewGenericDatabaseInteractor(databasePersistenceConfiguration, log);
+            }
+            return DatabaseInteractors[databasePersistenceConfiguration.DatabaseType];
+        }
+        public static GenericDatabaseInteractor ToNewGenericDatabaseInteractor(IDatabasePersistenceConfiguration databasePersistenceConfiguration, IGRYLog log)
         {
             return databasePersistenceConfiguration.DatabaseType switch
             {
