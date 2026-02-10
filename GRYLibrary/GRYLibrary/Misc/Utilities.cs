@@ -5,6 +5,7 @@ using GRYLibrary.Core.Exceptions;
 using GRYLibrary.Core.ExecutePrograms;
 using GRYLibrary.Core.ExecutePrograms.WaitingStates;
 using GRYLibrary.Core.Logging.GRYLogger;
+using GRYLibrary.Core.Misc.MetaConfiguration.ConfigurationFormats;
 using GRYLibrary.Core.OperatingSystem;
 using GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems;
 using GRYLibrary.Core.XMLSerializer;
@@ -37,6 +38,7 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -3499,5 +3501,33 @@ namespace GRYLibrary.Core.Misc
                 return value!;
             }
         }
+
+        public static bool ContainerIsHealthy(string containerNameToWaitToBeHealthy)
+        {
+            try
+            {
+                using ExternalProgramExecutor externalProgramExecutor2 = new ExternalProgramExecutor("docker", $"inspect  {containerNameToWaitToBeHealthy}");
+                externalProgramExecutor2.Run();
+                string output = String.Join(string.Empty, externalProgramExecutor2.AllStdOutLines);
+                using var doc = JsonDocument.Parse(output);
+                var root = doc.RootElement[0];
+                if (root.TryGetProperty("State", out var state) &&
+                    state.TryGetProperty("Health", out var health) &&
+                    health.TryGetProperty("Status", out var status))
+                {
+                    var healthy = status.GetString();
+                    return healthy == "healthy";
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
     }
 }
