@@ -3499,5 +3499,14 @@ namespace GRYLibrary.Core.Misc
                 return value!;
             }
         }
+
+        public static bool ContainerIsHealthy(string containerNameToWaitToBeHealthy)
+        {
+            using ExternalProgramExecutor externalProgramExecutor2 = new ExternalProgramExecutor("docker", $"inspect -f {{.State.Health.Status}} {containerNameToWaitToBeHealthy}");
+            externalProgramExecutor2.Run();
+            bool result = externalProgramExecutor2.ExitCode == 0 && externalProgramExecutor2.AllStdOutLines.Count() == 1 && externalProgramExecutor2.AllStdOutLines[0].Trim() == "healthy";
+            return result;
+        }
+
     }
 }

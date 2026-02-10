@@ -4,6 +4,7 @@ using GRYLibrary.Core.ExecutePrograms;
 using GRYLibrary.Core.ExecutePrograms.WaitingStates;
 using GRYLibrary.Core.Logging.GRYLogger;
 using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.IO;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
         private readonly string _TaskNameStop;
         private readonly IGRYLog _Log;
         private readonly string _ResetDatabaseScript;
-        public DatabaseTestFrameworkTemplate(IDatabasePersistenceConfiguration configuration, string testDatabaseFolder, string repositoryFolder, string taskNameStart, string taskNameStop, string resetDatabaseScript, IGRYLog log, TimeSpan connectionTimeout )
+        public DatabaseTestFrameworkTemplate(IDatabasePersistenceConfiguration configuration, string testDatabaseFolder, string repositoryFolder, string taskNameStart, string taskNameStop, string resetDatabaseScript, IGRYLog log, TimeSpan connectionTimeout, ISet<string> containerNamesToWaitToBeHealthy)
         {
             this._TaskNameStart = taskNameStart;
             this._TaskNameStop = taskNameStop;
@@ -39,10 +40,15 @@ namespace GRYLibrary.Core.APIServer.Utilities
                 string volumesFolder = Path.Combine(this._TestDatabaseFolder, "Volumes", "Data");
                 using ExternalProgramExecutor externalProgramExecutor = new ExternalProgramExecutor("task", argument, repositoryFolder);
                 {
-                    externalProgramExecutor.Configuration.WaitingState = new RunSynchronously();
                     externalProgramExecutor.Run();
                     GUtilities.AssertCondition(externalProgramExecutor.ExitCode == 0, $"Error while starting test-database using command \"{externalProgramExecutor.CMD}\" due to exitcode {externalProgramExecutor.ExitCode}. StdOut: {string.Join(Environment.NewLine, externalProgramExecutor.AllStdOutLines)}; StdErr: {string.Join(Environment.NewLine, externalProgramExecutor.AllStdErrLines)}");
-                    Thread.Sleep(TimeSpan.FromSeconds(5));//TODO replace this by wait until healthcheck says service is ready/healthy (with a timeout of 1 minute)
+                    GUtilities.AssertCondition(GUtilities.RunWithTimeout(() =>
+                    {
+                        foreach (var containerNameToWaitToBeHealthy in containerNamesToWaitToBeHealthy)
+                        {
+                            GUtilities.AssertCondition(GUtilities.ContainerIsHealthy(containerNameToWaitToBeHealthy), $"Container {containerNameToWaitToBeHealthy} did not become healthy within the expected time.");
+                        }
+                    }, connectionTimeout));
                 }
                 this._GenericDatabaseInteractor = DBUtilities.ToGenericDatabaseInteractor(configuration, log);
                 Exception? lastException = null;
@@ -77,6 +83,8 @@ namespace GRYLibrary.Core.APIServer.Utilities
                 throw;
             }
         }
+
+
         public IGenericDatabaseInteractor GenericDatabaseInteractor()
         {
             return this._GenericDatabaseInteractor;
