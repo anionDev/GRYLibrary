@@ -24,6 +24,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
 
         public IGRYLog Log { get; private set; }
         private bool _LogConnectionErrors = false;
+        private bool _IsDisposed = false;
         public GenericDatabaseInteractor(IDatabasePersistenceConfiguration configuration, IGRYLog log)
         {
             this.Log = log;
@@ -58,19 +59,24 @@ namespace GRYLibrary.Core.APIServer.Services.Database
                 {
                     lock (Lock)
                     {
-                        (bool isAvailable, Exception? exc) = this.IsAvailable();
-                        if (!this.IsAvailable().Item1)
+                        (bool isAlreadyAvailable, Exception? exc) = this.IsAvailable();
+                        if (!isAlreadyAvailable)
                         {
                             try
                             {
                                 this._Connection?.Dispose();
                                 this._Connection = this.CreateConnection();
+                                this.Log.Log("Database connected.");
                             }
                             catch (Exception ex)
                             {
                                 if (this._LogConnectionErrors)
                                 {
                                     this.Log.Log("Error while connecting to database.", ex);
+                                }
+                                else
+                                {
+                                    this.Log.Log("Could not connect to database yet.", ex, LogLevel.Debug);
                                 }
                                 throw;
                             }
@@ -83,7 +89,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
                     Thread.Sleep(TimeSpan.FromSeconds(2));//not connected. wait a few seconds until checking again if the database is avbailable.
                 }
             }
-            this._Connection.Dispose();
+            this._Connection?.Dispose();
             this._ThreadRunning = false;
         }
         private DbConnection CreateConnection()
@@ -250,8 +256,15 @@ namespace GRYLibrary.Core.APIServer.Services.Database
 
         public void Dispose()
         {
-            this._ThreadEnabled = false;
-            GUtilities.WaitUntilConditionIsTrue(() => !this._ThreadRunning);
+            lock (Lock)
+            {
+                if (!_IsDisposed)
+                {
+                    this._ThreadEnabled = false;
+                    GUtilities.WaitUntilConditionIsTrue(() => !this._ThreadRunning);
+                    _IsDisposed = true;
+                }
+            }
         }
 
         public void SetLogConnectionAttemptErrors(bool enabled)
@@ -264,8 +277,11 @@ namespace GRYLibrary.Core.APIServer.Services.Database
 
         public void DoAllMigrations(IList<MigrationInstance> migrations, ITimeService timeService)
         {
-            GRYMigrator migrator = new GRYMigrator(timeService, migrations, this);
-            migrator.InitializeDatabaseAndMigrateIfRequired();
+            lock (Lock)
+            {
+                GRYMigrator migrator = new GRYMigrator(timeService, migrations, this);
+                migrator.InitializeDatabaseAndMigrateIfRequired();
+            }
         }
     }
 

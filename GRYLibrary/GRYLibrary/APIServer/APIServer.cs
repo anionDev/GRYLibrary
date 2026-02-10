@@ -100,6 +100,7 @@ namespace GRYLibrary.Core.APIServer
                 apiServerConfiguration.InitializationInformation.InitialLogger.Log($"Configuration-folder: {apiServerConfiguration.InitializationInformation.ApplicationConstants.ConfigurationFolder}", LogLevel.Debug);
                 apiServerConfiguration.InitializationInformation.InitialLogger.Log($"Data-folder: {apiServerConfiguration.InitializationInformation.ApplicationConstants.GetDataFolder()}", LogLevel.Debug);
                 apiServerConfiguration.InitializationInformation.InitialLogger.Log($"Log-folder: {apiServerConfiguration.InitializationInformation.ApplicationConstants.GetLogFolder()}", LogLevel.Debug);
+                apiServerConfiguration.InitializationInformation.InitialLogger.Log($"Run {nameof(APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>.SetInitialzationInformationAction)}...", LogLevel.Debug);
                 apiServerConfiguration.SetInitialzationInformationAction(apiServerConfiguration.InitializationInformation);
                 #endregion
 
@@ -215,6 +216,7 @@ namespace GRYLibrary.Core.APIServer
                 Action runAction = () =>
                 {
                     Task? waitTask = null;
+                    this._Configuration.InitializationInformation.InitialLogger.Log($"Run {nameof(FunctionalInformationForWebApplication<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>.PreRun)}...", LogLevel.Debug);
                     this._Configuration.FunctionalInformationForWebApplication.PreRun();
                     try
                     {
@@ -255,7 +257,7 @@ namespace GRYLibrary.Core.APIServer
                     {
                         logger.Log("Error while shutdown API-Server", ex, LogLevel.Warning);
                     }
-                    logger.Log($"Run post-tasks", LogLevel.Information);
+                    this._Configuration.InitializationInformation.InitialLogger.Log($"Run {nameof(FunctionalInformationForWebApplication<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>.PostRun)}...", LogLevel.Debug);
                     this._Configuration.FunctionalInformationForWebApplication.PostRun();
                     logger.Log($"Service finished.", LogLevel.Information);
                 };
@@ -331,6 +333,7 @@ namespace GRYLibrary.Core.APIServer
                     persistedAPIServerConfiguration,
                     logger
                 );
+                apiServerConfiguration.InitializationInformation.InitialLogger.Log($"Run {nameof(APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>.SetFunctionalInformationAction)}...", LogLevel.Debug);
                 apiServerConfiguration.SetFunctionalInformationAction(apiServerConfiguration.FunctionalInformation);
 
                 #region Load middlewares
@@ -511,6 +514,7 @@ namespace GRYLibrary.Core.APIServer
                     persistedAPIServerConfiguration,
                     app
                 );
+                apiServerConfiguration.InitializationInformation.InitialLogger.Log($"Run {nameof(APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>.ConfigureWebApplication)}...", LogLevel.Debug);
                 apiServerConfiguration.ConfigureWebApplication(apiServerConfiguration.FunctionalInformationForWebApplication);
                 logger.Log($"The API will now be available under the following URL:", LogLevel.Information);
                 logger.Log(apiLink, LogLevel.Information);
