@@ -283,6 +283,11 @@ namespace GRYLibrary.Core.APIServer.Services.Database
                 migrator.InitializeDatabaseAndMigrateIfRequired();
             }
         }
+
+        internal bool IsDisposed()
+        {
+            return _IsDisposed;
+        }
     }
 
     public interface IGenericDatabaseInteractorVisitor
