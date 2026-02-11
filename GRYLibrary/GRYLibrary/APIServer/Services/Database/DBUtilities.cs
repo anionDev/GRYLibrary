@@ -12,6 +12,13 @@ namespace GRYLibrary.Core.APIServer.Services.Database
         public static readonly IDictionary<string, GenericDatabaseInteractor> DatabaseInteractors = new Dictionary<string, GenericDatabaseInteractor>();
         public static GenericDatabaseInteractor ToGenericDatabaseInteractor(IDatabasePersistenceConfiguration databasePersistenceConfiguration, IGRYLog log)
         {
+            if (DatabaseInteractors.TryGetValue(databasePersistenceConfiguration.DatabaseType, out GenericDatabaseInteractor gdi))
+            {
+                if (gdi.IsDisposed())
+                {
+                    DatabaseInteractors.Remove(databasePersistenceConfiguration.DatabaseType);
+                }
+            }
             if (!DatabaseInteractors.ContainsKey(databasePersistenceConfiguration.DatabaseType))
             {
                 DatabaseInteractors[databasePersistenceConfiguration.DatabaseType] = ToNewGenericDatabaseInteractor(databasePersistenceConfiguration, log);
