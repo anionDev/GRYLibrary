@@ -15,6 +15,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
 {
     public abstract class GenericDatabaseInteractor : IGenericDatabaseInteractor
     {
+        public string Id { get; } = Guid.NewGuid().ToString();
         private readonly IDatabasePersistenceConfiguration _Configuration;
         public static object Lock = new object();
         private DbConnection _Connection;
@@ -74,10 +75,6 @@ namespace GRYLibrary.Core.APIServer.Services.Database
                                 {
                                     this.Log.Log("Error while connecting to database.", ex);
                                 }
-                                else
-                                {
-                                    this.Log.Log("Could not connect to database yet.", ex, LogLevel.Debug);
-                                }
                                 throw;
                             }
                         }
@@ -92,6 +89,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
             this._Connection?.Dispose();
             this._ThreadRunning = false;
         }
+
         private DbConnection CreateConnection()
         {
             string connectionStringForLog = this._Configuration.DatabaseConnectionString;
@@ -258,11 +256,11 @@ namespace GRYLibrary.Core.APIServer.Services.Database
         {
             lock (Lock)
             {
-                if (!_IsDisposed)
+                if (!this._IsDisposed)
                 {
                     this._ThreadEnabled = false;
-                    GUtilities.WaitUntilConditionIsTrue(() => !this._ThreadRunning);
-                    _IsDisposed = true;
+                    GUtilities.WaitUntilConditionIsTrue(() => !this._ThreadRunning,"Dispose database");
+                    this._IsDisposed = true;
                 }
             }
         }
@@ -286,7 +284,12 @@ namespace GRYLibrary.Core.APIServer.Services.Database
 
         internal bool IsDisposed()
         {
-            return _IsDisposed;
+            return this._IsDisposed;
+        }
+
+        public void WaitUntilAvailable(TimeSpan timeSpan)
+        {
+            GRYLibrary.Core.Misc.Utilities.WaitUntilConditionIsTrue(() => this.IsAvailable().Item1, timeSpan,"Database-initialization");
         }
     }
 

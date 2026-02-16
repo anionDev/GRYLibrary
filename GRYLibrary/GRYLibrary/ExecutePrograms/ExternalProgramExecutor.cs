@@ -8,7 +8,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -468,7 +467,7 @@ namespace GRYLibrary.Core.ExecutePrograms
                 }
             }
             this._Running = false;
-            GRYLibrary.Core.Misc.Utilities.WaitUntilConditionIsTrue(() => this._NotLoggedOutputLines.IsEmpty);
+            GRYLibrary.Core.Misc.Utilities.WaitUntilConditionIsTrue(() => this._NotLoggedOutputLines.IsEmpty,"Process-log-entries");
             this.CurrentExecutionState = ExecutionState.Terminated;
         }
         public void WaitUntilTerminated()
@@ -480,7 +479,7 @@ namespace GRYLibrary.Core.ExecutePrograms
                     return false;
                 }
                 return true;
-            });
+            },"Wait-until-terminated");
         }
         private void CheckIfStartOperationWasAlreadyCalled()
         {

@@ -3,7 +3,6 @@ using GRYLibrary.Core.AOA.EqualsHelper.CustomComparer;
 using GRYLibrary.Core.Misc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
 namespace GRYLibrary.Core.AOA

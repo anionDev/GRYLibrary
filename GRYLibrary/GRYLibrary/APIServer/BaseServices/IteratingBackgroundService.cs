@@ -12,6 +12,7 @@ namespace GRYLibrary.Core.APIServer.BaseServices
     public abstract class IteratingBackgroundService : IDisposable
     {
         public bool Enabled { get; set; }
+        private static readonly object _Lock = new object();
         protected bool Running { get; private set; }
         public TimeSpan AdditionalDelay { get; set; } = TimeSpan.FromSeconds(0);
         protected readonly IGRYLog _Logger;
@@ -24,15 +25,21 @@ namespace GRYLibrary.Core.APIServer.BaseServices
         }
         public void StartAsync()
         {
-            if (!this.Running)
+            lock (_Lock)
             {
+                if (this.Running)
+                {
+                    this._Logger.Log($"Background-service {this.GetType().Name} was already started.", LogLevel.Information);
+                    return;
+                }
+
                 this.Running = true;
                 if (this.ShouldBeExecuted())
                 {
                     this._Logger.Log($"Background-service {this.GetType().Name} will be started.", LogLevel.Information);
-                    Task task =Task.Run(() =>
+                    Task task = Task.Run(() =>
                     {
-                        Thread.CurrentThread.Name=this.GetType().Name;
+                        Thread.CurrentThread.Name = this.GetType().Name;
                         while (this.Enabled)
                         {
                             Thread.Sleep(50);
@@ -53,7 +60,7 @@ namespace GRYLibrary.Core.APIServer.BaseServices
             {
                 this._Logger.Log($"Background-service {this.GetType().Name} will be stopped.", LogLevel.Information);
                 this.Enabled = false;
-                await GUtilities.WaitUntilConditionIsTrueAsync(() => !this.Running);
+                await GUtilities.WaitUntilConditionIsTrueAsync(() => !this.Running, $"Stop backgroundservice {this.GetType().Name}");
                 this.Dispose();
                 this._Logger.Log($"Background-service {this.GetType().Name} is now stopped.", LogLevel.Information);
             }

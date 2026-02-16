@@ -3,7 +3,6 @@ using CommandLine;
 using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Extensions.Logging;
 
 namespace GRYLibrary.Core.Misc.ConsoleApplication
