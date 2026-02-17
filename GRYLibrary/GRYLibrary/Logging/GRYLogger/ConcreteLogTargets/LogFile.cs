@@ -2,6 +2,7 @@
 using GRYLibrary.Core.Misc.FilePath;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
@@ -11,6 +12,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
         public LogFile() { }
         public AbstractFilePath File { get; set; }
         public string Encoding { get; set; } = "utf-8";
+        public uint MaxLogFileSizeInBytes { get; set; } = 0;
         private readonly IList<string> _Pool = [];
         public int PreFlushPoolSize { get; set; } = 1;
         private string _BasePath;
@@ -23,6 +25,37 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
             {
                 this.Flush();
             }
+            string logfile = this.File.GetPath(this._BasePath);
+            if (MaxLogFileSizeInBytes != 0)
+            {
+                if (new FileInfo(logfile).Length > MaxLogFileSizeInBytes)
+                {
+                    //TODO do log-rotate
+                    string rotatedLogFile = GetRotatedLogFileName(logfile);
+                    System.IO.File.Move(logfile, rotatedLogFile);
+                    GRYLibrary.Core.Misc.Utilities.EnsureFileExists(logfile);
+                }
+            }
+        }
+
+        private string GetRotatedLogFileName(string logfile)//TODO refactor to prevent while-loop
+        {
+            uint counter = 1;
+            string result = GetRotatedLogFile(logfile, counter);
+            while (System.IO.File.Exists(result))
+            {
+                counter += 1;
+                result = GetRotatedLogFile(logfile, counter);
+            }
+            return result;
+        }
+
+        private string GetRotatedLogFile(string logfile,uint counter)
+        {
+            string folder = Path.GetDirectoryName(logfile);
+            string filename = Path.GetFileNameWithoutExtension(logfile);
+            string result = Path.Combine(folder, $"{filename}.archive.{counter.ToString().PadLeft(6,'0')}.log");
+            return result;
         }
 
         public void Flush()
