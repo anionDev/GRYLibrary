@@ -47,7 +47,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
             this._ServerConfiguration = serverConfiguration;
             if(this._CommandlineParameter.RealRun)//for run-mode server-logs and request-logs should be separated, for test- and analysis-mode it should be visible in one single log
             {
-                this._RequestLogger = this._AppConstants.ExecutionMode.Accept(new GetLoggerVisitor(this._RequestLoggingSettings.RequestsLogConfiguration, this._AppConstants.GetLogFolder(), "Requests", this._Logger));
+                this._RequestLogger = this._AppConstants.ExecutionMode.Accept(new GetLoggerVisitor(this._RequestLoggingSettings.RequestsLogConfiguration, this._AppConstants.GetLogFolder(), "Requests", this._Logger, _Logger.Configuration.LogTargets.Where(t=>t.LogLevels.Contains(LogLevel.Debug)).Any()));
             }
             else
             {

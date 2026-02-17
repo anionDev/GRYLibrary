@@ -32,7 +32,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         public FixedSizeQueue<LogItem> LastLogEntries { get; private set; } = new FixedSizeQueue<LogItem>(1000);
         public delegate void ErrorOccurredEventHandler(Exception exception, LogItem logItem);
         private static uint _LoggerCounter = 0;
-        private string _LoggerId;
+        private readonly string _LoggerId;
         private bool AnyLogTargetEnabled
         {
             get
@@ -62,9 +62,14 @@ namespace GRYLibrary.Core.Logging.GRYLogger
                 this._Initialized = true;
             }
         }
-        public static GRYLog Create()
+        public static GRYLog Create(bool verbose=false)
         {
-            return Create(new GRYLogConfiguration(true));
+            var result= Create(new GRYLogConfiguration(true));
+            foreach(var target in result.Configuration.LogTargets)
+            {
+                target.LogLevels.Add(LogLevel.Debug);               
+            }
+            return result;
         }
 
         public static GRYLog Create(string logFile)

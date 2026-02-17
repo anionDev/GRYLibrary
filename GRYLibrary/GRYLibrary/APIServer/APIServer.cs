@@ -106,6 +106,8 @@ namespace GRYLibrary.Core.APIServer
 
                 #region Load configuration
                 IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedAPIServerConfiguration = LoadConfiguration(apiServerConfiguration.InitializationInformation.ApplicationConstants.KnownTypes, apiServerConfiguration.InitializationInformation.ApplicationConstants.Environment, apiServerConfiguration.InitializationInformation.ApplicationConstants.ExecutionMode, apiServerConfiguration.InitializationInformation.ApplicationConstants.GetConfigurationFile(), apiServerConfiguration.InitializationInformation.ApplicationConstants.ThrowErrorIfConfigurationDoesNotExistInProduction, apiServerConfiguration.InitializationInformation.InitialApplicationConfiguration, out bool fileWasCreatedNew);
+                bool isFirstInitializationRun = fileWasCreatedNew;
+                bool initializeLogAsVerbose= apiServerConfiguration.CommandlineParameter.InitialVerboseValue && isFirstInitializationRun;
                 GUtilities.AssertCondition(persistedAPIServerConfiguration != null, "Could not load persisted API-server configuration.");
                 if (fileWasCreatedNew && apiServerConfiguration.InitializationInformation.ApplicationConstants.AdminHasToEnterInformationAfterInitialConfigurationFileGeneration)
                 {
@@ -118,7 +120,7 @@ namespace GRYLibrary.Core.APIServer
                 {
                     _Configuration = apiServerConfiguration
                 };
-                return server.Run(apiServerConfiguration, persistedAPIServerConfiguration);
+                return server.Run(apiServerConfiguration, persistedAPIServerConfiguration, initializeLogAsVerbose);
                 #endregion
 
             }
@@ -201,13 +203,13 @@ namespace GRYLibrary.Core.APIServer
         }
         #endregion
 
-        public int Run(APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> config, IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedAPIServerConfiguration)
+        public int Run(APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> config, IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedAPIServerConfiguration,bool initializeLogAsVerbose)
         {
             IGRYLog logger = config.InitializationInformation.InitialLogger;
             try
             {
                 this.CreateRequiredFolder(config.CommandlineParameter.RealRun);
-                logger = this.GetApplicationLogger(persistedAPIServerConfiguration, logger);
+                logger = this.GetApplicationLogger(persistedAPIServerConfiguration, logger, initializeLogAsVerbose);
                 logger.Log($"Start {this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName} (v{this._Configuration.InitializationInformation.ApplicationConstants.ApplicationVersion})", LogLevel.Information);
                 logger.Log($"Environment: {this._Configuration.InitializationInformation.ApplicationConstants.Environment}", LogLevel.Debug);
                 logger.Log($"Executionmode: {this._Configuration.InitializationInformation.ApplicationConstants.ExecutionMode}", LogLevel.Debug);
@@ -649,11 +651,11 @@ namespace GRYLibrary.Core.APIServer
             }
         }
 
-        private IGRYLog GetApplicationLogger(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration, IGRYLog initialLog)
+        private IGRYLog GetApplicationLogger(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration, IGRYLog initialLog, bool initialVerboseValue)
         {
             if (this._Configuration.CommandlineParameter.RealRun)
             {
-                return this._Configuration.InitializationInformation.ApplicationConstants.ExecutionMode.Accept(new GetLoggerVisitor(persistedApplicationSpecificConfiguration.ApplicationLogConfiguration, this._Configuration.InitializationInformation.ApplicationConstants.GetLogFolder(), "Server", initialLog));
+                return this._Configuration.InitializationInformation.ApplicationConstants.ExecutionMode.Accept(new GetLoggerVisitor(persistedApplicationSpecificConfiguration.ApplicationLogConfiguration, this._Configuration.InitializationInformation.ApplicationConstants.GetLogFolder(), "Server", initialLog, initialVerboseValue));
             }
             else
             {

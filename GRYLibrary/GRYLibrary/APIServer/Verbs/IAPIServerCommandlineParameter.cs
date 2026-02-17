@@ -5,5 +5,6 @@ namespace GRYLibrary.Core.APIServer.Verbs
     public interface IAPIServerCommandlineParameter : ICommandlineParameter
     {
         public bool RealRun { get; set; }
+        public bool InitialVerboseValue { get; set; }
     }
 }

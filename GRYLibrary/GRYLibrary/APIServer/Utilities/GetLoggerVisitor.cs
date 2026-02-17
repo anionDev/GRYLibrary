@@ -11,16 +11,18 @@ namespace GRYLibrary.Core.APIServer.Utilities
         private readonly string _BaseFolder;
         private readonly string _LoggerName;
         private readonly IGRYLog _InitialLog;
-        public GetLoggerVisitor(IGRYLogConfiguration logConfiguration, string baseFolder, string loggerName,IGRYLog initialLog)
+        private readonly bool _Verbose;
+        public GetLoggerVisitor(IGRYLogConfiguration logConfiguration, string baseFolder, string loggerName,IGRYLog initialLog, bool verbose)
         {
             this._LogConfiguration = logConfiguration;
             this._BaseFolder = baseFolder;
             this._LoggerName = loggerName;
             this._InitialLog = initialLog;
+            this._Verbose = verbose;
         }
         public IGRYLog Handle(Analysis analysis)
         {
-            return GeneralLogger.NoLogAsGRYLog();// avoid creation of logging-entries when doing something like generate APISpecification-artifact by running "swagger tofile ..."
+            return GRYLog.Create(_Verbose);
         }
 
         public IGRYLog Handle(RunProgram runProgram)
