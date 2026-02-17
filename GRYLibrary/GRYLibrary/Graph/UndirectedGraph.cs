@@ -1,6 +1,5 @@
 ﻿using GRYLibrary.Core.Graph.Exceptions;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace GRYLibrary.Core.Graph
 {

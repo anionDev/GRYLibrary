@@ -5,7 +5,6 @@ using GRYLibrary.Core.Exceptions;
 using GRYLibrary.Core.ExecutePrograms;
 using GRYLibrary.Core.ExecutePrograms.WaitingStates;
 using GRYLibrary.Core.Logging.GRYLogger;
-using GRYLibrary.Core.Misc.MetaConfiguration.ConfigurationFormats;
 using GRYLibrary.Core.OperatingSystem;
 using GRYLibrary.Core.OperatingSystem.ConcreteOperatingSystems;
 using GRYLibrary.Core.XMLSerializer;
@@ -1181,9 +1180,9 @@ namespace GRYLibrary.Core.Misc
         /// <returns>The result of the first finished <paramref name="functions"/>-method.</returns>
         /// <exception cref="ArgumentException">If <paramref name="functions"/> is empty.</exception>
         /// <exception cref="Exception">If every <paramref name="functions"/>-method throws an exception.</exception>
-        public static T RunAllConcurrentAndReturnFirstResult<T>(this ISet<Func<T>> functions, int maximalDegreeOfParallelism = 4)
+        public static T RunAllConcurrentAndReturnFirstResult<T>(this ISet<Func<T>> functions, int maximalDegreeOfParallelism = 4, string actionName = "RunAllAndReturnFalse")
         {
-            return new RunAllConcurrentAndReturnFirstResultHelper<T>(maximalDegreeOfParallelism).RunAllConcurrentAndReturnFirstResult(functions);
+            return new RunAllConcurrentAndReturnFirstResultHelper<T>(maximalDegreeOfParallelism).RunAllConcurrentAndReturnFirstResult(functions, actionName);
         }
 
         private class RunAllConcurrentAndReturnFirstResultHelper<T>
@@ -1237,7 +1236,7 @@ namespace GRYLibrary.Core.Misc
                     }
                 }
             }
-            public T RunAllConcurrentAndReturnFirstResult(ISet<Func<T>> functions)
+            public T RunAllConcurrentAndReturnFirstResult(ISet<Func<T>> functions, string actionName)
             {
                 if (functions.Count == 0)
                 {
@@ -1257,7 +1256,7 @@ namespace GRYLibrary.Core.Misc
                         Interlocked.Decrement(ref this._AmountOfRunningFunctions);
                     }
                 }));
-                WaitUntilConditionIsTrue(() => this.ResultSet || this._AmountOfRunningFunctions == 0);
+                WaitUntilConditionIsTrue(() => this.ResultSet || this._AmountOfRunningFunctions == 0, actionName);
                 if (this._AmountOfRunningFunctions == 0 && !this.ResultSet)
                 {
                     throw new Exception("No result was calculated");
@@ -1268,18 +1267,29 @@ namespace GRYLibrary.Core.Misc
                 }
             }
         }
-        public static void WaitUntilConditionIsTrue(Func<bool> condition)
+        public static void WaitUntilConditionIsTrue(Func<bool> condition, string actionName)
         {
-            while (!condition())
-            {
-                Thread.Sleep(50);
-            }
+            WaitUntilConditionIsTrue(condition, TimeSpan.FromDays(14), actionName);
         }
-        public static async Task WaitUntilConditionIsTrueAsync(Func<bool> condition)
+        public static void WaitUntilConditionIsTrue(Func<bool> condition, TimeSpan timeout, string actionName)
         {
-            while (!condition())
+            WaitUntilConditionIsTrueAsync(condition, timeout, actionName).Wait();
+        }
+        public static async Task WaitUntilConditionIsTrueAsync(Func<bool> condition, string actionName)
+        {
+            WaitUntilConditionIsTrueAsync(condition, TimeSpan.FromDays(14 ), actionName);
+        }
+        public static async Task WaitUntilConditionIsTrueAsync(Func<bool> condition, TimeSpan timeout, string actionName)
+        {
+            if (!RunWithTimeout(() =>
             {
-                await Task.Delay(50);
+                while (!condition())
+                {
+                    Thread.Sleep(50);
+                }
+            }, timeout))
+            {
+                throw new TimeoutException($"Action {actionName} resulted not in true within the timeout of {GRYLibrary.Core.Misc.Utilities.DurationToUserFriendlyString(timeout)}.");
             }
         }
         public static ISet<string> ToCaseInsensitiveSet(this ISet<string> input)
@@ -3076,7 +3086,7 @@ namespace GRYLibrary.Core.Misc
         private static readonly Regex _OneOrMoreHexSigns = OneOrMoreHexSigns();
         public static bool IsHexString(string result)
         {
-            return _OneOrMoreHexSigns.Match(result.ToLower()).Success;
+            return _OneOrMoreHexSigns.IsMatch(result.ToLower());
         }
 
         public static bool IsHexDigit(this char @char)
@@ -3510,10 +3520,10 @@ namespace GRYLibrary.Core.Misc
                 externalProgramExecutor2.Run();
                 string output = String.Join(string.Empty, externalProgramExecutor2.AllStdOutLines);
                 using var doc = JsonDocument.Parse(output);
-                var root = doc.RootElement[0];
-                if (root.TryGetProperty("State", out var state) &&
-                    state.TryGetProperty("Health", out var health) &&
-                    health.TryGetProperty("Status", out var status))
+                JsonElement root = doc.RootElement[0];
+                if (root.TryGetProperty("State", out JsonElement state) &&
+                    state.TryGetProperty("Health", out JsonElement health) &&
+                    health.TryGetProperty("Status", out JsonElement status))
                 {
                     var healthy = status.GetString();
                     return healthy == "healthy";

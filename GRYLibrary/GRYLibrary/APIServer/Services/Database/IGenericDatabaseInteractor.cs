@@ -26,5 +26,6 @@ namespace GRYLibrary.Core.APIServer.Services.Database
         public void Accept(IGenericDatabaseInteractorVisitor visitor);
         public T Accept<T>(IGenericDatabaseInteractorVisitor<T> visitor);
         public void SetLogConnectionAttemptErrors(bool enabled);
+        public void WaitUntilAvailable(TimeSpan timeSpan);
     }
 }
