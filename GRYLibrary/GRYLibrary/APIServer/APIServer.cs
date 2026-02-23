@@ -36,6 +36,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -516,7 +517,13 @@ namespace GRYLibrary.Core.APIServer
                     persistedAPIServerConfiguration,
                     app
                 );
-                apiServerConfiguration.InitializationInformation.InitialLogger.Log($"Run {nameof(APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>.ConfigureWebApplication)}...", LogLevel.Debug);
+                logger.Log($"Log-level:", LogLevel.Information);
+                foreach (var target in logger.Configuration.LogTargets)
+                {
+                    string enabled = target.Enabled ? "enabled" : "disabled";
+                    logger.Log($"- {target.GetType().Name} ({enabled}): "+string.Join(", ", target.LogLevels.Select(l => l.ToString())));
+                }
+                logger.Log($"Run {nameof(APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>.ConfigureWebApplication)}...", LogLevel.Debug);
                 apiServerConfiguration.ConfigureWebApplication(apiServerConfiguration.FunctionalInformationForWebApplication);
                 logger.Log($"The API will now be available under the following URL:", LogLevel.Information);
                 logger.Log(apiLink, LogLevel.Information);

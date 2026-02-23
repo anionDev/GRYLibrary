@@ -10,7 +10,7 @@ namespace GRYLibrary.Core.Exceptions
         public DependencyNotAvailableException(string message) : base(message)
         {
         }
-        public DependencyNotAvailableException(string message, Exception exception) : base(message, exception)
+        public DependencyNotAvailableException(string message, Exception innerException) : base(message, innerException)
         {
         }
     }

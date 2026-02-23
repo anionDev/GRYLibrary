@@ -12,7 +12,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
         private readonly string _LoggerName;
         private readonly IGRYLog _InitialLog;
         private readonly bool _Verbose;
-        public GetLoggerVisitor(IGRYLogConfiguration logConfiguration, string baseFolder, string loggerName,IGRYLog initialLog, bool verbose)
+        public GetLoggerVisitor(IGRYLogConfiguration logConfiguration, string baseFolder, string loggerName, IGRYLog initialLog, bool verbose)
         {
             this._LogConfiguration = logConfiguration;
             this._BaseFolder = baseFolder;
@@ -40,6 +40,10 @@ namespace GRYLibrary.Core.APIServer.Utilities
             IGRYLog result = GeneralLogger.CreateUsingGRYLog(this._LogConfiguration, this._BaseFolder, this._InitialLog);
             result.BasePath = this._BaseFolder;
             result.UseSubNamespace(this._LoggerName);
+            foreach (var target in result.Configuration.LogTargets)
+            {
+                target.LogLevels.Add(Microsoft.Extensions.Logging.LogLevel.Debug);
+            }
             return result;
         }
     }
