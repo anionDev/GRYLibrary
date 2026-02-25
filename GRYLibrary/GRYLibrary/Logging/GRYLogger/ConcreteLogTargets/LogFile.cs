@@ -26,12 +26,12 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
                 this.Flush();
             }
             string logfile = this.File.GetPath(this._BasePath);
-            if (MaxLogFileSizeInBytes != 0)
+            if (this.MaxLogFileSizeInBytes != 0)
             {
-                if (new FileInfo(logfile).Length > MaxLogFileSizeInBytes)
+                if (new FileInfo(logfile).Length > this.MaxLogFileSizeInBytes)
                 {
                     //TODO do log-rotate
-                    string rotatedLogFile = GetRotatedLogFileName(logfile);
+                    string rotatedLogFile = this.GetRotatedLogFileName(logfile);
                     System.IO.File.Move(logfile, rotatedLogFile);
                     GRYLibrary.Core.Misc.Utilities.EnsureFileExists(logfile);
                 }
@@ -41,11 +41,11 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
         private string GetRotatedLogFileName(string logfile)//TODO refactor to prevent while-loop
         {
             uint counter = 1;
-            string result = GetRotatedLogFile(logfile, counter);
+            string result = this.GetRotatedLogFile(logfile, counter);
             while (System.IO.File.Exists(result))
             {
                 counter += 1;
-                result = GetRotatedLogFile(logfile, counter);
+                result = this.GetRotatedLogFile(logfile, counter);
             }
             return result;
         }

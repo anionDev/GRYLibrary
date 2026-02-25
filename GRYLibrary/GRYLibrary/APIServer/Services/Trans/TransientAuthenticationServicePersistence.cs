@@ -184,14 +184,13 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             throw new KeyNotFoundException($"AccessToken '{accessToken}' is unknown.");
         }
 
-        public void AddAccessToken(string userId, AccessToken newAccessToken)
+        public void AddAccessToken(AccessToken newAccessToken)
         {
-            if (!this._AccessTokens.TryGetValue(userId, out ISet<AccessToken>? value))
+            if (!this._AccessTokens.TryGetValue(newAccessToken.OwnerUserId, out ISet<AccessToken>? value))
             {
                 value = new HashSet<AccessToken>();
-                this._AccessTokens[userId] = value;
+                this._AccessTokens[newAccessToken.OwnerUserId] = value;
             }
-
             value.Add(newAccessToken);
         }
 

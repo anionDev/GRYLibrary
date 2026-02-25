@@ -83,7 +83,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
                 }
                 catch(Exception e)
                 {
-                    LastConnectionException = e;
+                    this.LastConnectionException = e;
                     Thread.Sleep(TimeSpan.FromSeconds(2));//not connected. wait a few seconds until checking again if the database is avbailable.
                 }
             }
@@ -197,7 +197,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
         {
             if (this.GetConnectionInternal() == null)
             {
-                exception = new DependencyNotAvailableException("Connection is null.",LastConnectionException);
+                exception = new DependencyNotAvailableException("Connection is null.", this.LastConnectionException);
                 return false;
             }
             else
@@ -211,7 +211,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
                 }
                 else
                 {
-                    exception = new DependencyNotAvailableException($"Connection-state is \"{state}\".", LastConnectionException);
+                    exception = new DependencyNotAvailableException($"Connection-state is \"{state}\".", this.LastConnectionException);
                     return false;
                 }
             }
@@ -233,7 +233,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
                             GUtilities.NoOperation(); // Just to ensure that we can read from the reader without any exceptions
                         }
                     }
-                    return (true, _LastConnectionException);
+                    return (true, this._LastConnectionException);
                 }
                 else
                 {

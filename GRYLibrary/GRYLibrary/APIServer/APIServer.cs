@@ -54,11 +54,64 @@ namespace GRYLibrary.Core.APIServer
         where ApplicationSpecificConstants : new()
         where CommandlineParameterType : class, IAPIServerCommandlineParameter
     {
-        private bool _MaintenanceModeEnabled = false;
+        private bool _MaintenanceModeIsImplementable = false;
+        private bool _ManualMaintenanceModeEnabled = false;
+        private bool _TechnicalMaintenanceModeEnabled = false;
+        private IApplicationConstants<ApplicationSpecificConstants>? _ApplicationConstants = null;
+        /// <summary>
+        /// Enables maintenancemode desired by user
+        /// </summary>
+        private void SetManualMaintenanceModeEnabled(bool enabled, IGRYLog log)
+        {
+            this._ManualMaintenanceModeEnabled = enabled;
+            this.UpdateMaintenancePageIndicator(log);
+        }
+        private bool GetManualMaintenanceModeEnabled()
+        {
+            return this._ManualMaintenanceModeEnabled;
+        }
+        /// <summary>
+        /// Enables maintenancemode required by server
+        /// </summary>
+        private void SetTechnicalMaintenanceModeEnabled(bool enabled, IGRYLog log)
+        {
+            this._TechnicalMaintenanceModeEnabled = enabled;
+            this.UpdateMaintenancePageIndicator(log);
+        }
+
+        private void UpdateMaintenancePageIndicator(IGRYLog log)
+        {
+            if (!this._MaintenanceModeIsImplementable)
+            {
+                return;
+            }
+            bool maintenanceModeEnabled = this._ManualMaintenanceModeEnabled || this._TechnicalMaintenanceModeEnabled;
+            var constants = GRYLibrary.Core.Misc.Utilities.AssertNotNull(this._ApplicationConstants, nameof(this._ApplicationConstants));
+            string configFolder = constants.GetConfigurationFolder();
+            GRYLibrary.Core.Misc.Utilities.AssertCondition(Directory.Exists(configFolder), $"Folder \"{configFolder}\" does not exist.");
+            string InitializationFile = Path.Combine(configFolder, "MaintenanceMode.enabled");
+            log.Log($"Set maintenance mode to {maintenanceModeEnabled} (File: {InitializationFile}; {nameof(_ManualMaintenanceModeEnabled)}: {_ManualMaintenanceModeEnabled}; {nameof(_TechnicalMaintenanceModeEnabled)}: {_TechnicalMaintenanceModeEnabled})", LogLevel.Information);
+            try
+            {
+                if (maintenanceModeEnabled)
+                {
+                    GRYLibrary.Core.Misc.Utilities.EnsureFileExists(InitializationFile);
+                }
+                else
+                {
+                    GRYLibrary.Core.Misc.Utilities.EnsureFileDoesNotExist(InitializationFile);
+                }
+                GRYLibrary.Core.Misc.Utilities.AssertCondition(File.Exists(InitializationFile) == maintenanceModeEnabled, $"test1 failed");
+            }
+            catch (Exception e)
+            {
+                log.Log($"Error while setting maintenance-indicator-file", e);
+            }
+        }
+
         private APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> _Configuration;
         public APIServer()
         {
-
         }
 
         public static Func<CommandlineParameterType, GRYConsoleApplicationInitialInformation, int> CreateMain(Action<APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>> init, IGRYLog initialLog)
@@ -108,7 +161,7 @@ namespace GRYLibrary.Core.APIServer
                 #region Load configuration
                 IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedAPIServerConfiguration = LoadConfiguration(apiServerConfiguration.InitializationInformation.ApplicationConstants.KnownTypes, apiServerConfiguration.InitializationInformation.ApplicationConstants.Environment, apiServerConfiguration.InitializationInformation.ApplicationConstants.ExecutionMode, apiServerConfiguration.InitializationInformation.ApplicationConstants.GetConfigurationFile(), apiServerConfiguration.InitializationInformation.ApplicationConstants.ThrowErrorIfConfigurationDoesNotExistInProduction, apiServerConfiguration.InitializationInformation.InitialApplicationConfiguration, out bool fileWasCreatedNew);
                 bool isFirstInitializationRun = fileWasCreatedNew;
-                bool initializeLogAsVerbose= apiServerConfiguration.CommandlineParameter.InitialVerboseValue && isFirstInitializationRun;
+                bool initializeLogAsVerbose = apiServerConfiguration.CommandlineParameter.InitialVerboseValue && isFirstInitializationRun;
                 GUtilities.AssertCondition(persistedAPIServerConfiguration != null, "Could not load persisted API-server configuration.");
                 if (fileWasCreatedNew && apiServerConfiguration.InitializationInformation.ApplicationConstants.AdminHasToEnterInformationAfterInitialConfigurationFileGeneration)
                 {
@@ -204,12 +257,15 @@ namespace GRYLibrary.Core.APIServer
         }
         #endregion
 
-        public int Run(APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> config, IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedAPIServerConfiguration,bool initializeLogAsVerbose)
+        public int Run(APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> config, IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedAPIServerConfiguration, bool initializeLogAsVerbose)
         {
             IGRYLog logger = config.InitializationInformation.InitialLogger;
+            this._ApplicationConstants = this._Configuration.InitializationInformation.ApplicationConstants;
+            this._MaintenanceModeIsImplementable = true;
             try
             {
                 this.CreateRequiredFolder(config.CommandlineParameter.RealRun);
+                this.SetTechnicalMaintenanceModeEnabled(true,logger);
                 logger = this.GetApplicationLogger(persistedAPIServerConfiguration, logger, initializeLogAsVerbose);
                 logger.Log($"Start {this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName} (v{this._Configuration.InitializationInformation.ApplicationConstants.ApplicationVersion})", LogLevel.Information);
                 logger.Log($"Environment: {this._Configuration.InitializationInformation.ApplicationConstants.Environment}", LogLevel.Debug);
@@ -243,6 +299,7 @@ namespace GRYLibrary.Core.APIServer
                                 throw;
                             }
                         });
+                        this.SetTechnicalMaintenanceModeEnabled(false, logger);//TODO do this after webApplication.Run() and only when initializationservice says it is initialized
                         webApplication.Run();
                         Thread.Sleep(TimeSpan.FromSeconds(2));
                         GUtilities.AssertNotNull(waitTask, nameof(waitTask)).Wait();
@@ -521,13 +578,13 @@ namespace GRYLibrary.Core.APIServer
                 foreach (var target in logger.Configuration.LogTargets)
                 {
                     string enabled = target.Enabled ? "enabled" : "disabled";
-                    logger.Log($"- {target.GetType().Name} ({enabled}): "+string.Join(", ", target.LogLevels.Select(l => l.ToString())));
+                    logger.Log($"- {target.GetType().Name} ({enabled}): " + string.Join(", ", target.LogLevels.Select(l => l.ToString())));
                 }
                 logger.Log($"Run {nameof(APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType>.ConfigureWebApplication)}...", LogLevel.Debug);
                 apiServerConfiguration.ConfigureWebApplication(apiServerConfiguration.FunctionalInformationForWebApplication);
                 logger.Log($"The API will now be available under the following URL:", LogLevel.Information);
                 logger.Log(apiLink, LogLevel.Information);
-                if (this._MaintenanceModeEnabled)
+                if (this.GetManualMaintenanceModeEnabled())
                 {
                     logger.Log($"Maintenancemode is enabled.", LogLevel.Information);
                 }
@@ -544,7 +601,7 @@ namespace GRYLibrary.Core.APIServer
             Type middlewareType,
             IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration,
             List<Type> middlewares,
-            IGeneralLogger logger
+            IGRYLog logger
         ) where SupportDefinedMiddlewareType : ISupportedMiddleware
         {
             if (persistedApplicationSpecificConfiguration.ApplicationSpecificConfiguration is SupportDefinedMiddlewareType supportDefinedMiddlewareType)
@@ -578,7 +635,7 @@ namespace GRYLibrary.Core.APIServer
                                     IMaintenanceSiteConfiguration maintenanceSiteConfiguration = (IMaintenanceSiteConfiguration)middlewareConfiguration;
                                     if (maintenanceSiteConfiguration.MaintenanceModeEnabled)
                                     {
-                                        this._MaintenanceModeEnabled = true;
+                                        this.SetManualMaintenanceModeEnabled(true, logger);
                                     }
                                 }
                             }

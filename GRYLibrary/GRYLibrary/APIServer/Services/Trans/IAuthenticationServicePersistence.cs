@@ -27,7 +27,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         public UserType GetUserByAccessToken(string accessToken);
         public void UpdateUser(UserType user);
         public AccessToken GetAccessToken(string accessToken);
-        public void AddAccessToken(string userId, AccessToken newAccessToken);
+        public void AddAccessToken(AccessToken newAccessToken);
         public void RemoveAccessToken(string accessToken);
         public ISet<AccessToken> GetAllAccessTokenOfUser(string userId);
         public Role GetRoleByName(string roleName);
