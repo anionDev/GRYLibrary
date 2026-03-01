@@ -7,5 +7,8 @@ namespace GRYLibrary.Core.APIServer.Verbs
     {
         [Option(nameof(RealRun), Required = false, Default = false)]
         public bool RealRun { get; set; }
+
+        [Option(nameof(InitialVerboseValue), Required = false, Default = true)]
+        public bool InitialVerboseValue { get; set; }
     }
 }

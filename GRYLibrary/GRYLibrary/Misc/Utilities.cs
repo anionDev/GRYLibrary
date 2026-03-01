@@ -1256,7 +1256,7 @@ namespace GRYLibrary.Core.Misc
                         Interlocked.Decrement(ref this._AmountOfRunningFunctions);
                     }
                 }));
-                WaitUntilConditionIsTrue(() => this.ResultSet || this._AmountOfRunningFunctions == 0, actionName);
+                WaitUntilConditionIsTrue(() => (this.ResultSet || this._AmountOfRunningFunctions == 0, null), actionName);
                 if (this._AmountOfRunningFunctions == 0 && !this.ResultSet)
                 {
                     throw new Exception("No result was calculated");
@@ -1277,19 +1277,40 @@ namespace GRYLibrary.Core.Misc
         }
         public static async Task WaitUntilConditionIsTrueAsync(Func<bool> condition, string actionName)
         {
-            WaitUntilConditionIsTrueAsync(condition, TimeSpan.FromDays(14 ), actionName);
+           await WaitUntilConditionIsTrueAsync(condition, TimeSpan.FromDays(14), actionName);
         }
         public static async Task WaitUntilConditionIsTrueAsync(Func<bool> condition, TimeSpan timeout, string actionName)
         {
+            await WaitUntilConditionIsTrueAsync(() => (condition(), null), timeout, actionName);
+        }
+        public static void WaitUntilConditionIsTrue(Func<(bool, Exception?)> condition, string actionName)
+        {
+            WaitUntilConditionIsTrue(condition, TimeSpan.FromDays(14), actionName);
+        }
+        public static void WaitUntilConditionIsTrue(Func<(bool, Exception?)> condition, TimeSpan timeout, string actionName)
+        {
+            WaitUntilConditionIsTrueAsync(condition, timeout, actionName).Wait();
+        }
+        public static async Task WaitUntilConditionIsTrueAsync(Func<(bool, Exception?)> condition, string actionName)
+        {
+           await WaitUntilConditionIsTrueAsync(condition, TimeSpan.FromDays(14), actionName);
+        }
+        public static async Task WaitUntilConditionIsTrueAsync(Func<(bool, Exception?)> condition, TimeSpan timeout, string actionName)
+        {
+            Exception? lastException = null;
             if (!RunWithTimeout(() =>
             {
-                while (!condition())
+                (bool, Exception?) lastResult = condition();
+                lastException=lastResult.Item2;
+                while (!lastResult.Item1)
                 {
                     Thread.Sleep(50);
+                    lastResult = condition();
+                    lastException = lastResult.Item2;
                 }
             }, timeout))
             {
-                throw new TimeoutException($"Action {actionName} resulted not in true within the timeout of {GRYLibrary.Core.Misc.Utilities.DurationToUserFriendlyString(timeout)}.");
+                throw new TimeoutException($"Action {actionName} resulted not in true within the timeout of {GRYLibrary.Core.Misc.Utilities.DurationToUserFriendlyString(timeout)}.",lastException);
             }
         }
         public static ISet<string> ToCaseInsensitiveSet(this ISet<string> input)
@@ -1939,7 +1960,7 @@ namespace GRYLibrary.Core.Misc
         /// </summary>
         /// <returns>
         /// Returns true if and only if the action was terminated in the given timespan.
-        /// So this function returns true if and only if the action was not completed within the given <paramref name="errorHandler"/>.
+        /// So this function returns true if and only if the action was not completed within the given <paramref name="timeout"/>.
         /// </returns>
 
         public static bool RunWithTimeout(this Action action, TimeSpan timeout, Action<Exception>? errorHandler = default)

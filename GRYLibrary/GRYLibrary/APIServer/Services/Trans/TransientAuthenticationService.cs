@@ -58,7 +58,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
             AccessToken newAccessToken = new AccessToken();
             newAccessToken.Value = Guid.NewGuid().ToString();
             newAccessToken.ExpiredMoment = this._TimeService.GetCurrentLocalTimeAsDateTimeOffset().AddDays(1);//TODO make this configurable
-            this._TransientAuthenticationServicePersistence.AddAccessToken(user.Id, newAccessToken);
+            this._TransientAuthenticationServicePersistence.AddAccessToken(newAccessToken);
             user.AccessToken.Add(newAccessToken);
             return newAccessToken;
         }
