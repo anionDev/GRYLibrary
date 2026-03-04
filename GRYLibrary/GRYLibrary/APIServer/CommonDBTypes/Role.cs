@@ -9,11 +9,11 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
     {
         public string Id { get; set; }
         public string Name { get; set; } = null;
-        public HashSet<Role> InheritedRoles { get; set; }
+        public HashSet<Role> DirectlyInheritedRoles { get; set; } = new HashSet<Role>();
         public ISet<Role> GetAllInheritedRoles()
         {
             ISet<Role> result = new HashSet<Role>();
-            foreach (Role inheritedRole in this.InheritedRoles)
+            foreach (Role inheritedRole in this.DirectlyInheritedRoles)
             {
                 result.Add(inheritedRole);
                 result.UnionWith(inheritedRole.GetAllInheritedRoles());
@@ -28,8 +28,7 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
         public bool Equals(Role other)
         {
             return other is not null &&
-                   this.Id == other.Id &&
-                   this.Name == other.Name;
+                   this.Id == other.Id;
         }
 
         public override int GetHashCode()

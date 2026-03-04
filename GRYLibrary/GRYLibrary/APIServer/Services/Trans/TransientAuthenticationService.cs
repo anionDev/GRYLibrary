@@ -185,7 +185,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
                 Role newRole = new Role();
                 newRole.Id = Guid.NewGuid().ToString();
                 newRole.Name = roleName;
-                newRole.InheritedRoles = [];
+                newRole.DirectlyInheritedRoles = [];
                 this._TransientAuthenticationServicePersistence.AddRole(newRole);
             }
         }
@@ -199,7 +199,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
         }
         public virtual ISet<string> GetRolesOfUser(string userId)
         {
-            return this._TransientAuthenticationServicePersistence.GetUserById(userId).Roles.SelectMany(r => r.InheritedRoles.Select(s => s.Name).Union(new HashSet<string>() { r.Name })).ToHashSet();
+            return this._TransientAuthenticationServicePersistence.GetUserById(userId).Roles.SelectMany(r => r.DirectlyInheritedRoles.Select(s => s.Name).Union(new HashSet<string>() { r.Name })).ToHashSet();
         }
 
         public virtual void AddUserTyped(UserType user)
