@@ -90,7 +90,7 @@ namespace GRYLibrary.Core.APIServer
             string configFolder = constants.GetConfigurationFolder();
             GRYLibrary.Core.Misc.Utilities.AssertCondition(Directory.Exists(configFolder), $"Folder \"{configFolder}\" does not exist.");
             string InitializationFile = Path.Combine(configFolder, "MaintenanceMode.enabled");
-            log.Log($"Set maintenance mode to {maintenanceModeEnabled} (File: {InitializationFile}; {nameof(_ManualMaintenanceModeEnabled)}: {_ManualMaintenanceModeEnabled}; {nameof(_TechnicalMaintenanceModeEnabled)}: {_TechnicalMaintenanceModeEnabled})", LogLevel.Information);
+            log.Log($"Set maintenance mode to {maintenanceModeEnabled} (File: {InitializationFile}; {nameof(this._ManualMaintenanceModeEnabled)}: {this._ManualMaintenanceModeEnabled}; {nameof(this._TechnicalMaintenanceModeEnabled)}: {this._TechnicalMaintenanceModeEnabled})", LogLevel.Information);
             try
             {
                 if (maintenanceModeEnabled)

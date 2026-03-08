@@ -50,7 +50,7 @@ namespace GRYLibrary.Core.APIServer.CommonDBTypes
         public ISet<Role> GetAllRoles()
         {
             ISet<Role> result = new HashSet<Role>();
-            foreach (Role role in this.Roles)//TODO check if this is really required because the transitively inhertited roled should probably already be inluded in this.Roles.
+            foreach (Role role in this.Roles)
             {
                 result.Add(role);
                 result.UnionWith(role.GetAllInheritedRoles());

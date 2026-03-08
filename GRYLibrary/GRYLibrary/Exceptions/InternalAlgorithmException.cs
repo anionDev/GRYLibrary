@@ -23,7 +23,7 @@ namespace GRYLibrary.Core.Exceptions
 
         private static string CalculateMessage(string message)
         {
-            string result = $"Internal alrogithm error.";
+            string result = $"Internal algorithm error.";
             if (message != null)
             {
                 result = $"{result}; Message: {message}";
@@ -33,7 +33,7 @@ namespace GRYLibrary.Core.Exceptions
 
         private static string CalculateMessage(string errorId, string message)
         {
-            string result = $"Internal alrogithm error. Error-information: {errorId}";
+            string result = $"Internal algorithm error. Error-information: {errorId}";
             if (message != null)
             {
                 result = $"{result}; Message: {message}";

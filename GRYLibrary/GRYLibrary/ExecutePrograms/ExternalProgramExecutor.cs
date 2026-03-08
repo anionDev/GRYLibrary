@@ -8,6 +8,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ namespace GRYLibrary.Core.ExecutePrograms
 {
     public sealed class ExternalProgramExecutor : IDisposable
     {
+        private readonly object _ExecutionLockObject = new();
         public ExternalProgramExecutor(string programPathAndFile) : this(programPathAndFile, Utilities.EmptyString, null)
         {
         }
@@ -398,8 +400,11 @@ namespace GRYLibrary.Core.ExecutePrograms
                     {
                         Thread.Sleep(60);
                     }
-                    this._ExternalProgramExecutor._AllStdOutLinesAsArray = [.. this._ExternalProgramExecutor._AllStdOutLines];
-                    this._ExternalProgramExecutor._AllStdErrLinesAsArray = [.. this._ExternalProgramExecutor._AllStdErrLines];
+                    lock (this._ExternalProgramExecutor._ExecutionLockObject)
+                    {
+                        this._ExternalProgramExecutor._AllStdOutLinesAsArray = [.. this._ExternalProgramExecutor._AllStdOutLines];
+                        this._ExternalProgramExecutor._AllStdErrLinesAsArray = [.. this._ExternalProgramExecutor._AllStdErrLines];
+                    }
                     this._ExternalProgramExecutor.LogEnd();
                     try
                     {
@@ -467,7 +472,7 @@ namespace GRYLibrary.Core.ExecutePrograms
                 }
             }
             this._Running = false;
-            GRYLibrary.Core.Misc.Utilities.WaitUntilConditionIsTrue(() => this._NotLoggedOutputLines.IsEmpty,"Process-log-entries");
+            GRYLibrary.Core.Misc.Utilities.WaitUntilConditionIsTrue(() => this._NotLoggedOutputLines.IsEmpty, "Process-log-entries");
             this.CurrentExecutionState = ExecutionState.Terminated;
         }
         public void WaitUntilTerminated()
@@ -479,7 +484,7 @@ namespace GRYLibrary.Core.ExecutePrograms
                     return false;
                 }
                 return true;
-            },"Wait-until-terminated");
+            }, "Wait-until-terminated");
         }
         private void CheckIfStartOperationWasAlreadyCalled()
         {
@@ -514,7 +519,7 @@ namespace GRYLibrary.Core.ExecutePrograms
             }
         }
         private readonly IList<string> _AllStdErrLines = [];
-        private string[] _AllStdErrLinesAsArray;
+        private string[] _AllStdErrLinesAsArray = [];
         /// <exception cref="InvalidOperationException">
         /// If the process is not terminated yet.
         /// </exception>
@@ -529,6 +534,17 @@ namespace GRYLibrary.Core.ExecutePrograms
                 else
                 {
                     throw new InvalidOperationException(this.GetInvalidOperationDueToNotTerminatedMessageByMembername(nameof(this.AllStdErrLines), ExecutionState.Terminated, true));
+                }
+            }
+        }
+        public string[] AllStdErrLinesPartially
+        {
+            get
+            {
+                lock (this._ExecutionLockObject)
+                {
+                    return [.. this._AllStdErrLines];
+
                 }
             }
         }
@@ -595,7 +611,7 @@ namespace GRYLibrary.Core.ExecutePrograms
         }
 
         private readonly IList<string> _AllStdOutLines = [];
-        private string[] _AllStdOutLinesAsArray;
+        private string[] _AllStdOutLinesAsArray = [];
         /// <exception cref="InvalidOperationException">
         /// If the process is not terminated yet.
         /// </exception>
@@ -613,13 +629,27 @@ namespace GRYLibrary.Core.ExecutePrograms
                 }
             }
         }
+        public string[] AllStdOutLinesPartially
+        {
+            get
+            {
+                lock (this._ExecutionLockObject)
+                {
+                    return [.. this._AllStdOutLines];
+
+                }
+            }
+        }
 
         private void EnqueueInformation(string rawLine)
         {
             if (this.NormalizeLine(rawLine, out string? line))
             {
                 line = Utilities.GetValue(line);
-                this._AllStdOutLines.Add(line);
+                lock (this._ExecutionLockObject)
+                {
+                    this._AllStdOutLines.Add(line);
+                }
                 if (this.Configuration.Verbosity is Verbosity.Full or Verbosity.Verbose)
                 {
                     this._NotLoggedOutputLines.Enqueue((LogLevel.Information, line));
@@ -632,7 +662,10 @@ namespace GRYLibrary.Core.ExecutePrograms
             if (this.NormalizeLine(rawLine, out string? line))
             {
                 line = Utilities.GetValue(line);
-                this._AllStdErrLines.Add(line);
+                lock (this._ExecutionLockObject)
+                {
+                    this._AllStdErrLines.Add(line);
+                }
                 if (this.Configuration.Verbosity is Verbosity.Full or Verbosity.Verbose)
                 {
                     this._NotLoggedOutputLines.Enqueue((LogLevel.Error, line));
