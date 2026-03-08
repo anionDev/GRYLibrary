@@ -3559,6 +3559,22 @@ namespace GRYLibrary.Core.Misc
                 return false;
             }
         }
+        public static void RunEspoc(string processesFile, string? logFile)//TODO extract to grylib
+        {
+            int currentProcessId = Environment.ProcessId;
+            Process process = new Process();
+            process.StartInfo.FileName = "scespoc";
+            string arguments = $"--processid {currentProcessId} --file \"{processesFile}\"";
+            if (logFile != null)
+            {
+                arguments = arguments + $" --logfile \"{logFile}\"";
+            }
+            process.StartInfo.Arguments = arguments;
+            GRYLibrary.Core.Misc.Utilities.EnsureFileExists(processesFile);
+            GRYLibrary.Core.Misc.Utilities.AssertCondition(process.Start());
+            Thread.Sleep(TimeSpan.FromSeconds(1));
+            GRYLibrary.Core.Misc.Utilities.AssertCondition(!process.HasExited, "Watchdog exited unexpectedly.");
+        }
 
     }
 }
