@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace GRYLibrary.Core.Misc
 {
@@ -8,7 +9,6 @@ namespace GRYLibrary.Core.Misc
         private readonly int _MaxSize;
 
         public int Count => this._Queue.Count;
-
 
         public FixedSizeQueue() : this(int.MaxValue)
         {
@@ -31,6 +31,11 @@ namespace GRYLibrary.Core.Misc
         public T Dequeue()
         {
             return this._Queue.Dequeue();
+        }
+
+        public void Clear()
+        {
+            this._Queue.Clear();
         }
     }
 }
