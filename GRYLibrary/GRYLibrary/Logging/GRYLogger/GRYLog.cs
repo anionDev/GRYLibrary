@@ -62,12 +62,12 @@ namespace GRYLibrary.Core.Logging.GRYLogger
                 this._Initialized = true;
             }
         }
-        public static GRYLog Create(bool verbose=false)
+        public static GRYLog Create(bool verbose = false)
         {
-            var result= Create(new GRYLogConfiguration(true));
-            foreach(var target in result.Configuration.LogTargets)
+            var result = Create(new GRYLogConfiguration(true));
+            foreach (var target in result.Configuration.LogTargets)
             {
-                target.LogLevels.Add(LogLevel.Debug);               
+                target.LogLevels.Add(LogLevel.Debug);
             }
             return result;
         }
@@ -443,6 +443,30 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         public void ApplyConfiguration(IGRYLogConfiguration configuration)
         {
             this.Configuration = configuration;
+        }
+
+        public void RunTask(Action action, string taskName, bool catchErrors, LogLevel logLevelForOverhead)
+        {
+            this.Log($"Run task {taskName}", logLevelForOverhead);
+            try
+            {
+                action();
+            }
+            catch (Exception ex)
+            {
+                if (catchErrors)
+                {
+                    this.Log($"An error occurred while running task {taskName}.", ex, LogLevel.Error);
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            finally
+            {
+                this.Log($"Finished task {taskName}", logLevelForOverhead);
+            }
         }
     }
 }
