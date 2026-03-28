@@ -12,8 +12,27 @@ namespace GRYLibrary.Core.APIServer.BaseServices
     public abstract class IteratingBackgroundService : IDisposable
     {
         public bool Enabled { get; set; }
-        private static readonly object _Lock = new object();
-        protected bool Running { get; private set; }
+        private bool _Running;
+        private readonly object _Lock = new object();
+        private bool _Disposed = false;
+
+        protected bool Running
+        {
+            get
+            {
+                lock (_Lock)
+                {
+                    return _Running;
+                }
+            }
+            private set
+            {
+                lock (_Lock)
+                {
+                    _Running = value;
+                }
+            }
+        }
         public TimeSpan AdditionalDelay { get; set; } = TimeSpan.FromSeconds(0);
         protected readonly IGRYLog _Logger;
         private readonly ExecutionMode _ExecutionMode;
@@ -42,10 +61,14 @@ namespace GRYLibrary.Core.APIServer.BaseServices
                         Thread.CurrentThread.Name = this.GetType().Name;
                         while (this.Enabled)
                         {
-                            Thread.Sleep(50);
-                            Thread.Sleep(this.AdditionalDelay);
-                            this._Logger.Log($"Execute {this.GetType().Name}", LogLevel.Debug, false, false, true, false, false, this.Run);
+                            Thread.Sleep(TimeSpan.FromSeconds(1));
+                            Thread.Sleep(this.AdditionalDelay);//TODO make this interrupt if Enabled==false
+                            if (Enabled)
+                            {
+                                this._Logger.Log($"Execute {this.GetType().Name}", LogLevel.Debug, false, false, true, false, false, this.Run);
+                            }
                         }
+                        this.Running = false;
                     });
                 }
                 else
@@ -65,6 +88,10 @@ namespace GRYLibrary.Core.APIServer.BaseServices
                 this._Logger.Log($"Background-service {this.GetType().Name} is now stopped.", LogLevel.Information);
             }
         }
+        public  void StopAndWait()
+        {
+            Stop().Wait();
+        }
         public bool ShouldBeExecuted()
         {
             if (this._ExecutionMode is not RunProgram)
@@ -78,9 +105,31 @@ namespace GRYLibrary.Core.APIServer.BaseServices
             return true;
         }
 
-        public virtual void Dispose()
+
+        protected virtual void Dispose(bool disposing)
         {
+            if (_Disposed)
+            {
+                return; 
+            }
+
+            if (disposing)
+            {
+                Stop();
+            }
+
+            _Disposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        ~IteratingBackgroundService()
+        {
+            Dispose(false);
         }
     }
 }
