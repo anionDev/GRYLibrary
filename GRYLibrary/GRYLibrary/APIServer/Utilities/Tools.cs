@@ -287,7 +287,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
 
             public HealthCheckResult Handle(Uninitialized uninitialized)
             {
-                return HealthCheckResult.Healthy("Not initialized yet");
+                return HealthCheckResult.Degraded("Not initialized yet");
             }
 
             public HealthCheckResult Handle(Initializing initializing)
