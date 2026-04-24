@@ -221,7 +221,7 @@ namespace GRYLibrary.Core.APIServer.Services.Database
         {
             try
             {
-                var connected = this.IsConnected(out Exception? connectionExceptionN);
+                bool connected = this.IsConnected(out Exception? connectionExceptionN);
                 if (connected)
                 {
                     GUtilities.AssertCondition(connected, "Database is not connected.");

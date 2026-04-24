@@ -3546,7 +3546,7 @@ namespace GRYLibrary.Core.Misc
                     state.TryGetProperty("Health", out JsonElement health) &&
                     health.TryGetProperty("Status", out JsonElement status))
                 {
-                    var healthy = status.GetString();
+                    string? healthy = status.GetString();
                     return healthy == "healthy";
                 }
                 else

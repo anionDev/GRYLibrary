@@ -20,16 +20,16 @@ namespace GRYLibrary.Core.APIServer.BaseServices
         {
             get
             {
-                lock (_Lock)
+                lock (this._Lock)
                 {
-                    return _Running;
+                    return this._Running;
                 }
             }
             private set
             {
-                lock (_Lock)
+                lock (this._Lock)
                 {
-                    _Running = value;
+                    this._Running = value;
                 }
             }
         }
@@ -44,7 +44,7 @@ namespace GRYLibrary.Core.APIServer.BaseServices
         }
         public void StartAsync()
         {
-            lock (_Lock)
+            lock (this._Lock)
             {
                 if (this.Running)
                 {
@@ -63,7 +63,7 @@ namespace GRYLibrary.Core.APIServer.BaseServices
                         {
                             Thread.Sleep(TimeSpan.FromSeconds(1));
                             Thread.Sleep(this.AdditionalDelay);//TODO make this interrupt if Enabled==false
-                            if (Enabled)
+                            if (this.Enabled)
                             {
                                 this._Logger.Log($"Execute {this.GetType().Name}", LogLevel.Debug, false, false, true, false, false, this.Run);
                             }
@@ -90,7 +90,7 @@ namespace GRYLibrary.Core.APIServer.BaseServices
         }
         public  void StopAndWait()
         {
-            Stop().Wait();
+            this.Stop().Wait();
         }
         public bool ShouldBeExecuted()
         {
@@ -108,28 +108,28 @@ namespace GRYLibrary.Core.APIServer.BaseServices
 
         protected virtual void Dispose(bool disposing)
         {
-            if (_Disposed)
+            if (this._Disposed)
             {
                 return; 
             }
 
             if (disposing)
             {
-                Stop();
+                this.Stop();
             }
 
-            _Disposed = true;
+            this._Disposed = true;
         }
 
         public void Dispose()
         {
-            Dispose(true);
+            this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
         ~IteratingBackgroundService()
         {
-            Dispose(false);
+            this.Dispose(false);
         }
     }
 }

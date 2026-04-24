@@ -44,7 +44,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
                     GUtilities.AssertCondition(externalProgramExecutor.ExitCode == 0, $"Error while starting test-database using command \"{externalProgramExecutor.CMD}\" due to exitcode {externalProgramExecutor.ExitCode}. StdOut: {string.Join(Environment.NewLine, externalProgramExecutor.AllStdOutLines)}; StdErr: {string.Join(Environment.NewLine, externalProgramExecutor.AllStdErrLines)}");
                     GUtilities.AssertCondition(GUtilities.RunWithTimeout(() =>
                     {
-                        foreach (var containerNameToWaitToBeHealthy in containerNamesToWaitToBeHealthy)
+                        foreach (string containerNameToWaitToBeHealthy in containerNamesToWaitToBeHealthy)
                         {
                             GUtilities.AssertCondition(GUtilities.ContainerIsHealthy(containerNameToWaitToBeHealthy), $"Container {containerNameToWaitToBeHealthy} did not become healthy within the expected time.");
                         }
