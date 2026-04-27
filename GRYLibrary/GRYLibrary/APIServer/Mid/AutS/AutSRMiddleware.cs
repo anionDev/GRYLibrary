@@ -2,6 +2,7 @@
 using GRYLibrary.Core.APIServer.MidT.Aut;
 using GRYLibrary.Core.APIServer.Services.Auth.R;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
+using GRYLibrary.Core.APIServer.Services.Logger;
 using GRYLibrary.Core.APIServer.Utilities;
 using GRYLibrary.Core.Exceptions;
 using GRYLibrary.Core.Logging.GRYLogger;
@@ -21,12 +22,12 @@ namespace GRYLibrary.Core.APIServer.Mid.AutS
         private readonly IAuthenticationService _AuthenticationService;
         private readonly ICredentialsProvider _CredentialsProvider;
         private readonly IGRYLog _Log;
-        public AutSRMiddleware(RequestDelegate next, IRoleBasedAuthorizationService authorizationService, IAuthenticationService authenticationService, ICredentialsProvider credentialsProvider, IAutSRConfiguration authorizationConfiguration,IGRYLog log) : base(next,log, authorizationConfiguration)
+        public AutSRMiddleware(RequestDelegate next, IRoleBasedAuthorizationService authorizationService, IAuthenticationService authenticationService, ICredentialsProvider credentialsProvider, IAutSRConfiguration authorizationConfiguration,IServerLog log) : base(next,log.Logger, authorizationConfiguration)
         {
             this._AuthorizationService = authorizationService;
             this._AuthenticationService = authenticationService;
             this._CredentialsProvider = credentialsProvider;
-            this._Log = log;
+            this._Log = log.Logger;
         }
 
 

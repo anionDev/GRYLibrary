@@ -1,4 +1,5 @@
 ﻿using GRYLibrary.Core.APIServer.MidT.Exception;
+using GRYLibrary.Core.APIServer.Services.Logger;
 using GRYLibrary.Core.Exceptions;
 using GRYLibrary.Core.Logging.GRYLogger;
 using Microsoft.AspNetCore.Http;
@@ -10,9 +11,9 @@ namespace GRYLibrary.Core.APIServer.Mid.Ex
     public class DefaultExceptionHandlerMiddleware : ExceptionManagerMiddleware
     {
         private readonly IGRYLog _Log;
-        public DefaultExceptionHandlerMiddleware(RequestDelegate next, IGRYLog logger) : base(next)
+        public DefaultExceptionHandlerMiddleware(RequestDelegate next, IServerLog logger) : base(next)
         {
-            this._Log = logger;
+            this._Log = logger.Logger;
         }
 
         protected override void HandleException(HttpContext context, Exception exception)

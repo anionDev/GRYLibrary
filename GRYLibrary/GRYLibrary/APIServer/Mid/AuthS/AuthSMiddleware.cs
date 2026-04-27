@@ -1,6 +1,6 @@
 ﻿using GRYLibrary.Core.APIServer.MidT.Auth;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
-using GRYLibrary.Core.Logging.GRYLogger;
+using GRYLibrary.Core.APIServer.Services.Logger;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
@@ -13,7 +13,7 @@ namespace GRYLibrary.Core.APIServer.Mid.AuthS
     {
         private readonly ICredentialsProvider _CredentialsProvider;
         private readonly IAuthenticationService _AuthenticationService;
-        public AuthSMiddleware(RequestDelegate next, IGRYLog log, ICredentialsProvider credentialsProvider, IAuthenticationService authenticationService, IAuthSConfiguration authenticationConfiguration) : base(next, authenticationConfiguration, authenticationService, log)
+        public AuthSMiddleware(RequestDelegate next, IServerLog log, ICredentialsProvider credentialsProvider, IAuthenticationService authenticationService, IAuthSConfiguration authenticationConfiguration) : base(next, authenticationConfiguration, authenticationService, log.Logger)
         {
             this._CredentialsProvider = credentialsProvider;
             this._AuthenticationService = authenticationService;

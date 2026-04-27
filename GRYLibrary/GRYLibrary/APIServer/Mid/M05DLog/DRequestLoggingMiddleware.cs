@@ -1,6 +1,7 @@
 using GRYLibrary.Core.APIServer.MidT.Auth;
 using GRYLibrary.Core.APIServer.MidT.RLog;
 using GRYLibrary.Core.APIServer.Services.Interfaces;
+using GRYLibrary.Core.APIServer.Services.Logger;
 using GRYLibrary.Core.APIServer.Settings;
 using GRYLibrary.Core.APIServer.Settings.Configuration;
 using GRYLibrary.Core.APIServer.Utilities;
@@ -38,20 +39,24 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
         private readonly IServerConfiguration _ServerConfiguration;
         private readonly IAPIServerCommandlineParameter _CommandlineParameter;
         /// <inheritdoc/>
-        public DRequestLoggingMiddleware(RequestDelegate next, IDRequestLoggingConfiguration requestLoggingSettings, IApplicationConstants appConstants, IGRYLog logger, ITimeService timeService, IServerConfiguration serverConfiguration, IAPIServerCommandlineParameter commandlineParameter) : base(next, timeService)
+        public DRequestLoggingMiddleware(RequestDelegate next, IDRequestLoggingConfiguration requestLoggingSettings, IApplicationConstants appConstants, IServerLog logger, ITimeService timeService, IServerConfiguration serverConfiguration, IAPIServerCommandlineParameter commandlineParameter) : base(next, timeService)
         {
             this._RequestLoggingSettings = requestLoggingSettings;
             this._CommandlineParameter = commandlineParameter;
             this._AppConstants = appConstants;
-            this._Logger = logger;
+            this._Logger = logger.Logger;
             this._ServerConfiguration = serverConfiguration;
-            if(this._CommandlineParameter.RealRun)//for run-mode server-logs and request-logs should be separated, for test- and analysis-mode it should be visible in one single log
+            if (this._CommandlineParameter.RealRun)//for run-mode server-logs and request-logs should be separated, for test- and analysis-mode it should be visible in one single log
             {
-                this._RequestLogger = this._AppConstants.ExecutionMode.Accept(new GetLoggerVisitor(this._RequestLoggingSettings.RequestsLogConfiguration, this._AppConstants.GetLogFolder(), "Requests", this._Logger, this._Logger.Configuration.LogTargets.Any(t=>t.LogLevels.Contains(LogLevel.Debug))));
+                if (this._CommandlineParameter.EnforceVerbose)
+                {
+                    this._RequestLoggingSettings.RequestsLogConfiguration.AddLogLevel(LogLevel.Debug);
+                }
+                this._RequestLogger = new RequestsLog(this._RequestLoggingSettings.RequestsLogConfiguration, appConstants.GetLogFolder()).Logger;
             }
             else
             {
-                this._RequestLogger = logger;
+                this._RequestLogger = logger.Logger;
             }
             CounterConfiguration counterMetricConfig = new CounterConfiguration()
             {
@@ -75,8 +80,8 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
             try
             {
                 DateTimeOffset moment = this._TimeService.GetCurrentLocalTimeAsDateTimeOffset();
-                (string info, string content, byte[] plainContent) requestBody = BytesToString(requestBodyBytes, this._Encoding);
-                (string info, string content, byte[] plainContent) responseBody = BytesToString(responseBodyBytes, this._Encoding);
+                (string info, string? content, byte[] plainContent) requestBody = BytesToString(requestBodyBytes, this._Encoding);
+                (string info, string? content, byte[] plainContent) responseBody = BytesToString(responseBodyBytes, this._Encoding);
                 string requestRoute = context.Request.Path;
                 ushort responseHTTPStatusCode = (ushort)context.Response.StatusCode;
                 IPAddress? clientIP = (IPAddress?)context.Items["ClientIPAddress"];
@@ -155,7 +160,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
             return result;
         }
 
-        public static (string info, string content, byte[] plainContent) BytesToString(byte[] content, Encoding encoding)
+        public static (string info, string? content, byte[] plainContent) BytesToString(byte[] content, Encoding encoding)
         {
             if (content.Length == 0)
             {
@@ -253,7 +258,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
                         + $"  Response-details:{Environment.NewLine}"
                         + $"    Statuscode: {request.ResponseStatusCode}{Environment.NewLine}"
                         + $"    Body: {this.FormatBody(request.ResponseBody, maximalLengthofResponseBodies)}{Environment.NewLine}";
-            if (user == null )
+            if (user == null)
             {
                 result = result + $"  Authentication: (anonymous){Environment.NewLine}";
             }
@@ -264,7 +269,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
                     result = result + $"  Authentication: (unknown identity){Environment.NewLine}";
                 }
                 else
-                { 
+                {
                     result = result + $"  Authentication: user \"{user.Identity.Name}\"{Environment.NewLine}";
                 }
             }
@@ -291,6 +296,10 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
 
         public virtual bool ShouldBeLogged(Request request)
         {
+            if (this._CommandlineParameter.EnforceVerbose)
+            {
+                return true;
+            }
             if (this.IsIgnored(request.Route))
             {
                 return false;
@@ -327,7 +336,7 @@ namespace GRYLibrary.Core.APIServer.Mid.M05DLog
             }
             if (duration.HasValue)
             {
-                result = this.AddAdditionalInformtion(result, $"Duration: {GUtilities.DurationToUserFriendlyString(duration.Value,0)}");
+                result = this.AddAdditionalInformtion(result, $"Duration: {GUtilities.DurationToUserFriendlyString(duration.Value, 0)}");
             }
             //add more additional information if desired
             return result;

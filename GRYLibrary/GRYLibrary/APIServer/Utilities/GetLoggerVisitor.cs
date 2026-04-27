@@ -22,7 +22,7 @@ namespace GRYLibrary.Core.APIServer.Utilities
         }
         public IGRYLog Handle(Analysis analysis)
         {
-            return GRYLog.Create(this._Verbose);
+            return GRYLog.Create(this._LoggerName,this._Verbose);
         }
 
         public IGRYLog Handle(RunProgram runProgram)
@@ -40,10 +40,6 @@ namespace GRYLibrary.Core.APIServer.Utilities
             IGRYLog result = GeneralLogger.CreateUsingGRYLog(this._LogConfiguration, this._BaseFolder, this._InitialLog);
             result.BasePath = this._BaseFolder;
             result.UseSubNamespace(this._LoggerName);
-            foreach (var target in result.Configuration.LogTargets)
-            {
-                target.LogLevels.Add(Microsoft.Extensions.Logging.LogLevel.Debug);
-            }
             return result;
         }
     }

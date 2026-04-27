@@ -80,7 +80,7 @@ namespace GRYLibrary.Core.APIServer.Settings
         }
         public bool AdminHasToEnterInformationAfterInitialConfigurationFileGeneration { get; set; } = false;
         public bool ThrowErrorIfConfigurationDoesNotExistInProduction { get; set; } = false;
-        public string BaseFolder { get; private set; }
+        public string BaseFolder { get; set; }
         public string ApplicationName { get; set; }
         public string ApplicationDescription { get; set; }
         public IList<Regulation> Regulations { get; set; } = [];
