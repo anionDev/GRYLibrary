@@ -3540,13 +3540,13 @@ namespace GRYLibrary.Core.Misc
                 using ExternalProgramExecutor externalProgramExecutor2 = new ExternalProgramExecutor("docker", $"inspect  {containerNameToWaitToBeHealthy}");
                 externalProgramExecutor2.Run();
                 string output = String.Join(string.Empty, externalProgramExecutor2.AllStdOutLines);
-                using var doc = JsonDocument.Parse(output);
+                using JsonDocument doc = JsonDocument.Parse(output);
                 JsonElement root = doc.RootElement[0];
                 if (root.TryGetProperty("State", out JsonElement state) &&
                     state.TryGetProperty("Health", out JsonElement health) &&
                     health.TryGetProperty("Status", out JsonElement status))
                 {
-                    var healthy = status.GetString();
+                    string? healthy = status.GetString();
                     return healthy == "healthy";
                 }
                 else

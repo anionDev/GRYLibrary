@@ -13,12 +13,12 @@ using GRYLibrary.Core.APIServer.MidT.Maint;
 using GRYLibrary.Core.APIServer.MidT.Obfuscation;
 using GRYLibrary.Core.APIServer.MidT.RLog;
 using GRYLibrary.Core.APIServer.MidT.WAF;
+using GRYLibrary.Core.APIServer.Services.Logger;
 using GRYLibrary.Core.APIServer.Settings;
 using GRYLibrary.Core.APIServer.Settings.Configuration;
 using GRYLibrary.Core.APIServer.Utilities;
 using GRYLibrary.Core.APIServer.Verbs;
 using GRYLibrary.Core.Exceptions;
-using GRYLibrary.Core.Logging.GeneralPurposeLogger;
 using GRYLibrary.Core.Logging.GRYLogger;
 using GRYLibrary.Core.Misc;
 using GRYLibrary.Core.Misc.ConsoleApplication;
@@ -86,11 +86,12 @@ namespace GRYLibrary.Core.APIServer
                 return;
             }
             bool maintenanceModeEnabled = this._ManualMaintenanceModeEnabled || this._TechnicalMaintenanceModeEnabled;
-            var constants = GRYLibrary.Core.Misc.Utilities.AssertNotNull(this._ApplicationConstants, nameof(this._ApplicationConstants));
+            IApplicationConstants<ApplicationSpecificConstants> constants = GRYLibrary.Core.Misc.Utilities.AssertNotNull(this._ApplicationConstants, nameof(this._ApplicationConstants));
             string configFolder = constants.GetConfigurationFolder();
             GRYLibrary.Core.Misc.Utilities.AssertCondition(Directory.Exists(configFolder), $"Folder \"{configFolder}\" does not exist.");
             string InitializationFile = Path.Combine(configFolder, "MaintenanceMode.enabled");
-            log.Log($"Set maintenance mode to {maintenanceModeEnabled} (File: {InitializationFile}; {nameof(this._ManualMaintenanceModeEnabled)}: {this._ManualMaintenanceModeEnabled}; {nameof(this._TechnicalMaintenanceModeEnabled)}: {this._TechnicalMaintenanceModeEnabled})", LogLevel.Information);
+            log.Log($"Set maintenance mode to {maintenanceModeEnabled}", LogLevel.Information);
+            log.Log($"Maintenance-File: {InitializationFile}; {nameof(this._ManualMaintenanceModeEnabled)}: {this._ManualMaintenanceModeEnabled}; {nameof(this._TechnicalMaintenanceModeEnabled)}: {this._TechnicalMaintenanceModeEnabled}",LogLevel.Debug);
             try
             {
                 if (maintenanceModeEnabled)
@@ -265,13 +266,14 @@ namespace GRYLibrary.Core.APIServer
             try
             {
                 this.CreateRequiredFolder(config.CommandlineParameter.RealRun);
-                this.SetTechnicalMaintenanceModeEnabled(true,logger);
-                logger = this.GetApplicationLogger(persistedAPIServerConfiguration, logger, initializeLogAsVerbose);
+                this.SetTechnicalMaintenanceModeEnabled(true, logger);
+                var serverLog = this.GetApplicationLogger(persistedAPIServerConfiguration, initializeLogAsVerbose,config.CommandlineParameter.EnforceVerbose, this._ApplicationConstants.GetLogFolder());
+                logger = serverLog.Logger;
                 logger.Log($"Start {this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName} (v{this._Configuration.InitializationInformation.ApplicationConstants.ApplicationVersion})", LogLevel.Information);
                 logger.Log($"Environment: {this._Configuration.InitializationInformation.ApplicationConstants.Environment}", LogLevel.Debug);
                 logger.Log($"Executionmode: {this._Configuration.InitializationInformation.ApplicationConstants.ExecutionMode}", LogLevel.Debug);
                 this.EnsureCertificateIsAvailableIfRequired(persistedAPIServerConfiguration);
-                WebApplication webApplication = this.CreateWebApplication(config, logger, persistedAPIServerConfiguration);
+                WebApplication webApplication = this.CreateWebApplication(config, serverLog, persistedAPIServerConfiguration);
                 Action runAction = () =>
                 {
                     Task? waitTask = null;
@@ -341,31 +343,18 @@ namespace GRYLibrary.Core.APIServer
 
         private WebApplication CreateWebApplication(
             APIServerConfiguration<ApplicationSpecificConstants, PersistedApplicationSpecificConfiguration, CommandlineParameterType> apiServerConfiguration,
-            IGRYLog logger,
+            IServerLog serverLog,
             IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedAPIServerConfiguration)
         {
             try
             {
-
+                var logger = serverLog.Logger;
                 logger.Log($"BaseFolder: {apiServerConfiguration.InitializationInformation.BaseFolder}", LogLevel.Debug);
                 WebApplicationBuilder builder = WebApplication.CreateBuilder(new WebApplicationOptions
                 {
                     ApplicationName = this._Configuration.InitializationInformation.ApplicationConstants.ApplicationName,
                     EnvironmentName = this._Configuration.InitializationInformation.ApplicationConstants.Environment.GetType().Name
                 });
-                bool cors = false;//only for testing-purposes
-                if (cors)
-                {
-                    builder.Services.AddCors(options =>
-                    {
-                        options.AddPolicy("AllowDev", policy =>
-                        {
-                            policy.WithOrigins("http://localhost:4200")
-                                  .AllowAnyHeader()
-                                  .AllowAnyMethod();
-                        });
-                    });
-                }
                 IServiceCollection services = builder.Services;
                 IMvcBuilder mvcBuilder = services.AddControllers(mvcOptions =>
                 {
@@ -380,8 +369,7 @@ namespace GRYLibrary.Core.APIServer
                 mvcBuilder.AddApplicationPart(this.GetType().Assembly);
                 builder.Services.AddSingleton<IAPIServerCommandlineParameter>((serviceProvider) => apiServerConfiguration.InitializationInformation.CommandlineParameter);
                 builder.Services.AddSingleton<CommandlineParameterType>((serviceProvider) => apiServerConfiguration.InitializationInformation.CommandlineParameter);
-                builder.Services.AddSingleton((serviceProvider) => logger);
-                builder.Services.AddSingleton<IGeneralLogger>(sp => sp.GetRequiredService<IGRYLog>());
+                builder.Services.AddSingleton<IServerLog>(sp => serverLog);
                 builder.Services.AddSingleton((serviceProvider) => persistedAPIServerConfiguration);
                 builder.Services.AddSingleton((serviceProvider) => persistedAPIServerConfiguration.ServerConfiguration);
                 builder.Services.AddSingleton((serviceProvider) => this._Configuration.InitializationInformation.ApplicationConstants);
@@ -415,9 +403,9 @@ namespace GRYLibrary.Core.APIServer
 
                 specialMiddlewares1.Add(typeof(GeneralMiddleware<PersistedApplicationSpecificConfiguration>));
 
-                this.AddDefinedMiddleware((ISupportExceptionManagerMiddleware c) => c.ConfigurationForExceptionManagerMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.ExceptionManagerMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);
+                this.AddDefinedMiddleware((ISupportRequestLoggingMiddleware c) => c.ConfigurationForLoggingMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.LoggingMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);//outer (must be out of exception-handling-middleware, otherwise 4xx and 5xx can not be logged.)
 
-                this.AddDefinedMiddleware((ISupportRequestLoggingMiddleware c) => c.ConfigurationForLoggingMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.LoggingMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);
+                this.AddDefinedMiddleware((ISupportExceptionManagerMiddleware c) => c.ConfigurationForExceptionManagerMiddleware, this._Configuration.InitializationInformation.ApplicationConstants.ExceptionManagerMiddleware, persistedApplicationSpecificConfiguration, specialMiddlewares1, logger);//inner (must be inside of log-middleware)
 
 
                 foreach (Type customMiddleware in this._Configuration.InitializationInformation.ApplicationConstants.CustomMiddlewares1)
@@ -574,8 +562,8 @@ namespace GRYLibrary.Core.APIServer
                     persistedAPIServerConfiguration,
                     app
                 );
-                logger.Log($"Log-level:", LogLevel.Information);
-                foreach (var target in logger.Configuration.LogTargets)
+                logger.Log($"Log-level of {logger.Configuration.Name}-log:", LogLevel.Information);
+                foreach (GRYLogTarget target in logger.Configuration.LogTargets)
                 {
                     string enabled = target.Enabled ? "enabled" : "disabled";
                     logger.Log($"- {target.GetType().Name} ({enabled}): " + string.Join(", ", target.LogLevels.Select(l => l.ToString())));
@@ -715,16 +703,14 @@ namespace GRYLibrary.Core.APIServer
             }
         }
 
-        private IGRYLog GetApplicationLogger(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration, IGRYLog initialLog, bool initialVerboseValue)
+        private IServerLog GetApplicationLogger(IPersistedAPIServerConfiguration<PersistedApplicationSpecificConfiguration> persistedApplicationSpecificConfiguration, bool initialVerboseValue,bool enforceVerbose,string logFolder)
         {
-            if (this._Configuration.CommandlineParameter.RealRun)
+            ServerLog result = new ServerLog(persistedApplicationSpecificConfiguration.ApplicationLogConfiguration, logFolder);
+            if(enforceVerbose)
             {
-                return this._Configuration.InitializationInformation.ApplicationConstants.ExecutionMode.Accept(new GetLoggerVisitor(persistedApplicationSpecificConfiguration.ApplicationLogConfiguration, this._Configuration.InitializationInformation.ApplicationConstants.GetLogFolder(), "Server", initialLog, initialVerboseValue));
+                result.Logger.Configuration.AddLogLevel(LogLevel.Debug);
             }
-            else
-            {
-                return initialLog;
-            }
+            return result;
         }
 
         private void CreateRequiredFolder(bool isRealRun)

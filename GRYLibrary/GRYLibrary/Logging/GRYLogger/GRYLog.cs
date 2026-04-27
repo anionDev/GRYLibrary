@@ -33,6 +33,8 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         public delegate void ErrorOccurredEventHandler(Exception exception, LogItem logItem);
         private static uint _LoggerCounter = 0;
         private readonly string _LoggerId;
+        public uint LoggerNumber{ get; private set; }
+        public string? Name { get; private set; }
         private bool AnyLogTargetEnabled
         {
             get
@@ -47,39 +49,54 @@ namespace GRYLibrary.Core.Logging.GRYLogger
                 return false;
             }
         }
-        private GRYLog() : this(new GRYLogConfiguration())
+        private GRYLog() : this(new GRYLogConfiguration(), null)
         {
         }
-        private GRYLog(IGRYLogConfiguration configuration)
+        private GRYLog(IGRYLogConfiguration configuration, string? name)
         {
             lock (_LockObject)
             {
                 _LoggerCounter = _LoggerCounter + 1;
-                this._LoggerId = this.GetType().Name + _LoggerCounter.ToString();
+                this.Name = name;
+                this._LoggerId = (this.Name == null ? this.GetType().Name+ _LoggerCounter.ToString() : this.Name) ;
+                this.LoggerNumber = _LoggerCounter;
                 this._ConsoleDefaultColor = System.Console.ForegroundColor;
                 this.Configuration = configuration;
                 this.AddLogEntry = this.Log;
                 this._Initialized = true;
             }
         }
-        public static GRYLog Create(bool verbose = false)
+        public static GRYLog Create(string? name = null, bool verbose = false, bool useGRYLogFormat = true,bool useNameAsSubnamespace=false)
         {
-            var result = Create(new GRYLogConfiguration(true));
-            foreach (var target in result.Configuration.LogTargets)
+            GRYLog result = Create(new GRYLogConfiguration(true), name);
+            foreach (GRYLogTarget target in result.Configuration.LogTargets)
             {
-                target.LogLevels.Add(LogLevel.Debug);
+                if (verbose)
+                {
+                    target.LogLevels.Add(LogLevel.Debug);
+                }
+                if (useGRYLogFormat)
+                {
+                    target.Format = GRYLogLogFormat.GRYLogFormat;
+                }
             }
             return result;
         }
 
-        public static GRYLog Create(string logFile)
+        public static GRYLog Create(string logFile, string? name)
         {
-            return Create(GRYLogConfiguration.GetCommonConfiguration(logFile, false));
+            return Create(GRYLogConfiguration.GetCommonConfiguration(logFile, false), name);
         }
 
-        public static GRYLog Create(IGRYLogConfiguration configuration)
+        public static GRYLog Create(IGRYLogConfiguration configuration, string? name, bool useNameAsSubnamespace = false)
         {
-            return new GRYLog(configuration);
+            GRYLog result = new GRYLog(configuration, name);
+            if (useNameAsSubnamespace)
+            {
+                string subnamespace = GRYLibrary.Core.Misc.Utilities.GetValue(name);
+                result.UseSubNamespace(subnamespace);
+            }
+            return result;
         }
 
         public override int GetHashCode()

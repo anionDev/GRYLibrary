@@ -6,5 +6,6 @@ namespace GRYLibrary.Core.APIServer.Verbs
     {
         public bool RealRun { get; set; }
         public bool InitialVerboseValue { get; set; }
+        public bool EnforceVerbose { get; set; }
     }
 }

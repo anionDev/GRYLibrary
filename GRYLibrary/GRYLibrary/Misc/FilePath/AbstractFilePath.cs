@@ -9,7 +9,7 @@ namespace GRYLibrary.Core.Misc.FilePath
     {
         public abstract string FilePath { get; set; }
 
-        public static AbstractFilePath FromString(string logFile)
+        public static AbstractFilePath FromString(string? logFile)
         {
             if (string.IsNullOrWhiteSpace(logFile))
             {

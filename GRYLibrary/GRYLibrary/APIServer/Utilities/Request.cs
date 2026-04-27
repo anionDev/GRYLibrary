@@ -16,16 +16,16 @@ namespace GRYLibrary.Core.APIServer.Utilities
         public string Method { get; set; }
         public string Route { get; set; }
         public IHeaderDictionary RequestHeader { get; set; }
-        public (string info, string content, byte[] plainContent) RequestBody { get; set; }
+        public (string info, string? content, byte[] plainContent) RequestBody { get; set; }
         public IDictionary<object, object> InformationFromController { get; set; }
         public ushort ResponseStatusCode { get; set; }
         public IHeaderDictionary ResponseHeader { get; set; }
-        public (string info, string content, byte[] plainContent) ResponseBody { get; set; }
+        public (string info, string? content, byte[] plainContent) ResponseBody { get; set; }
         public IQueryCollection Query { get; set; }
         public Request()
         {
         }
-        public Request(string requestId, DateTimeOffset timestamp, IPAddress? clientIPAddress, string method, string route, IQueryCollection query, IHeaderDictionary requestHeader, (string info, string content, byte[] plainContent) requestBody, IDictionary<object, object> informationFromController, ushort responseStatusCode, IHeaderDictionary responseHeader, (string info, string content, byte[] plainContent) responseBody)
+        public Request(string requestId, DateTimeOffset timestamp, IPAddress? clientIPAddress, string method, string route, IQueryCollection query, IHeaderDictionary requestHeader, (string info, string? content, byte[] plainContent) requestBody, IDictionary<object, object> informationFromController, ushort responseStatusCode, IHeaderDictionary responseHeader, (string info, string? content, byte[] plainContent) responseBody)
         {
             this.RequestId = requestId;
             this.Timestamp = timestamp;

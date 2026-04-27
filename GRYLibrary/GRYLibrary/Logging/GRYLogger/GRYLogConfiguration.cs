@@ -29,6 +29,8 @@ namespace GRYLibrary.Core.Logging.GRYLogger
         public List<SerializableKeyValuePair<LogLevel, LoggedMessageTypeConfiguration>> LoggedMessageTypesConfiguration { get; set; }
         public bool LogEveryLineOfLogEntryInNewLine { get; set; }
         public bool StoreProcessedLogItemsInternally { get; set; }
+
+        public void AddLogLevel(LogLevel debug);
         public LoggedMessageTypeConfiguration GetLoggedMessageTypesConfigurationByLogLevel(LogLevel logLevel);
         public void Initliaze();
         public void SetEnabledOfAllLogTargets(bool writeOutputToConsole);
@@ -105,6 +107,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
                 this.LogTargets.Add(new Syslog());
             }
         }
+
         public Target GetLogTarget<Target>() where Target : GRYLogTarget
         {
             foreach (GRYLogTarget gryLogTarget in this.LogTargets)
@@ -116,6 +119,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
             }
             throw new KeyNotFoundException($"No {typeof(Target).Name}-target available");
         }
+
         public void SetEnabledOfAllLogTargets(bool newEnabledValue)
         {
             foreach (GRYLogTarget item in this.LogTargets)
@@ -123,6 +127,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
                 item.Enabled = newEnabledValue;
             }
         }
+
         public void Dispose()
         {
             foreach (GRYLogTarget target in this.LogTargets)
@@ -130,12 +135,13 @@ namespace GRYLibrary.Core.Logging.GRYLogger
                 target.Dispose();
             }
         }
-        public static GRYLogConfiguration GetCommonConfiguration(string logFile = null, bool verbose = false)
+
+        public static GRYLogConfiguration GetCommonConfiguration(string? logFile , bool verbose = false)
         {
             return GetCommonConfiguration(AbstractFilePath.FromString(logFile), verbose);
         }
 
-        public static GRYLogConfiguration GetCommonConfiguration(AbstractFilePath logFile = null, bool verbose = false)
+        public static GRYLogConfiguration GetCommonConfiguration(AbstractFilePath? logFile, bool verbose = false)
         {
             GRYLogConfiguration result = new GRYLogConfiguration(true);
             if (logFile != null)
@@ -158,6 +164,7 @@ namespace GRYLibrary.Core.Logging.GRYLogger
             }
             return result;
         }
+
         #region Overhead
         public override bool Equals(object @object)
         {
@@ -179,5 +186,13 @@ namespace GRYLibrary.Core.Logging.GRYLogger
             return new HashSet<Type>();
         }
         #endregion
+
+        public void AddLogLevel(LogLevel debug)
+        {
+            foreach (var target in this.LogTargets)
+            {
+                target.LogLevels.Add(LogLevel.Debug);
+            }
+        }
     }
 }

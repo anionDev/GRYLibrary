@@ -119,7 +119,7 @@ namespace GRYLibrary.Core.APIServer.Services.Trans
                 }
                 return user;
             }
-            throw new KeyNotFoundException("No user found with given accesstoken.");
+            throw new BadRequestException("No user found with given accesstoken.");
         }
 
         public bool RoleExists(string roleName)

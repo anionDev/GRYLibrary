@@ -10,5 +10,8 @@ namespace GRYLibrary.Core.APIServer.Verbs
 
         [Option(nameof(InitialVerboseValue), Required = false, Default = true)]
         public bool InitialVerboseValue { get; set; }
+
+        [Option(nameof(EnforceVerbose), Required = false, Default = false)]
+        public bool EnforceVerbose { get; set; }
     }
 }

@@ -29,11 +29,11 @@ namespace GRYLibrary.Core.Logging.GeneralPurposeLogger
             return CreateUsingGRYLog(configuration, Directory.GetCurrentDirectory());
         }
 
-        public static IGRYLog CreateUsingGRYLog(IGRYLogConfiguration configuration, string basePath = null)
+        public static IGRYLog CreateUsingGRYLog(IGRYLogConfiguration configuration, string basePath = null,string? name=null)
         {
-            return CreateUsingGRYLog(configuration, basePath, GRYLog.Create(configuration));
+            return CreateUsingGRYLog(configuration, basePath, GRYLog.Create(configuration,name),name);
         }
-        public static IGRYLog CreateUsingGRYLog(IGRYLogConfiguration configuration, string basePath, IGRYLog logToUse)
+        public static IGRYLog CreateUsingGRYLog(IGRYLogConfiguration configuration, string basePath, IGRYLog logToUse, string? name = null)
         {
             IGRYLog logObject = logToUse;
             logObject.ApplyConfiguration(configuration);

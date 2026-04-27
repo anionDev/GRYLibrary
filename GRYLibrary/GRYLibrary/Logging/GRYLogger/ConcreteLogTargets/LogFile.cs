@@ -60,11 +60,11 @@ namespace GRYLibrary.Core.Logging.GRYLogger.ConcreteLogTargets
 
         public void Flush()
         {
-            string logfile = this.File.GetPath(this._BasePath);
-            if (string.IsNullOrWhiteSpace(logfile))
+            if (string.IsNullOrWhiteSpace(this._BasePath))
             {
-                throw new NullReferenceException($"LogFile is not defined.");
+                throw new NullReferenceException($"{nameof(this._BasePath)} is not defined.");
             }
+            string logfile = this.File.GetPath(this._BasePath);
             Utilities.EnsureFileExists(logfile, true);
             string result = string.Empty;
             for (int i = 0; i < this._Pool.Count; i++)
